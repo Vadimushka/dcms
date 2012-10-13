@@ -22,8 +22,6 @@ if (!mysql_num_rows($q)) {
 }
 $theme = mysql_fetch_assoc($q);
 
-
-
 if ($user->group) {
     $q = mysql_query("SELECT * FROM `forum_views` WHERE `id_theme` = '$theme[id]' AND `id_user` = '$user->id'");
     if (!mysql_num_rows($q)) {
@@ -33,16 +31,12 @@ if ($user->group) {
     }
 }
 
-
 $doc->title .= ' - ' . $theme['name'];
-
 
 $doc->description = $theme['name'];
 $doc->keywords[] = $theme['name'];
 $doc->keywords[] = $theme['topic_name'];
 $doc->keywords[] = $theme['category_name'];
-
-
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group'"), 0); // количество сообщений  теме
@@ -87,62 +81,66 @@ if ($theme['id_vote']) {
 
 $q = mysql_query("SELECT * FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group' ORDER BY `id` ASC LIMIT $pages->limit");
 
+$users_preload = array();
+$messages = array();
+while ($message = mysql_fetch_assoc($q)) {
+    $messages[] = $message;
+    $users_preload[] = $message['id_user'];
+}
 
-
+new user($users_preload); // предзагрузка данных пользователей одним запросом
 
 $listing = new listing();
-while ($messages = mysql_fetch_assoc($q)) {
+foreach ($messages AS $message) {
     $post = $listing->post();
 
 
-    $ank = new user((int) $messages['id_user']);
+    $ank = new user((int) $message['id_user']);
 
 
     if ($user->group) {
-        $post->action('quote', "message.php?id_message=$messages[id]&amp;quote"); // цитирование
+        $post->action('quote', "message.php?id_message=$message[id]&amp;quote"); // цитирование
     }
 
-    if ($user->group >= $messages['group_edit']) {
+    if ($user->group >= $message['group_edit']) {
         if ($theme['group_show'] <= 1) {
-            if ($messages['group_show'] <= 1) {
-                $post->action('hide', "message.edit.php?id=$messages[id]&amp;return=" . URL . "&amp;act=hide&amp;" . passgen()); // скрытие
+            if ($message['group_show'] <= 1) {
+                $post->action('hide', "message.edit.php?id=$message[id]&amp;return=" . URL . "&amp;act=hide&amp;" . passgen()); // скрытие
             } else {
-                $post->action('show', "message.edit.php?id=$messages[id]&amp;return=" . URL . "&amp;act=show&amp;" . passgen()); // показ
+                $post->action('show', "message.edit.php?id=$message[id]&amp;return=" . URL . "&amp;act=show&amp;" . passgen()); // показ
 
                 $post->bottom = __('Сообщение скрыто');
             }
         }
-        $post->action('edit', "message.edit.php?id=$messages[id]&amp;return=" . URL); // редактирование
-    } elseif ($user->id == $messages['id_user'] && TIME < $messages['time'] + 600) {
+        $post->action('edit', "message.edit.php?id=$message[id]&amp;return=" . URL); // редактирование
+    } elseif ($user->id == $message['id_user'] && TIME < $message['time'] + 600) {
         // автору сообщения разрешается его редактировать в течении 10 минут
-        $post->action('edit', "message.edit.php?id=$messages[id]&amp;return=" . URL); // редактирование
+        $post->action('edit', "message.edit.php?id=$message[id]&amp;return=" . URL); // редактирование
     }
 
     if ($ank->group <= $user->group && $user->id != $ank->id) {
         if ($user->group >= 2)
         // бан
-            $post->action('complaint', "/dpanel/user.ban.php?id_ank=$messages[id_user]&amp;return=" . URL . "&amp;link=" . urlencode("/forum/message.php?id_message=$messages[id]"));
+            $post->action('complaint', "/dpanel/user.ban.php?id_ank=$message[id_user]&amp;return=" . URL . "&amp;link=" . urlencode("/forum/message.php?id_message=$message[id]"));
         else
         // жалоба на сообщение
-            $post->action('complaint', "/complaint.php?id=$messages[id_user]&amp;return=" . URL . "&amp;link=" . urlencode("/forum/message.php?id_message=$messages[id]"));
+            $post->action('complaint', "/complaint.php?id=$message[id_user]&amp;return=" . URL . "&amp;link=" . urlencode("/forum/message.php?id_message=$message[id]"));
     }
 
     $post->title = $ank->nick();
     $post->icon($ank->icon());
 
-    $post->time = vremja($messages['time']);
-    $post->url = 'message.php?id_message=' . $messages['id'];
-    $post->content = text::for_opis($messages['message']);
+    $post->time = vremja($message['time']);
+    $post->url = 'message.php?id_message=' . $message['id'];
+    $post->content = text::for_opis($message['message']);
 
 
-    if ($messages['edit_id_user'] && ($ank->group < $user->group || $ank->id == $user->id)) {
-        $ank_edit = new user($messages['edit_id_user']);
-        $post->bottom .= ' <a href="message.history.php?id=' . $messages['id'] . '&amp;return=' . URL . '">' . __('Изменено') . '(' . $messages['edit_count'] . ')</a> ' . $ank_edit->login . ' (' . vremja($messages['edit_time']) . ')<br />';
+    if ($message['edit_id_user'] && ($ank->group < $user->group || $ank->id == $user->id)) {
+        $ank_edit = new user($message['edit_id_user']);
+        $post->bottom .= ' <a href="message.history.php?id=' . $message['id'] . '&amp;return=' . URL . '">' . __('Изменено') . '(' . $message['edit_count'] . ')</a> ' . $ank_edit->login . ' (' . vremja($message['edit_time']) . ')<br />';
     }
 
-
-
-    $post_dir_path = H . '/sys/files/.forum/' . $theme['id'] . '/' . $messages['id'];
+    $post_dir_path = H . '/sys/files/.forum/' . $theme['id'] . '/' . $message['id'];
     if (@is_dir($post_dir_path)) {
         $listing_files = new listing();
         $dir = new files($post_dir_path);

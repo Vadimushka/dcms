@@ -6,8 +6,55 @@ class user extends plugins {
     protected $_update = array();
     protected $_data = array();
 
-    function __construct($id) {
-        $this->_user($id);
+    function __construct($id_or_arrayToCache) {
+        if (is_array($id_or_arrayToCache)) {
+            $this->_usersFromCache($id_or_arrayToCache);
+            $this->_guest_init();
+        } else {
+            $this->_user_init($id_or_arrayToCache);
+        }
+    }
+
+    /**
+     * Получение данных сразу нескольких пользователей и помещение их в кэш
+     * @staticvar array $cache
+     * @param type $get_users_by_id
+     * @return type
+     */
+    protected function _usersFromCache($get_users_by_id) {
+        static $cache = array(); // кэш пользователей
+        $get_users_by_id = array_unique((array) $get_users_by_id);
+
+        $users_from_mysql = array(); // пользователи, которые будут запрашиваться из базы (нет в кэше)
+        $users_return = array(); // пользователи, которые будут возвращены
+
+        foreach ($get_users_by_id AS $id_user) {
+            if (array_key_exists($id_user, $cache))
+                $users_return[$id_user] = $cache[$id_user];
+            else
+                $users_from_mysql[] = $id_user;
+        }
+
+        if ($users_from_mysql) {
+            $q = mysql_query("SELECT * FROM `users` WHERE `id` IN (" . implode(',', $users_from_mysql) . ")");
+            while ($user_data = mysql_fetch_assoc($q)) {
+                $id_user = $user_data['id'];
+                $users_return[$id_user] = $cache[$id_user] = $user_data;
+            }
+        }
+
+        return $users_return;
+    }
+
+    /**
+     * Инициализация данных неавторизованного пользователя (гостя)
+     */
+    protected function _guest_init() {
+        $this->_update = array();
+        $this->_data = array();
+        $this->_data ['id'] = false;
+        $this->_data ['sex'] = 1;
+        $this->_data ['group'] = 0;
     }
 
     /**
@@ -17,10 +64,8 @@ class user extends plugins {
      * @param type $id
      * @return boolean
      */
-    protected function _user($id) {
-        $this->_data ['id'] = false;
-        $this->_data ['sex'] = 1;
-        $this->_data ['group'] = 0;
+    protected function _user_init($id) {
+        $this->_guest_init();
 
         if ($id === 0) {
             global $dcms;
@@ -32,18 +77,9 @@ class user extends plugins {
             return true;
         }
 
-        static $cache = array();
-        $id = (int) $id;
-
-        if (isset($cache [$id])) {
-            $this->_data = $cache [$id];
-        } else {
-            $q = mysql_query("SELECT * FROM `users` WHERE `id` = '$id' LIMIT 1");
-            if (mysql_num_rows($q)) {
-                $this->_data = mysql_fetch_assoc($q);
-            }
-            $cache [$id] = $this->_data;
-        }
+        $users = $this->_usersFromCache($id);
+        if (array_key_exists($id, $users))
+            $this->_data = $users[$id];
     }
 
     /**
@@ -102,7 +138,7 @@ class user extends plugins {
      */
     protected function _is_writeable() {
         if ($this->_is_ban())
-            return false;       
+            return false;
 
         global $dcms;
         if (!$dcms->user_write_limit_hour) {
