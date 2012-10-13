@@ -1,0 +1,7 @@
+sys/files/.forum/.!config.dir.ini
+sys/files/.downloads/.!config.dir.ini
+sys/files/.avatars/.!config.dir.ini
+sys/files/.photos/.!config.dir.ini
+sys/files/.obmen/.!config.dir.ini
+sys/tmp/.htaccess
+sys/logs/.htaccess

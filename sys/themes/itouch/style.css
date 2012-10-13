@@ -1,0 +1,144 @@
+
+div.post, a:visited div.post {
+    color:#616683;
+    background-color: #f6f6f6;
+    border: 1px #EDEDF2 solid;
+    display: block;
+    margin-bottom: 5px;
+    padding: 3px 5px 3px 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    word-wrap: break-word;
+    border-color: #D7D7EE;
+    box-shadow: 1px 1px 5px -2px #C5C6D0;
+}
+a:hover div.post{
+    text-decoration: none; 
+}
+
+a div.post a,a div.post_new a{
+    text-decoration: none;
+}
+
+a:hover div.post a, a:hover div.post_new a{
+    text-decoration: none;
+}
+
+div.post_new {
+    color:#616683;
+    background-color: #D2FEDF;
+    border: 1px #C7FFE1 solid;
+    display: block;
+    margin: 5px;
+    padding: 3px 5px 3px 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+a:hover div.post_new{
+    color:#616683;
+    text-decoration: none;
+    border-color: #D7D7EE;
+    box-shadow: 1px 1px 5px -2px #C5C6D0;
+}
+
+td.icon_big {
+    vertical-align: top;
+    width: 48px;
+}
+td.icon_small {
+    width: 16px;
+}
+td.post_title {
+}
+td.act {
+    width: 14px;
+}
+div.post_hide {
+    filter: progid: DXImageTransform.Microsoft.Alpha(opacity=20);
+    opacity: 0.2;
+}
+td.act img {
+    filter: progid: DXImageTransform.Microsoft.Alpha(opacity=20);
+    opacity: 0.2;
+}
+td.act img:hover {
+    filter: progid: DXImageTransform.Microsoft.Alpha(opacity=100);
+    opacity: 1;
+}
+div.post_edit {
+    color: #99AAB9;
+    text-align: right;
+    font-size: xx-small;
+    font-weight: bold;
+}
+
+div.widget {
+    border-radius: 5px;
+    background-color: #f9fcff;
+    padding: 5px;
+    margin-bottom: 5px;
+    border: 1px #C7D7FF solid;
+}
+
+div.adt_top {
+    border-radius: 5px;
+    background-color: #f9fcff;
+    padding: 5px;
+    margin: 5px;
+    border: 1px #C7D7FF solid;
+}
+
+div.vote {
+    font-size: xx-small;
+    background: #F2F5FF url('images/vote_bg2.gif') repeat-x center top;
+    margin: 2px 1px 2px 1px;
+    padding: 2px 3px 2px 3px;
+    border: 1px #CCCCE5 solid;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+}
+div.vote a:hover {
+    text-decoration: none;
+}
+span.vote_name {
+    font-weight: bold;
+    font-size: x-small;
+    padding-bottom: 4px;
+}
+td.votes {
+    margin: 2px;
+}
+td.votes div, td.votes_add div {
+    border: 1px #D7E3FF solid;
+    background: #ffffff url('images/vote_bg.gif') repeat-x center center;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+}
+td.votes div div, td.votes_add div a {
+    display: block;
+    padding: 0px 3px 0px 3px;
+    background: #99CCFF url('images/vote.gif') repeat-x center center;
+    border: 1px #9ABADD solid;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    text-shadow: 1px 1px 2px #FFFFFF;
+}
+td.votes_add {
+    width: 10px;
+}
+div.quote {
+    font-size: 11px;
+    margin: 3px 1px;
+    padding: 3px 3px;
+    background-color: #FFFFFF;
+    border: 1px #D7E8FF solid;
+    filter: progid: DXImageTransform.Microsoft.Alpha ( opacity = 80 );
+    opacity: 0.8;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+}
+
+
+span.quote {
+    font-weight: bold;
+}

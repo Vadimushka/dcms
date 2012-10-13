@@ -1,0 +1,650 @@
+a:2:{s:1:"a";i:1350121784;s:1:"d";a:11:{s:51:"widget-news.language-russian.browser-web.timeshift-";a:2:{s:1:"t";i:1350121775;s:1:"v";s:972:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/news/', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/news.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Все новости
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:60:"widget-files.language-russian.browser-web.timeshift-.group-0";a:2:{s:1:"t";i:1350121775;s:1:"v";s:984:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/files/.downloads/', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/downloads.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Загрузки
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:60:"widget-obmen.language-russian.browser-web.timeshift-.group-0";a:2:{s:1:"t";i:1350121776;s:1:"v";s:980:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/files/.obmen/', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/downloads.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Обменник
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:60:"widget-users.language-russian.browser-web.timeshift-.group-0";a:2:{s:1:"t";i:1350121776;s:1:"v";s:3686:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/users.php', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/users.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Последние зарегистрированные
+                                    <span class="post_counter">+1</span>
+    
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>    
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/profile.view.php?id=1', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/admin.1.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        <span class="nick_off">ADMIN</span>
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                                    <span class="post_time">13:39:35</span>
+    
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>    
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/online.users.php', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/users.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Сейчас на сайте
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>    
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/online.guest.php', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/guest.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Гости на сайте
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:52:"widget-news.language-russian.browser-web.timeshift-0";a:2:{s:1:"t";i:1350121783;s:1:"v";s:972:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/news/', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/news.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Все новости
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:61:"widget-files.language-russian.browser-web.timeshift-0.group-6";a:2:{s:1:"t";i:1350121784;s:1:"v";s:984:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/files/.downloads/', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/downloads.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Загрузки
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:61:"widget-obmen.language-russian.browser-web.timeshift-0.group-6";a:2:{s:1:"t";i:1350121784;s:1:"v";s:980:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/files/.obmen/', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/downloads.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Обменник
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:61:"widget-users.language-russian.browser-web.timeshift-0.group-6";a:2:{s:1:"t";i:1350121783;s:1:"v";s:3735:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/users.php', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/users.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Последние зарегистрированные
+                                    <span class="post_counter">+1</span>
+    
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>    
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/profile.view.php?id=1', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/admin.1.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        <span class="nick_off">ADMIN</span>
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                                    <span class="post_time">13:39:35</span>
+    
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>    
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/online.users.php', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/users.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Сейчас на сайте
+                                    <span class="post_counter">1</span>
+    
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>    
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/online.guest.php', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/guest.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Гости на сайте
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:40:"widget-dcms.language-russian.browser-web";a:2:{s:1:"t";i:1350121334;s:1:"v";s:1826:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/build/', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/cms.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Скачать DCMS 7.2.1
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>    
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/build/updates.php', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/cms.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Пакеты обновлений
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:65:"widget-chat_mini.language-russian.browser-web.timeshift-0.group-6";a:2:{s:1:"t";i:1350121284;s:1:"v";s:976:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/chat_mini/', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/chat_mini.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Мини чат
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}s:61:"widget-forum.language-russian.browser-web.timeshift-0.group-6";a:2:{s:1:"t";i:1350121336;s:1:"v";s:2674:"<script charset="utf-8" src="/sys/themes/web_blue/listing.js" type="text/javascript"></script> 
+
+<div class="listing">
+        
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post_hightlight" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/forum/', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/forum.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Форум
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>    
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/forum/last.posts.php', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/forum.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Темы с новыми сообщениями
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>    
+
+
+
+
+<div id="0" class="sortable">
+    <div class="post" onmousedown="link.onmousedown(this)" onmousemove="link.onmousemove()" onmouseup="link.onmouseup('/forum/last.themes.php', event)">
+        <table cellspacing="0" callpadding="0" width="100%">
+
+                            <tr>
+                    <td class="post_icon">
+                        <img src="/sys/images/icons/forum.png" alt="" />
+                    </td>
+                    <td class="post_title">
+                        Новые темы
+                            
+                    </td>
+
+                    <td class="post_title_right">
+
+                            
+                                    
+                    </td>
+                </tr>
+            
+            
+            
+
+        </table>
+    </div>
+</div>
+</div>";}}}

@@ -1,0 +1,22 @@
+[title]Разработчики[/title]
+[big]Создатель и главный разработчик:[/big]
+- [b][url="http://dcms.su/profile.view.php?id=1"]DESURE[/url][/b]
+
+[big]Дизайнеры:[/big]
+- [b][url="http://dcms.su/profile.view.php?id=23"]VaiZerD[/url][/b]
+- [b][url="http://dcms.su/profile.view.php?id=1"]DESURE[/url][/b]
+
+[big]Локализация:[/big]
+- [b][url="http://S1S13AF7.L-f.ORG.UA"]S1S13AF7[/url][/b]: Ukrainian
+- [b]Інверсія[/b]: English
+- [b]Zanger[/b]: Indonesian
+- [b][url="http://dcms.su/profile.view.php?id=2234"]deemuss[/url][/b]: Polish
+- [b][url="http://dcms.su/profile.view.php?id=231"]Borisov[/url][/b]: Belarus
+- [b][url="http://dcms.su/profile.view.php?id=2399"]GiGABYTE[/url][/b]: Azerbaycanca
+
+[big]Помощь проекту:[/big]
+Если Вы заинтересованы в дальнейшем развитии проекта и у Вас есть возможность поддержать разработчиков материально, Вы можете отправить любую сумму денег на один из WebMoney кошельков:
+[b]R428849816208
+Z308551840797
+E103245056189
+U335605254488[/b]

@@ -1,0 +1,12 @@
+<?php
+include_once '../sys/inc/start.php';
+$doc = new document(2);
+$doc->title = __('Разработчики');
+$doc->ret(__('Админка'), './');
+
+$bb = new bb(H . '/sys/docs/developers.txt');
+if ($bb->title) {
+    $doc->title = $bb->title;
+}
+$bb->display();
+?>

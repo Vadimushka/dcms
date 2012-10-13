@@ -1,0 +1,60 @@
+/*
+В данном файле содержатся предопределенные системой классы
+При создании своей темы оформления данный файл обязательно должен быть подгружен темой оформления
+*/
+
+
+/* Выделение ника пользователя, находящегося онлайн */
+span.nick_on {
+    text-shadow: 0px 0px 4px #4f4;
+    border-bottom: 1px #090 dotted;
+}
+
+/* Выделение ника пользователя, находящегося оффлайн */
+span.nick_off {
+    border-bottom: 1px #200 dotted;
+}
+
+/* Выделение текста при поиске */
+span.mark {
+    font-weight: bold;
+    color: #F6A21A;
+}
+
+/* Выделение PHP кода */
+div.code_php {
+    font-family: sans-serif;
+    overflow: auto;
+    max-width: 600px;
+    max-height: 400px;
+}
+
+/* Цитата */
+div.quote {
+    font-size: xx-small;
+    background-color: #EFF1FF;
+    margin: 1px;
+    border: 1px #9999FF solid;
+    border-left: 4px #9999FF solid;
+    padding: 1px;
+}
+/* заголовок цитаты */
+span.quote {
+    font-weight: bold;
+}
+
+div.spoiler{    
+    margin: 3px;    
+    padding: 0px;
+    display: inline-block;
+}
+span.spoiler_title{
+    margin: 0px;
+    font-weight: bold; 
+    cursor: pointer;
+    display: inline-block;
+}
+div.spoiler_content{
+    margin: 0px;
+    display: block;
+}

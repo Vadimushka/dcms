@@ -1,0 +1,78 @@
+[13-Jun-2012 18:02:11] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[13-Jun-2012 18:02:12] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[13-Jun-2012 18:02:17] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[13-Jun-2012 18:02:17] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[13-Jun-2012 18:29:13] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[14-Jun-2012 01:07:18] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[14-Jun-2012 01:07:18] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[14-Jun-2012 01:07:24] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[14-Jun-2012 01:07:24] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[15-Jun-2012 14:32:24] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[15-Jun-2012 14:32:24] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[18-Jun-2012 06:56:37] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746
+[18-Jun-2012 06:56:37] PHP Fatal error:  Uncaught exception 'SmartyException' with message 'property 'themes' does not exist.' in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php:746
+Stack trace:
+#0 /home/desure/public_html/dpanel/user.profile.php(173): Smarty->__call('getThemes', Array)
+#1 /home/desure/public_html/dpanel/user.profile.php(173): document->getThemes('wap')
+#2 {main}
+  thrown in /home/desure/public_html/sys/plugins/smarty/Smarty.class.php on line 746

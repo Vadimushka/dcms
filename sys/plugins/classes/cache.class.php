@@ -1,0 +1,232 @@
+<?php
+
+abstract class cache {
+
+    static public function get($key) {
+        $path = self::_path($key);
+        // чтение данных из файла
+        if (!$content = @file_get_contents($path))
+            return false;
+        // разбор данных
+        if (!$data = @unserialize($content)) {
+            return false;
+        }
+        // проверка актуальности данных
+        if ($data ['a'] < TIME) {
+            @unlink($path);
+            return false;
+        }
+
+        return $data ['d'];
+    }
+
+    static public function set($key, $data, $ttl = false) {
+        $tmp_file = TMP . '/cache.' . passgen() . '.ser.tmp';
+        $path = self::_path($key);
+
+        // удаленный кэш все равно вернет false, поэтому в целях незахламления папки tmp лучше файл удалить
+        if ($data === false || $ttl === false) {
+            return @unlink($path);
+        }
+
+        @file_put_contents($tmp_file, serialize(array('a' => $ttl + TIME, 'd' => $data))) OR die('Ошибка записи кэша');
+        @chmod($tmp_file, filesystem::getChmodToWrite());
+
+        if (IS_WINDOWS) {
+            // в винде файл перед заменой нужно удалить
+            if (@file_exists($path) && !@unlink($path)) {
+                return false;
+            }
+        }
+        // переименовываем временный файл в нужный нам
+        if (!@rename($tmp_file, $path)) {
+            @unlink($tmp_file);
+            die('Ошибка записи кэша');
+        }
+    }
+
+    // получение пути к файлу кэша по ключу
+    static protected function _path($key) {
+        return TEMP . '/cache.' . urlencode($key) . '.ser';
+    }
+
+}
+
+abstract class cacher {
+
+    protected static function _read($cache_name, $no_cache = false) {
+        static $cache = array();
+        if ($no_cache || !isset($cache[$cache_name])) {
+            $cache[$cache_name] = cache::get($cache_name);
+        }
+        return $cache[$cache_name];
+    }
+
+    protected static function _max_ttl($cache) {
+        //return 1000;
+        $max_ttl = 0;
+        foreach ($cache as $data) {
+            $max_ttl = max($max_ttl, $data['t'] - TIME);
+        }
+        return $max_ttl;
+    }
+
+    public static function get($cache_name, $name) {
+
+        if (!$cache = self::_read($cache_name)) {
+            return false;
+        }
+
+        
+        if (!isset($cache[$name])) {
+            // нет такой переменной
+            return false;
+        }
+
+        if ($cache[$name]['t'] < TIME) {
+            // время жизни переменной вышло
+            return false;
+        }
+
+        return $cache[$name]['v'];
+    }
+
+    protected static function _clear(&$cache) {
+        // удаление устаревших данных
+        foreach ($cache as $name => $data) {
+            if ($data['t'] >= TIME) {
+                continue;
+            }
+            unset($cache[$name]);
+        }
+    }
+
+    public static function set($cache_name, $name, $val, $ttl = 0) {
+
+        $cache = (array) self::_read($cache_name, true);
+
+        self::_clear($cache);
+
+        $cache[$name] = array('t' => $ttl + TIME, 'v' => $val);
+
+        cache::set($cache_name, $cache, self::_max_ttl($cache));
+
+        self::_read($cache_name, true);
+        return true;
+    }
+
+}
+
+abstract class cache_group extends cacher {
+
+    const cache_name = 'cache_group';
+
+    public static function get($name) {
+        return parent::get(self::cache_name, $name);
+    }
+
+    public static function set($name, $val, $ttl = 0) {
+        return parent::set(self::cache_name, $name, $val, $ttl);
+    }
+
+}
+
+abstract class cache_counters extends cacher {
+
+    const cache_name = 'counters';
+
+    public static function get($name) {
+        return parent::get(self::cache_name, $name);
+    }
+
+    public static function set($name, $val, $ttl = 0) {
+        return parent::set(self::cache_name, $name, $val, $ttl);
+    }
+
+}
+
+abstract class cache_widgets extends cacher {
+
+    const cache_name = 'widgets';
+
+    public static function get($name) {
+        return parent::get(self::cache_name, $name);
+    }
+
+    public static function set($name, $val, $ttl = 0) {
+        return parent::set(self::cache_name, $name, $val, $ttl);
+    }
+
+}
+
+abstract class cache_log_of_visits extends cacher {
+
+    const cache_name = 'log_of_visits';
+
+    public static function get($name) {
+        return parent::get(self::cache_name, $name);
+    }
+
+    public static function set($name, $val, $ttl = 0) {
+        return parent::set(self::cache_name, $name, $val, $ttl);
+    }
+
+}
+
+abstract class cache_dpanel_access extends cacher {
+
+    const cache_name = 'dpanel';
+
+    public static function get($name) {
+        return parent::get(self::cache_name, $name);
+    }
+
+    public static function set($name, $val, $ttl = 0) {
+        return parent::set(self::cache_name, $name, $val, $ttl);
+    }
+
+}
+
+abstract class cache_aut_failture extends cacher {
+
+    const cache_name = 'aut_failture';
+
+    public static function get($name) {
+        return parent::get(self::cache_name, $name);
+    }
+
+    public static function set($name, $val, $ttl = 0) {
+        return parent::set(self::cache_name, $name, $val, $ttl);
+    }
+
+}
+
+abstract class cache_events extends cacher {
+
+    const cache_name = 'events';
+
+    public static function get($name) {
+        return parent::get(self::cache_name, $name);
+    }
+
+    public static function set($name, $val, $ttl = 0) {
+        return parent::set(self::cache_name, $name, $val, $ttl);
+    }
+
+}
+
+// для совместимости
+class cache_old {
+
+    function get($key) {
+        return cache::get($key);
+    }
+
+    function set($key, $data, $ttl = false) {
+        return cache::set($key, $data, $ttl);
+    }
+
+}
+
+$cache = new cache_old ();
+?>

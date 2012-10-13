@@ -1,0 +1,62 @@
+<?php
+
+class bb {
+
+    var $title = false;
+    var $err = false;
+    protected $_content = '';
+    protected $_pattern_title = "#\[title\](.*?)\[\/title\]#ui";
+
+    function __construct($path) {
+
+        $path = $this->getPath($path);
+        if (!$this->_content = @file_get_contents($path)) {
+            $this->err = 'Не удалось загрузить файл';
+        }
+        $this->_content = text::input_text($this->_content);
+
+        $this->title = $this->_getTitle($this->_content);
+    }
+
+    protected function _getTitle(&$content) {
+        if (preg_match($this->_pattern_title, $content, $matches)) {
+            $content = preg_replace($this->_pattern_title, '', $content);
+            return $matches[1];
+        }
+    }
+
+    public function getText() {
+        return $this->_content;
+    }
+
+    public function fetch() {
+        return output_text(trim($this->_content));
+    }
+
+    public function display() {
+        echo $this->fetch();
+    }
+
+    protected function getPath($path) {
+        if (false === strpos($path, '{lang}')) {
+            return $path;
+        }
+
+        global $user;
+        $languages = languages::getList();
+        $user_lang = $languages[$user->language];
+        
+        
+        $path_user_lang = str_replace('{lang}', $user_lang['xml_lang'], $path);
+        if (file_exists($path_user_lang)) {
+            return $path_user_lang;
+        }
+        
+        
+        
+        
+    }
+
+}
+
+?>
