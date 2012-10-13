@@ -13,5 +13,4 @@ foreach ($widgets as $widget_name => $show) {
     $widget->display(); // отображаем
     
 }
-// test
 ?>
