@@ -8,12 +8,14 @@ class design extends Smarty {
 
     function __construct() {
         parent::__construct();
-        global $dcms, $user_language_pack, $user;
+        global $dcms, $user_language_pack, $user, $probe_theme;
 
         static $theme = false;
 
         if ($theme === false) {
-            if (themes::exists($user->theme)) {
+            if (!empty($probe_theme) && themes::exists($probe_theme)){
+                $theme = themes::getConfig($probe_theme);
+            }elseif (themes::exists($user->theme)) {
                 // пользовательская тема оформления
                 $theme = themes::getConfig($user->theme);
             } elseif (themes::exists($dcms->theme)) {

@@ -22,13 +22,6 @@ if (isset($_POST['save'])) {
             $doc->err(__('Недопустимое время'));
         }
     }
-    // тема оформления
-    if (!empty($_POST['theme'])) {
-        $theme_set = (string) $_POST['theme'];
-        if (themes::exists($theme_set,$dcms->browser_type)){
-            $user->theme = $theme_set;
-        }        
-    }
 
     $doc->msg(__('Параметры успешно приняты'));
 }
@@ -39,13 +32,6 @@ $form->assign('action', '?' . passgen());
 $elements = array();
 
 $elements[] = array('type' => 'input_text', 'title' => __('Пунктов на страницу') . ' (' . $dcms->browser_type . ') [5-99]', 'br' => 1, 'info' => array('name' => 'items_per_page', 'value' => $user->items_per_page));
-
-$options = array(); // темы оформления
-$themes_list = themes::getList($dcms->browser_type); // только для определенного типа браузера
-foreach ($themes_list as $theme) {
-    $options[] = array($theme['dir'], $theme['name'], $user->theme === $theme['dir']);
-}
-$elements[] = array('type' => 'select', 'title' => __('Тема оформления') . ' (' . $dcms->browser_type . ')', 'br' => 1, 'info' => array('name' => 'theme', 'options' => $options));
 
 $options = array(); // Врменной сдвиг
 for ($i = - 12; $i < 12; $i++) {

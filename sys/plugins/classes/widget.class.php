@@ -67,6 +67,9 @@ class widget {
 
     // получаем уникальный идентификатор в кэше
     protected function _getCacheId() {
+       
+        
+        
         if (!$this->_isset) {
             return false;
         }
@@ -77,7 +80,9 @@ class widget {
         $cache_id [] = 'language-' . $user_language_pack->code;
 
         if ($this->_data ['cache_by_browser_type']) {
-            $cache_id [] = 'browser-' . $dcms->browser_type;
+            //$cache_id [] = 'browser-' . $dcms->browser_type;            
+            $design = new design();
+            $cache_id [] = 'theme-' . $design -> theme;
         }
 
 
