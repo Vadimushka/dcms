@@ -5,23 +5,38 @@ include_once '../sys/inc/start.php';
 $doc = new document(5);
 $doc->title = __('Информация о системе');
 
-echo __('Версия DCMS: %s', $dcms->version) . "<br />";
-
-
-
 $check = new check_sys();
 
-foreach ($check->oks as $ok) {
-    echo "$ok<br />";
+$listing = new listing();
+
+
+$post = $listing->post();
+$post -> title = __('Версия DCMS: %s', $dcms->version);
+
+
+foreach ($check->oks as $ok) {    
+    $post = $listing->post();
+    $post -> icon('checked');
+    $post -> title = $ok;
+}
+
+
+foreach ($check->notices as $note) {
+    $post = $listing->post();
+    $post -> icon('notice');
+    $post -> title = $note;
+    $post -> hightlight = true;    
 }
 
 foreach ($check->errors as $err) {
-    echo "<span style='font-weight:bold'>" . __('Ошибка') . ": $err</span><br />";
+    $post = $listing->post();
+    $post -> icon('error');
+    $post -> title = $err;
+    $post -> hightlight = true;  
 }
 
-foreach ($check->notices as $note) {
-    echo "<span style='font-weight:bold'>" . __('Примечание') . ":</span> $note<br />";
-}
+
+$listing ->display();
 
 $doc->ret(__('Админка'), '/dpanel/');
 ?>

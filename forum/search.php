@@ -99,7 +99,7 @@ $smarty = new design();
 $smarty->assign('method', 'post');
 $smarty->assign('action', '?' . passgen());
 $elements = array();
-$elements[] = array('type' => 'input_text', 'title' => __('Что ищем'), 'br' => 1, 'info' => array('name' => 'query', 'value' => $search_query));
+$elements[] = array('type' => 'input_text', 'title' => __('Что ищем'), 'br' => 0, 'info' => array('name' => 'query', 'value' => $search_query));
 
 if ($dcms->forum_search_captcha) {
     $elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);

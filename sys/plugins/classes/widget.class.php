@@ -51,40 +51,44 @@ class widget {
             return false;
         }
 
-        global $user, $dcms;
         if ($cache_content = cache_widgets::get($this->_getCacheId())) {
             return $cache_content;
         }
 
+
+        global $user, $dcms; // могут использоваться в виджете
         ob_start();
         include $this->_data ['path_abs'] . '/' . $this->_data ['script'];
         $content = ob_get_contents();
         ob_end_clean();
 
-        cache_widgets::set($this->_getCacheId(), $content, mt_rand($this->_data ['cache_time'] - 1, $this->_data ['cache_time'] + 1));
+        $cache_time = mt_rand($this->_data ['cache_time'] - 2, $this->_data ['cache_time'] + 2);
+
+        cache_widgets::set($this->_getCacheId(), $content, $cache_time);
         return $content;
     }
 
     // получаем уникальный идентификатор в кэше
     protected function _getCacheId() {
-       
-        
-        
         if (!$this->_isset) {
             return false;
         }
+
+
+
         global $user, $dcms, $user_language_pack;
         $cache_id = array();
+
         $cache_id [] = 'widget-' . $this->_data ['name'];
+
+        $design = new design();
+        $cache_id [] = 'theme-' . $design->theme;
 
         $cache_id [] = 'language-' . $user_language_pack->code;
 
         if ($this->_data ['cache_by_browser_type']) {
-            //$cache_id [] = 'browser-' . $dcms->browser_type;            
-            $design = new design();
-            $cache_id [] = 'theme-' . $design -> theme;
+            $cache_id [] = 'browser-' . $dcms->browser_type;
         }
-
 
         if ($this->_data ['cache_by_user']) {
             $cache_id [] = 'user-' . $user->id;
@@ -104,7 +108,6 @@ class widget {
             $cache_id [] = 'session-' . SID;
         }
 
-
         return implode('.', $cache_id);
     }
 
@@ -121,7 +124,6 @@ class widget {
             return false;
         }
 
-
         if (!isset($this->_data [$n])) {
             return false;
         }
@@ -132,7 +134,6 @@ class widget {
         if (!$this->_isset) {
             return false;
         }
-
 
         return ini::save($this->_data ['path_abs'] . '/config.ini', $this->_data);
     }

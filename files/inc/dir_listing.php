@@ -23,9 +23,7 @@ if ($screens = $dir->getScreens()) {
     
 }
 
-if ($description = $dir->description) {
-    echo output_text($description) . "<br />";
-}
+
 
 $search = false;
 if (!empty($_GET ['search']))
@@ -51,9 +49,19 @@ $content = $dir->getList($order, $search);
 
 $dirs = &$content ['dirs'];
 $files = &$content ['files'];
-//$posts = array();
-$listing = new listing();
 
+
+if ($description = $dir->description) {
+    $listing = new listing();
+    $post = $listing -> post();
+    $post -> title = __('Информация');
+    $post -> icon('info');
+    $post -> content[] = $description;
+    $post -> hightlight = true;
+    $listing ->display();    
+}
+
+$listing = new listing();
 
 $pages = new pages ();
 $pages->posts = count($files);

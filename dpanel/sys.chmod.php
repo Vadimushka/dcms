@@ -7,14 +7,25 @@ $doc->title = __('Проверка CHMOD');
 
 $nw = ini::read(H . '/sys/ini/chmod.ini');
 
+$listing = new listing();
+
+
 $err = array();
 foreach ($nw as $path) {
     $e = check_sys::getChmodErr($path, true);
 
-    echo $path . ' ' . ($e ? '<span style="font-weight:bold">[' . __('Проблема') . ']</span>' : '[' . __('OK') . ']') . '<br />';
+    $post = $listing->post();
+    $post->icon($e ? 'error' : 'checked');
+    $post->title = $path;
+
+
+    //echo $path . ' ' . ($e ? '<span style="font-weight:bold">[' . __('Проблема') . ']</span>' : '[' . __('OK') . ']') . '<br />';
 
     $err = array_merge($err, $e);
 }
+
+$listing->display();
+
 
 if ($err) {
     echo '<textarea>';
@@ -25,7 +36,7 @@ if ($err) {
     echo '</textarea><br />';
     echo '* ' . __('В зависимости от настроек на хостинге, CHMOD для возможности записи должен быть от 644 до 666') . '<br />';
 }else
-    echo '<span style="font-weight:bold">' . __('Необходимые права на запись имеются') . '</span><br />';
+    $doc->msg( __('Необходимые права на запись имеются'));
 
 $doc->ret(__('Админка'), '/dpanel/');
 ?>
