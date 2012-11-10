@@ -7,7 +7,7 @@ ignore_user_abort();
 $doc = new document(groups::max());
 $doc->title = 'Сборка движка';
 
-$conf = ini::read('config.ini'); // основной конфиг
+$conf = ini::read('config.beta.ini'); // основной конфиг
 
 
 
@@ -98,10 +98,8 @@ if (!empty($_POST['start'])) {
         $conf['build_num']++;
         $conf['version_last'] = $_POST['version'];
         $conf['time'] = TIME;
-        ini::save('config.ini', $conf);
-
+        ini::save('config.beta.ini', $conf);
         $doc->msg('Версия ' . $version . ' успешно собрана');
-
 
         $doc->ret(__('Вернуться'), '?' . passgen());
         exit;
