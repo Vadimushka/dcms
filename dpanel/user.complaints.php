@@ -54,9 +54,6 @@ if (!empty($_GET['id_ank']) && !empty($_GET['code'])) {
     }
 }
 
-
-
-
 $listing = new listing();
 
 $pages = new pages;
@@ -67,13 +64,14 @@ $q = mysql_query("SELECT *, COUNT(*) as `count` FROM `complaints` WHERE `process
 while ($c = mysql_fetch_assoc($q)) {
     $post = $listing->post();
     $ank = new user($c['id_ank']);
-
     $post->title = $ank->nick();
     $post->counter = $c['count'];
     $post->url = "?id_ank=$c[id_ank]&amp;code=" . urlencode($c['code']);
-    $post->content = output_text($c['code'] . "\n" . __('Жалоба от %s', '[user]' . $c['id_user'] . '[/user]'));
+    $post->content[] = $c['code'];
+    $post->content[] = __('Жалоба от %s', '[user]' . $c['id_user'] . '[/user]');
 }
 $listing->display(__('Жалобы отсутствуют'));
+
 $pages->display("?");
 $doc->ret(__('Админка'), './');
 ?>

@@ -63,40 +63,37 @@ VALUES ('" . my_esc($id_space) . "', '" . my_esc($url) . "', '" . my_esc($name_a
         $doc->err(__('Необходимые поля не заполнены'));
 }
 
-$form = new design();
-$form->assign('method', 'post');
-$form->assign('action', "?id=$id_space&amp;" . passgen());
-$elements = array();
+$form = new form("?id=$id_space&amp;" . passgen());
 
-$elements[] = array('type' => 'input_text', 'title' => __('Название'), 'br' => 1, 'info' => array('name' => 'name', 'value' => null));
-$elements[] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => 0, 'name' => 'bold', 'text' => __('Выделить жирным')));
-$elements[] = array('type' => 'input_text', 'title' => __('Адрес ссылки'), 'br' => 1, 'info' => array('name' => 'url_link', 'value' => 'http://'));
-$elements[] = array('type' => 'input_text', 'title' => __('Адрес изображения'), 'br' => 1, 'info' => array('name' => 'url_img', 'value' => null));
+$form->text('name', __('Название'));
+$form->checkbox('bold', __('Выделить жирным'));
+$form->text('url_link', __('Адрес ссылки'), 'http://');
+$form->text('url_img', __('Адрес изображения'), 'http://');
 
-$elements[] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => 1, 'name' => 'page_main', 'text' => __('На главной')));
-$elements[] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => 1, 'name' => 'page_other', 'text' => __('На остальных')));
+$form->checkbox('page_main', __('На главной'), true);
+$form->checkbox('page_other', __('На остальных'), true);
 
-$elements[] = array('type' => 'input_text', 'title' => __('Время действия'), 'br' => 0, 'info' => array('size' => 3, 'name' => 'lifetime', 'value' => 1));
+$form->text('lifetime', __('Время действия'), 1, false, 3);
 $options = array();
 $options[] = array('1', __('Дней'));
 $options[] = array('7', __('Недель'), 1);
 $options[] = array('31', __('Месяцев'));
-$elements[] = array('type' => 'select', 'br' => 1, 'info' => array('name' => 'life', 'options' => $options));
+$form->select('life', false, $options);
 
-$elements[] = array('type' => 'input_text', 'title' => __('Начало показа через'), 'br' => 0, 'info' => array('size' => 3, 'name' => 'starttime', 'value' => 1));
+$form->text('starttime', __('Начало показа через'), 1, false, 3);
 $options = array();
 $options[] = array(0, __('Немедленно'));
 $options[] = array(1, __('Минут'));
 $options[] = array(60, __('Часов'));
 $options[] = array(60 * 24, __('Суток'));
 $options[] = array(60 * 24 * 7, __('Недель'));
-$elements[] = array('type' => 'select', 'br' => 1, 'info' => array('name' => 'start', 'options' => $options));
+$form->select('start', false, $options);
 
-$elements[] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => 0, 'name' => 'always', 'text' => __('Отображать бесконечно')));
-$elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'create', 'value' => __('Создать'))); // кнопка
-$form->assign('el', $elements);
-$form->display('input.form.tpl');
+$form->checkbox('always', __('Отображать бесконечно'));
+$form->captcha();
+$form->button(__('Создать'), 'create');
+$form->display();
+
 
 $doc->ret(__('Вернуться'), "adt.php?id=$id_space");
 $doc->ret(__('Рекламные позиции'), 'adt.php');

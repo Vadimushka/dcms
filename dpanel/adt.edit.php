@@ -152,73 +152,72 @@ if (isset($_POST['time'])) {
     }
 }
 
-if ($adt['time_create'])
-    echo __("Позиция создана: %s", vremja($adt['time_create'])) . "<br />\n";
+$listing = new listing();
 
-if (!$adt['time_start'])
-    echo __("Начало показа неизвестно") . "<br />\n";
-elseif ($adt['time_start'] > TIME)
-    echo __('Начало показа: %s', vremja($adt['time_start'])) . "<br />\n";
-else
-    echo __("Показ начался: %s", vremja($adt['time_start'])) . "<br />\n";
+$post = $listing->post();
+$post->icon('adt');
+$post->title = for_value($adt['name']);
+$post->hightlight = true;
 
+
+if ($adt['time_create']) {
+    $post = $listing->post();
+    $post->title = __('Дата создания');
+    $post->content = vremja($adt['time_create']);
+}
+
+$post = $listing->post();
+$post->title = __('Начало показа');
+if (!$adt['time_start']) {
+    $post->content = __('Нет данных');
+} elseif ($adt['time_start'] > TIME) {
+    $post->hightlight = true;
+    $post->content = vremja($adt['time_start']);
+} else {
+    $post->content = vremja($adt['time_start']);
+}
+
+$post = $listing->post();
+$post->title = __('Конец показа');
 if (!$adt['time_end'])
-    echo __("Конец показа не обозначен") . "<br />\n";
-elseif ($adt['time_end'] > TIME)
-    echo __("Конец показа: %s", vremja($adt['time_end'])) . "<br />\n";
+    $post->content = __('Бесконечный показ');
 else
-    echo __("Показ истек: %s", vremja($adt['time_end'])) . "<br />\n";
+    $post->content = vremja($adt['time_end']);
+
+$listing->display();
 
 if (!isset($_GET['delete'])) {
-    $form = new design();
-    $form->assign('method', 'post');
-    $form->assign('action', "?id=$id_adt&amp;" . passgen());
-    $elements = array();
 
-    $elements[] = array('type'  => 'input_text', 'title' => __('Название'), 'br'    => 1, 'info'  => array('name'      => 'name', 'value'     => $adt['name']));
-    $elements[] = array('type' => 'checkbox', 'br'   => 1, 'info' => array('value'     => 1, 'checked'   => $adt['bold'], 'name'      => 'bold', 'text'      => __('Выделять жирным')));
-    $elements[] = array('type'  => 'input_text', 'title' => __('Адрес ссылки'), 'br'    => 1, 'info'  => array('name'      => 'url_link', 'value'     => $adt['url_link']));
-    $elements[] = array('type'  => 'input_text', 'title' => __('Адрес изображения'), 'br'    => 1, 'info'  => array('name'  => 'url_img', 'value' => $adt['url_img']));
+    $form = new form("?id=$id_adt&amp;" . passgen());
+    $form->text('name', __('Название'), $adt['name']);
+    $form->checkbox('bold', __('Выделить жирным'), $adt['bold']);
+    $form->text('url_link', __('Адрес ссылки'), $adt['url_link']);
+    $form->text('url_img', __('Адрес изображения'), $adt['url_img']);
+    $form->checkbox('page_main', __('На главной'), $adt['page_main']);
+    $form->checkbox('page_other', __('На остальных'), $adt['page_other']);
+    $form->button(__('Применить'), 'common');
+    $form->display();
 
-    $elements[] = array('type' => 'checkbox', 'br'   => 1, 'info' => array('value'     => 1, 'checked'   => $adt['page_main'], 'name'      => 'page_main', 'text'      => __('На главной')));
-    $elements[] = array('type' => 'checkbox', 'br'   => 1, 'info' => array('value'   => 1, 'checked' => $adt['page_other'], 'name'    => 'page_other', 'text'    => __('На остальных')));
-
-    $elements[] = array('type' => 'submit', 'br'   => 0, 'info' => array('name'  => 'common', 'value' => __('Применить'))); // кнопка
-    $form->assign('el', $elements);
-    $form->display('input.form.tpl');
-
-    $form = new design();
-    $form->assign('method', 'post');
-    $form->assign('action', "?id=$id_adt&amp;" . passgen());
-    $elements = array();
-
+    $form = new form("?id=$id_adt&amp;" . passgen());
     if ($adt['time_end']) {
-        $elements[] = array('type'  => 'input_text', 'title' => __('Добавить к времени отображения'), 'br'    => 0, 'info'  => array('size'   => 3, 'name'   => 'add', 'value'  => 1));
+        $form->text('add', __('Добавить к времени отображения'), 1, false, 3);
         $options = array();
         $options[] = array('1', __('Дней'));
         $options[] = array('7', __('Недель'), 1);
         $options[] = array('31', __('Месяцев'));
-        $elements[] = array('type' => 'select', 'br'   => 1, 'info' => array('name'    => 'mn', 'options' => $options));
+        $form->select('mn', false, $options);
     }
-
-    $elements[] = array('type' => 'checkbox', 'br'   => 1, 'info' => array('value'   => 1, 'checked' => !$adt['time_end'], 'name'    => 'always', 'text'    => __('Отображать бесконечно')));
-
+    $form->checkbox('always', __('Отображать бесконечно'), !$adt['time_end']);
     if ($adt['time_start'] && $adt['time_start'] >= TIME || $adt['time_end'] && $adt['time_end'] <= TIME)
-        $elements[] = array('type'  => 'text', 'br'    => 1, 'value' => '* ' . __('Счетчики показов и переходов будут сброшены'));
-
-    $elements[] = array('type' => 'submit', 'br'   => 0, 'info' => array('name'  => 'time', 'value' => __('Применить'))); // кнопка
-    $form->assign('el', $elements);
-    $form->display('input.form.tpl');
+        $form->bbcode('[notice] ' . __('Счетчики показов и переходов будут сброшены'));
+    $form->button(__('Применить'), 'time');
+    $form->display();
 }else {
-    $form = new design();
-    $form->assign('method', 'post');
-    $form->assign('action', "?id=$id_adt&amp;delete&amp;" . passgen());
-    $elements = array();
-    $elements[] = array('type'      => 'captcha', 'session'   => captcha::gen(), 'br'        => 1);
-    $elements[] = array('type'      => 'text', 'value'     => __('Подтвердите удаление рекламной позиции'), 'br'        => 1);
-    $elements[] = array('type' => 'submit', 'br'   => 0, 'info' => array('name'  => 'delete', 'value' => __('Удалить'))); // кнопка
-    $form->assign('el', $elements);
-    $form->display('input.form.tpl');
+    $form = new form("?id=$id_adt&amp;delete&amp;" . passgen());
+    $form->captcha();
+    $form->bbcode(__('Подтвердите удаление рекламной позиции'));
+    $form->button(__('Удалить'), 'delete');
+    $form->display();
 }
 
 $doc->ret(__('Вернуться'), "adt.php?id=$adt[space]");

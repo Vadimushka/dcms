@@ -5,6 +5,8 @@ dpanel::check_access();
 $doc = new document(groups::max());
 $doc->title = __('Поддомены');
 
+$browser_types = array('wap', 'pda', 'itouch', 'web');
+
 if (!$dcms->check_domain_work) {
     $dcms->check_domain_work = passgen();
 }
@@ -14,11 +16,7 @@ function domain_check($domain) {
     $http = new http_client('http://' . $domain . '/?check_domain_work');
     $http->timeout = 10;
     $content = $http->getContent();
-    if ($dcms->check_domain_work === $content) {
-        return true;
-    } else {
-        return false;
-    }
+    return $dcms->check_domain_work === $content;
 }
 
 if (isset($_POST ['save'])) {
@@ -40,9 +38,8 @@ if (isset($_POST ['save'])) {
     $dcms->subdomain_web_enable = (int) !empty($_POST ['subdomain_web_enable']);
 
 
-    $subdomain_main_old = $dcms->subdomain_main;
-    $dcms->subdomain_main = text::input_text($_POST ['subdomain_main']);
-
+    $dcms->subdomain_main = text::input_text($_POST ['subdomain_main']);    
+    
     $subdomain_wap_old = $dcms->subdomain_wap;
     $dcms->subdomain_wap = text::input_text($_POST ['subdomain_wap']);
 
@@ -52,13 +49,8 @@ if (isset($_POST ['save'])) {
     $subdomain_itouch_old = $dcms->subdomain_itouch;
     $dcms->subdomain_itouch = text::input_text($_POST ['subdomain_itouch']);
 
-
     $subdomain_web_old = $dcms->subdomain_web;
     $dcms->subdomain_web = text::input_text($_POST ['subdomain_web']);
-
-
-
-
 
     if ($dcms->subdomain_theme_redirect && $dcms->subdomain_theme_redirect != $subdomain_theme_redirect_old) {
         if (!$dcms->subdomain_main) {
@@ -69,7 +61,6 @@ if (isset($_POST ['save'])) {
             $dcms->subdomain_theme_redirect = 0;
         }
     }
-
 
     if ($dcms->subdomain_wap_enable && ($dcms->subdomain_wap_enable != $subdomain_wap_enable_old || $subdomain_wap_old != $dcms->subdomain_wap )) {
         if (!$dcms->subdomain_wap) {
@@ -99,7 +90,7 @@ if (isset($_POST ['save'])) {
             $dcms->subdomain_itouch_enable = 0;
         }
     }
-    
+
     if ($dcms->subdomain_web_enable && ($dcms->subdomain_web_enable != $subdomain_web_enable_old || $subdomain_web_old != $dcms->subdomain_web )) {
         if (!$dcms->subdomain_web) {
             $doc->err(__('Поддомен для WEB тем оформления не задан'));
@@ -111,41 +102,22 @@ if (isset($_POST ['save'])) {
     }
 
 
-    if ($dcms->save_settings()) {
-        $doc->msg(__('Настройки успешно сохранены'));
-    } else {
-        $doc->err(__('Нет прав на запись в файл настроек'));
-    }
+    $dcms->save_settings($doc);
 }
 
 
+$form = new form('?' . passgen());
+$form->text('subdomain_main', __('Основной домен'), $dcms->subdomain_main);
+$form->checkbox('subdomain_theme_redirect', __('При переходе на главный домен переадресовывать на поддомен в соответствии с автоматически определенным типом браузера'), $dcms->subdomain_theme_redirect);
+$form->checkbox('subdomain_replace_url', __('Удалять поддомен из ссылок'), $dcms->subdomain_replace_url);
 
-$form = new design ();
-$form->assign('method', 'post');
-$form->assign('action', '?' . passgen());
-$elements = array();
+foreach ($browser_types as $b_type) {
+    $key_subdomain = 'subdomain_' . $b_type;
+    $key_enable = 'subdomain_' . $b_type . '_enable';
+    $form->text($key_subdomain, __('Поддомен %s (*.%s)', strtoupper($b_type), $dcms->subdomain_main), $dcms->$key_subdomain);
+    $form->checkbox($key_enable, __('Выбирать %s тему при переходе по данному поддомену', strtoupper($b_type)), $dcms->$key_enable);
+}
 
-
-$elements [] = array('type' => 'input_text', 'title' => __('Основной домен'), 'br' => 1, 'info' => array('name' => 'subdomain_main', 'value' => $dcms->subdomain_main));
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $dcms->subdomain_theme_redirect, 'name' => 'subdomain_theme_redirect', 'text' => __('При переходе на главный домен переадресовывать на поддомен в соответствии с автоматически определенным типом браузера')));
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $dcms->subdomain_replace_url, 'name' => 'subdomain_replace_url', 'text' => __('Удалять поддомен из ссылок')));
-
-
-
-$elements [] = array('type' => 'input_text', 'title' => __('Поддомен WAP (*.%s)', $dcms->subdomain_main), 'br' => 1, 'info' => array('name' => 'subdomain_wap', 'value' => $dcms->subdomain_wap));
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $dcms->subdomain_wap_enable, 'name' => 'subdomain_wap_enable', 'text' => __('Выбирать WAP тему при переходе по данному поддомену')));
-
-$elements [] = array('type' => 'input_text', 'title' => __('Поддомен PDA (*.%s)', $dcms->subdomain_main), 'br' => 1, 'info' => array('name' => 'subdomain_pda', 'value' => $dcms->subdomain_pda));
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $dcms->subdomain_pda_enable, 'name' => 'subdomain_pda_enable', 'text' => __('Выбирать PDA тему при переходе по данному поддомену')));
-
-$elements [] = array('type' => 'input_text', 'title' => __('Поддомен iTouch (*.%s)', $dcms->subdomain_main), 'br' => 1, 'info' => array('name' => 'subdomain_itouch', 'value' => $dcms->subdomain_itouch));
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $dcms->subdomain_itouch_enable, 'name' => 'subdomain_itouch_enable', 'text' => __('Выбирать iTouch тему при переходе по данному поддомену')));
-
-$elements [] = array('type' => 'input_text', 'title' => __('Поддомен WWW (*.%s)', $dcms->subdomain_main), 'br' => 1, 'info' => array('name' => 'subdomain_web', 'value' => $dcms->subdomain_web));
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $dcms->subdomain_web_enable, 'name' => 'subdomain_web_enable', 'text' => __('Выбирать WEB тему при переходе по данному поддомену')));
-
-
-$elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Применить'))); // кнопка
-$form->assign('el', $elements);
-$form->display('input.form.tpl');
+$form->button(__('Применить'), 'save');
+$form->display();
 ?>

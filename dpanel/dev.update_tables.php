@@ -51,7 +51,7 @@ if (!empty($_POST)) {
 $listing = new listing();
 
 foreach ($tables as $table) {
-    
+
     $checked = false;
     $sql = false;
     if (!in_array($table, $tables_exists->tables)) {
@@ -77,12 +77,15 @@ foreach ($tables as $table) {
     }
 }
 
-
-echo "<form method='post' action='?" . passgen() . "'>";
-$listing->display(__('Все таблицы находятся в актуальном состоянии'));
-echo "* " . __('Изменится только структура таблицы. Данные, для которых не предусмотрено место в новой версии таблиц, будут утеряны') . "<br />";
-echo "** " . __('Проверяются файлы sys/preinstall/base.create.[имя таблицы].ini') . "<br />";
-echo "<input type='submit' name='load' value='" . __('Выполнить запросы') . "' /></form>";
+if ($listing->count()) {
+    $form = new form('?' . passgen());
+    $form->html($listing->fetch());
+    $form->bbcode('[notice] ' . __('Структура таблиц базы данных будет изменена.'));
+    $form->button(__('Выполнить запросы'), 'load');
+    $form->display();
+} else {
+    $listing->display(__('Все таблицы находятся в актуальном состоянии'));
+}
 
 $doc->ret(__('Админка'), './');
 ?>

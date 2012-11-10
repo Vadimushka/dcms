@@ -6,8 +6,8 @@ $doc->title = __('Лицензионное соглашение');
 $doc->ret(__('Админка'), './');
 
 $bb = new bb(H . '/sys/docs/license.txt');
-if ($bb->title) {
+if ($bb->title)
     $doc->title = $bb->title;
-}
+
 $bb->display();
 ?>

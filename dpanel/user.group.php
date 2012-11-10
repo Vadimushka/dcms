@@ -50,21 +50,15 @@ if (isset($_POST['save']) && !empty($_POST['group'])) {
     }
 }
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id_ank=$ank->id&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-$elements = array();
-
+$form = new form("?id_ank=$ank->id&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
 $options = array();
 foreach ($groups as $group => $value) {
     if ($group && $user->group > $group)
         $options[] = array($group, __($value['name']), $group == $ank->group);
 }
-$elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Статус'), 'info' => array('name' => 'group', 'options' => $options));
-
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Применить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form->select('group', __('Статус'), $options);
+$form->button('save', __('Применить'));
+$form->display();
 
 $doc->ret(__('Действия'), 'user.actions.php?id=' . $ank->id);
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);

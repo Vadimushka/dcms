@@ -79,7 +79,7 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
             case 'theme': $name .= '_' . $this->browser_type;
                 break;
             case 'img_max_width': $name .= '_' . $this->browser_type;
-                break;            
+                break;
             case 'widget_items_count': $name .= '_' . $this->browser_type;
                 break;
         }
@@ -159,8 +159,17 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
      * Сохранение настроек
      * @return boolean
      */
-    public function save_settings() {
-        return ini::save(H . '/sys/ini/settings.ini', $this->_data);
+    public function save_settings($doc = false) {
+        $result = ini::save(H . '/sys/ini/settings.ini', $this->_data);
+
+        if (is_a($doc, 'document')) {
+            if ($result)
+                $doc->msg(__('Настройки успешно сохранены'));
+            else
+                $doc->err(__('Нет прав на запись в файл настроек'));
+        }
+
+        return $result;
     }
 
 }

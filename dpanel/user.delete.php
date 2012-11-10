@@ -33,44 +33,34 @@ if ($ank->group >= $user->group) {
     exit;
 }
 
-
 $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
-
 
 if (isset($_POST['delete'])) {
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
-
         misc::user_delete($ank->id);
         $dcms->log('Пользователи', 'Удаление пользователя ' . $ank->login . ' (ID ' . $ank->id . ')');
-
         $doc->msg(__('Пользователь успешно удален'));
-
-
         $doc->ret(__('Админка'), '/dpanel/');
         exit;
     }
 }
 
+$listing = new listing();
 foreach ($tables AS $name => $v) {
-    $count = @mysql_result(mysql_query("SELECT COUNT(*) FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = '$ank->id'"), 0);
-    echo output_text(($count ? '[b]' : '') . $name . ': ' . $count . ($count ? '[/b]' : '')) . "<br />\n";
+    $post = $listing->post();
+    $post->title = $name;
+    $post->counter = @mysql_result(mysql_query("SELECT COUNT(*) FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = '$ank->id'"), 0);
+    $post->hightlight = (bool) $post->counter;
 }
+$listing->display();
 
-
-
-
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id_ank=$ank->id&amp;" . passgen());
-$elements = array();
-$elements [] = array('type' => 'text', 'value' => output_text(__('Пользователь будет удален без возможности восстановления. Подтвердите удаление пользователя "%s".', $ank->login)), 'br' => 1);
-
-$elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Удалить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form("?id_ank=$ank->id&amp;" . passgen());
+$form->captcha();
+$form->bbcode(__('Пользователь будет удален без возможности восстановления. Подтвердите удаление пользователя "%s".', $ank->login));
+$form->button(__('Удалить'), 'delete');
+$form->display();
 
 $doc->ret(__('Действия'), 'user.actions.php?id=' . $ank->id);
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);

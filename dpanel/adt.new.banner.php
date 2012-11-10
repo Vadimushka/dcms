@@ -66,20 +66,13 @@ VALUES ('" . my_esc($id_space) . "', '" . my_esc($other[1]) . "', '" . my_esc($o
     }
 }
 
-$form = new design();
-$form->assign('method', 'post');
-$form->assign('action', "?id=$id_space&amp;" . passgen());
-$elements = array();
-
-$elements[] = array('type'  => 'textarea', 'title' => __('HTML - код (для главной)'), 'br'    => 1, 'info'  => array('name'      => 'code_main'));
-$elements[] = array('type'  => 'textarea', 'title' => __('HTML - код (для остальных)'), 'br'    => 1, 'info'  => array('name' => 'code_other'));
-
-$elements[] = array('type'    => 'captcha', 'session' => captcha::gen(), 'br'      => 1);
-
-$elements[] = array('type'      => 'text', 'value'     => '* ' . __('Распознаются коды счетчиков waplog.net и подобных'), 'br'        => 1);
-$elements[] = array('type' => 'submit', 'br'   => 0, 'info' => array('name'  => 'create', 'value' => __('Создать'))); // кнопка
-$form->assign('el', $elements);
-$form->display('input.form.tpl');
+$form = new form("?id=$id_space&amp;" . passgen());
+$form->textarea('code_main', __('HTML - код (для главной)'));
+$form->textarea('code_other', __('HTML - код (для остальных)'));
+$form->captcha();
+$form->bbcode('[notice] ' . __('Распознаются коды счетчиков waplog.net и подобных'));
+$form->button(__('Создать'), 'create');
+$form->display();
 
 $doc->ret(__('Вернуться'), "adt.php?id=$id_space");
 $doc->ret(__('Рекламные позиции'), 'adt.php');

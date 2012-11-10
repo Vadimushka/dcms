@@ -5,7 +5,7 @@ dpanel::check_access();
 $doc = new document(6);
 $groups = groups::load_ini();
 $doc->title = __('Редактор меню');
-// поиск файлов меню, подготовка списка (массива)
+
 $menu_files = (array) glob(H . '/sys/ini/menu.*.ini');
 $menus = array();
 foreach ($menu_files as $menu_path) {
@@ -94,26 +94,17 @@ if (!empty($_GET['menu'])) {
 
         if (isset($_GET['act']) && $_GET['act'] == 'delete') {
             $doc->title = __('Удаление пункта %s', $item_name);
-            $smarty = new design();
-            $smarty->assign('method', 'post');
-            $smarty->assign('action', '?menu=' . urlencode($menu) . '&amp;item=' . urlencode($item_name) . '&amp;' . passgen());
-            $elements = array();
-            $elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-            $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Удалить'))); // кнопка
-            $smarty->assign('el', $elements);
-            $smarty->display('input.form.tpl');
+            $form = new form('?menu=' . urlencode($menu) . '&amp;item=' . urlencode($item_name) . '&amp;' . passgen());
+            $form->captcha();
+            $form->button(__('Удалить'), 'delete');
+            $form->display();
         } else {
 
+            $form = new form('?menu=' . urlencode($menu) . '&amp;item=' . urlencode($item_name) . '&amp;' . passgen());
 
-            $form = new design ();
-            $form->assign('method', 'post');
-            $form->assign('action', '?menu=' . urlencode($menu) . '&amp;item=' . urlencode($item_name) . '&amp;' . passgen());
-            $elements = array();
-
-            $elements [] = array('type' => 'input_text', 'title' => __('Название'), 'br' => 1, 'info' => array('name' => 'name', 'value' => $item_name));
-            $elements [] = array('type' => 'input_text', 'title' => __('Позиция'), 'br' => 1, 'info' => array('name' => 'position', 'value' => arraypos::getPosition($m_obj->menu_arr, $item_name)));
-            $elements [] = array('type' => 'input_text', 'title' => __('Ссылка'), 'br' => 1, 'info' => array('name' => 'url', 'value' => $item['url']));
-
+            $form->text('name', __('Название'), $item_name);
+            $form->text('position', __('Позиция'), arraypos::getPosition($m_obj->menu_arr, $item_name));
+            $form->text('url', __('Ссылка'), $item['url']);
 
             $icons = (array) glob(H . '/sys/images/icons/*.png');
             $options = array();
@@ -122,26 +113,20 @@ if (!empty($_GET['menu'])) {
                 $icon = str_replace(H . '/sys/images/icons/', '', filesystem::unixpath($icon_path));
                 $options[] = array($icon, $icon, $icon == @$item['icon']);
             }
-            $elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Иконка'), 'info' => array('name' => 'icon', 'options' => $options));
+            $form->select('icon', __('Иконка'), $options);
 
-            $elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => @$item['razdel'], 'name' => 'razdel', 'text' => __('Разделитель')));
-            $elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => @$item['is_vip'], 'name' => 'is_vip', 'text' => __('Только для VIP')));
+            $form->checkbox('razdel', __('Разделитель'), @$item['razdel']);
+            $form->checkbox('is_vip', __('Только для VIP'), @$item['is_vip']);
 
             $options = array();
             foreach ($groups as $group => $value) {
                 $options[] = array($group, $value['name'], $group == @$item['group']);
             }
-            $elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Для группы (и выше)') . '*', 'info' => array('name' => 'group', 'options' => $options));
-
-
-            $elements[] = array('type' => 'text', 'value' => '* ' . __('Регулируется только отображение ссылки'), 'br' => 1);
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Применить'))); // кнопка
-            $form->assign('el', $elements);
-            $form->display('input.form.tpl');
+            $form->select('group', __('Для группы (и выше)') . '*', $options);
+            $form->bbcode('* ' . __('Регулируется только отображение ссылки'));
+            $form->button(__('Применить'), 'save');
+            $form->display();
         }
-
-
-
 
         $doc->ret(__('Меню "%s"', $menu), '?menu=' . urlencode($menu) . '&amp;' . passgen());
         $doc->ret(__('Список меню'), '?' . passgen());
@@ -187,21 +172,10 @@ if (!empty($_GET['menu'])) {
             }
         }
 
-
-
-
-
-
-
-        $form = new design ();
-        $form->assign('method', 'post');
-        $form->assign('action', '?menu=' . urlencode($menu) . '&amp;item_add&amp;' . passgen());
-        $elements = array();
-
-        $elements [] = array('type' => 'input_text', 'title' => __('Название'), 'br' => 1, 'info' => array('name' => 'name'));
-        $elements [] = array('type' => 'input_text', 'title' => __('Позиция'), 'br' => 1, 'info' => array('name' => 'position', 'value' => count($m_obj->menu_arr) + 1));
-        $elements [] = array('type' => 'input_text', 'title' => __('Ссылка'), 'br' => 1, 'info' => array('name' => 'url', 'value' => 'http://'));
-
+        $form = new form('?menu=' . urlencode($menu) . '&amp;item_add&amp;' . passgen());
+        $form->text('name', __('Название'));
+        $form->text('position', __('Позиция'), count($m_obj->menu_arr) + 1);
+        $form->text('url', __('Ссылка'), 'http://');
 
         $icons = (array) glob(H . '/sys/images/icons/*.png');
         $options = array();
@@ -210,20 +184,20 @@ if (!empty($_GET['menu'])) {
             $icon = str_replace(H . '/sys/images/icons/', '', filesystem::unixpath($icon_path));
             $options[] = array($icon, $icon);
         }
-        $elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Иконка'), 'info' => array('name' => 'icon', 'options' => $options));
+        $form->select('icon', __('Иконка'), $options);
 
-        $elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'name' => 'razdel', 'text' => __('Разделитель')));
-        $elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'name' => 'is_vip', 'text' => __('Только для VIP')));
+        $form->checkbox('razdel', __('Разделитель'));
+        $form->checkbox('is_vip', __('Только для VIP'));
 
         $options = array();
         foreach ($groups as $group => $value) {
             $options[] = array($group, $value['name']);
         }
-        $elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Для группы (и выше)') . '*', 'info' => array('name' => 'group', 'options' => $options));
-        $elements[] = array('type' => 'text', 'value' => '* ' . __('Регулируется только отображение ссылки'), 'br' => 1);
-        $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'create', 'value' => __('Создать'))); // кнопка
-        $form->assign('el', $elements);
-        $form->display('input.form.tpl');
+        $form->select('group', __('Для группы (и выше)') . '*', $options);
+        $form->bbcode('* ' . __('Регулируется только отображение ссылки'));
+        $form->button(__('Создать'), 'create');
+        $form->display();
+
 
         $doc->ret(__('Меню "%s"', $menu), '?menu=' . urlencode($menu) . '&amp;' . passgen());
         $doc->ret(__('Список меню'), '?' . passgen());

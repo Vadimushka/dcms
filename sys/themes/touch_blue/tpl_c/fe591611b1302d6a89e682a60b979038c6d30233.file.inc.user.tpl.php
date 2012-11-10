@@ -1,17 +1,17 @@
-<?php /* Smarty version Smarty-3.0.6, created on 2012-11-09 20:56:15
+<?php /* Smarty version Smarty-3.0.6, created on 2012-11-09 21:58:06
          compiled from "E:/DESURE/Dropbox/domains/dcms7dev/sys/themes/touch_blue/tpl/inc.user.tpl" */ ?>
-<?php /*%%SmartyHeaderCode:10635509d35af9fe3c3-04579983%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
+<?php /*%%SmartyHeaderCode:3378509d442ed39d66-28781857%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
   array (
     'fe591611b1302d6a89e682a60b979038c6d30233' => 
     array (
       0 => 'E:/DESURE/Dropbox/domains/dcms7dev/sys/themes/touch_blue/tpl/inc.user.tpl',
-      1 => 1352480142,
+      1 => 1352483508,
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '10635509d35af9fe3c3-04579983',
+  'nocache_hash' => '3378509d442ed39d66-28781857',
   'function' => 
   array (
   ),
@@ -111,6 +111,8 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['i']['last']       = ($_smart
         friend_new_count: <?php echo $_smarty_tpl->getVariable('user')->value->friend_new_count;?>
 
     }; 
-    DCMS_USER_UPDATE.update();    
+    
+    DCMS_USER_UPDATE.update();  // запускаем периодический запрос данных пользователя
+    // новые данные можно получать, подписавшись на событие user_update: DCMS.Event.on('user_update', user_update);
 </script>
 <?php }?>

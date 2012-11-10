@@ -126,17 +126,16 @@ if (isset($_POST ['save'])) {
         }
 
         $t = "theme_$type";
-        
-        
-        
+
+
+
         if (!empty($_POST [$t])) {
-        $theme_set = (string) $_POST [$t];
-        
-        if (themes::exists($theme_set,$type)){
-            $ank->$t = $theme_set;
-        }        
-    }
-        
+            $theme_set = (string) $_POST [$t];
+
+            if (themes::exists($theme_set, $type)) {
+                $ank->$t = $theme_set;
+            }
+        }
     }
     // временной сдвиг
     if (!empty($_POST ['time_shift'])) {
@@ -158,77 +157,48 @@ if (isset($_POST ['save'])) {
     $doc->msg(__('Профиль успешно изменен'));
 }
 
-$smarty = new design ();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id_ank=$ank->id&amp;" . passgen() . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
-$elements = array();
+
+$form = new form("?id_ank=$ank->id&amp;" . passgen() . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
 
 foreach ($browser_types as $type) {
     $t = "items_per_page_$type";
-    $elements [] = array('type' => 'input_text', 'title' => __('Пунктов на страницу') . ' (' . $type . ') [5-99]', 'br' => 1, 'info' => array('name' => $t, 'value' => $ank->$t));
+    $form->text($t, __('Пунктов на страницу') . ' (' . $type . ') [5-99]', $ank->$t);
 }
 
-
-$options = array(); // темы оформления для wap браузера
-$themes_list = themes::getList('wap'); // только для определенного типа браузера
-foreach ($themes_list as $theme)
-    $options [] = array($theme ['dir'], $theme ['name'], $ank->theme_wap === $theme ['dir']);
-$elements [] = array('type' => 'select', 'title' => __('Тема оформления') . ' (WAP)', 'br' => 1, 'info' => array('name' => 'theme_wap', 'options' => $options));
-
-$options = array(); // темы оформления для pda браузера
-$themes_list = themes::getList('pda'); // только для определенного типа браузера
-foreach ($themes_list as $theme)
-    $options [] = array($theme ['dir'], $theme ['name'], $ank->theme_pda === $theme ['dir']);
-$elements [] = array('type' => 'select', 'title' => __('Тема оформления') . ' (PDA)', 'br' => 1, 'info' => array('name' => 'theme_pda', 'options' => $options));
-
-$options = array(); // темы оформления для pda браузера
-$themes_list = themes::getList('itouch'); // только для определенного типа браузера
-foreach ($themes_list as $theme)
-    $options [] = array($theme ['dir'], $theme ['name'], $ank->theme_itouch === $theme ['dir']);
-$elements [] = array('type' => 'select', 'title' => __('Тема оформления') . ' (I-touch)', 'br' => 1, 'info' => array('name' => 'theme_itouch', 'options' => $options));
-
-
-$options = array(); // темы оформления для web браузера
-$themes_list = themes::getList('web'); // только для определенного типа браузера
-foreach ($themes_list as $theme)
-    $options [] = array($theme ['dir'], $theme ['name'], $ank->theme_web === $theme ['dir']);
-$elements [] = array('type' => 'select', 'title' => __('Тема оформления') . ' (WEB)', 'br' => 1, 'info' => array('name' => 'theme_web', 'options' => $options));
-
+foreach ($browser_types as $b_type) {
+    $t = 'theme_' . $b_type;
+    $options = array(); // темы оформления для wap браузера    
+    $themes_list = themes::getList($b_type); // только для определенного типа браузера
+    foreach ($themes_list as $theme)
+        $options [] = array($theme ['dir'], $theme ['name'], $ank->$t === $theme ['dir']);
+    $form->select($t, __('Тема оформления') . ' (' . strtoupper($b_type) . ')', $options);
+}
 
 $options = array(); // Врменной сдвиг
 for ($i = - 12; $i < 12; $i++)
     $options [] = array($i, date('G:i', TIME + $i * 60 * 60), $ank->time_shift == $i);
-$elements [] = array('type' => 'select', 'title' => __('Время'), 'br' => 1, 'info' => array('name' => 'time_shift', 'options' => $options));
+$form->select('time_shift', __('Время') . ' (' . strtoupper($b_type) . ')', $options);
 
-$elements [] = array('type' => 'input_text', 'title' => __('Реальное имя'), 'br' => 1, 'info' => array('name' => 'realname', 'value' => $ank->realname));
+$form->text('realname', __('Реальное имя'), $ank->realname);
 
-$elements [] = array('type' => 'text', 'value' => __('Дата рождения').':', 'br' => 1);
-$elements [] = array('type' => 'input_text', 'br' => 0, 'info' => array('name' => 'ank_d_r', 'value' => $ank->ank_d_r, 'size' => 2, 'maxlength' => 2));
-$elements [] = array('type' => 'input_text', 'br' => 0, 'info' => array('name' => 'ank_m_r', 'value' => $ank->ank_m_r, 'size' => 2, 'maxlength' => 2));
-$elements [] = array('type' => 'input_text', 'br' => 1, 'info' => array('name' => 'ank_g_r', 'value' => $ank->ank_g_r, 'size' => 4, 'maxlength' => 4));
+$form->bbcode(__('Дата рождения') . ':');
+$form->text('ank_d_r', false, $ank->ank_d_r, false, 2);
+$form->text('ank_m_r', false, $ank->ank_m_r, false, 2);
+$form->text('ank_g_r', false, $ank->ank_g_r, true, 4);
 
-$elements [] = array('type' => 'input_text', 'br' => 1, 'title' => __('Баллы'), 'info' => array('name' => 'balls', 'value' => $ank->balls));
+$form->text('balls', __('Баллы'), $ank->balls);
+$form->text('icq', __('Номер ICQ'), $ank->icq_uin);
+$form->checkbox('vis_icq', __('Показывать ICQ в анкете'), $ank->vis_icq);
+$form->text('skype', __('Skype логин'), $ank->skype);
+$form->checkbox('vis_skype', __('Показывать Skype в анкете'), $ank->vis_skype);
+$form->text('reg_mail', __('Primary E-mail'), $ank->reg_mail);
+$form->text('email', __('E-mail'), $ank->email);
+$form->checkbox('vis_email', __('Показывать Email в анкете'), $ank->vis_email);
+$form->text('wmid', __('WebMoney ID'), $ank->wmid);
+$form->checkbox('vis_friends', __('Отображать список друзей'), $ank->vis_friends);
+$form->button(__('Применить'), 'save');
+$form->display();
 
-$elements [] = array('type' => 'input_text', 'title' => __('Номер ICQ'), 'br' => 1, 'info' => array('name' => 'icq', 'value' => $ank->icq_uin));
-
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $ank->vis_icq, 'name' => 'vis_icq', 'text' => __('Показывать ICQ в анкете')));
-
-$elements [] = array('type' => 'input_text', 'title' => __('Skype логин'), 'br' => 1, 'info' => array('name' => 'skype', 'value' => $ank->skype));
-
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $ank->vis_skype, 'name' => 'vis_skype', 'text' => __('Показывать Skype в анкете')));
-
-$elements [] = array('type' => 'input_text', 'title' => __('Primary E-mail'), 'br' => 1, 'info' => array('name' => 'reg_mail', 'value' => $ank->reg_mail));
-
-$elements [] = array('type' => 'input_text', 'title' => __('E-mail'), 'br' => 1, 'info' => array('name' => 'email', 'value' => $ank->email));
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $ank->vis_email, 'name' => 'vis_email', 'text' => __('Показывать Email в анкете')));
-$elements [] = array('type' => 'input_text', 'title' => __('WebMoney ID'), 'br' => 1, 'info' => array('name' => 'wmid', 'value' => $ank->wmid));
-
-
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $ank->vis_friends, 'name' => 'vis_friends', 'text' => __('Отображать список друзей')));
-
-$elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Принять изменения'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
 
 $doc->ret(__('Действия'), 'user.actions.php?id=' . $ank->id);
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);

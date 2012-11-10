@@ -6,7 +6,6 @@ $advertisement = new adt();
 $doc = new document(5);
 $doc->title = __('Реклама и баннеры');
 
-
 if (isset($_GET['id'])) {
     $id_space = (string) $_GET['id'];
 
@@ -35,8 +34,6 @@ if (isset($_GET['id'])) {
     }
 
 
-
-
     $pages = new pages;
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `advertising` WHERE `space` = '$id_space'$sql"), 0);
     $pages->this_page(); // получаем текущую страницу
@@ -54,59 +51,53 @@ if (isset($_GET['id'])) {
 
     $q = mysql_query("SELECT * FROM `advertising` WHERE `space` = '$id_space'$sql ORDER BY `time_start` ASC LIMIT $pages->limit");
     while ($adt = mysql_fetch_assoc($q)) {
-
-
-        $p = '';
+        $post = $listing->post();
+        $post->url = 'adt.stat.php?id=' . $adt['id'];
+        $post->title = for_value($adt['name'] ? $adt['name'] : 'Реклама #' . $adt['id']) . ($adt['url_img'] ? ' (' . __('баннер') . ')' : null);
+        $post->icon('adt');
+        $post->action('edit', "adt.edit.php?id={$adt['id']}");
+        $post->action('delete', "adt.edit.php?id={$adt['id']}&amp;delete");
 
         if ($filter == 'all') {
             if ((!$adt['time_start'] || $adt['time_start'] < TIME) && (!$adt['time_end'] || $adt['time_end'] > TIME)) {
-                $p .= "<b>" . __('Реклама активна') . "</b><br />";
+                $post->content[] = __('Реклама активна');
             } elseif ($adt['time_start'] > TIME && (!$adt['time_end'] || $adt['time_end'] > TIME)) {
-                $p .= "<b>" . __('В ожидании') . "</b><br />";
+                $post->content[] = __('В ожидании');
             } elseif ((!$adt['time_start'] || $adt['time_start'] < TIME) && $adt['time_end'] < TIME) {
-                $p .= "<b>" . __('Показ окончен') . "</b><br />";
+                $post->content[] = __('Показ окончен');
             }
         }
 
         if ($adt['time_start'] > TIME) {
-            $p .= __("Начало показа: %s", vremja($adt['time_start'])) . "<br />\n";
+            $post->content[] = __("Начало показа: %s", vremja($adt['time_start']));
         }
 
         if (!$adt['time_end']) {
-            $p .= __('Бесконечный показ') . "<br />\n";
+            $post->content[] = __('Бесконечный показ');
         } elseif ($adt['time_end'] > TIME) {
-            $p .= __("Конец показа: %s", vremja($adt['time_end'])) . "<br />\n";
+            $post->content[] = __("Конец показа: %s", vremja($adt['time_end']));
         } else {
-            $p .= '<b>' . __("Показ истек: %s", vremja($adt['time_end'])) . "</b><br />\n";
+            $post->content[] = __("Показ истек: %s", vremja($adt['time_end']));
         }
 
         if ($adt['bold']) {
-            $p .= "<b>" . __('Выделение жирным шрифтом') . "</b><br />\n";
+            $post->content[] = "[b]" . __('Выделение жирным шрифтом') . "[/b]";
         }
 
-        $p .= __('Адрес ссылки: %s', for_value($adt['url_link'])) . "<br />\n";
+        $post->content[] = __('Адрес ссылки: %s', for_value($adt['url_link']));
         if ($adt['url_img']) {
-            $p .= __('Адрес изображения: %s', for_value($adt['url_img'])) . "<br />\n";
+            $post->content[] = __('Адрес изображения: %s', for_value($adt['url_img']));
         }
 
         if ($adt['page_main'] && $adt['page_other']) {
-            $p .= __('На всех страницах') . "<br />\n";
+            $post->content[] = __('На всех страницах');
         } elseif (!$adt['page_main'] && $adt['page_other']) {
-            $p .= __('Кроме главной') . "<br />\n";
+            $post->content[] = __('Кроме главной');
         } elseif ($adt['page_main'] && !$adt['page_other']) {
-            $p .= __('Только на главной') . "<br />\n";
+            $post->content[] = __('Только на главной');
         } else {
-            $p .= __("Не отображается") . "<br />\n";
+            $post->content[] = __("Не отображается");
         }
-
-
-        $post = $listing->post();
-        $post->url = 'adt.stat.php?id=' . $adt['id'];
-        $post->title = for_value($adt['name'] ? $adt['name'] : 'Реклама #' . $adt['id'])  . ($adt['url_img'] ? ' (' . __('баннер') . ')' : null);
-        $post->icon('adt');
-        $post->post = $p;
-        $post->action('edit', "adt.edit.php?id={$adt['id']}");
-        $post->action('delete', "adt.edit.php?id={$adt['id']}&amp;delete");
     }
     $listing->display(__('Реклама отсутствует'));
 

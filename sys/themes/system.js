@@ -91,7 +91,7 @@ var DCMS_USER_UPDATE = {
     update: function(){
         var self = this;
         DCMS.Ajax({
-            url: '/ajax/user.json.php?'+this.fields.join('&'),
+            url: '/ajax/user.json.php?'+this.fields.join('&')+'&_='+Math.random(),
             callback: function(){
                 self.onresult.apply(self,arguments);
             },

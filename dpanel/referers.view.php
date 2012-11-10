@@ -1,7 +1,6 @@
 <?php
 
 include_once '../sys/inc/start.php';
-//dpanel::check_access();
 $doc = new document(5);
 $doc->title = __('Рефералы');
 
@@ -21,8 +20,6 @@ if (isset($_GET['id_site'])) {
 
     $doc->title = __('Рефералы с сайта "%s"', $site['domain']);
 
-
-
     $listing = new listing();
     $pages = new pages;
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT `full_url`) FROM `log_of_referers` WHERE `id_site` = '$id'"), 0);
@@ -31,10 +28,9 @@ if (isset($_GET['id_site'])) {
     while ($ref = mysql_fetch_assoc($q)) {
         $post = $listing->post();
         $post->title = vremja($ref['time']);
-        $post->content = output_text($ref['full_url']);
+        $post->content[] = $ref['full_url'];
         $post->counter = $ref['count'];
     }
-
     $listing->display(__('Рефералы отсутствуют'));
 
     $pages->display("?id_site=$id&amp;"); // вывод страниц
@@ -72,7 +68,6 @@ $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
-
 $listing = new listing();
 
 $q = mysql_query("SELECT * FROM `log_of_referers_sites` ORDER BY $order LIMIT $pages->limit");
@@ -85,7 +80,6 @@ while ($ref = mysql_fetch_assoc($q)) {
 }
 
 $listing->display(__('Рефералы отсутствуют'));
-
 
 $pages->display("?order=$filter&amp;"); // вывод страниц
 

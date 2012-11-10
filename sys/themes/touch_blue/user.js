@@ -1,5 +1,7 @@
 function user_update_mail_notice(){
-    
+    /**
+     * тут можно сделать дополнительное (звуковое) уведомление пользователя
+     */
 }
 
 
@@ -49,5 +51,6 @@ function user_update(data){
     user_update_mail(data.mail_new_count);
     user_update_friends(data.friends_new_count);
 }    
-    
+
+// подписываемся на событие поступления новых данных пользователя
 DCMS.Event.on('user_update', user_update);
