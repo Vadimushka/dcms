@@ -50,7 +50,7 @@ define('TIME', time());
 define('DAY_TIME', mktime(0, 0, 0));
 
 // главная страница
-define('IS_MAIN', $_SERVER ['SCRIPT_NAME'] == '/index.php');
+define('IS_MAIN', $_SERVER['SCRIPT_NAME'] == '/index.php');
 
 // время жизни сессии, а также время последней активности пользователей, считающихся онлайн
 define('SESSION_LIFE_TIME', 600);

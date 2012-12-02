@@ -1,4 +1,5 @@
 <?php
+
 include_once '../sys/inc/start.php';
 $doc = new document();
 
@@ -10,7 +11,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->ret(__('Форум'), './');
     exit;
 }
-$id_category = (int)$_GET['id'];
+$id_category = (int) $_GET['id'];
 
 $q = mysql_query("SELECT * FROM `forum_categories` WHERE `id` = '$id_category' AND `group_edit` <= '$user->group'");
 
@@ -26,10 +27,10 @@ $doc->title = __('Удаление категории "%s"', $category['name']);
 
 if (isset($_POST['delete'])) {
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
-        $design->err(__('Проверочное число введено неверно'));
+        $doc->err(__('Проверочное число введено неверно'));
     } else {
         // блокируем таблицы
-     //   mysql_query("LOCK TABLES `forum_files` WRITE READ, `forum_categories` WRITE READ, `forum_topics` WRITE READ, `forum_themes` WRITE READ, `forum_messages` WRITE READ, `forum_history` WRITE READ, `forum_files` WRITE READ, `forum_vote` WRITE READ, `forum_vote_votes` WRITE READ");
+        //   mysql_query("LOCK TABLES `forum_files` WRITE READ, `forum_categories` WRITE READ, `forum_topics` WRITE READ, `forum_themes` WRITE READ, `forum_messages` WRITE READ, `forum_history` WRITE READ, `forum_files` WRITE READ, `forum_vote` WRITE READ, `forum_vote_votes` WRITE READ");
 
         $q = mysql_query("SELECT `id` FROM `forum_themes` WHERE `id_category` = '$category[id]'");
         while ($theme = mysql_fetch_assoc($q)) {
@@ -53,9 +54,9 @@ WHERE `forum_topics`.`id_category` = '$category[id]'");
 
         mysql_query("DELETE FROM `forum_categories` WHERE `id` = '$category[id]' LIMIT 1");
         // оптимизация таблиц после удаления данных
-     //   mysql_query("OPTIMIZE TABLE `forum_files`, `forum_categories`, `forum_topics`, `forum_themes`, `forum_messages`, `forum_history`, `forum_vote`, `forum_vote_votes`");
+        //   mysql_query("OPTIMIZE TABLE `forum_files`, `forum_categories`, `forum_topics`, `forum_themes`, `forum_messages`, `forum_history`, `forum_vote`, `forum_vote_votes`");
         // разблокируем таблицы
-      //  mysql_query("UNLOCK TABLES");
+        //  mysql_query("UNLOCK TABLES");
 
         header('Refresh: 1; url=./');
         $dcms->log('Форум', 'Удаление категории "' . $category['name'] . '"');
@@ -65,19 +66,13 @@ WHERE `forum_topics`.`id_category` = '$category[id]'");
     }
 }
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id=$category[id]&amp;" . passgen() . (isset($_GET['return'])?'&amp;return=' . urlencode($_GET['return']):null));
-$elements = array();
-$elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-$elements[] = array('type' => 'text', 'value' => '* '.__('Все данные, относящиеся к данной категории будут безвозвратно удалены.'), 'br' => 1);
-// $elements[]=array('type'=>'textarea', 'title'=>'Редактирование сообщения', 'br'=>1, 'info'=>array('name'=>'message','value'=>$message['message']));
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Удалить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form("?id=$category[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form->captcha();
+$form->bbcode('* ' . __('Все данные, относящиеся к данной категории будут безвозвратно удалены.'));
+$form->button(__('Удалить'), 'delete');
+$form->display();
 
 $doc->act(__('Параметры категории'), 'category.edit.php?id=' . $category['id']);
 $doc->ret(__('В категорию'), 'category.php?id=' . $category['id']);
 $doc->ret(__('Форум'), './');
-
 ?>

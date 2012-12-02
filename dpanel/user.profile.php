@@ -2,7 +2,6 @@
 
 include_once '../sys/inc/start.php';
 dpanel::check_access();
-$groups = groups::load_ini();
 $doc = new document(4);
 $doc->title = __('Профиль');
 
@@ -21,7 +20,7 @@ if (!$ank->group) {
     }
 
     $doc->err(__('Не удалось загрузить данные пользователя'));
-    exit();
+    exit;
 }
 
 $doc->title .= ' "' . $ank->login . '"';
@@ -126,9 +125,6 @@ if (isset($_POST ['save'])) {
         }
 
         $t = "theme_$type";
-
-
-
         if (!empty($_POST [$t])) {
             $theme_set = (string) $_POST [$t];
 

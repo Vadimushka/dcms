@@ -55,15 +55,11 @@ if (isset($_POST['name'])) {
 
 $doc->title = $category['name'] . ' - ' . __('Новый раздел');
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id_category=$category[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-$elements = array();
-$elements[] = array('type' => 'input_text', 'title' => __('Название раздела'), 'br' => 1, 'info' => array('name' => 'name'));
-$elements[] = array('type' => 'textarea', 'title' => __('Описание'), 'br' => 1, 'info' => array('name' => 'description'));
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Создать раздел'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form("?id_category=$category[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form->text('name', __('Название раздела'));
+$form->textarea('description', __('Описание'));
+$form->button(__('Создать раздел'));
+$form->display();
 
 if (isset($_GET['return']))
     $doc->ret(__('В категорию'), for_value($_GET['return']));

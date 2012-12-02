@@ -24,7 +24,6 @@ $theme = mysql_fetch_assoc($q);
 
 if (isset($_POST['save'])) {
 
-
     $t['top'] = (int) !empty($_POST['top']);
     if ($t['top'] != $theme['top']) {
         $theme['top'] = $t['top'];
@@ -34,7 +33,6 @@ if (isset($_POST['save'])) {
         else
             $doc->msg(__('Тема успешно откреплена'));
     }
-
 
     if (isset($_POST['group_show'])) { // просмотр
         $group_show = (int) $_POST['group_show'];
@@ -85,52 +83,33 @@ if (isset($_POST['save'])) {
 
 $doc->title = __('Редактирование темы "%s"', $theme['name']); // шапка страницы
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id=$theme[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-$elements = array();
-
+$form = new form("?id=$theme[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
 
 $options = array();
-foreach ($groups as $type => $value) {
+foreach ($groups as $type => $value)
     $options[] = array($type, $value['name'], $type == $theme['group_show']);
-}
-$elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Чтение темы'), 'info' => array('name' => 'group_show', 'options' => $options));
+$form->select('group_show', __('Чтение темы'), $options);
+
 
 $options = array();
 foreach ($groups as $type => $value) {
-    if ($type < 1) {
-        // гостям писать в тему уж точно запрещено
+    if ($type < 1)// гостям писать в тему уж точно запрещено        
         continue;
-    }
-
     $options[] = array($type, $value['name'], $type == $theme['group_write']);
 }
-$elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Пишут в тему'), 'info' => array('name' => 'group_write', 'options' => $options));
+$form->select('group_write', __('Пишут в тему'), $options);
 
 $options = array();
 foreach ($groups as $type => $value) {
-    
-    if ($type < 2) {
-        // Изменять параметры темы пользователю тоже нельзя
+    if ($type < 2) // Изменять параметры темы пользователю тоже нельзя        
         continue;
-    }
-    
-    
-    
     $options[] = array($type, $value['name'], $type == $theme['group_edit']);
 }
-$elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Изменяют параметры'), 'info' => array('name' => 'group_edit', 'options' => $options));
-
-$elements[] = array('type' => 'text', 'value' => '* ' . __('Будьте внимательнее при установке доступа выше своего.'), 'br' => 1);
-
-$elements[] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $theme['top'], 'name' => 'top', 'text' => 'Всегда наверху'));
-
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Применить изменения'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
-
-
+$form->select('group_edit', __('Изменяют параметры'), $options);
+$form->bbcode('* ' . __('Будьте внимательнее при установке доступа выше своего.'));
+$form->checkbox('top', __('Всегда наверху'), $theme['top']);
+$form->button(__('Применить'), 'save');
+$form->display();
 
 $doc->ret(__('Действия'), 'theme.actions.php?id=' . $theme['id']);
 $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);

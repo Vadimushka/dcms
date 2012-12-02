@@ -105,14 +105,10 @@ if (isset($_POST['message'])) {
     }
 }
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id=$message[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-$elements = array();
-$elements[] = array('type' => 'textarea', 'title' => __('Редактирование сообщения'), 'br' => 1, 'info' => array('name' => 'message', 'value' => $message['message']));
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Применить изменения'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form("?id=$message[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form->textarea('message', __('Редактирование сообщения'), $message['message']);
+$form->button(__('Применить'));
+$form->display();
 
 $doc->act(__('Вложения'), 'message.files.php?id=' . $message['id'] . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
 

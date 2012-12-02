@@ -135,7 +135,7 @@ while ($mail = mysql_fetch_assoc($q)) {
     $post->icon($ank->icon());
     $post->url = '?id=' . $ank->id;
     $post->title = $ank->nick();
-    $post->counter = $sql_where > 1 ? '+' . $mail['count'] : $mail['count'];
+    $post->counter = isset($_GET ['only_unreaded']) ? '+' . $mail['count'] : $mail['count'];
     $post->hightlight = !$mail['is_read'];
 }
 

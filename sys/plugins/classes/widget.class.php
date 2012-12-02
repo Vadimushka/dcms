@@ -74,38 +74,36 @@ class widget {
             return false;
         }
 
-
-
         global $user, $dcms, $user_language_pack;
         $cache_id = array();
 
-        $cache_id [] = 'widget-' . $this->_data ['name'];
+        $cache_id [] = 'wt-' . $this->_data ['name'];
 
         $design = new design();
-        $cache_id [] = 'theme-' . $design->theme;
+        $cache_id [] = 'tm-' . $design->theme['dir'];
 
-        $cache_id [] = 'language-' . $user_language_pack->code;
+        $cache_id [] = 'lp-' . $user_language_pack->code;
 
         if ($this->_data ['cache_by_browser_type']) {
-            $cache_id [] = 'browser-' . $dcms->browser_type;
+            $cache_id [] = 'bt-' . $dcms->browser_type;
         }
 
         if ($this->_data ['cache_by_user']) {
-            $cache_id [] = 'user-' . $user->id;
+            $cache_id [] = 'ur-' . $user->id;
         }
 
         if ($this->_data ['cache_by_timeshift']) {
-            $cache_id [] = 'timeshift-' . $user->time_shift;
+            $cache_id [] = 'ts-' . $user->time_shift;
         }
 
         if ($this->_data ['cache_by_group']) {
-            $cache_id [] = 'group-' . intval($user->group);
+            $cache_id [] = 'gp-' . intval($user->group);
         }
 
         if (SID) {
             // если браузер не поддерживает cookie, то во все ссылки будет добавляться SID,
             // поэтому кэш делаем для каждой сессии свой
-            $cache_id [] = 'session-' . SID;
+            $cache_id [] = 'sn-' . SID;
         }
 
         return implode('.', $cache_id);

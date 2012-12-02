@@ -57,7 +57,7 @@ foreach ($groups as $group => $value) {
         $options[] = array($group, __($value['name']), $group == $ank->group);
 }
 $form->select('group', __('Статус'), $options);
-$form->button('save', __('Применить'));
+$form->button(__('Применить'), 'save');
 $form->display();
 
 $doc->ret(__('Действия'), 'user.actions.php?id=' . $ank->id);

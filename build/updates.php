@@ -143,7 +143,8 @@ if (!empty($_GET['from'])) {
                     continue;
                 }
 
-                $is_beta = version_compare($build, $conf_release['build_num'], '>');
+                $is_beta = version_compare($build, $conf_release['version_last'].'.'.$conf_release['build_num'], '>');
+                //echo $build.'  '.$conf_release['build_num']."<br />";
 
                 if ($is_beta && !$user->group)
                     continue;
@@ -177,7 +178,7 @@ if (!empty($_GET['from'])) {
                 continue;
             }
 
-            $is_beta = version_compare($build, $conf_release['version_last'] . '.' . $conf_release['build_num'], '>');
+            $is_beta = version_compare($version, $conf_release['version_last'], '>');
 
             if ($is_beta && !$user->group)
                 continue;

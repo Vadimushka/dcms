@@ -79,8 +79,18 @@ class check_sys {
         if (class_exists('ffmpeg_movie')) {
             $this->oks[] = 'FFmpeg: OK';
         } else {
-            $this->notices[] = __('Без FFmpeg автоматическое создание скриншотов к видео недоступно');
-        }  // передача сессии в URI
+            $this->notices[] = __('Без FFmpeg автоматическое создание скриншотов к видео недоступно');            
+        }
+
+        // Кэширование
+        if (cache::getMemcache()) {
+            $this->oks[] = 'Memcache: OK';
+        } else {
+            $this->notices[] = __('Без Memcache производительность движка может значительно ухудшиться');            
+        }
+        
+
+// передача сессии в URI
         if (ini_get('session.use_trans_sid')) {
             $this->oks[] = 'session.use_trans_sid: OK';
         } else {

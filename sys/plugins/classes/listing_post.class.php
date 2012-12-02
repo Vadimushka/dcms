@@ -27,6 +27,7 @@ class listing_post extends ui {
     public function __construct($title = '', $content = '') {
         parent::__construct();
         $this->_tpl_file = 'listing.post.tpl';
+        $this->id = $this->_data['id'];
 
         $this->title = $title;
         $this->content = $content;

@@ -25,7 +25,6 @@ if (!mysql_num_rows($q)) {
 }
 $theme = mysql_fetch_assoc($q);
 
-
 $group_write_open = $theme['topic_group_write'];
 $group_write_close = $theme['topic_group_write'] + 1;
 
@@ -40,18 +39,14 @@ if (!empty($_POST['open'])) {
         $theme['group_write'] = $group_write_open;
         mysql_query("UPDATE `forum_themes` SET `group_write` = '$theme[group_write]' WHERE `id` = '$theme[id]' LIMIT 1");
 
-
         $message = __('%s открыл' . ($user->sex ? '' : 'а') . ' тему для обсуждения', '[user]' . $user->id . '[/user]');
         if ($reason = text::input_text($_POST['reason'])) {
             $message .= "\n" . __('Причина: %s', $reason);
         }
         $dcms->log('Форум', 'Закрытие темы [url=/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]' . ($reason ? "\nПричина: $reason" : ''));
 
-
         mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
  VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','0','" . TIME . "','" . my_esc($message) . "','$theme[group_show]','$theme[group_edit]')");
-
-
 
         $doc->msg(__('Тема успешно открыта для обсуждения'));
     }
@@ -64,48 +59,24 @@ if (!empty($_POST['close'])) {
     } else {
         $theme['group_write'] = $group_write_close;
         mysql_query("UPDATE `forum_themes` SET `group_write` = '$theme[group_write]' WHERE `id` = '$theme[id]' LIMIT 1");
-
-
-
-
         $message = __('%s закрыл' . ($user->sex ? '' : 'а') . ' тему для обсуждения', '[user]' . $user->id . '[/user]');
         if ($reason = text::input_text($_POST['reason'])) {
             $message .= "\n" . __('Причина: %s', $reason);
         }
         $dcms->log('Форум', 'Открытие темы [url=/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]' . ($reason ? "\nПричина: $reason" : ''));
-
         mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
  VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','0','" . TIME . "','" . my_esc($message) . "','$theme[group_show]','$theme[group_edit]')");
-
-
-
         $doc->msg(__('Тема успешно закрыта для обсуждения'));
     }
 }
 
-
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id=$theme[id]&amp;" . passgen());
-$elements = array();
-
-
-
-$elements[] = array('type' => 'textarea', 'title' => $is_open ? __('Причина закрытия') : __('Причина открытия'), 'br' => 1, 'info' => array('name' => 'reason'));
-
-if ($is_open) {
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'close', 'value' => __('Закрыть для обсуждения')));
-} else {
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'open', 'value' => __('Открыть для обсуждения')));
-}
-
-
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
-
-
-
-
+$form = new form("?id=$theme[id]&amp;" . passgen());
+$form->textarea('reason', $is_open ? __('Причина закрытия') : __('Причина открытия'));
+if ($is_open)
+    $form->button(__('Закрыть для обсуждения'), 'close');
+else
+    $form->button(__('Открыть для обсуждения'), 'open');
+$form->display();
 
 $doc->ret(__('Действия'), 'theme.actions.php?id=' . $theme['id']);
 $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);

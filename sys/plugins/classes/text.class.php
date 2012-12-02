@@ -2,6 +2,16 @@
 
 abstract class text {
 
+    static function filter($str, $type = 1) {
+        switch ($type) {
+            case 1: return self::for_value($str);
+                break;
+            case 2: return self::output_text($str);
+                break;
+            default:return $str;
+        }
+    }
+
     /**
      * Получение корректного ICQ UIN
      * @param type $icq

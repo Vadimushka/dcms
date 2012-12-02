@@ -44,7 +44,7 @@ WHERE `forum_messages`.`id_theme` = '$theme[id]'");
 
         mysql_query("DELETE FROM `forum_vote` WHERE `id_theme` = '$theme[id]'");
         mysql_query("DELETE FROM `forum_vote_votes` WHERE `id_theme` = '$theme[id]'");
-mysql_query("DELETE FROM `forum_views` WHERE `id_theme` = '$theme[id]'");
+        mysql_query("DELETE FROM `forum_views` WHERE `id_theme` = '$theme[id]'");
 
         // оптимизация таблиц после удаления данных
         // mysql_query("OPTIMIZE TABLE `forum_themes`, `forum_messages`, `forum_history`, `forum_vote`, `forum_vote_votes`");
@@ -62,15 +62,11 @@ mysql_query("DELETE FROM `forum_views` WHERE `id_theme` = '$theme[id]'");
     }
 }
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id=$theme[id]&amp;" . passgen());
-$elements = array();
-$elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-$elements[] = array('type' => 'text', 'value' => '* '.__('Все данные, относящиеся к данной теме будут безвозвратно удалены.'), 'br' => 1);
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Удалить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form("?id=$theme[id]&amp;" . passgen());
+$form->captcha();
+$form->bbcode('* ' . __('Все данные, относящиеся к данной теме будут безвозвратно удалены.'));
+$form->button(__('Удалить'), 'delete');
+$form->display();
 
 if (isset($_GET['return']))
     $doc->ret(__('В тему'), for_value($_GET['return']));

@@ -36,7 +36,7 @@ if (!$user->is_writeable) {
 }
 
 if ($can_write) {
-    
+
     if (isset($_POST['message'])) {
         $message = (string) $_POST['message'];
         $users_in_message = text::nickSearch($message);
@@ -102,7 +102,6 @@ if ($can_write) {
                 }
             }
 
-
             $doc->msg(__('Сообщение успешно отправлено'));
             mysql_query("UPDATE `forum_themes` SET `time_last` = '" . TIME . "', `id_last` = '$user->id' WHERE `id` = '$theme[id]' LIMIT 1");
             // mysql_query("UPDATE `forum_topics` SET `time_last` = '".TIME."' WHERE `id` = '$theme[id_topic]' LIMIT 1");
@@ -112,18 +111,13 @@ if ($can_write) {
         }
     }
 
-
-    $smarty = new design();
-    $smarty->assign('method', 'post');
-    $smarty->assign('action', "?id_theme=$theme[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-    $elements = array();
-    $elements[] = array('type' => 'textarea', 'title' => __('Сообщение'), 'br' => 1, 'info' => array('name' => 'message'));
-    $elements[] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'name' => 'add_file', 'text' => __('Добавить файл')));
+    $form = new form("?id_theme=$theme[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+    $form->textarea('message', __('Сообщение'));
+    $form->checkbox('add_file', __('Добавить файл'));
     if ($dcms->forum_message_captcha && $user->group < 2)
-        $elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Отправить'))); // кнопка
-    $smarty->assign('el', $elements);
-    $smarty->display('input.form.tpl');
+        $form->captcha();
+    $form->button(__('Отправить'));
+    $form->display();
 }
 
 

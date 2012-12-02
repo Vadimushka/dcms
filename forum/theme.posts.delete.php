@@ -78,7 +78,6 @@ $or->display('design.order.tpl');
 
 $listing = new listing();
 
-$posts = array();
 if ($show == 'part') {
     $pages = new pages;
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group'"), 0); // количество сообщений  теме
@@ -98,12 +97,15 @@ while ($messages = mysql_fetch_assoc($q)) {
     $ch->content = text::for_opis($messages['message']);
 }
 
-echo "<form method='post' action='?id=$theme[id]'>";
-$listing->display(__('Сообщения отсутствуют'));
-echo "<input type='submit' name='delete' value='" . __('Удалить') . "' /><input type='submit' name='hide' value='" . __('Скрыть') . "' /></form>";
-if ($show == 'part') {
-    $pages->display('?id=' . $theme['id'] . '&amp;show=part&amp;'); // вывод страниц
-}
+$form = new form('?id=' . $theme['id']);
+$form->html($listing->fetch(__('Сообщения отсутствуют')));
+$form->button(__('Удалить'),'delete',  false);
+$form->button(__('Скрыть'),'hide',  false);
+$form->display();
+
+if ($show == 'part') 
+    $pages->display('?id=' . $theme['id'] . '&amp;show=part&amp;');
+
 $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id'] . ($show == 'part' ? '&amp;page=' . $pages->this_page : ''));
 
 $doc->ret(__('В раздел'), 'topic.php?id=' . $theme['id_topic']);

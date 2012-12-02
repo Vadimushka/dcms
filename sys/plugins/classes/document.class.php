@@ -22,13 +22,13 @@ class document extends design {
     }
 
     // добавление в список ошибок
-    function err($err, $help = false) {
-        $this->err[] = array('text' => $err, 'help' => $help);
+    function err($err) {
+        $this->err[] = array('text' => text::filter($err, 1));
     }
 
     // добавление в список сообщений
-    function msg($msg, $help = false) {
-        $this->msg[] = array('text' => $msg, 'help' => $help);
+    function msg($msg) {
+        $this->msg[] = array('text' => text::filter($msg, 1));
     }
 
     function ret($name, $link) {
@@ -62,6 +62,7 @@ class document extends design {
         // для осла (IE) как обычно отдельное условие
         if ($dcms->browser == 'Microsoft Internet Explorer') {
             header('Content-Type: text/html; charset=utf-8', true);
+            header('X-UA-Compatible: IE=edge', true);
         } else {
             switch ($this->theme['content']) {
                 case 'wml':header('Content-Type: text/vnd.wap.wml; charset=utf-8', true);
@@ -73,14 +74,14 @@ class document extends design {
             }
         }
 
-        $this->assignByRef('adt', new adt()); // реклама
-        $this->assign('description', $this->description); // описание страницы (meta)
-        $this->assign('keywords', implode(', ', $this->keywords)); // ключевые слова (meta)
+        $this->assign('adt', new adt()); // реклама
+        $this->assign('description', $this->description, 1); // описание страницы (meta)
+        $this->assign('keywords', implode(', ', $this->keywords), 1); // ключевые слова (meta)
         $this->assign('actions', $this->actions); // ссылки к действию
         $this->assign('returns', $this->returns); // ссылки для возврата
         $this->assign('err', $this->err); // сообщения об ошибке
         $this->assign('msg', $this->msg); // сообщения
-        $this->assign('title', $this->title); // заголовок страницы
+        $this->assign('title', $this->title, 1); // заголовок страницы
         $this->assign('content', @ob_get_clean());
         $this->assign('document_generation_time', round(microtime(true) - TIME_START, 3));
         debug::step('Перед формированием страницы');
@@ -91,13 +92,13 @@ class document extends design {
             $align = new alignedxhtml();
             echo $align->parse($document_content);
             debug::step('Форматирование HTML');
-        } else {            
+        } else {
             $this->display('document.tpl');
             debug::step('Формирование страницы');
         }
 
-        
-        if ($dcms->debug && $user->group == groups::max()) {            
+
+        if ($dcms->debug && $user->group == groups::max()) {
             debug::display();
         }
     }

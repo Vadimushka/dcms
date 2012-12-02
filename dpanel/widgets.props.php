@@ -28,8 +28,6 @@ foreach ($types AS $type) {
     $prop_name = "widget_items_count_" . $type;
     $form->text($prop_name, __('Макс. кол-во пунктов в виджете') . ' [0-50] (' . strtoupper($type) . ')', $dcms->$prop_name);
 }
-$form ->button(__('Применить'), 'save');
-$form ->display();
-
-$doc->ret(__('Админка'), '/dpanel/');
+$form->button(__('Применить'), 'save');
+$form->display();
 ?>

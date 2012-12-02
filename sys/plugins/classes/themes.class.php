@@ -24,9 +24,8 @@ abstract class themes {
         }
 
         // получение списка языковых пакетов
-        if (($list = cache::get('themes')) !== false) {
-            return self::filterType($list, $type);
-        }
+        if ($list = cache::get('themes'))           
+            return self::filterType($list, $type);        
 
         $list = self::getRealList();
         cache::set('themes', $list, 60);
@@ -37,7 +36,7 @@ abstract class themes {
     static protected function filterType($list, $type = 'all') {
         if ($type != 'all') {
             foreach ($list as $dir => $conf) {
-                if (!in_array($type, $conf['browsers'])) {
+                if ($conf['browsers'] && !in_array($type, $conf['browsers'])) {
                     unset($list[$dir]);
                 }
             }
@@ -107,7 +106,7 @@ abstract class themes {
         }
 
         if (empty($info['browsers'])) {
-            $info['browsers'] = array('all');
+            $info['browsers'] = array();
         } else {
             $info['browsers'] = preg_split('/[\|\,\:\^]/', $info['browsers']);
         }

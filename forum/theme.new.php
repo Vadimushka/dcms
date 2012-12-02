@@ -37,7 +37,7 @@ $check_wmid = (empty($topic ['theme_create_with_wmid']) || $user->wmid);
 
 $time_reg = true;
 if (!$user->is_writeable) {
-    $doc->msg(__('Создавать темы запрещено'),'write_denied');
+    $doc->msg(__('Создавать темы запрещено'), 'write_denied');
     $time_reg = false;
 }
 
@@ -63,9 +63,9 @@ if ($can_write && isset($_POST ['message']) && isset($_POST ['name'])) {
     $name = text::for_name($_POST ['name']);
 
     if ($dcms->censure && $mat = is_valid::mat($message))
-        $doc->err(__('Обнаружен мат: %s',$mat) );
+        $doc->err(__('Обнаружен мат: %s', $mat));
     elseif ($dcms->censure && $mat = is_valid::mat($name))
-        $doc->err(__('Обнаружен мат: %s' , $mat));
+        $doc->err(__('Обнаружен мат: %s', $mat));
     elseif ($dcms->forum_theme_captcha && $user->group < 2 && (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session']))) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($message && $name) {
@@ -91,21 +91,17 @@ if ($can_write && isset($_POST ['message']) && isset($_POST ['name'])) {
     }
 }
 
-$doc->title = $topic ['name'] . ' - '.__('Новая тема');
+$doc->title = $topic ['name'] . ' - ' . __('Новая тема');
 
 if ($can_write) {
-    $smarty = new design ();
-    $smarty->assign('method', 'post');
-    $smarty->assign('action', "?id_topic=$topic[id]&amp;" . passgen() . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
-    $elements = array();
-    $elements [] = array('type' => 'input_text', 'title' => __('Название темы*'), 'br' => 1, 'info' => array('name' => 'name'));
-    $elements [] = array('type' => 'text', 'value' => output_text('* '.__('Название темы должно быть информативным, четко выделяя ее среди других тем. [b]Названия вида "помогите", "как сделать" и т.д. строго запрещены.[/b]')), 'br' => 1);
-    $elements [] = array('type' => 'textarea', 'title' => __('Сообщение'), 'br' => 1, 'info' => array('name' => 'message'));
+    $form = new form("?id_topic=$topic[id]&amp;" . passgen() . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
+    $form->text('name', __('Название темы'));
+    $form->bbcode('* ' . __('Название темы должно быть информативным, четко выделяя ее среди других тем. [b]Названия вида "помогите", "как сделать" и т.д. строго запрещены.[/b]'));
+    $form->textarea('message', __('Сообщение'));
     if ($dcms->forum_theme_captcha && $user->group < 2)
-        $elements [] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-    $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Создать тему'))); // кнопка
-    $smarty->assign('el', $elements);
-    $smarty->display('input.form.tpl');
+        $form->captcha();
+    $form->button(__('Создать тему'));
+    $form->display();
 }
 
 if (isset($_GET ['return']))
