@@ -17,7 +17,7 @@ $q = mysql_query("SELECT * FROM `forum_topics` WHERE `id` = '$id_topic' AND `gro
 if (!mysql_num_rows($q)) {
     header('Refresh: 1; url=./');
     $doc->err(__('Раздел не доступен для редактирования'));
-    exit();
+    exit;
 }
 
 $topic = mysql_fetch_assoc($q);
@@ -111,48 +111,38 @@ if (isset($_POST ['save'])) {
 
 $doc->title = __('Редактирование раздела "%s"', $topic ['name']); // шапка страницы
 
-
-$smarty = new design ();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id=$topic[id]&amp;" . passgen() . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
-$elements = array();
-$elements [] = array('type' => 'input_text', 'title' => __('Название'), 'br' => 1, 'info' => array('name' => 'name', 'value' => $topic ['name']));
-$elements [] = array('type' => 'textarea', 'title' => __('Описание'), 'br' => 1, 'info' => array('name' => 'description', 'value' => $topic ['description']));
+$form = new form("?id=$topic[id]&amp;" . passgen() . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
+$form->text('name', __('Название'), $topic['name']);
+$form->textarea('description', __('Описание'), $topic['description']);
 
 $options = array();
 $q = mysql_query("SELECT `id`,`name` FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC");
-while ($category = mysql_fetch_assoc($q)) {
+while ($category = mysql_fetch_assoc($q))
     $options [] = array($category ['id'], $category ['name'], $category ['id'] == $topic ['id_category']);
-}
-$elements [] = array('type' => 'select', 'br' => 1, 'title' => __('Категория'), 'info' => array('name' => 'category', 'options' => $options));
+$form->select('category', __('Категория'), $options);
 
 $options = array();
-
-foreach ($groups as $type => $value) {
+foreach ($groups as $type => $value)
     $options [] = array($type, $value ['name'], $type == $topic ['group_show']);
-}
-$elements [] = array('type' => 'select', 'br' => 1, 'title' => __('Просмотр тем'), 'info' => array('name' => 'group_show', 'options' => $options));
+$form->select('group_show', __('Просмотр тем'), $options);
 
 $options = array();
-foreach ($groups as $type => $value) {
+foreach ($groups as $type => $value)
     $options [] = array($type, $value ['name'], $type == $topic ['group_write']);
-}
-$elements [] = array('type' => 'select', 'br' => 1, 'title' => __('Создание тем'), 'info' => array('name' => 'group_write', 'options' => $options));
+
+$form->select('group_write', __('Создание тем'), $options);
 
 $options = array();
-foreach ($groups as $type => $value) {
+foreach ($groups as $type => $value)
     $options [] = array($type, $value ['name'], $type == $topic ['group_edit']);
-}
-$elements [] = array('type' => 'select', 'br' => 1, 'title' => __('Изменение параметров'), 'info' => array('name' => 'group_edit', 'options' => $options));
+$form->select('group_edit', __('Изменение параметров'), $options);
 
-$elements [] = array('type' => 'text', 'value' => '* '.__('Будьте внимательнее при установке доступа выше своего.'), 'br' => 1);
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('checked' => $topic ['theme_create_with_wmid'], 'value' => 1, 'name' => 'theme_create_with_wmid', 'text' => __('Создание тем только с WMID')));
-$elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Применить изменения'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form->bbcode('* ' . __('Будьте внимательнее при установке доступа выше своего.'));
+$form->checkbox('theme_create_with_wmid', __('Создание тем только с WMID'), $topic['theme_create_with_wmid']);
+$form->button(__('Применить'), 'save');
+$form->display();
 
 $doc->act(__('Удаление тем'), 'topic.themes.delete.php?id=' . $topic ['id']);
-
 $doc->act(__('Удалить раздел'), 'topic.delete.php?id=' . $topic ['id']);
 
 if (isset($_GET ['return']))

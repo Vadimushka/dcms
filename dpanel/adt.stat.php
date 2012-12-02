@@ -1,10 +1,10 @@
 <?php
 
 include_once '../sys/inc/start.php';
-//dpanel::check_access();
-$advertisement = new adt();
 $doc = new document(5);
 $doc->title = __('Статистика по рекламе');
+$browser_types = array('wap', 'pda', 'itouch', 'web');
+
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('Refresh: 1; url=adt.settings.php');
@@ -28,38 +28,73 @@ if (!mysql_num_rows($q)) {
 
 $adt = mysql_fetch_assoc($q);
 
-echo __('Название') . ": " . for_value($adt['name']) . "<br />\n";
+
+$listing = new listing();
+
+$post = $listing->post();
+$post->icon('adt');
+$post->title = for_value($adt['name']);
+$post->hightlight = true;
+
 
 if ($adt['time_create']) {
-    echo __('Позиция создана: %s', vremja($adt['time_create'])) . "<br />\n";
+    $post = $listing->post();
+    $post->title = __('Дата создания');
+    $post->content = vremja($adt['time_create']);
 }
 
+$post = $listing->post();
+$post->title = __('Начало показа');
 if (!$adt['time_start']) {
-    echo __('Начало показа неизвестно') . "<br />\n";
+    $post->content = __('Нет данных');
 } elseif ($adt['time_start'] > TIME) {
-    echo "<b>" . __('Начало показа') . "</b>: " . vremja($adt['time_start']) . "<br />\n";
+    $post->hightlight = true;
+    $post->content = vremja($adt['time_start']);
 } else {
-    echo __("Показ начался: %s", vremja($adt['time_start'])) . "<br />\n";
+    $post->content = vremja($adt['time_start']);
 }
 
+$post = $listing->post();
+$post->title = __('Конец показа');
 if (!$adt['time_end'])
-    echo __('Конец показа не обозначен') . "<br />\n";
-elseif ($adt['time_end'] > TIME)
-    echo __("Конец показа: %s", vremja($adt['time_end'])) . "<br />\n";
+    $post->content = __('Бесконечный показ');
 else
-    echo __("<b>Показ истек</b>: %s", vremja($adt['time_end'])) . "<br />\n";
+    $post->content = vremja($adt['time_end']);
 
-echo __("Показы (с времени запуска)") . "<br />\n";
-echo "WAP: $adt[count_show_wap]<br />\n";
-echo "PDA: $adt[count_show_pda]<br />\n";
-echo "iTouch: $adt[count_show_itouch]<br />\n";
-echo "WEB: $adt[count_show_web]<br />\n";
+$listing->display();
 
-echo __("Переходы (с времени запуска)") . "<br />\n";
-echo "WAP: $adt[count_out_wap]<br />\n";
-echo "PDA: $adt[count_out_pda]<br />\n";
-echo "iTouch: $adt[count_out_itouch]<br />\n";
-echo "WEB: $adt[count_out_web]<br />\n";
+
+$listing = new listing();
+$post = $listing->post();
+$post->title = __('Показы (с времени запуска)');
+$post->icon('info');
+$post->hightlight = true;
+
+foreach ($browser_types AS $b_type) {
+    $key = 'count_show_' . $b_type;
+    $post = $listing->post();
+    $post->title = strtoupper($b_type);
+    $post->content = __('%s показ' . misc::number($adt[$key], '', 'а', 'ов'), $adt[$key]);
+}
+
+$listing->display();
+
+
+$listing = new listing();
+$post = $listing->post();
+$post->title = __('Переходы (с времени запуска)');
+$post->icon('info');
+$post->hightlight = true;
+
+foreach ($browser_types AS $b_type) {
+    $key = 'count_out_' . $b_type;
+    $post = $listing->post();
+    $post->title = strtoupper($b_type);
+    $post->content = __('%s переход' . misc::number($adt[$key], '', 'а', 'ов'), $adt[$key]);
+}
+
+$listing->display();
+
 
 $doc->ret(__('Вернуться'), "adt.php?id=$adt[space]");
 $doc->ret(__('Рекламные площадки'), 'adt.php');

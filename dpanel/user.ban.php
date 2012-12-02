@@ -14,7 +14,7 @@ if (!$ank->group) {
         header('Refresh: 1; url=/');
 
     $doc->err(__('Нет данных о пользователе'));
-    exit();
+    exit;
 }
 
 if ($ank->group >= $user->group) {
@@ -24,7 +24,7 @@ if ($ank->group >= $user->group) {
         header('Refresh: 1; url=/');
 
     $doc->err(__('Недостаточно привилегий'));
-    exit();
+    exit;
 }
 
 $doc->title = __('Бан "%s"', $ank->login);
@@ -35,21 +35,20 @@ $code = !empty($_GET ['code']) ? $_GET ['code'] : (!empty($_POST ['code']) ? $_P
 $codes = new menu_code('code');
 
 if (!$code && !isset($_GET ['skip'])) {
-    $smarty = new design ();
-    $smarty->assign('method', 'post');
-    $smarty->assign('action', '?id_ank=' . $ank->id . '&amp;link=' . urlencode($link) . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
-    $elements = array();
-    $elements [] = array('type' => 'input_text', 'title' => '<a' . ($dcms->browser_type == 'web' ? ' target="_blank"' : null) . ' href="' . for_value($link) . '">' . __('Ссылка') . '</a>', 'br' => 1, 'info' => array('name' => 'link', 'value' => $link));
-    $elements [] = array('type' => 'select', 'br' => 1, 'title' => __('Нарушение'), 'info' => array('name' => 'code', 'options' => $codes->options()));
-    $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Далее'))); // кнопка
-    $smarty->assign('el', $elements);
-    $smarty->display('input.form.tpl');
+
+    $form = new form('?id_ank=' . $ank->id . '&amp;link=' . urlencode($link) . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
+    $form->text('link', __('Ссылка'), $link);
+    $form->bbcode('[url=' . $link . ']' . __('Перейти к нарушению') . '[/url]');
+    $form->select('code', __('Нарушение'), $codes->options());
+    $form->button(__('Далее'));
+    $form->display();
+
     if (isset($_GET ['return'])) {
         $doc->ret(__('Вернуться'), for_value($_GET ['return']));
     }
     $doc->ret(__('В анкету'), '/profile.view.php?id=' . $ank->id);
     $doc->ret(__('Админка'), './');
-    exit();
+    exit;
 }
 // получение минимального и максимального срока банов
 list ( $min, $max ) = $codes->get_time($code);
@@ -76,8 +75,6 @@ if (isset($_POST ['ban'])) {
             $time_ban_end = $time_1 * 2592000 + TIME;
             break;
     }
-
-
 
     if (!$time_1)
         $doc->err(__('Не корректное время бана'));
@@ -124,49 +121,36 @@ if (!empty($_GET['ban_delete'])) {
     }
 }
 
-
-
 $listing = new listing();
 // список нарушений
 $q = mysql_query("SELECT * FROM `ban` WHERE `id_user` = '$ank->id' ORDER BY `id` DESC");
 while ($c = mysql_fetch_assoc($q)) {
     $post = $listing->post();
     $adm = new user($c ['id_adm']);
-
+    $post->action('delete', '?id_ank=' . $ank->id . '&amp;ban_delete=' . $c['id'] . '&amp;skip');
     $post->title = $adm->nick();
     $post->time = vremja($c ['time_start']);
+    $post->content[] = __('Нарушение: %s', for_value($c['code']));
 
-    $post->action('delete', '?id_ank=' . $ank->id . '&amp;ban_delete=' . $c['id'].'&amp;skip');
+    if ($c ['time_start'] && TIME < $c ['time_start'])
+        $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . vremja($c ['time_start']);
 
-    $post->content = __('Нарушение: %s', for_value($c['code'])) . "\n";
-    if ($c ['time_start'] && TIME < $c ['time_start']) {
-        $post->content .= '[b]' . __('Начало действия') . ':[/b]' . vremja($c ['time_start']) . "\n";
-    }
-    if ($c['time_end'] === NULL) {
-        $post->content .= '[b]' . __('Пожизненная блокировка') . "[/b]\n";
-    } elseif (TIME < $c['time_end']) {
-        $post->content .= __('Осталось: %s', vremja($c['time_end'])) . "\n";
-    }
-    if ($c['link']) {
-        $post->content .= __('Ссылка на нарушение: %s', $c['link']) . "\n";
-    }
-
-    $post->content .= __('Комментарий: %s', $c['comment']) . "\n";
-
-
-    $post->content = output_text($post->content);
+    if ($c['time_end'] === NULL)
+        $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]";
+    elseif (TIME < $c['time_end'])
+        $post->content[] = __('Осталось: %s', vremja($c['time_end']));
+    
+    if ($c['link'])
+        $post->content[] = __('Ссылка на нарушение: %s', $c['link']);
+    $post->content[] = __('Комментарий: %s', $c['comment']);
 }
 
 $listing->display(__('Нарушения отсутствуют'));
 
-
-
-$smarty = new design ();
-$smarty->assign('method', 'post');
-$smarty->assign('action', '?id_ank=' . $ank->id . '&amp;code=' . urlencode($code) . '&amp;link=' . urlencode($link) . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
-$elements = array();
-$elements [] = array('type' => 'input_text', 'title' => '<a' . ($dcms->browser_type == 'web' ? ' target="_blank"' : null) . ' href="' . for_value($link) . '">' . __('Ссылка') . '</a>', 'br' => 1, 'info' => array('name' => 'link', 'value' => $link));
-$elements [] = array('type' => 'select', 'br' => 1, 'title' => __('Нарушение'), 'info' => array('name' => 'code', 'options' => $codes->options($code)));
+$form = new form('?id_ank=' . $ank->id . '&amp;code=' . urlencode($code) . '&amp;link=' . urlencode($link) . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
+$form->text('link', __('Ссылка'), $link);
+$form->bbcode('[url=' . $link . ']' . __('Перейти к нарушению') . '[/url]');
+$form->select('code', __('Нарушение'), $codes->options($code));
 
 if (!$min || $min < 3600) {
     $time = max(round($min / 60), 10);
@@ -182,26 +166,25 @@ if (!$min || $min < 3600) {
     $timem = 'ms';
 }
 
-$elements [] = array('type' => 'input_text', 'title' => __('Срок бана') . ' *', 'br' => 0, 'info' => array('size' => 3, 'name' => 'time', 'value' => $time));
+$form->text('time', __('Срок бана'), $time, false, 3);
 $options = array();
-$options [] = array('m', __('Минуты'), $timem == 'm');
-$options [] = array('h', __('Часы'), $timem == 'h');
-$options [] = array('d', __('Сутки'), $timem == 'd');
-$options [] = array('ms', __('Месяцы'), $timem == 'ms');
-$options [] = array('forever', __('Навсегда'));
-$elements [] = array('type' => 'select', 'br' => 1, 'info' => array('name' => 'timem', 'options' => $options));
+$options[] = array('m', __('Минуты'), $timem == 'm');
+$options[] = array('h', __('Часы'), $timem == 'h');
+$options[] = array('d', __('Сутки'), $timem == 'd');
+$options[] = array('ms', __('Месяцы'), $timem == 'ms');
+$options[] = array('forever', __('Навсегда'));
+$form->select('timem', false, $options);
+$form->checkbox('full', __('Полная блокировка') . ' *');
+$form->bbcode('* ' . __('Блокирует всю навигацию на сайте'));
+$form->textarea('comment', __('Комментарий'));
+$form->button(__('Забанить'), 'ban');
+$form->display();
 
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'name' => 'full', 'text' => __('Полная блокировка') . ' **'));
 
-$elements [] = array('type' => 'textarea', 'title' => __('Комментарий'), 'br' => 1, 'info' => array('name' => 'comment'));
-
-$elements [] = array('type' => 'text', 'value' => '** ' . __('Блокирует всю навигацию на сайте'), 'br' => 1);
-$elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Забанить'), 'name' => 'ban')); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
 if (isset($_GET ['return'])) {
     $doc->ret(__('Вернуться'), for_value($_GET ['return']));
 }
+
 $doc->ret(__('В анкету'), '/profile.view.php?id=' . $ank->id);
 $doc->ret(__('Админка'), './');
 ?>

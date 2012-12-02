@@ -1,17 +1,13 @@
 <?php
 
-include_once H . '/sys/plugins/smarty/Smarty.class.php';
-
-class design extends Smarty {
+class design extends native_templating {
 
     public $theme;
 
     function __construct() {
         parent::__construct();
         global $dcms, $user_language_pack, $user, $probe_theme;
-
         static $theme = false;
-
         if ($theme === false) {
             if (!empty($probe_theme) && themes::exists($probe_theme)){
                 $theme = themes::getConfig($probe_theme);
@@ -23,37 +19,27 @@ class design extends Smarty {
                 $theme = themes::getConfig($dcms->theme);
             } elseif (($themes = themes::getList($dcms->browser_type))) {
                 // тема оформления для типа браузера
-                $theme = $themes[0];
+                $theme = current($themes);
             } else {
                 // любая тема оформления
-                $themes = themes::getList();
-                $theme = $themes[0];
+                echo '<!--'.print_r(themes::getList(),1).'-->';
+                $theme = current(themes::getList());
+                if (!$theme)
+                    die('Не найдено ни одной совместимой темы оформления');
             }
         }
-
-
+        
         $this->theme = $theme;
 
-        // папки темы оформления
-        $this->template_dir = H . '/sys/themes/' . $theme['dir'] . '/tpl/';
-        $this->compile_dir = H . '/sys/themes/' . $theme['dir'] . '/tpl_c/';
-        $this->config_dir = H . '/sys/themes/' . $theme['dir'] . '/tpl_conf/';
-        $this->cache_dir = H . '/sys/themes/' . $theme['dir'] . '/tpl_cache/';
-
-        // конфигурация
-        $this->setCaching(Smarty::CACHING_OFF);
-        $this->setCompileCheck(true);
-        $this->allow_php_tag = true;
-        $this->error_reporting = false;
+        // папка шаблонов
+        $this->dir_template = H . '/sys/themes/' . $theme['dir'] . '/tpl/';
 
         // системные переменные
-        $this->assign('URL', URL);
         $this->assign('theme', $theme);        
-        $this->assignByRef('dcms', $dcms);
-        $this->assignByRef('lang', $user_language_pack);
-        $this->assignByRef('user', $user);
-        $this->assign('SESSION_NAME', SESSION_NAME);
-        $this->assign('SESS', SESS);
+        $this->assign('dcms', $dcms); // !!! под вопросом удаления
+        $this->assign('copyright', $dcms->copyright, 2);
+        $this->assign('lang', $user_language_pack);
+        $this->assign('user', $user);
         $this->assign('path', '/sys/themes/' . $theme['dir']);
     }
 

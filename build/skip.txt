@@ -21,3 +21,4 @@ cgi-bin
 index.html
 /tpl_c/
 /tpl_cache/
+ispmanager

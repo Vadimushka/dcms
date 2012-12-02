@@ -24,17 +24,10 @@ if (!dpanel::is_access() && (empty($_POST['captcha_session']) || empty($_POST['c
     exit;
 }
 
-$form = new design();
-$form->assign('method', 'post');
-$form->assign('action', '?' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-$elements = array();
-$elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-
-if (preg_match('#Opera#ui', $dcms->browser)) {
-    $elements [] = array('type' => 'text', 'value' => output_text(__('Функция Turbo должна быть отключена')), 'br' => 1);
-}
-
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Войти'))); // кнопка
-$form->assign('el', $elements);
-$form->display('input.form.tpl');
+$form = new form('?' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form->captcha();
+if (preg_match('#Opera mobile#ui', $dcms->browser))
+    $form->bbcode('[notice] '.__('Функция Turbo должна быть отключена'));
+$form->button(__('Войти'));
+$form->display();
 ?>

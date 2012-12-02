@@ -4,6 +4,7 @@ class menu {
 
     public $icons = true; // отображение иконок меню    
     public $menu_arr = array(); // загруженный INI файл меню в массив
+    protected $_listings = array();
     protected $_listing;
     protected $_values = array(); // переменные, доступные в строках меню
 
@@ -11,7 +12,7 @@ class menu {
         if ($menu_name) {
             $this->menu_load($menu_name);
         }
-        $this->_listing = new listing();
+        $this->_listings[] = $this->_listing = new listing();
     }
 
     protected function menu_load($menu_name) {
@@ -27,6 +28,11 @@ class menu {
     protected function processing() {
         global $user;
         foreach ($this->menu_arr as $key => $value) {
+
+            if (!empty($value['razdel']) && $this->_listing->count()) {
+                $this->_listings[] = $this->_listing = new listing();
+            }
+
             if ($user->group < @$value['group']) {
                 continue;
             }
@@ -34,7 +40,7 @@ class menu {
                 continue;
             }
             $post = $this->_listing->post();
-            
+
             if (empty($value['razdel'])) {
                 $post->url = for_value(@$this->value($value['url']));
             } else {
@@ -57,7 +63,8 @@ class menu {
 
     public function display() {
         $this->processing();
-        $this->_listing->display();
+        foreach ($this->_listings AS $listing)
+            $listing->display();
     }
 
     public function value_add($name, $value) {

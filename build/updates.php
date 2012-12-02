@@ -63,6 +63,10 @@ function createUpdate($from, $to) {
 
 $builds = getBuildList();
 
+
+
+$conf_release = ini::read('config.ini');
+
 $versions = array();
 foreach ($builds as $build) {
     $versions [] = substr($build, 0, strrpos($build, '.'));
@@ -139,11 +143,20 @@ if (!empty($_GET['from'])) {
                     continue;
                 }
 
+                $is_beta = version_compare($build, $conf_release['version_last'].'.'.$conf_release['build_num'], '>');
+                //echo $build.'  '.$conf_release['build_num']."<br />";
+
+                if ($is_beta && !$user->group)
+                    continue;
+
 
                 $post = $listing->post();
                 $post->url = '?from=' . urlencode($from) . '&amp;to=' . urlencode($build) . '&amp;info';
-                $post->title = for_value($from . ' > ' . $build) ;
+                $post->title = for_value($from . ' > ' . $build);
                 $post->icon('cms');
+
+                if ($is_beta)
+                    $post->content = __('Внимание!!! Работоспособность данной версии еще не подтверждена');
             }
 
             $listing->display('По всей видимости, у Вас последняя версия');
@@ -165,11 +178,18 @@ if (!empty($_GET['from'])) {
                 continue;
             }
 
+            $is_beta = version_compare($version, $conf_release['version_last'], '>');
+
+            if ($is_beta && !$user->group)
+                continue;
 
             $post = $listing->post();
             $post->url = '?from=' . urlencode($from) . '&amp;to_version=' . $version;
-            $post->title = for_value($from . ' > ' . $version) ;
+            $post->title = for_value($from . ' > ' . $version);
             $post->icon('cms');
+
+            if ($is_beta)
+                $post->content = __('Внимание!!! Работоспособность данной версии еще не подтверждена');
         }
 
         $listing->display('По всей видимости, у Вас последняя версия');
@@ -193,12 +213,16 @@ if (isset($_GET['version']) && in_array($_GET['version'], $versions)) {
             continue;
         }
 
+        $is_beta = version_compare($build, $conf_release['build_num'], '>');
 
 
         $post = $listing->post();
         $post->url = '?from=' . $build;
         $post->title = $build;
         $post->icon('cms');
+
+        if ($is_beta)
+            $post->content = __('BETA - версия');
     }
 
     $listing->display('Не найдено ни одной сборки данной версии');
@@ -207,20 +231,23 @@ if (isset($_GET['version']) && in_array($_GET['version'], $versions)) {
 }
 
 
-
-
-
-
-
 $doc->title = __('Выберите Вашу версию');
 
 $listing = new listing();
 
 foreach ($versions AS $version) {
+
+
+    $is_beta = version_compare($version, $conf_release['version_last'], '>');    
+
+
     $post = $listing->post();
     $post->url = '?version=' . $version;
-    $post->title = $version ;
+    $post->title = $version;
     $post->icon('cms');
+
+    if ($is_beta)
+        $post->content = __('BETA - версия');
 }
 
 $listing->display('Не найдено ни одной версии');

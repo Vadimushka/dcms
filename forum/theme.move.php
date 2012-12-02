@@ -25,9 +25,6 @@ if (!mysql_num_rows($q)) {
 }
 $theme = mysql_fetch_assoc($q);
 
-
-
-
 if (isset($_POST['save'])) {
 
     if (isset($_POST['topic'])) {
@@ -64,10 +61,6 @@ if (isset($_POST['save'])) {
                 $theme['group_write'] = $topic['group_write'] + 1;
             }
 
-
-
-
-
             mysql_query("UPDATE `forum_themes` SET `id_topic` = '$theme[id_topic]',
  `id_category` = '$theme[id_category]',
   `group_show` = '$topic[group_show]',
@@ -78,72 +71,37 @@ if (isset($_POST['save'])) {
             $theme_dir = new files(FILES . '/.forum/' . $theme['id']);
             $theme_dir->setGroupShowRecurse($topic['group_show']); // данный параметр необходимо применять рекурсивно
 
-
-
-
-
-            $message = __('%s переместил' . ($user->sex ? '' : 'а') . ' тему из раздела %s в раздел %s', '[user]' . $user->id . '[/user]',
-                    '[url=/forum/category.php?id=' . $theme['id_category_old'] . ']' . $theme['category_name_old'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic_old'] . ']' . $theme['topic_name_old'] . '[/url]',
-                    '[url=/forum/category.php?id=' . $theme['id_category'] . ']' . $theme['category_name'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic'] . ']' . $theme['topic_name'] . '[/url]');
+            $message = __('%s переместил' . ($user->sex ? '' : 'а') . ' тему из раздела %s в раздел %s', '[user]' . $user->id . '[/user]', '[url=/forum/category.php?id=' . $theme['id_category_old'] . ']' . $theme['category_name_old'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic_old'] . ']' . $theme['topic_name_old'] . '[/url]', '[url=/forum/category.php?id=' . $theme['id_category'] . ']' . $theme['category_name'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic'] . ']' . $theme['topic_name'] . '[/url]');
             if ($reason = text::input_text($_POST['reason'])) {
                 $message .= "\n" . __('Причина: %s', $reason);
             }
 
-            $dcms->log('Форум', __('Перемещение темы %s из раздела %s в раздел %s',
-                    '[url=/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]',
-                    '[url=/forum/category.php?id=' . $theme['id_category_old'] . ']' . $theme['category_name_old'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic_old'] . ']' . $theme['topic_name_old'] . '[/url]',
-                    '[url=/forum/category.php?id=' . $theme['id_category'] . ']' . $theme['category_name'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic'] . ']' . $theme['topic_name'] . '[/url]'.($reason?"\nПричина: $reason":'')));
-
-
+            $dcms->log('Форум', __('Перемещение темы %s из раздела %s в раздел %s', '[url=/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]', '[url=/forum/category.php?id=' . $theme['id_category_old'] . ']' . $theme['category_name_old'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic_old'] . ']' . $theme['topic_name_old'] . '[/url]', '[url=/forum/category.php?id=' . $theme['id_category'] . ']' . $theme['category_name'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic'] . ']' . $theme['topic_name'] . '[/url]' . ($reason ? "\nПричина: $reason" : '')));
 
             mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
  VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','0','" . TIME . "','" . my_esc($message) . "','$theme[group_show]','$theme[group_edit]')");
-
-
-
-
-
-
 
             $doc->msg(__('Тема успешно перемещена'));
         }
     }
 }
 
-
 $doc->title = __('Перемещение темы %s', $theme['name']);
 
-
-
-
-
-
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id=$theme[id]&amp;" . passgen());
-$elements = array();
-
+$form = new form("?id=$theme[id]&amp;" . passgen());
 $options = array();
 $q = mysql_query("SELECT `id`,`name` FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC");
 while ($category = mysql_fetch_assoc($q)) {
     $options[] = array($category['name'], 'groupstart' => 1);
     $q2 = mysql_query("SELECT `id`,`name` FROM `forum_topics` WHERE `id_category` = '$category[id]' AND `group_show` <= '$user->group' AND `group_write` <= '$user->group' ORDER BY `time_last` DESC");
-    while ($topic = mysql_fetch_assoc($q2)) {
-        $options[] = array($topic['id'], $topic['name'], $topic['id'] == $theme['id_topic']);
-    }
+    while ($topic = mysql_fetch_assoc($q2)) 
+        $options[] = array($topic['id'], $topic['name'], $topic['id'] == $theme['id_topic']);    
     $options[] = array('groupend' => 1);
 }
-$elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Раздел'), 'info' => array('name' => 'topic', 'options' => $options));
-
-
-$elements[] = array('type' => 'textarea', 'title' => __('Причина перемещения темы'), 'br' => 1, 'info' => array('name' => 'reason'));
-
-
-
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Переместить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
-
+$form->select('topic', __('Раздел'), $options);
+$form->textarea('reason', __('Причина перемещения темы'));
+$form->button(__('Применить'), 'save');
+$form->display();
 
 $doc->ret(__('Действия'), 'theme.actions.php?id=' . $theme['id']);
 $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);

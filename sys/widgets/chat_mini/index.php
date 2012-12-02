@@ -18,6 +18,7 @@ if ($new_posts)
 if ($users)
     $post->bottom = __('%s ' . misc::number($users, 'человек', 'человека', 'человек'), $users);
 
+/*
 if ($dcms->widget_items_count) {
     $q = mysql_query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT " . min($dcms->widget_items_count, $new_posts));
     while ($message = mysql_fetch_assoc($q)) {
@@ -30,6 +31,6 @@ if ($dcms->widget_items_count) {
         $post->icon($ank->icon());
     }
 }
-
+*/
 $listing->display();
 ?>

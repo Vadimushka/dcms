@@ -4,11 +4,6 @@ defined('DCMS') or die;
 $pathinfo = pathinfo($abs_path);
 $dir = new files($pathinfo['dirname']);
 
-
-
-
-
-
 if ($dir->group_show > $user->group) {
     $doc->access_denied(__('У Вас нет прав для просмотра файлов в данной папке'));
 }
@@ -32,15 +27,9 @@ if (isset($_GET['act']) && $_GET['act'] == 'edit_screens') {
 
 $doc->title = __('Файл %s - скачать', $file->runame);
 
-
-
 $doc->description = __('Скачать файл %s (%s)', $file->runame, $file->name);
 
 include 'inc/file_act.php';
-
-
-
-
 
 
 if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
@@ -57,21 +46,10 @@ if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
     }
 }
 
-
-
-
-
 if (empty($_GET['act'])) {
     $screens_count = $file->getScreensCount();
 
     $query_screen = (int) @$_GET['screen_num'];
-
-
-
-
-
-
-
 
 
     if ($screens_count) {
@@ -96,89 +74,195 @@ if (empty($_GET['act'])) {
     }
 
 
+    $listing = new listing();
 
 
 
-    if ($description = $file->description)
-        echo 'Описание' . ': ' . output_text($description) . "<br />\n";
+    if ($description = $file->description) {
+        $post = $listing->post();
+        $post->title = __('Описание');
+        $post->icon('info');
+        $post->content[] = $description;
+    }
 
-    if ($title = $file->title)
-        echo 'Заголовок' . ': ' . for_value($title) . "<br />\n";
+    //echo 'Описание' . ': ' . output_text($description) . "<br />\n";
+
+    if ($title = $file->title) {
+        $post = $listing->post();
+        $post->title = __('Заголовок');
+        $post->content[] = $title;
+    }
+    //echo 'Заголовок' . ': ' . for_value($title) . "<br />\n";
 
     if ($artist = $file->artist) {
-        echo 'Исполнители' . ': ' . for_value($artist) . "<br />\n";
+        $post = $listing->post();
+        $post->title = __('Исполнители');
+        $post->content[] = $artist;
+        //echo 'Исполнители' . ': ' . for_value($artist) . "<br />\n";
         $doc->keywords[] = $artist;
     }
 
     if ($band = $file->band) {
-        echo 'Группа' . ': ' . for_value($band) . "<br />\n";
+        $post = $listing->post();
+        $post->title = __('Группа');
+        $post->content[] = $band;
+        //echo 'Группа' . ': ' . for_value($band) . "<br />\n";
         $doc->keywords[] = $band;
     }
 
     if ($album = $file->album) {
-        echo 'Альбом' . ': ' . for_value($album) . "<br />\n";
+        $post = $listing->post();
+        $post->title = __('Альбом');
+        $post->content[] = $album;
+        //echo 'Альбом' . ': ' . for_value($album) . "<br />\n";
         $doc->keywords[] = $album;
     }
 
-    if ($year = $file->year)
-        echo __('Год') . ': ' . for_value($year) . "<br />\n";
+    if ($year = $file->year) {
+        $post = $listing->post();
+        $post->title = __('Год');
+        $post->content[] = $year;
+        //echo __('Год') . ': ' . for_value($year) . "<br />\n";
+    }
+    if ($genre = $file->genre) {
+        $post = $listing->post();
+        $post->title = __('Жанр');
+        $post->content[] = $genre;
 
-    if ($genre = $file->genre)
-        echo __('Жанр') . ': ' . for_value($genre) . "<br />\n";
+        // echo __('Жанр') . ': ' . for_value($genre) . "<br />\n";
+    }
 
-    if ($comment = $file->comment)
-        echo __('Комментарий') . ': ' . output_text($comment) . "<br />\n";
+    if ($comment = $file->comment) {
+        $post = $listing->post();
+        $post->title = __('Комментарий');
+        $post->content[] = $comment;
+        //echo __('Комментарий') . ': ' . output_text($comment) . "<br />\n";
+    }
 
-    if ($track_number = (int) $file->track_number)
-        echo __('Номер трека') . ': ' . $track_number . "<br />\n";
+    if ($track_number = (int) $file->track_number) {
+        $post = $listing->post();
+        $post->title = __('Номер трека');
+        $post->content[] = $track_number;
+        //echo __('Номер трека') . ': ' . $track_number . "<br />\n";
+    }
 
-    if ($language = $file->language)
-        echo __('Язык') . ': ' . for_value($language) . "<br />\n";
+    if ($language = $file->language) {
+        $post = $listing->post();
+        $post->title = __('Язык');
+        $post->content[] = $language;
+        //echo __('Язык') . ': ' . for_value($language) . "<br />\n";
+    }
 
-    if ($url = $file->url)
-        echo __('Ссылка') . ': ' . output_text($url) . "<br />\n";
+    if ($url = $file->url) {
+        $post = $listing->post();
+        $post->title = __('Ссылка');
+        $post->content[] = $url;
+        // echo __('Ссылка') . ': ' . output_text($url) . "<br />\n";
+    }
 
-    if ($copyright = $file->copyright)
-        echo __('Копирайт') . ': ' . output_text($copyright) . "<br />\n";
+    if ($copyright = $file->copyright) {
+        $post = $listing->post();
+        $post->title = __('Копирайт');
+        $post->content[] = $copyright;
+        //echo __('Копирайт') . ': ' . output_text($copyright) . "<br />\n";
+    }
 
-    if ($vendor = $file->vendor)
-        echo __('Производитель') . ': ' . for_value($vendor) . "<br />\n";
+    if ($vendor = $file->vendor) {
+        $post = $listing->post();
+        $post->title = __('Производитель');
+        $post->content[] = $vendor;
+        // echo __('Производитель') . ': ' . for_value($vendor) . "<br />\n";
+    }
 
-    if (($width = (int) $file->width) && ($height = (int) $file->height))
-        echo __('Разрешение') . ': ' . $width . 'x' . $height . "<br />\n";
+    if (($width = (int) $file->width) && ($height = (int) $file->height)) {
+        $post = $listing->post();
+        $post->title = __('Разрешение');
+        $post->content[] = $width . 'x' . $height;
+        // echo __('Разрешение') . ': ' . $width . 'x' . $height . "<br />\n";
+    }
 
-    if ($frames = (int) $file->frames)
-        echo __('Кол-во кадров') . ': ' . $frames . "<br />\n";
+    if ($frames = (int) $file->frames) {
+        $post = $listing->post();
+        $post->title = __('Кол-во кадров');
+        $post->content[] = $frames;
+        //echo __('Кол-во кадров') . ': ' . $frames . "<br />\n";
+    }
 
-    if ($playtime_string = $file->playtime_string)
-        echo __('Продолжительность') . ': ' . for_value($playtime_string) . "<br />\n";
+    if ($playtime_string = $file->playtime_string) {
+        $post = $listing->post();
+        $post->title = __('Продолжительность');
+        $post->content[] = $playtime_string;
+        //echo __('Продолжительность') . ': ' . for_value($playtime_string) . "<br />\n";
+    }
 
-    if (($video_bitrate = (int) $file->video_bitrate) && ($video_bitrate_mode = $file->video_bitrate_mode))
-        echo __('Видео битрейт') . ': ' . size_data($video_bitrate) . "/s (" . $video_bitrate_mode . ")<br />\n";
+    if (($video_bitrate = (int) $file->video_bitrate) && ($video_bitrate_mode = $file->video_bitrate_mode)) {
+        $post = $listing->post();
+        $post->title = __('Видео битрейт');
+        $post->content[] = size_data($video_bitrate) . "/s (" . $video_bitrate_mode . ")";
+        //echo __('Видео битрейт') . ': ' . size_data($video_bitrate) . "/s (" . $video_bitrate_mode . ")<br />\n";
+    }
 
-    if ($video_codec = $file->video_codec)
-        echo __('Видео кодек') . ': ' . for_value($video_codec) . "<br />\n";
+    if ($video_codec = $file->video_codec) {
+        $post = $listing->post();
+        $post->title = __('Видео кодек');
+        $post->content[] = $video_codec;
+        //echo __('Видео кодек') . ': ' . for_value($video_codec) . "<br />\n";
+    }
 
-    if ($video_frame_rate = $file->video_frame_rate)
-        echo __('Частота') . ': ' . round($video_frame_rate / 60) . " кадр./сек<br />\n";
+    if ($video_frame_rate = $file->video_frame_rate) {
+        $post = $listing->post();
+        $post->title = __('Частота');
+        $post->content[] = __('%s кадров в секунду', round($video_frame_rate / 60));
+        //echo __('Частота') . ': ' . round($video_frame_rate / 60) . " кадр./сек<br />\n";
+    }
 
-    if (($audio_bitrate = (int) $file->audio_bitrate) && ($audio_bitrate_mode = $file->audio_bitrate_mode))
-        echo __('Аудио битрейт') . ': ' . size_data($audio_bitrate) . "/s (" . $audio_bitrate_mode . ")<br />\n";
+    if (($audio_bitrate = (int) $file->audio_bitrate) && ($audio_bitrate_mode = $file->audio_bitrate_mode)) {
+        $post = $listing->post();
+        $post->title = __('Аудио битрейт');
+        $post->content[] = size_data($audio_bitrate) . "/s (" . $audio_bitrate_mode . ")";
+        //echo __('Аудио битрейт') . ': ' . size_data($audio_bitrate) . "/s (" . $audio_bitrate_mode . ")<br />\n";
+    }
 
-    if ($audio_codec = $file->audio_codec)
-        echo __('Аудио кодек') . ': ' . for_value($audio_codec) . "<br />\n";
+    if ($audio_codec = $file->audio_codec) {
+        $post = $listing->post();
+        $post->title = __('Аудио кодек');
+        $post->content[] = $audio_codec;
+        //echo __('Аудио кодек') . ': ' . for_value($audio_codec) . "<br />\n";
+    }
 
     if ($file->id_user) {
         $ank = new user($file->id_user);
-        echo __("Файл добавил") . ": <a href='/profile.view.php?id=$ank->id'>{$ank->nick}</a> (" . vremja($file->time_add) . ")<br />\n";
+
+        $post = $listing->post();
+        $post->title = __('Файл добавил');
+        $post->content = $ank->nick;
+        $post->url = '/profile.view.php?id=' . $ank->id;
+        $post->time = vremja($file->time_add);
+
+
+        //echo __("Файл добавил") . ": <a href='/profile.view.php?id=$ank->id'>{$ank->nick}</a> (" . vremja($file->time_add) . ")<br />\n";
     }
 
+    $post = $listing->post();
+    $post->title = __('Кол-во скачиваний');
+    $post->content[] = intval($file->downloads) . ' ' . __(misc::number($file->downloads, 'раз', 'раза', 'раз'));
 
 
+    //echo __("Кол-во скачиваний") . ": " . intval($file->downloads) . ' ' . __(misc::number($file->downloads, 'раз', 'раза', 'раз')) . "<br />\n";
+
+    $post = $listing->post();
+    $post->title = __('Размер файла');
+    $post->content[] = size_data($file->size);
+    //echo __("Размер файла") . ": " . size_data($file->size) . "<br />\n";
+
+    $post = $listing->post();
+    $post->title = __('Общая оценка');
+    $post->content[] = $file->rating_name . ' (' . round($file->rating, 1) . '/' . $file->rating_count . ")";
+    //echo __("Общая оценка") . ': ' . ' ' . $file->rating_name . ' (' . round($file->rating, 1) . '/' . $file->rating_count . ")<br />\n";
 
 
+    $listing->display();
 
-    echo __("Общая оценка") . ': ' . ' ' . $file->rating_name . ' (' . round($file->rating, 1) . '/' . $file->rating_count . ")<br />\n";
     if ($user->group && $file->id_user != $user->id) {
         $my_rating = $file->rating_my(); // мой рейтинг
         $form = new design();
@@ -194,20 +278,6 @@ if (empty($_GET['act'])) {
         $form->assign('el', $elements);
         $form->display('input.form.tpl');
     }
-
-
-
-
-
-
-
-
-
-
-    echo __("Кол-во скачиваний") . ": " . intval($file->downloads) . ' ' . __(misc::number($file->downloads, 'раз', 'раза', 'раз')) . "<br />\n";
-    echo __("Размер файла") . ": " . size_data($file->size) . "<br />\n";
-
-
 
     $smarty = new design();
     $elements = array();

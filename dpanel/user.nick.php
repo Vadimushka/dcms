@@ -49,16 +49,10 @@ if (isset($_POST['save']) && !empty($_POST['login']) && $_POST['login'] != $ank-
     }
 }
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id_ank=$ank->id&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-$elements = array();
-
-$elements[] = array('type' => 'input_text', 'title' => __('Логин/ник'), 'br' => 1, 'info' => array('name' => 'login', 'value' => $ank->login));
-
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Применить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form("?id_ank=$ank->id&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form->text('login', __('Логин/ник'), $ank->login);
+$form->button(__('Применить'), 'save');
+$form->display();
 
 $doc->ret(__('Действия'), 'user.actions.php?id=' . $ank->id);
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);

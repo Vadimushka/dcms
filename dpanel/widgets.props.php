@@ -22,19 +22,12 @@ if (isset($_POST ['save'])) {
     }
 }
 
-$form = new design ();
-$form->assign('method', 'post');
-$form->assign('action', '?' . passgen());
-$elements = array();
 
+$form = new form('?' . passgen());
 foreach ($types AS $type) {
     $prop_name = "widget_items_count_" . $type;
-    $elements [] = array('type' => 'input_text', 'title' => __('Макс. кол-во пунктов в виджете') . ' [0-50] (' . strtoupper($type) . ')', 'br' => 1, 'info' => array('name' => $prop_name, 'value' => $dcms->$prop_name));
+    $form->text($prop_name, __('Макс. кол-во пунктов в виджете') . ' [0-50] (' . strtoupper($type) . ')', $dcms->$prop_name);
 }
-
-$elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Применить'))); // кнопка
-$form->assign('el', $elements);
-$form->display('input.form.tpl');
-
-$doc->ret(__('Админка'), '/dpanel/');
+$form->button(__('Применить'), 'save');
+$form->display();
 ?>

@@ -39,8 +39,6 @@ if (!empty($_POST)) {
     }
 }
 
-
-
 $listing = new listing();
 foreach ($tables->tables as $table) {
     if ($table {0} == '~') {
@@ -51,11 +49,13 @@ foreach ($tables->tables as $table) {
     $ch->title = $table;
     $ch->checked = true;
 }
-echo "<form method='post' action='?" . passgen() . "'>";
-$listing->display(__('Таблицы отсутствуют'));
-echo __('Структура и данные таблиц сохранятся в папке sys/preinstall и в дальнейшем могут быть использованы для установки движка с существующими данными') . "<br />";
-echo "<input type='submit' name='create' value='" . __('Структура') . "' />";
-echo "<input type='submit' name='data' value='" . __('Данные') . "' /></form>";
+
+$form = new form('?' . passgen());
+$form->html($listing->fetch());
+$form->bbcode('[notice] ' . __('Структура и данные таблиц сохранятся в папке sys/preinstall и в дальнейшем могут быть использованы для установки движка с существующими данными'));
+$form->button(__('Структура'), 'create', false);
+$form->button(__('Данные'), 'data', false);
+$form->display();
 
 $doc->ret(__('Админка'), './');
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 include_once '../sys/inc/start.php';
 $doc = new document(2);
 $doc->title = __('Форум');
@@ -21,8 +22,6 @@ if (!mysql_num_rows($q)) {
 }
 $theme = mysql_fetch_assoc($q);
 
-
-
 if (isset($_POST['save'])) {
     if (isset($_POST['name'])) {
         $name = text::for_name($_POST['name']);
@@ -37,18 +36,10 @@ if (isset($_POST['save'])) {
 }
 $doc->title = __('Переименование темы %s', $theme['name']);
 
-
-
-
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id=$theme[id]&amp;" . passgen());
-$elements = array();
-$elements[] = array('type' => 'input_text', 'title' => __('Название'), 'br' => 1, 'info' => array('name' => 'name', 'value' => $theme['name']));
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Применить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
-
+$form = new form("?id=$theme[id]&amp;" . passgen());
+$form->text('name', __('Название'), $theme['name']);
+$form->button(__('Применить'), 'save');
+$form->display();
 
 $doc->ret(__('Действия'), 'theme.actions.php?id=' . $theme['id']);
 $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);

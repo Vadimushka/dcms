@@ -45,8 +45,6 @@ if ($message['edit_id_user']) {
     $post->bottom .= text::output_text(' ([user]' . $message['edit_id_user'] . '[/user])');
 }
 
-
-
 $q = mysql_query("SELECT * FROM `forum_history` WHERE `id_message` = '$message[id]' ORDER BY `id` DESC LIMIT $pages->limit");
 
 while ($messages = mysql_fetch_assoc($q)) {

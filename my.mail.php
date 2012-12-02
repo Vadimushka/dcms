@@ -10,7 +10,7 @@ if (isset($_GET ['id'])) {
     if (!$ank->group && !mysql_result(mysql_query("SELECT COUNT(*) FROM `mail` WHERE `id_user` = '{$user->id}' AND `id_sender` = '$id_kont'"), 0)) {
         $doc->err(__('Пользователь не найден'));
         $doc->ret(__('К почте'), '?');
-        exit();
+        exit;
     }
 
     $can_write = true;
@@ -18,10 +18,8 @@ if (isset($_GET ['id'])) {
         $doc->msg(__('Писать запрещено'), 'write_denied');
         $can_write = false;
     }
-
-
+    
     $accept_send = $ank->id && $ank->group && $ank->id != $user->id && $can_write;
-
 
     if ($ank->mail_only_friends && !$ank->is_friend($user)) {
         $accept_send = false;
@@ -33,7 +31,6 @@ if (isset($_GET ['id'])) {
     } elseif ($ank->id && $user->mail_only_friends && !$user->is_friend($ank) && $user->group >= $ank->group) {
         $doc->err(__('Пользователь не сможет Вам ответить'));
     }
-
 
     if ($accept_send && isset($_POST ['post']) && isset($_POST ['mess'])) {
         $mess = (string) $_POST ['mess'];
@@ -57,21 +54,16 @@ if (isset($_GET ['id'])) {
     $doc->title = __('Переписка с "%s"', $ank->login);
 
     if ($accept_send) {
-        $smarty = new design ();
-        $smarty->assign('method', 'post');
-        $smarty->assign('action', "/my.mail.php?id=$id_kont&amp;" . passgen());
-        $elements = array();
-        $elements [] = array('type' => 'textarea', 'title' => __('Сообщение'), 'br' => 1, 'info' => array('name' => 'mess'));
-
+        $form = new form("/my.mail.php?id=$id_kont&amp;" . passgen());
+        $form ->textarea('mess', __('Сообщение'));
+        
         if ($user->group <= $ank->group && !$ank->is_friend($user))
-            $elements [] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-
-        $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'post', 'value' => __('Отправить'))); // кнопка
-        $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'refresh', 'value' => __('Обновить'))); // кнопка
-        $smarty->assign('el', $elements);
-        $smarty->display('input.form.tpl');
+            $form->captcha();
+        
+        $form ->button(__('Отправить'), 'post', false);
+        $form ->button(__('Обновить'), 'refresh', false);
+        $form ->display();        
     }
-
 
 
     $pages = new pages ();
@@ -85,15 +77,12 @@ WHERE (`id_user` = '{$user->id}' AND `id_sender` = '$id_kont')
 ORDER BY `id` DESC
 LIMIT $pages->limit");
     // отметка о прочтении писем
-    mysql_query("UPDATE `mail` SET `is_read` = '1' WHERE `id_user` = '{$user->id}' AND `id_sender` = '$id_kont'");
-    // echo mysql_info();
+    mysql_query("UPDATE `mail` SET `is_read` = '1' WHERE `id_user` = '{$user->id}' AND `id_sender` = '$id_kont'");    
     if (preg_match('#Changed: ([0-9]+)#i', mysql_info(), $ch)) {
         if ($ch [1]) {
             $user->mail_new_count = $user->mail_new_count - $ch [1];
         }
     }
-
-
 
     $listing = new listing();
     while ($mail = mysql_fetch_assoc($q)) {
@@ -118,17 +107,14 @@ LIMIT $pages->limit");
 
 $user->mail_new_count = mysql_result(mysql_query("SELECT COUNT(*) FROM `mail` WHERE `id_user` = '$user->id' AND `is_read` = '0'"), 0);
 
-
+$sql_where = array("`mail`.`id_user` = '{$user->id}'");
 if (isset($_GET ['only_unreaded'])) {
-    $sql_add = " AND `is_read` = '0'";
-} else {
-    $sql_add = '';
+    $sql_where[] = "`mail`.`is_read` = '0'";
 }
 
 $pages = new pages ();
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`id_sender`)) FROM `mail` WHERE `id_user` = '{$user->id}'$sql_add"), 0); // количество написавших пользователей
+$pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) FROM `mail` WHERE ".implode(' AND ', $sql_where)), 0); // количество написавших пользователей
 $pages->this_page(); // получаем текущую страницу
-
 
 $q = mysql_query("SELECT `users`.`id`,
         `mail`.`id_sender`,
@@ -137,21 +123,20 @@ $q = mysql_query("SELECT `users`.`id`,
         COUNT(`mail`.`id`) AS `count`
 FROM `mail`
 LEFT JOIN `users` ON `mail`.`id_sender` = `users`.`id`
-WHERE `mail`.`id_user` = '{$user->id}'$sql_add
+WHERE ".implode(' AND ', $sql_where)."
 GROUP BY `mail`.`id_sender`
 ORDER BY `time` DESC
 LIMIT $pages->limit");
 
-
 $listing = new listing();
 while ($mail = mysql_fetch_assoc($q)) {
-    $ank = new user((int) $mail ['id_sender']);
+    $ank = new user((int) $mail['id_sender']);
     $post = $listing->post();
     $post->icon($ank->icon());
     $post->url = '?id=' . $ank->id;
     $post->title = $ank->nick();
-    $post->counter = $sql_add ? '+' . $mail['count'] : $mail['count'];
-    $post->hightlight = !$mail ['is_read'];
+    $post->counter = isset($_GET ['only_unreaded']) ? '+' . $mail['count'] : $mail['count'];
+    $post->hightlight = !$mail['is_read'];
 }
 
 $listing->display(__('Почта отсутствует'));

@@ -2,6 +2,16 @@
 
 abstract class text {
 
+    static function filter($str, $type = 1) {
+        switch ($type) {
+            case 1: return self::for_value($str);
+                break;
+            case 2: return self::output_text($str);
+                break;
+            default:return $str;
+        }
+    }
+
     /**
      * Получение корректного ICQ UIN
      * @param type $icq
@@ -78,14 +88,12 @@ abstract class text {
         // обработка ника
         //$str = preg_replace_callback('#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31})([\!\.\,\ \)\(]|$)#uim', array('text', 'nick'), $str);
         $str = preg_replace("#(^( |\r|\n)+)|(( |\r|\n)+$)|([^\pL\r\n\s0-9" . preg_quote(' []|`@\'"-_+=~!#:;$%^&*()?/\\.,<>{}©', '#') . "]+)#ui", '', $str);
-        
+
         $inputbbcode = new inputbbcode($str);
         $str = $inputbbcode->get_html();
-        
+
         return $str;
     }
-
-     
 
     /**
      * Фильтрация и форматирование текста перед вставкой в HTML
@@ -96,13 +104,12 @@ abstract class text {
     static function output_text($str) {
 
         //
-        
         // преобразование смайлов в BBcode
         $str = smiles::input($str);
 
         // обработка старых цитат с числом в теге
         $str = preg_replace('#\[(/?)quote_([0-9]+)(\]|\=)#ui', '[\1quote\3', $str);
-        
+
         // преобразование ссылок в тег URL
         $str = preg_replace('#(^|\s|\(|\])([a-z]+://([^ \r\n\t`\'"<]+))(,|\[|<|\s|$)#iuU', '\1[url="\2"]\2[/url]\4', $str);
 
@@ -117,12 +124,12 @@ abstract class text {
         $bbcode->mnemonics['[fix]'] = '<img src="/sys/images/icons/bb.fix.png" alt="" />';
         $bbcode->mnemonics['[change]'] = '<img src="/sys/images/icons/bb.change.png" alt="" />';
         $bbcode->mnemonics['[secure]'] = '<img src="/sys/images/icons/bb.secure.png" alt="" />';
-
+        $bbcode->mnemonics['[notice]'] = '<img src="/sys/images/icons/bb.notice.png" alt="" />';
 
         $str = $bbcode->get_html();
 
         //$str = wordwrap($str, 10, "&#173;");
-        
+
         return $str;
     }
 
@@ -177,7 +184,6 @@ abstract class text {
             return $value[1] . $value[2];
         }
     }
-    
 
     /**
      * Обработка текста
@@ -188,13 +194,13 @@ abstract class text {
 
         // обработка старых цитат с числом в теге
         $str = preg_replace('#\[(/?)quote_([0-9]+)(\]|\=)#ui', '[\1quote\3', $str);
-        
+
         // предварительная обработка BBcode
         $bbcode = new prebbcode($str);
         $str = $bbcode->get_html();
 
         $str = trim(htmlspecialchars($str, ENT_QUOTES, 'UTF-8'));
-        
+
         return $str;
     }
 

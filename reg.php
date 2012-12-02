@@ -1,4 +1,5 @@
 <?php
+
 $subdomain_theme_redirect_disable = true; // принудительное отключение редиректа на поддомены, соответствующие типу браузера
 include_once 'sys/inc/start.php';
 $doc = new document();
@@ -186,58 +187,44 @@ if ($step == 3) {
 
 if ($step == 2) {
     $doc->title = __('Завершение регистрации'); // заголовок страницы
-    $form = new design();
-    $form->assign('method', 'post');
-    $form->assign('action', '/reg.php?final&amp;' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-    $elements = array();
-    $elements[] = array('type' => 'text', 'value' => __('Ваш ник: %s', $login), 'br' => 1);
-    $elements[] = array('type' => 'password', 'title' => __('Пароль') . ' [6-32]', 'br' => 1, 'info' => array('name' => 'password'));
-    $elements[] = array('type' => 'password', 'title' => __('Повторите пароль'), 'br' => 1, 'info' => array('name' => 'password_retry'));
 
-    $elements[] = array('type' => 'select', 'title' => __('Ваш пол'), 'br' => 1, 'info' => array('name' => 'sex', 'options' => array(array(1, __('Мужской')), array(0, __('Женский')))));
-    $elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-    if ($dcms->reg_with_mail && !$inv)
-        $elements[] = array('type' => 'input_text', 'title' => __('Ваш E-mail'), 'br' => 1, 'info' => array('name' => 'mail'));
-    if ($dcms->reg_with_mail && !$inv)
-        $elements[] = array('type' => 'text', 'value' => '* ' . __('На Ваш E-mail придет письмо с ссылкой для активации аккаунта'), 'br' => 1);
 
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'post', 'value' => __('Зарегистрироваться'))); // кнопка
-    $form->assign('el', $elements);
-    $form->display('input.form.tpl');
+    $form = new form('/reg.php?final&amp;' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+    $form->bbcode(__('Ваш ник: %s', '[b]' . $login . '[/b]'));
+    $form->password('password', __('Пароль') . ' [6-32]');
+    $form->password('password_retry', __('Повторите пароль'));
+    $form->select('sex', __('Ваш пол'), array(array(1, __('Мужской')), array(0, __('Женский'))));    
+    if ($dcms->reg_with_mail && !$inv) {
+        $form->text('mail', __('Ваш E-mail') . '*');
+        $form->bbcode('* ' . __('На Ваш E-mail придет письмо с ссылкой для активации аккаунта'));
+    }
+    $form->captcha();
+    $form->button(__('Зарегистрироваться'), 'post');
+    $form->display();
     exit;
 }
 
 if ($step == 1) {
     $doc->title = __('Подбор ника'); // заголовок страницы
 
-    $form = new design();
-    $form->assign('method', 'post');
-    $form->assign('action', '/reg.php?nick&amp;' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-    $elements = array();
-    $elements[] = array('type' => 'input_text', 'title' => __('Выберите ник') . ' [A-zА-я0-9 -_]', 'br' => 1, 'info' => array('name' => 'login'));
-    $elements[] = array('type' => 'text', 'value' => '* ' . __('Сочетание русского и английского алфавитов запрещено'), 'br' => 1);
-    $elements[] = array('type' => 'text', 'value' => '** ' . __('Использование пробелов вначале и конце строк запрещено'), 'br' => 1);
-    $elements[] = array('type' => 'text', 'value' => '*** ' . __('Ник не должен начинаться с цифр'), 'br' => 1);
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'post', 'value' => __('Продолжить'))); // кнопка
-    $form->assign('el', $elements);
-    $form->display('input.form.tpl');
+    $form = new form('/reg.php?nick&amp;' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+    $form->text('login', __('Выберите ник') . ' [A-zА-я0-9 -_]');
+    $form->bbcode('- ' . __('Сочетание русского и английского алфавитов запрещено'));
+    $form->bbcode('- ' . __('Использование пробелов вначале и конце строк запрещено'));
+    $form->bbcode('- ' . __('Ник не должен начинаться с цифр'));
+    $form->button(__('Продолжить'), 'post');
+    $form->display();
     exit;
 }
 
 if ($step == 0) {
     $doc->title = __('Соглашение'); // заголовок страницы
-    $form = new design();
 
-    $form->assign('method', 'post');
-    $form->assign('action', '/reg.php?rules&amp;' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-    $elements = array();
-
-    $bb = new bb(H . '/sys/docs/rules.txt');
-    $elements[] = array('type' => 'text', 'value' => $bb->fetch()); // правила
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'ok', 'value' => __('Принимаю'))); // кнопка
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'no', 'value' => __('Не принимаю'))); // кнопка
-    $form->assign('el', $elements);
-    $form->display('input.form.tpl');
+    $form = new form('/reg.php?rules&amp;' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+    $form->bbcode(@file_get_contents(H . '/sys/docs/rules.txt'));
+    $form->button(__('Принимаю'), 'ok', false);
+    $form->button(__('Не принимаю'), 'no');
+    $form->display();
     exit;
 }
 ?>

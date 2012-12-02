@@ -4,57 +4,35 @@
 */
 
 
-/* Выделение ника пользователя, находящегося онлайн */
-span.nick_on {
-    text-shadow: 0px 0px 4px #4f4;
-    border-bottom: 1px #090 dotted;
+* {
+    font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    vertical-align: top;
 }
 
-/* Выделение ника пользователя, находящегося оффлайн */
-span.nick_off {
-    border-bottom: 1px #200 dotted;
+table {
+    border: 0;
+    border-spacing: 0;
 }
 
-/* Выделение текста при поиске */
-span.mark {
-    font-weight: bold;
-    color: #F6A21A;
+td {    
+    padding: 0;
 }
 
-/* Выделение PHP кода */
-div.code_php {
-    font-family: sans-serif;
-    overflow: auto;
+div.quote{
+    border: 1px solid #ccc;
+    font-size: 90%;
+}
+span.quote{
+    
+}
+
+.code_php{
     max-width: 600px;
-    max-height: 400px;
-}
-
-/* Цитата */
-div.quote {
-    font-size: xx-small;
-    background-color: #EFF1FF;
-    margin: 1px;
-    border: 1px #9999FF solid;
-    border-left: 4px #9999FF solid;
-    padding: 1px;
-}
-/* заголовок цитаты */
-span.quote {
-    font-weight: bold;
-}
-
-div.spoiler{    
-    margin: 3px;    
-    padding: 0px;
-    display: inline-block;
-}
-span.spoiler_title{
-    margin: 0px;
-    font-weight: bold; 
-    cursor: pointer;
-    display: inline-block;
-}
-div.spoiler_content{
-    margin: 0px;
-    display: block;
+    overflow: auto;
 }

@@ -48,8 +48,6 @@ if (!empty($_POST)) {
     }
 }
 
-
-
 $listing = new listing();
 foreach ($tables as $table) {
     $ch = $listing ->checkbox();
@@ -58,11 +56,16 @@ foreach ($tables as $table) {
     $ch -> checked = !in_array($table, $tables_exists->tables);    
 }
 
-echo "<form method='post' action='?" . passgen() . "'>";
-$listing->display(__('Таблицы отсутствуют'));
-echo "* " . __('При совпадении имени загружаемой таблицы с существующей, существующая таблица будет переименована') . "<br />";
-echo "** " . __('Проверяются файлы sys/preinstall/base.create.[имя таблицы].ini') . "<br />";
-echo "<input type='submit' name='load' value='" . __('Загрузить') . "' /></form>";
+if ($listing->count()) {
+    $form = new form('?' . passgen());
+    $form->html($listing->fetch());
+    $form->bbcode('[notice] ' . __('При совпадении имени загружаемой таблицы с существующей, существующая таблица будет переименована.'));
+    $form->bbcode('[notice] ' . __('Данная операция может повлечь потерю данных. Если вы не уверены в своих действиях, лучше покиньте данную страницу.'));
+    $form->button(__('Загрузить'), 'load');
+    $form->display();
+} else {
+    $listing->display(__('Данные о структуре таблиц отсутствуют'));
+}
 
 $doc->ret(__('Админка'), './');
 ?>

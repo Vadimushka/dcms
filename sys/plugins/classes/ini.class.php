@@ -86,7 +86,7 @@ abstract class ini {
         if (!@file_put_contents($tmp_file, implode("\r\n", $ini))) {
             return false;
         }
-        @chmod($tmp_file, filesystem::getChmodToWrite());
+        //@chmod($tmp_file, filesystem::getChmodToWrite());
 
         if (IS_WINDOWS) {
             // в винде файл перед заменой нужно удалить

@@ -54,10 +54,11 @@ abstract class languages {
                 $enname = empty($config['enname']) ? $rd : $config['enname']; // название языка на английском
                 $name = empty($config['name']) ? $rd : $config['name']; // название языка на местном языке
                 $xml_lang = empty($config['xml_lang']) ? $rd : $config['xml_lang'];
+                $disable_collect_phrases = !empty($config['disable_collect_phrases']);
 
                 $icon = file_exists($lpath . '/' . $rd . '/icon.png') ? '/sys/languages/' . $rd . '/icon.png' : false;
 
-                $list[$rd] = array('enname' => $enname, 'name' => $name, 'icon' => $icon, 'xml_lang' => $xml_lang);
+                $list[$rd] = array('enname' => $enname, 'name' => $name, 'icon' => $icon, 'xml_lang' => $xml_lang, 'disable_collect_phrases' => $disable_collect_phrases);
             }
         }
         closedir($od);

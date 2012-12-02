@@ -13,6 +13,7 @@ class language_pack {
     var $enname;
     var $icon;
     var $xml_lang;
+    var $disable_collect_phrases;
 
     function __construct($code = false) {
         static $_for_translate;
@@ -31,6 +32,7 @@ class language_pack {
             $this->name = $config['name']; // локальное название языка
             $this->icon = $config['icon']; // путь к иконке   
             $this->xml_lang = $config['xml_lang'];
+            $this->disable_collect_phrases = $config['disable_collect_phrases'];
         }
         $this->_script = str_replace(array('/', '\\'), '_', $_SERVER['SCRIPT_NAME']);
 
@@ -38,7 +40,7 @@ class language_pack {
             $this->_default = $_for_translate = keyvalue::read(H . '/sys/languages/for_translate.lng');
         } else {
             $this->_default = $_for_translate;
-        } 
+        }
     }
 
     protected function _load() {
@@ -56,8 +58,16 @@ class language_pack {
         return $data;
     }
 
+    /**
+     * Добавление отстутствующей строки
+     * @param type $str
+     * @return boolean
+     */
     protected function _addString($str) {
         if (!$this->code) {
+            return false;
+        }
+        if ($this->disable_collect_phrases) {
             return false;
         }
 

@@ -22,7 +22,7 @@ if (!empty($_GET['smile']) && isset($smiles_a[$_GET['smile']])) {
         $phrase = (string) $_GET['phrase'];
         if (!empty($smiles[$phrase])) {
             if ($smiles[$phrase] != $sm)
-                $design->err(__('Фраза относится к другому смайлу'));
+                $doc->err(__('Фраза относится к другому смайлу'));
             else {
                 unset($smiles[$phrase]);
 
@@ -67,15 +67,10 @@ if (!empty($_GET['smile']) && isset($smiles_a[$_GET['smile']])) {
 
     $listing->display(__('Фразы отсутствуют'));
 
-
-    $smarty = new design();
-    $smarty->assign('method', 'post');
-    $smarty->assign('action', '?' . passgen() . '&amp;smile=' . urlencode($sm) . '&amp;act=add');
-    $elements = array();
-    $elements[] = array('type' => 'input_text', 'title' => __('Фраза'), 'br' => 1, 'info' => array('name' => 'phrase'));
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Добавить'))); // кнопка
-    $smarty->assign('el', $elements);
-    $smarty->display('input.form.tpl');
+    $form = new form('?' . passgen() . '&amp;smile=' . urlencode($sm) . '&amp;act=add');
+    $form->text('phrase', __('Фраза'));
+    $form->button(__('Добавить'));
+    $form->display();
 
     $doc->ret(__('Смайлы'), '?');
     $doc->ret(__('Админка'), './');

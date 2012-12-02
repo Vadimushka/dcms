@@ -52,15 +52,10 @@ if ($can_write) {
     }
 
     if ($user->group) {
-
-
-
         $message_form = '';
         if (isset($_GET ['message']) && is_numeric($_GET ['message'])) {
             $id_message = (int) $_GET ['message'];
-
             $q = mysql_query("SELECT * FROM `chat_mini` WHERE `id` = '$id_message' LIMIT 1");
-
             if (mysql_num_rows($q)) {
                 $message = mysql_fetch_assoc($q);
 
@@ -73,17 +68,11 @@ if ($can_write) {
             }
         }
 
-
-
-        $smarty = new design();
-        $smarty->assign('method', 'post');
-        $smarty->assign('action', '?' . passgen());
-        $elements = array();
-        $elements[] = array('type' => 'textarea', 'title' => __('Сообщение'), 'br' => 1, 'info' => array('name' => 'message', 'value' => $message_form));
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'send', 'value' => __('Отправить'))); // кнопка
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'refresh', 'value' => __('Обновить'))); // кнопка
-        $smarty->assign('el', $elements);
-        $smarty->display('input.form.tpl');
+        $form = new form('?' . passgen());
+        $form->textarea('message', __('Сообщение'), $message_form);        
+        $form ->button(__('Отправить'), 'send', false);
+        $form ->button(__('Обновить'), 'refresh', false);
+        $form ->display();        
     }
 }
 

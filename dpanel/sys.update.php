@@ -33,7 +33,6 @@ if (($ver = $update->is_updateble()) !== false) {
         }
     }
 
-
     if (!empty($_POST['update'])) {
         $skip = array();
         foreach ($can_skip as $key => $value) {
@@ -53,33 +52,17 @@ if (($ver = $update->is_updateble()) !== false) {
         }
     }
 
-
-
-
-
-
     $doc->msg(__('Доступно обновление: %s > %s', $dcms->version, $ver));
 
-
-
-    $form = new design ();
-    $form->assign('method', 'post');
-    $form->assign('action', '?' . passgen());
-    $elements = array();
-    foreach ($can_skip as $key => $value) {
-        $elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => 1, 'name' => $key, 'text' => $value));
-    }
-
-    $elements [] = array('type' => 'textarea', 'title' => __('Полный список обновляемых файлов'), 'br' => 1, 'info' => array('value' => implode("\r\n", $list)));
-
-    $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'update', 'value' => __('Обновить'))); // кнопка
-    $form->assign('el', $elements);
-    $form->display('input.form.tpl');
+    $form = new form('?' . passgen());
+    foreach ($can_skip as $key => $value)
+        $form->checkbox($key, $value, true);
+    $form->textarea(false, __('Полный список обновляемых файлов'), implode("\r\n", $list));
+    $form->button(__('Обновить'), 'update');
+    $form->display();
 } else {
     $doc->msg(__('Вы используете последнюю версию: %s', $dcms->version));
 }
-
-
 
 $doc->ret(__('Админка'), '/dpanel/');
 ?>

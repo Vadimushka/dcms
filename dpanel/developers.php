@@ -5,8 +5,8 @@ $doc->title = __('Разработчики');
 $doc->ret(__('Админка'), './');
 
 $bb = new bb(H . '/sys/docs/developers.txt');
-if ($bb->title) {
+if ($bb->title)
     $doc->title = $bb->title;
-}
+
 $bb->display();
 ?>

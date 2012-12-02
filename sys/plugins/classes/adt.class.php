@@ -32,9 +32,9 @@ class adt extends menu {
             $q = mysql_query("SELECT * FROM `advertising` WHERE `space` = '" . my_esc($id) . "' AND `" . (IS_MAIN ? 'page_main' : 'page_other') . "` = '1' AND (`time_start` < '" . TIME . "' OR `time_start` = '0') AND (`time_end` > '" . TIME . "' OR `time_end` = '0') ORDER BY `time_start` ASC");
             while ($adt = mysql_fetch_assoc($q)) {
                 if ($adt['url_img']) {
-                    $return[] = '<a rel="nofollow" href="http://' . $_SERVER['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($adt['url_link']) . '"' . $target . '><img src="' . $adt['url_img'] . '" alt="' . for_value($adt['name']) . '" /></a>';
+                    $return[]['0'] = '<a rel="nofollow" href="http://' . $_SERVER['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($adt['url_link']) . '"' . $target . '><img src="' . $adt['url_img'] . '" alt="' . for_value($adt['name']) . '" /></a>';
                 } else {
-                    $return[] = ($adt['bold'] ? '<b>' : '') . '<a rel="nofollow" href="http://' . $_SERVER['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($adt['url_link']) . '"' . $target . '>' . for_value($adt['name']) . '</a>' . ($adt['bold'] ? '</b>' : '');
+                    $return[]['0'] = ($adt['bold'] ? '<b>' : '') . '<a rel="nofollow" href="http://' . $_SERVER['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($adt['url_link']) . '"' . $target . '>' . for_value($adt['name']) . '</a>' . ($adt['bold'] ? '</b>' : '');
                 }
             }
             if (!isset($_SESSION['adt'][$id]['time_show']) || $_SESSION['adt'][$id]['time_show'] < TIME - 10) {
@@ -48,5 +48,4 @@ class adt extends menu {
 
 }
 
-// END class adt
 ?>

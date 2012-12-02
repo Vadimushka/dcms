@@ -1,7 +1,6 @@
 <?php
 
 include_once '../sys/inc/start.php';
-//dpanel::check_access();
 $doc = new document(2);
 $doc->title = __('Действия');
 

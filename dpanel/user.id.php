@@ -2,7 +2,8 @@
 
 include_once '../sys/inc/start.php';
 dpanel::check_access();
-$groups = groups::load_ini();$doc = new document(6);
+$groups = groups::load_ini();
+$doc = new document(6);
 $doc->title = __('Изменение ID пользователя');
 
 if (isset($_GET['id_ank']))
@@ -50,13 +51,12 @@ if (isset($_POST['change'])) {
     } elseif (mysql_result(mysql_query("SELECT COUNT(*) FROM `users` WHERE `id` = '$id_new'"), 0)) {
         $doc->err(__('Идентификатор занят другим пользователем'));
     } else {
-        
+
         foreach ($tables AS $d) {
-            mysql_query("UPDATE `" . my_esc($d['table']) . "` SET `" . my_esc($d['row']) . "` = '$id_new' WHERE `" . my_esc($d['row']) . "` = '$id_old'");            
+            mysql_query("UPDATE `" . my_esc($d['table']) . "` SET `" . my_esc($d['row']) . "` = '$id_new' WHERE `" . my_esc($d['row']) . "` = '$id_old'");
         }
         mysql_query("UPDATE `users` SET `id` = '$id_new' WHERE `id` = '$id_old'");
         $dcms->log('Пользователи', 'Изменение ID пользователя ' . $ank->login . ' с ' . $id_old . ' на ' . $id_new . ')');
-        
 
         $doc->msg(__('Идентификатор пользователя успешно изменен'));
         $doc->ret(__('Админка'), '/dpanel/');
@@ -64,17 +64,13 @@ if (isset($_POST['change'])) {
     }
 }
 
+$form = new form("?id_ank=$ank->id&amp;" . passgen());
+$form->text('id_new', __('Новый ID'), $ank->id);
+$form->captcha();
+$form->bbcode('[notice] '.__('Изменение ID пользователя может повлечь ошибки в сторонних модулях.'));
+$form->button(__('Применить'), 'change');
+$form->display();
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', "?id_ank=$ank->id&amp;" . passgen());
-$elements = array();
-$elements[] = array('type' => 'input_text', 'title' => __('Новый ID'), 'br' => 1, 'info' => array('name' => 'id_new', 'value' => $ank->id));
-
-$elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'change', 'value' => __('Изменить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
 
 $doc->ret(__('Действия'), 'user.actions.php?id=' . $ank->id);
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);

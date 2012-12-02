@@ -55,7 +55,7 @@ WHERE `forum_messages`.`id_theme` = '$theme[id]'");
             mysql_query("DELETE FROM `forum_vote` WHERE `id_theme` = '$theme[id]'");
             mysql_query("DELETE FROM `forum_vote_votes` WHERE `id_theme` = '$theme[id]'");
             mysql_query("DELETE FROM `forum_views` WHERE `id_theme` = '$theme[id]'");
-            
+
             $dir = new files(FILES . '/.forum/' . $theme['id']);
             $dir->delete();
             unset($dir);
@@ -75,10 +75,7 @@ $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
-
-
 $listing = new listing();
-$posts = array();
 if ($show == 'part') {
     $pages = new pages;
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_themes` WHERE `id_topic` = '$topic[id]' AND `group_show` <= '$user->group'"), 0); // количество сообщений  теме
@@ -98,13 +95,13 @@ while ($theme = mysql_fetch_assoc($q)) {
     $ch->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . ' (' . vremja($theme['time_last']) . ')';
 }
 
-echo "<form method='post' action='?id=$topic[id]'>";
-$listing->display(__('Темы отсутствуют'));
-echo "<input type='submit' name='delete' value='" . __('Удалить выделенные темы') . "' /></form>";
+$form = new form('?id=' . $topic['id']);
+$form->html($listing->fetch(__('Темы отсутствуют')));
+$form->button(__('Удалить выделенные темы'), 'delete');
+$form->display();
 
-if ($show == 'part') {
+if ($show == 'part')
     $pages->display('?id=' . $theme['id'] . '&amp;show=part&amp;');
-}
 
 $doc->ret(__('В раздел'), 'topic.php?id=' . $topic['id']);
 $doc->ret(__('В категорию'), 'category.php?id=' . $topic['id_category']);

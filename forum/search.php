@@ -3,7 +3,6 @@
 include_once '../sys/inc/start.php';
 $doc = new document();
 
-
 // результаты
 $searched = &$_SESSION['search']['result'];
 // маркеры (выделение найденых слов)
@@ -19,8 +18,6 @@ if ($dcms->forum_search_reg && !$user->group) {
     $doc->ret(__('К категориям'), './');
     exit;
 }
-
-
 
 if (!isset($_GET['cache']) || empty($searched)) {
     $searched = array();
@@ -61,11 +58,7 @@ GROUP BY `forum_themes`.`id`");
     }
 }
 
-
-
 $listing = new listing();
-
-$posts = array();
 $pages = new pages;
 $pages->posts = count($searched);
 $pages->this_page(); // получаем текущую страницу
@@ -92,21 +85,14 @@ for ($i = $start; $i < $end; $i++) {
 
 $listing->display($search_query ? __('Результаты по запросу "%s" отсутствуют', $search_query) : false);
 
-
 $pages->display('?cache&amp;'); // вывод страниц
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', '?' . passgen());
-$elements = array();
-$elements[] = array('type' => 'input_text', 'title' => __('Что ищем'), 'br' => 1, 'info' => array('name' => 'query', 'value' => $search_query));
+$form = new form('?' . passgen());
+$form->text('query', __('Что ищем'), $search_query, $dcms->forum_search_captcha);
+if ($dcms->forum_search_captcha)
+    $form->captcha();
+$form->button(__('Поиск'));
+$form->display();
 
-if ($dcms->forum_search_captcha) {
-    $elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-}
-
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Поиск'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
 $doc->ret(__('Форум'), './');
 ?>
