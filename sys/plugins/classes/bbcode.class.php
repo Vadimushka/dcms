@@ -910,7 +910,7 @@ class bbcode {
 
             $url = 'http://' . $_SERVER ['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($aturl);
             $new_window = @$dcms->browser_type == 'web' ? ' target="_blank"' : '';
-            if ($parse_url = parse_url($aturl)) {
+            if ($parse_url = @parse_url($aturl)) {
                 if (!empty($parse_url['host']) && @$dcms->subdomain_main && strpos($parse_url['host'], '.' . $dcms->subdomain_main) !== false) {
 
                     if (@$dcms->subdomain_replace_url) {

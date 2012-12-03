@@ -25,7 +25,7 @@ class votes {
         $vote_tpl->assign('name', $this->description, 1);
         $votes = array();
         foreach ($this->_list as $item) {
-            $votes[] = array('name' => text::filter($item['name'], 1), 'url' => text::filter($item['url'], 1), 'count' => $item['count'], 'pc' => @round($item['count'] / $this->_count_max * 100));
+            $votes[] = array('name' => text::filter($item['name'], 1), 'url' => $item['url'], 'count' => $item['count'], 'pc' => @round($item['count'] / $this->_count_max * 100));
         }
         $vote_tpl->assign('votes', $votes);
         $vote_tpl->assign('is_add', $is_add);

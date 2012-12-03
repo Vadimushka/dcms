@@ -59,9 +59,7 @@
                         </div>
                     </div> 
                 </div>
-
                 <div class="body_width_limit">
-
                     <div id="menu">
                         <? if ($adt->top) { ?>
                             <div id="adt_top" class="gradient_grey border">
@@ -89,7 +87,6 @@
                 </div>
                 <div id="empty"></div>
             </div>
-
             <div id="footer" class="gradient_grey">
                 <div class="body_width_limit">
                     <span id="copyright">

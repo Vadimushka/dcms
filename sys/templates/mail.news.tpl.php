@@ -1,7 +1,7 @@
 <html lang="ru" xml:lang="ru" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>{$title}</title>
+        <title><?=$title?> - <?=$site?></title>
         <style type="text/css">
             /* <![CDATA[ */
             body{
@@ -12,10 +12,7 @@
         </style>
     </head>
     <body>
-        <b>{$login}</b>, Вы запросили восстановление пароля на сайте <b>{$site}</b>.<br />
-        Для ввода нового пароля перейдите по ссылке: <b><a href="{$url}">{$url}</a></b><br />
-        <br />
-        Браузер: {$dcms->browser}<br />
-        IP: {$dcms->ip_long|long2ip}<br />
-    </body> 
+        Уведомляем Вас о новостях:<br />
+  <?=$content?>
+    </body>
 </html>

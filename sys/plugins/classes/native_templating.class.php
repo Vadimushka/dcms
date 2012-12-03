@@ -9,15 +9,13 @@ class native_templating {
     function __construct() {
         
     }
-    
-        
+
     /**
      * Передача переменной в шаблон
      * @param type $name
      * @param type $value
      * @return type
      */
-
     public function assign($name, $value = null, $filter = 0) {
         if (is_array($name)) {
             foreach ($name as $key => $value) {
@@ -64,8 +62,10 @@ class native_templating {
      * @return boolean
      */
     protected function _getTemplatePath($tpl_name) {
-
-        if ($this->dir_template) {
+        if (strpos($tpl_name, 'file:') === 0) {
+            $abs_path = text::substr($tpl_name, 256, 5, '');
+            $tpl_path = dirname($abs_path) . '/' . basename($abs_path, '.tpl') . '.tpl.php';
+        } elseif ($this->dir_template) {
             $tpl_path = $this->dir_template . '/' . basename($tpl_name, '.tpl') . '.tpl.php';
         } else {
             $tpl_path = $tpl_name;
