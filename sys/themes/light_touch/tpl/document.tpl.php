@@ -3,9 +3,10 @@
     <head>
         <title><?= $title ?></title>
         <link rel="shortcut icon" href="/favicon.ico" />
-        <script charset="utf-8" src="/sys/themes/system.js" type="text/javascript"></script>
+        <script charset="utf-8" src="/sys/themes/system.js" type="text/javascript"></script>        
         <script charset="utf-8" src="<?= $path ?>/user.js" type="text/javascript"></script>
         <link rel="stylesheet" href="/sys/themes/system.css" type="text/css" />
+        <link rel="stylesheet" href="/sys/themes/theme_light.css" type="text/css" />
         <link rel="stylesheet" href="<?= $path ?>/style.css" type="text/css" />
         <meta http-equiv="content-Type" content="application/xhtml+xml; charset=utf-8" />
         <? if ($description) { ?><meta name="description" content="<?= $description ?>" /><? } ?>
@@ -16,18 +17,22 @@
             }
         </style>
     </head>
-    <body>
+    <body class="theme_light">
         <div>
             <? $this->display('inc.title.tpl') ?>
             <? $this->display('inc.user.tpl') ?>
-            <div class="content">
-                <? $this->display('inc.adt.top.tpl') ?>            
+            <div id="content">
+                <? $this->display('inc.adt.top.tpl') ?> 
+                <div id="messages">
+                    <?= $this->section($err, '<div class="gradient_red border radius">{text}</div>'); ?>
+                    <?= $this->section($msg, '<div class="gradient_green border radius">{text}</div>'); ?>                
+                </div>                           
                 <?= $content ?>
             </div>
             <? $this->display('inc.foot.tpl') ?>
             <? $this->display('inc.adt.bottom.tpl') ?>
-            <div class="foot">
-                <?= __("Время генерации страницы") ?>: <?= $document_generation_time ?> сек<br />
+            <div id="foot">
+                <?= __("Время генерации страницы: %s сек", $document_generation_time) ?><br />
                 <?= $copyright ?>
             </div>
         </div>

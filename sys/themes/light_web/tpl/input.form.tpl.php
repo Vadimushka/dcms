@@ -64,7 +64,7 @@
                 '</label>';
                 break;
             case 'submit':
-                echo '<input class="gradient_grey border radius padding radius" type="submit"' .
+                echo '<input class="gradient_blue border radius padding radius" type="submit"' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                 ($element['info']['value'] ? ' value="' . text::for_value($element['info']['value']) . '"' : '') .
                 ' />';
@@ -75,7 +75,7 @@
                 ' />';
                 break;
             case 'select':
-                echo '<select class="gradient_grey invert border padding radius" name="' . $element['info']['name'] . '">';
+                echo '<select class="gradient_grey border padding radius" name="' . $element['info']['name'] . '">';
                 foreach ($element['info']['options'] AS $option) {
                     if ($option['groupstart'])
                         echo '<optgroup label="' . $option[0] . '">';

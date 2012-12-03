@@ -1,4 +1,4 @@
-<div id="pages">
+<div class="pages">
     <?
     echo $page == 1 ? '<span class="gradient_blue invert border radius padding">1</span>' : '<a class="gradient_blue border radius padding" href="' . $link . 'page=1">1</a>';
     for ($i = max(2, $page - 8); $i < min($k_page, $page + 10); $i++) {

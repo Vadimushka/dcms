@@ -1,4 +1,4 @@
-<div class="form">
+<div class="form gradient_grey invert border padding">
     <?=
     '<form' .
     ($method ? ' method="' . $method . '"' : '') .
@@ -19,11 +19,11 @@
                 <input type="hidden" name="captcha_session" value="<?= $element['session'] ?>" />
                 <img id="captcha" src="/captcha.php?captcha_session=<?= $element['session'] ?>&amp;<?= SID ?>" alt="captcha" /><br />
                 <?= $lang->getString("Введите число с картинки") ?>:<br />
-                <input type="text" autocomplete="off" name="captcha" size="5" maxlength="5" />
+                <input class="gradient_grey invert border padding radius" type="text" autocomplete="off" name="captcha" size="5" maxlength="5" />
                 <?
                 break;
             case 'input_text':
-                echo '<input type="text"' .
+                echo '<input class="gradient_grey invert border padding radius" type="text"' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                 ($element['info']['value'] ? ' value="' . text::for_value($element['info']['value']) . '"' : '') .
                 ($element['info']['maxlength'] ? ' maxlength="' . intval($element['info']['maxlength']) . '"' : '') .
@@ -38,7 +38,7 @@
                 ' />';
                 break;
             case 'password':
-                echo '<input type="password"' .
+                echo '<input class="gradient_grey invert border padding radius" type="password"' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                 ($element['info']['value'] ? ' value="' . text::for_value($element['info']['value']) . '"' : '') .
                 ($element['info']['maxlength'] ? ' maxlength="' . intval($element['info']['maxlength']) . '"' : '') .
@@ -46,19 +46,13 @@
                 ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                 ' />';
                 break;
-            case 'textarea':
-                ?>
-                <div class="textarea">
-                    <?
-                    echo '<textarea ' .
+            case 'textarea':                
+                    echo '<textarea class="gradient_grey invert border padding"' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                     '>' .
                     ($element['info']['value'] ? text::for_value($element['info']['value']) : '') .
                     '</textarea>';
-                    ?>
-                </div>
-                <?
                 break;
             case 'checkbox':
                 echo '<label><input type="checkbox"' .
@@ -70,7 +64,7 @@
                 '</label>';
                 break;
             case 'submit':
-                echo '<input type="submit"' .
+                echo '<input class="gradient_blue border radius padding radius" type="submit"' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                 ($element['info']['value'] ? ' value="' . text::for_value($element['info']['value']) . '"' : '') .
                 ' />';
@@ -81,7 +75,7 @@
                 ' />';
                 break;
             case 'select':
-                echo '<select name="' . $element['info']['name'] . '">';
+                echo '<select class="gradient_grey border padding radius" name="' . $element['info']['name'] . '">';
                 foreach ($element['info']['options'] AS $option) {
                     if ($option['groupstart'])
                         echo '<optgroup label="' . $option[0] . '">';

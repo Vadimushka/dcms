@@ -1,10 +1,9 @@
-<div class="select_bar">
-    <?
-    foreach ($order AS $option) {
-        if (!empty($option[2]))
-            echo '<span>' . $option[1] . '</span>';
-        else
-            echo '<a href="' . $option[0] . '">' . $option[1] . '</a>';
-    }
-    ?>
+<div class="form">
+    <select class="gradient_grey border padding radius" onchange="location = this.options[this.selectedIndex].value;">
+        <?
+        foreach ($order AS $option) {
+            echo '<option value="' . $option[0] . '"' . (!empty($option[2]) ? ' selected="selected"' : '') . '>' . $option[1] . '</option>';
+        }
+        ?>
+    </select>
 </div>

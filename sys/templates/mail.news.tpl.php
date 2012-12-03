@@ -1,7 +1,7 @@
 <html lang="ru" xml:lang="ru" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title><?=$title?> - <?=$site?></title>
+        <title><?= $title ?> - <?= $site ?></title>
         <style type="text/css">
             /* <![CDATA[ */
             body{
@@ -13,6 +13,6 @@
     </head>
     <body>
         Уведомляем Вас о новостях:<br />
-  <?=$content?>
+        <?= $content ?>
     </body>
 </html>

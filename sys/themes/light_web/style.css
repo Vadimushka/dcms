@@ -160,10 +160,13 @@ a.post:hover{
     color: #3F7EFD;
 }
 
-#pages{
+.pages{
     text-align: center;
 }
-
+.pages > *{
+    display: inline-block;
+    margin: 5px;
+}
 
 #empty{
     clear: both;

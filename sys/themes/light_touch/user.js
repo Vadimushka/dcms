@@ -17,9 +17,9 @@ function user_update_mail(count){
     
     if (USER.mail_new_count){
         dom_mail.querySelector('span').innerHTML = USER.mail_new_count; 
-        dom_mail.className = '';
+        removeClass(dom_mail, 'hide');
     }else{
-        dom_mail.className = 'hide';
+        addClass(dom_mail, 'hide');
     }
     
 }
@@ -32,9 +32,9 @@ function user_update_friends(count){
     
     if (USER.friend_new_count){
         dom_friend.querySelector('span').innerHTML = USER.friend_new_count;        
-        dom_friend.className = '';
+        removeClass(dom_friend, 'hide');
     }else{
-        dom_friend.className = 'hide';
+        addClass(dom_friend, 'hide');
     }
 }
     

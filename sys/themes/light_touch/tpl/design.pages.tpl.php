@@ -1,14 +1,12 @@
 <div class="pages">
-    <?= $page == 1 ? '<span>1</span>' : '<a href="' . $link . 'page=1">1</a>' ?>
-    <?= $page > 4 ? '..' : '' ?>
     <?
+    echo $page == 1 ? '<span class="gradient_blue invert border radius">1</span>' : '<a class="gradient_blue border radius" href="' . $link . 'page=1">1</a>';
     for ($i = max(2, $page - 4); $i < min($k_page, $page + 3); $i++) {
         if ($i == $page)
-            echo '<span>' . $i . '</span>';
+            echo '<span class="gradient_blue invert border radius">' . $i . '</span>';
         else
-            echo '<a href="' . $link . 'page=' . $i . '">' . $i . '</a>';
+            echo '<a class="gradient_blue border radius" href="' . $link . 'page=' . $i . '">' . $i . '</a>';
     }
+    echo $page == $k_page ? '<span class="gradient_blue invert border radius">' . $k_page . '</span>' : '<a class="gradient_blue border radius" href="' . $link . 'page=' . $k_page . '">' . $k_page . '</a>'
     ?>
-    <?= $page < $k_page - 4 ? '..' : '' ?>
-    <?= $page == $k_page ? '<span>' . $k_page . '</span>' : '<a href="' . $link . 'page=' . $k_page . '">' . $k_page . '</a>' ?>
 </div>

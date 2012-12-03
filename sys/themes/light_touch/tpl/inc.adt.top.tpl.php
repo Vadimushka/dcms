@@ -1,5 +1,5 @@
 <? if ($adt->top) { ?>
-    <div class="adt_top">
+    <div id="adt_top" class="gradient_grey border">
         <?= $this->section($adt->top, '{0}') ?>
     </div>
 <?

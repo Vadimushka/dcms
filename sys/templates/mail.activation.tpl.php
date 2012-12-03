@@ -1,7 +1,7 @@
 <html lang="ru" xml:lang="ru" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title><?=$title?></title>
+        <title><?= $title ?></title>
         <style type="text/css">
             /* <![CDATA[ */
             body{
@@ -12,9 +12,8 @@
         </style>
     </head>
     <body>
-        <b><?=$login?></b>, Вы успешно зарегистрированы на сайте <b><?=$site?></b>.<br />
-        Пароль для входа: <b><?=$password?></b><br />
-        Для активации аккаунта необходимо перейти по ссылке: <b><a href="<?=$url?>"><?=$url?></a></b><br />
+        <b><?= $login ?></b>, Вы успешно зарегистрированы на сайте <b><?= $site ?></b>.<br />
+        Пароль для входа: <b><?= $password ?></b><br />
+        Для активации аккаунта необходимо перейти по ссылке: <b><a href="<?= $url ?>"><?= $url ?></a></b><br />
     </body>
-
 </html>
