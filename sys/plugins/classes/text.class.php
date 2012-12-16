@@ -143,28 +143,28 @@ abstract class text {
         if (!@mysql_ping()) {
             return false;
         }
+        $pattern = '#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31})([\!\.\,\ \)\(]|$)#uim';
 
+        $m = array();
+        preg_match_all($pattern, $str, $m, PREG_SET_ORDER);
+        if ($replace)
+            $str = preg_replace_callback($pattern, array('text', 'nick'), $str);
+
+        $logins = array();
+        foreach ($m AS $sl) {
+            $logins[] = "'" . my_esc($sl[1]) . "'";
+        }
+        $logins = array_unique($logins);
 
         $users_id = array();
-        preg_match_all('#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31})([\!\.\,\ \)\(]|$)#uim', $str, $matchesarray = array(), PREG_SET_ORDER);
-        if ($matchesarray) {
-            $count = count($matchesarray);
-            for ($i = 0; $i < $count; $i++) {
-                $q = mysql_query("SELECT `id` FROM `users` WHERE `login` = '" . my_esc($matchesarray[$i][1]) . "' LIMIT 1");
-                if ($ank = mysql_fetch_assoc($q)) {
-                    if ($replace) {
-                        $str = str_replace('@' . $matchesarray[$i][1] . $matchesarray[$i][2], '[user]' . $ank['id'] . '[/user]' . $matchesarray[$i][2], $str);
-                    }
-                    if (!in_array($ank['id'], $users_id)) {
-                        $users_id[] = $ank['id'];
-                    }
-                }
+
+        if ($logins) {
+            $q = mysql_query("SELECT `id` FROM `users` WHERE `login` IN (" . implode(',', $logins) . ")");
+            while ($ank = mysql_fetch_assoc($q)) {
+                $users_id[] = $ank['id'];
             }
-            return $users_id;
         }
-
-
-        $str = preg_replace_callback('#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31})([\!\.\,\ \)\(]|$)#uim', array('text', 'nick'), $str);
+        return $users_id;
     }
 
     /**

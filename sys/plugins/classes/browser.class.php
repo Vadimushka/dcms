@@ -5,6 +5,7 @@ class browser {
     var $browser_type_auto;
     var $browser;
     var $ip_long;
+    var $ie_ver = false;
 
     function __construct() {
         $this->browser_info();
@@ -32,9 +33,10 @@ class browser {
             $this->browser_type_auto = 'pda';
         }
 
-        if (preg_match('#MSIE#ui', $user_agent)) {
+        if (preg_match('#MSIE ([0-9]+)#ui', $user_agent, $bv)) {
             $this->browser = 'Microsoft Internet Explorer';
-            $this->browser_type_auto = 'web';
+            $this->browser_type_auto = 'web';            
+            $this->ie_ver = $bv[1];
         }
 
         if (preg_match('#America Online Browser#i', $user_agent)) {
@@ -222,10 +224,6 @@ class browser {
             $this->browser_type_auto = $tel[1];
         }
 
-
-
-
-
         if (isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) && preg_match('#Opera Mini/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
             $user_agent_opera = $_SERVER['HTTP_X_OPERAMINI_PHONE_UA'];
             if ($tel = $this->phone_model($user_agent_opera)) {
@@ -234,36 +232,45 @@ class browser {
             }
         }
 
-
-
-
         if (preg_match('#iPhone#i', $user_agent)) {
             $this->browser = 'iPhone';
-            $this->browser_type_auto = 'itouch';
+            $this->browser_type_auto = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
         }
 
         if (preg_match('#iPod#i', $user_agent)) {
             $this->browser = 'iPod';
-            $this->browser_type_auto = 'itouch';
+            $this->browser_type_auto = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
         }
 
         if (preg_match('#iPad#i', $user_agent)) {
             $this->browser = 'iPad';
-            $this->browser_type_auto = 'itouch';
+            $this->browser_type_auto = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
         }
         if (preg_match('#Bada#i', $user_agent)) {
             // $this->browser = 'Samsung Bada';
-            $this->browser_type_auto = 'itouch';
+            $this->browser_type_auto = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
         }
 
         if (preg_match('#Android#i', $user_agent)) {
-            // $this->browser = 'Samsung Bada';
-            $this->browser_type_auto = 'itouch';
+            if (preg_match('#Opera Mini#i', $user_agent)) {
+                $this->browser = 'Opera Mini (Android)';
+                $this->browser_type_auto = 'pda';
+            } else {
+                // $this->browser = 'Android';
+                $this->browser_type_auto = 'itouch';
+            }
         }
 
         if (preg_match('#Windows Phone#i', $user_agent)) {
-           // $this->browser = 'Windows Phone 7';
-            $this->browser_type_auto = 'itouch';
+
+            if (preg_match('#Opera Mini#i', $user_agent)) {
+                $this->browser = 'Opera Mini (Windows Phone)';
+                $this->browser_type_auto = 'pda';
+            } else {
+
+                // $this->browser = 'Windows Phone 7';
+                $this->browser_type_auto = 'itouch';
+            }
         }
     }
 

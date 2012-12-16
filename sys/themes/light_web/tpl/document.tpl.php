@@ -17,7 +17,10 @@
             }
         </style>
     </head>
-    <body class="theme_light"> 
+    <?
+    $class_fix = $dcms->ie_ver ? 'ie ie' . $dcms->ie_ver : '';
+    ?>
+    <body class="theme_light <?= $class_fix ?>"> 
         <div id="main">
             <div id="top_part">
                 <div id="header" class="gradient_blue">
@@ -45,7 +48,7 @@
                                         mail_new_count: <?= $user->mail_new_count ?>,
                                         friend_new_count: <?= $user->friend_new_count ?>
                                     };
-                                    DCMS_USER_UPDATE.update();  // запускаем периодический запрос данных пользователя
+                                    DCMS.UserUpdate.update();  // запускаем периодический запрос данных пользователя
                                     // новые данные можно получать, подписавшись на событие user_update: DCMS.Event.on('user_update', user_update);
                                 </script>
                                 <?

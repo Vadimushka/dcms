@@ -22,7 +22,6 @@ class design extends native_templating {
                 $theme = current($themes);
             } else {
                 // любая тема оформления
-                echo '<!--'.print_r(themes::getList(),1).'-->';
                 $theme = current(themes::getList());
                 if (!$theme)
                     die('Не найдено ни одной совместимой темы оформления');
@@ -36,7 +35,7 @@ class design extends native_templating {
 
         // системные переменные
         $this->assign('theme', $theme);        
-        $this->assign('dcms', $dcms); // !!! под вопросом удаления
+        $this->assign('dcms', $dcms);
         $this->assign('copyright', $dcms->copyright, 2);
         $this->assign('lang', $user_language_pack);
         $this->assign('user', $user);

@@ -17,9 +17,9 @@ function user_update_mail(count){
     
     if (USER.mail_new_count){
         dom_mail.querySelector('span').innerHTML = USER.mail_new_count; 
-        removeClass(dom_mail, 'hide');
+        DCMS.Dom.classRemove(dom_mail, 'hide');
     }else{
-        addClass(dom_mail, 'hide');
+        DCMS.Dom.classAdd(dom_mail, 'hide');
     }
     
 }
@@ -32,16 +32,16 @@ function user_update_friends(count){
     
     if (USER.friend_new_count){
         dom_friend.querySelector('span').innerHTML = USER.friend_new_count;        
-        removeClass(dom_friend, 'hide');
+        DCMS.Dom.classRemove(dom_friend, 'hide');
     }else{
-        addClass(dom_friend, 'hide');
+        DCMS.Dom.classAdd(dom_friend, 'hide');
     }
 }
     
 function user_update(data){
     if (data.id != USER.id){
         console.log(USER, data);
-        DCMS_USER_UPDATE.stop();
+        DCMS.UserUpdate.stop();
         //window.location.reload();
         return;
     }

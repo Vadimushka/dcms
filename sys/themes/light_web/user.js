@@ -1,9 +1,8 @@
 function user_update_mail_notice(){
-    /**
+/**
      * тут можно сделать дополнительное (звуковое) уведомление пользователя
      */
 }
-
 
 function user_update_mail(count){
     count = +count;
@@ -17,9 +16,9 @@ function user_update_mail(count){
     
     if (USER.mail_new_count){
         dom_mail.querySelector('span').innerHTML = USER.mail_new_count; 
-        removeClass(dom_mail, 'hide');
+        DCMS.Dom.classRemove(dom_mail, 'hide');
     }else{
-        addClass(dom_mail, 'hide');
+        DCMS.Dom.classAdd(dom_mail, 'hide');
     }
     
 }
@@ -32,16 +31,16 @@ function user_update_friends(count){
     
     if (USER.friend_new_count){
         dom_friend.querySelector('span').innerHTML = USER.friend_new_count;        
-        removeClass(dom_friend, 'hide');
+        DCMS.Dom.classRemove(dom_friend, 'hide');
     }else{
-        addClass(dom_friend, 'hide');
+        DCMS.Dom.classAdd(dom_friend, 'hide');
     }
 }
     
 function user_update(data){
     if (data.id != USER.id){
-        console.log(USER, data);
-        DCMS_USER_UPDATE.stop();
+        //console.log(USER, data);
+        DCMS.UserUpdate.stop();
         //window.location.reload();
         return;
     }
@@ -52,3 +51,30 @@ function user_update(data){
 
 // подписываемся на событие поступления новых данных пользователя
 DCMS.Event.on('user_update', user_update);
+
+
+function textareaOnBlur(textarea){
+    DCMS.Animation.style(textarea, 'height', [textarea.offsetHeight+'px',''] , 300);
+}
+
+function textareaOnChange(textarea){
+    var hasInnerText = (document.getElementsByTagName("body")[0].innerText != undefined) ? true : false;
+        
+    var attributes_copy = ['width', 'font', 'padding'];    
+    var testdiv = DCMS.Dom.createFromHtml('<div style="position: absolute; left: 99999px;word-break: break-all;white-space: pre-wrap" />', false, textarea.parentNode);
+    
+    var testvalue = textarea.value + "\n\n";
+    
+        
+    if (hasInnerText)
+        testdiv.innerText = testvalue;
+    else
+        testdiv.textContent = testvalue;
+    
+    for (var i =0; i < attributes_copy.length; i++){
+        DCMS.Dom.setStyle(testdiv, attributes_copy[i], DCMS.Dom.getComputedValue(textarea, attributes_copy[i]));
+    }    
+    
+    DCMS.Animation.style(textarea, 'height', [textarea.offsetHeight+'px', testdiv.offsetHeight+'px'] , 300);
+    testdiv.parentNode.removeChild(testdiv);
+}

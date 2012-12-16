@@ -26,20 +26,17 @@ if ($can_write) {
             $doc->ret(__('Вернуться'), '?' . passgen());
             $doc->msg(__('Сообщение успешно отправлено'));
 
-
-
-
             if ($users_in_message) {
                 for ($i = 0; $i < count($users_in_message) && $i < 20; $i++) {
                     $user_id_in_message = $users_in_message[$i];
-                    if ($user_id_in_message == $user->id) {
+                    if ($user_id_in_message == $user->id)
                         continue;
-                    }
+
                     $ank_in_message = new user($user_id_in_message);
 
-                    if ($ank_in_message->notice_mention) {
+                    if ($ank_in_message->notice_mention)
                         $ank_in_message->mess("[user]{$user->id}[/user] упомянул" . ($user->sex ? '' : 'а') . " о Вас в [url=/chat_mini/]Мини-чате[/url]");
-                    }
+                    
                 }
             }
 
