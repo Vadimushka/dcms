@@ -2,7 +2,7 @@
 #title {
     /* Заголовок страницы */
     text-align: center;
-    font-size: 13px;
+    font-size: large;
     overflow: hidden; 
     white-space: nowrap;
     padding: 10px 5px;
@@ -18,7 +18,7 @@
 #adt_top, #adt_bottom{
     text-align: center;
     margin-bottom: 10px;
-    font-size: 12px;
+    font-size: large;
 }
 #adt_top a, #adt_bottom a{
     display: block;
@@ -35,7 +35,7 @@
     background-color: #EBEBEB;
     border-top: 1px solid #E7E7E7;
     border-bottom: 1px solid #CCC;
-    font-size: 11px;
+    font-size: medium;
 }
 
 #navigation_user  a{
@@ -70,7 +70,7 @@
     border: 1px solid #CCC;
     padding: 3px;
     background-color: #F0F4F7;
-    font-size: 11px;
+    font-size: medium;
 }
 
 .form input[type="text"],.form input[type="password"]{
@@ -121,11 +121,13 @@
     border-top-style: none !important;
     background-color: #F2F4F8;
 }
+
 .post:first-child{
     border-top-style: solid !important;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
+
 .post:last-child{
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
@@ -146,7 +148,7 @@
 }
 
 .post td.title{
-    font-size: 11px;
+    font-size: medium;
 }
 
 .post.hightlight td.title{
@@ -161,17 +163,17 @@ a.post:hover{
 .post td.right{
     width: 1px;
     white-space: nowrap;
-    font-size: 11px;
+    font-size: small;
 }
 
 .post td.content{
-    font-size: 11px;
+    font-size: medium;
     padding-left: 10px;
 }
 
 .post td.bottom{
     text-align: right;
-    font-size: 11px;
+    font-size: small;
     color: #999;
 }
 
@@ -185,7 +187,7 @@ a.post:hover{
 }
 
 .post .time{
-    font-size: 11px;
+    font-size: small;
     color: #999;
 }
 
@@ -198,12 +200,12 @@ a.post:hover{
     color: #3F7EFD;
     border: 1px #CCC solid;
     background-color: #fff;
-    font-size: 11px;
+    font-size: small;
 }
 
 #actions, #returns{
     padding: 2px;
-    font-size: 11px;
+    font-size: medium;
 }
 
 #actions div, #returns div{
@@ -242,7 +244,7 @@ a.post:hover{
     text-align: right;
     color: #A7A7A7;
     padding-right: 10px;
-    font-size: 10px;
+    font-size: small;
 }
 
 #foot a{
@@ -253,7 +255,7 @@ a.post:hover{
 .pages{
     text-align: center;
     padding: 5px;
-    font-size: 11px;
+    font-size: medium;
 }
 
 .pages > *{
@@ -292,21 +294,24 @@ span.mark {
     font-weight: bold;
     color: #F6A21A;
 }
+
 table.links {
     font-weight: bold;
     background-color: #DCEDFF;
     width: 100%;
     text-align: center;
 }
+
 div.quote {
     border: 1px solid #DFDFDF;
     border-radius: 2px;
     margin: 3px;
     padding: 3px;
     background-color: white;
-    font-size: 10px;
+    font-size: small;
     color: #666;
 }
+
 span.quote {
     font-weight: bold;
 }
@@ -318,8 +323,9 @@ div.vote {
     background-color: #fff;
     border: 1px solid #B4B4B4;
     border-radius: 5px;
-    font-size: 11px;
+    font-size: medium;
 }
+
 div.vote a:hover {
     text-decoration: none;
 }
@@ -346,6 +352,7 @@ div.votes{
     padding: 1px 3px;
     box-sizing: border-box;
 }
+
 td.votes_add{
     padding-left: 3px;
     width: 19px;
