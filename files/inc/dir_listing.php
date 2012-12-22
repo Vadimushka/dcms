@@ -3,14 +3,17 @@
 defined('DCMS') or die();
 $dir = new files($abs_path);
 
-
-
 if ($dir->group_show > $user->group) {
     $doc->access_denied(__('У Вас нет прав для просмотра данной папки'));
 }
 
+$access_write = $dir->group_write <= $user->group || ($dir->id_user && $user->id == $dir->id_user);
+$access_edit = $dir->group_edit <= $user->group;
+
 $doc->title = $dir->runame;
-include H . '/files/inc/dir_act.php';
+
+if ($access_write || $access_edit)
+    include H . '/files/inc/dir_act.php';
 
 $order_keys = $dir->getKeys();
 if (!empty($_GET ['order']) && isset($order_keys [$_GET ['order']])) {
@@ -53,12 +56,12 @@ $files = &$content ['files'];
 
 if ($description = $dir->description) {
     $listing = new listing();
-    $post = $listing -> post();
-    $post -> title = __('Информация');
-    $post -> icon('info');
-    $post -> content[] = $description;
-    $post -> hightlight = true;
-    $listing ->display();    
+    $post = $listing->post();
+    $post->title = __('Информация');
+    $post->icon('info');
+    $post->content[] = $description;
+    $post->hightlight = true;
+    $listing->display();
 }
 
 $listing = new listing();
@@ -105,7 +108,7 @@ if ($pages->this_page == 1) {
         }
 
         $post->post = output_text($description);
-        $post->icon ($dirs [$i]->icon());
+        $post->icon($dirs [$i]->icon());
     }
 }
 
@@ -194,7 +197,7 @@ $return = $dir->ret(5); // последние 5 ссылок пути
 for ($i = 0; $i < count($return); $i++) {
     $doc->ret($return [$i] ['runame'], '/files' . $return [$i] ['path']);
 }
-
-include H . '/files/inc/dir_form.php';
+if ($access_write || $access_edit)
+    include H . '/files/inc/dir_form.php';
 exit;
 ?>

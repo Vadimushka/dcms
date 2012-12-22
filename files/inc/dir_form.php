@@ -2,7 +2,7 @@
 
 defined('DCMS') or die();
 // файл отвечает за отображение возможных действий
-if ($dir->group_write <= $user->group || ($dir->id_user && $user->id == $dir->id_user)) {
+if ($access_write) {
     // выгрузка и импорт файлов
     switch (@$_GET ['act']) {
         case 'file_upload' : {
@@ -24,7 +24,7 @@ if ($dir->group_write <= $user->group || ($dir->id_user && $user->id == $dir->id
     $doc->act(__('Выгрузить файл'), '?act=file_upload');
 }
 
-if ($dir->group_edit <= $user->group) {
+if ($access_edit) {
     // изменеение параметров
     switch (@$_GET ['act']) {
         case 'file_import' : {

@@ -406,6 +406,7 @@ var DCMS = {
         timeout: null,
         interval: 7,
         delay_update: function(sec) {
+            sec = sec || this.interval;
             var self = this;
             self.stop();
             self.timeout = setTimeout(function() {
@@ -724,8 +725,21 @@ DCMS.Dom = {
         dom.style[prop.toCamel()] = value;
     };
 
-    DCMS.Dom.getComputedValue = function(dom, prop){        
-        return window.getComputedStyle(dom, null).getPropertyValue(prop.toDash());
+    DCMS.Dom.getComputedValue = function(dom, prop){
+        var dash_prop = prop.toDash();
+        
+        switch(dash_prop){
+            case 'height':
+                return dom.offsetHeight + 'px';
+            case 'width':
+                return dom.offsetWidth + 'px';
+            case 'left':
+                return dom.offsetLeft + 'px';
+            case 'top':
+                return dom.offsetTop + 'px';
+        }        
+        
+        return window.getComputedStyle(dom, null).getPropertyValue(dash_prop);
     };
 
     DCMS.Dom.getProbeValue = function(dom, prop, value){

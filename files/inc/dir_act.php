@@ -2,7 +2,7 @@
 
 defined('DCMS') or die();
 // файл отвечает за исполнение действий
-if ($dir->group_write <= $user->group || ($dir->id_user && $user->id == $dir->id_user)) {
+if ($access_write) {
     // выгрузка
     if (!empty($_FILES ['file'])) {
         if ($_FILES ['file'] ['error'])
@@ -28,7 +28,7 @@ if ($dir->group_write <= $user->group || ($dir->id_user && $user->id == $dir->id
     }
 }
 
-if ($dir->group_edit <= $user->group) {
+if ($access_edit) {
     // импорт файлов
     if (!empty($_POST ['file_import']) && !empty($_POST ['url'])) {
         if ($file = $dir->fileImport($_POST ['url'])) {

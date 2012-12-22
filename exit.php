@@ -5,9 +5,6 @@ include_once 'sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Выход');
 
-
-
-
 $q = mysql_query("SELECT * FROM `users_online` WHERE `id_user` = '{$user->id}' LIMIT 1");
 if (mysql_num_rows($q)) {
     $exit_user = mysql_fetch_assoc($q);
@@ -26,13 +23,13 @@ session_name(SESSION_NAME) or die(__('Невозможно инициализи�
 @session_start() or die(__('Невозможно инициализировать сессии'));
 
 $user = new user(false);
-
+/*
 if (isset($_GET['return'])) {
     header('Refresh: 1; url=' . $_GET['return']);
 } else {
     header('Refresh: 1; url=/');
 }
-
+*/
 $doc->msg(__('Авторизация успешно сброшена'));
 
 echo __("Будем рады видеть Вас снова") . "<br />\n";

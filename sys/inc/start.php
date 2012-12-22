@@ -372,7 +372,7 @@ if (!empty($_SESSION [SESSION_ID_USER])) {
     // авторизация по сессии
     $user = new user($_SESSION [SESSION_ID_USER]);
 
-    if ($user->password !== crypt::hash($_SESSION [SESSION_PASSWORD_USER])) {
+    if ($user->password !== crypt::hash($_SESSION [SESSION_PASSWORD_USER], $dcms->salt)) {
         $user = new user(false);
         unset($_SESSION [SESSION_ID_USER]);
         unset($_SESSION [SESSION_PASSWORD_USER]);

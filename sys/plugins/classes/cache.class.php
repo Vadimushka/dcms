@@ -2,93 +2,70 @@
 
 abstract class cache {
 
-    static public function getMemcache() {
-        static $memcache = null;
-
-        if ($memcache === false)
-            return false;
-
-        if ($memcache === null) {
-            if (!class_exists('Memcache'))
-                $memcache = false;
-            else {
-                $memcache = new Memcache();
-                if (!$memcache->connect('127.0.0.1', 11211))
-                    $memcache = false;
-                else {
-                    $memcache->set(self::_memcacheKey('check'), 'checked', MEMCACHE_COMPRESSED, 2);
-                    if ($memcache->get(self::_memcacheKey('check')) !== 'checked')
-                        $memcache = false;
-                }
-            }
-        }
-        return $memcache;
-    }
-
+    /**
+     * Получение данных из кэша
+     * @param type $key
+     * @return boolean
+     */
     static public function get($key) {
-        $memcache = self::getMemcache();
-        if ($memcache) {
-            return $memcache->get(self::_memcacheKey($key));
-        } else {
-            $path = self::_path($key);
-            // чтение данных из файла
-            if (!$content = @file_get_contents($path))
-                return false;
-            // разбор данных
-            if (!$data = @unserialize($content)) {
-                return false;
-            }
-
-            // проверка актуальности данных
-            if ($data ['a'] < TIME) {
-                @unlink($path);
-                return false;
-            }
-
-            return $data ['d'];
+        $path = self::_path($key);
+        
+        // чтение данных из файла
+        if (!$content = @file_get_contents($path))
+            return false;
+        
+        // десериализация данных
+        if (!$data = @unserialize($content)) {
+            return false;
         }
+
+        // проверка актуальности данных
+        if ($data ['a'] < TIME) {
+            @unlink($path); // неактуальный кэш сразу удаляем
+            return false;
+        }
+
+        return $data ['d'];
     }
 
+    /**
+     * Запись данных в кэш
+     * @param type $key
+     * @param type $data
+     * @param type $ttl
+     * @return boolean
+     */
     static public function set($key, $data, $ttl = false) {
-        $memcache = self::getMemcache();
 
-        if ($memcache) {
-            if ($data === false || $ttl === false) {
-                $memcache->delete(self::_memcacheKey($key));
-            } else {
-                $memcache->set(self::_memcacheKey($key), $data, MEMCACHE_COMPRESSED, $ttl);
-            }
-        } else {
-            $tmp_file = TMP . '/cache.' . passgen() . '.ser.tmp';
-            $path = self::_path($key);
+        $tmp_file = TMP . '/cache.' . passgen() . '.ser.tmp';
+        $path = self::_path($key);
 
-            // удаленный кэш все равно вернет false, поэтому в целях незахламления папки tmp лучше файл удалить
-            if ($data === false || $ttl === false) {
-                return @unlink($path);
-            }
+        // удаленный кэш все равно вернет false, поэтому в целях незахламления папки tmp лучше файл удалить
+        if ($data === false || $ttl === false) {
+            return @unlink($path);
+        }
 
-            @file_put_contents($tmp_file, serialize(array('a' => $ttl + TIME, 'd' => $data))) OR die('Ошибка записи кэша');
-            @chmod($tmp_file, filesystem::getChmodToWrite());
+        @file_put_contents($tmp_file, serialize(array('a' => $ttl + TIME, 'd' => $data))) OR die('Ошибка записи кэша');
+        @chmod($tmp_file, filesystem::getChmodToWrite());
 
-            if (IS_WINDOWS) {
-                // в винде файл перед заменой нужно удалить
-                if (@file_exists($path) && !@unlink($path)) {
-                    return false;
-                }
+        if (IS_WINDOWS) {
+            // в винде файл перед заменой нужно удалить
+            if (@file_exists($path) && !@unlink($path)) {
+                return false;
             }
-            // переименовываем временный файл в нужный нам
-            if (!@rename($tmp_file, $path)) {
-                @unlink($tmp_file);
-                die('Ошибка записи кэша');
-            }
+        }
+        // переименовываем временный файл в нужный нам
+        if (!@rename($tmp_file, $path)) {
+            @unlink($tmp_file);
+            die('Ошибка записи кэша');
         }
     }
 
-    static protected function _memcacheKey($key) {
-        return md5($key . $_SERVER['HTTP_HOST']);
-    }
-
-    // получение пути к файлу кэша по ключу
+    /**
+     * Получение пути к файлу по ключу
+     * @param type $key
+     * @return type
+     */
     static protected function _path($key) {
         return TEMP . '/cache.' . urlencode($key) . '.ser';
     }
@@ -134,26 +111,24 @@ abstract class cacher {
         return $cache[$name]['v'];
     }
 
+    /**
+     * Удаление устаревших данных
+     * @param type $cache
+     */
     protected static function _clear(&$cache) {
         // удаление устаревших данных
         foreach ($cache as $name => $data) {
-            if ($data['t'] >= TIME) {
+            if ($data['t'] >= TIME)
                 continue;
-            }
             unset($cache[$name]);
         }
     }
 
     public static function set($cache_name, $name, $val, $ttl = 0) {
-
         $cache = (array) self::_read($cache_name, true);
-
         self::_clear($cache);
-
         $cache[$name] = array('t' => $ttl + TIME, 'v' => $val);
-
         cache::set($cache_name, $cache, self::_max_ttl($cache));
-
         self::_read($cache_name, true);
         return true;
     }

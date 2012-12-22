@@ -22,9 +22,9 @@ class files_file {
         $this->ratings = array(
             -2 => __('Ужасный файл'),
             -1 => __('Плохой файл'),
-            0  => __('Без оценки'),
-            1  => __('Хороший файл'),
-            2  => __('Отличный файл')
+            0 => __('Без оценки'),
+            1 => __('Хороший файл'),
+            2 => __('Отличный файл')
         );
 
 
@@ -66,17 +66,17 @@ class files_file {
         }
     }
 
-    public function rename($runame, $name) {
-        if ($this->_data['name'] {0} == '.') {
+    public function rename($runame, $name = false) {
+        if ($this->_data['name'] {0} == '.')
             return false;
-        }
 
-        if ($name {0} == '.') {
+        if ($name && $name {0} == '.')
             return false;
-        }
 
+        if ($name && file_exists($this->_data['path_dir_abs'] . '/' . $name))
+            return false;
 
-        if (@rename($this->_data['path_file_abs'], $this->_data['path_dir_abs'] . '/' . $name)) {
+        if ($name && @rename($this->_data['path_file_abs'], $this->_data['path_dir_abs'] . '/' . $name)) {
             // переименовываем скрины
             foreach ($this->_screens as $scr_key => $scr_file) {
                 if (@rename($this->_data['path_dir_abs'] . '/' . $scr_file, $this->_data['path_dir_abs'] . '/.' . $name . '.' . $scr_key . '.jpg'))
@@ -87,14 +87,15 @@ class files_file {
             $this->_data['name'] = $name;
             // вычисление дополнительных путей
             $this->_setPathes($this->_data['path_dir_abs']);
-            $this->_data['runame'] = $runame;
-            // обновление инфы в кэше (в базе)
-            $this->_baseUpdate();
-            $dir = new files($this->_data['path_dir_abs']);
-            $dir->cacheClear();
-            $this->_need_save = true;
-            return true;
         }
+
+        $this->_data['runame'] = $runame;
+        // обновление инфы в кэше (в базе)
+        $this->_baseUpdate();
+        $dir = new files($this->_data['path_dir_abs']);
+        $dir->cacheClear();
+        $this->_need_save = true;
+        return true;
     }
 
     public function moveTo($path_dir_abs) {
@@ -446,7 +447,7 @@ WHERE `id` = '" . intval($this->_data['id']) . "' LIMIT 1");
 
     public function save_data() {
         if ($this->_data['name'] {0} !== '.') {
-            ini::save($this->_data['path_dir_abs'] . '/.' . $this->_data['name'] . '.ini', array('CONFIG'  => $this->_data, 'SCREENS' => $this->_screens), true);
+            ini::save($this->_data['path_dir_abs'] . '/.' . $this->_data['name'] . '.ini', array('CONFIG' => $this->_data, 'SCREENS' => $this->_screens), true);
         }
     }
 

@@ -24,15 +24,36 @@ td {
     padding: 0;
 }
 
-div.quote{
-    border: 1px solid #ccc;
-    font-size: 90%;
-}
-span.quote{
+
+.DCMS_mark{
     
 }
 
-.code_php{
+.DCMS_nick_on{
+    
+}
+
+.DCMS_nick_off{
+    
+}
+
+.DCMS_quote{
+    border: 1px solid #ccc;
+    font-size: 90%;
+}
+.DCMS_quote_title{
+    
+}
+
+.DCMS_phpcode{
     max-width: 600px;
     overflow: auto;
+}
+
+.DCMS_font_bold{
+    font-weight: bold;
+}
+
+.DCMS_photo{
+    
 }

@@ -7,6 +7,8 @@ $dir = new files($pathinfo['dirname']);
 if ($dir->group_show > $user->group) {
     $doc->access_denied(__('У Вас нет прав для просмотра файлов в данной папке'));
 }
+$access_write_dir = $dir->group_write <= $user->group || ($dir->id_user && $user->id == $dir->id_user);
+
 
 $order_keys = $dir->getKeys();
 if (!empty($_GET['order']) && isset($order_keys[$_GET['order']]))
@@ -19,18 +21,17 @@ $file = new files_file($pathinfo['dirname'], $pathinfo['basename']);
 if ($file->group_show > $user->group)
     $doc->access_denied(__('У Вас нет прав для просмотра данного файла'));
 
-if (isset($_GET['act']) && $_GET['act'] == 'edit_screens') {
-    if ($file->group_edit > $user->group && (!$file->id_user || $file->id_user != $user->id))
-        $doc->access_denied(__('У Вас нет прав для изменения параметров данного файла'));
+$access_edit = $file->group_edit <= $user->group || ($file->id_user && $file->id_user == $user->id);
+
+if ($access_edit && isset($_GET['act']) && $_GET['act'] == 'edit_screens')
     include 'inc/screens_edit.php';
-}
+
 
 $doc->title = __('Файл %s - скачать', $file->runame);
-
 $doc->description = __('Скачать файл %s (%s)', $file->runame, $file->name);
 
-include 'inc/file_act.php';
-
+if ($access_edit)
+    include 'inc/file_act.php';
 
 if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
     $my_rating = (int) $_POST['rating'];
@@ -57,7 +58,7 @@ if (empty($_GET['act'])) {
             $query_screen = 0;
 
         if ($screen = $file->getScreen($doc->img_max_width(), $query_screen)) {
-            echo "<img class='photo' src='" . $screen . "' alt='" . __('Скриншот') . " $query_screen' /><br />\n";
+            echo "<img class='DCMS_photo' src='" . $screen . "' alt='" . __('Скриншот') . " $query_screen' /><br />\n";
         }
 
         if ($screens_count > 1) {
@@ -461,6 +462,7 @@ for ($i = 0; $i < count($return); $i++) {
     $doc->ret($return[$i]['runame'], '/files' . $return[$i]['path']);
 }
 
-include 'inc/file_form.php';
+if ($access_edit)
+    include 'inc/file_form.php';
 exit;
 ?>

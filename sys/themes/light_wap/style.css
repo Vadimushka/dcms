@@ -275,14 +275,14 @@ a.post:hover{
 
 }
 
-img.photo {
+.DCMS_photo {
     background-color: #DFDFED;
     margin: 1px;
     padding: 4px;
     border: 1px #CCCCE5 solid;
 }
 
-span.nick_on {
+.DCMS_nick_on {
     text-shadow: none;
     border-bottom: 1px solid #26C026;
     text-decoration: none;
@@ -290,7 +290,7 @@ span.nick_on {
 
 
 /* выделение в результатах поиска */
-span.mark {
+.DCMS_mark {
     font-weight: bold;
     color: #F6A21A;
 }
@@ -302,7 +302,7 @@ table.links {
     text-align: center;
 }
 
-div.quote {
+.DCMS_quote {
     border: 1px solid #DFDFDF;
     border-radius: 2px;
     margin: 3px;
@@ -312,7 +312,7 @@ div.quote {
     color: #666;
 }
 
-span.quote {
+.DCMS_quote_title {
     font-weight: bold;
 }
 

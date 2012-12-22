@@ -70,7 +70,7 @@ for ($i = $start; $i < $end; $i++) {
 
 
     $theme = $searched[$i];
-    $title = preg_replace($searched_mark, '\1<span class="mark">\2</span>\3', for_value($theme['name']));
+    $title = preg_replace($searched_mark, '\1<span class="DCMS_mark">\2</span>\3', for_value($theme['name']));
     $post->content = output_text(preg_replace($searched_mark, '\1[mark]\2[/mark]\3', $theme['message']));
 
     $post->title = $title;

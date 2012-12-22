@@ -31,47 +31,27 @@ abstract class filesystem {
 
         foreach ($path as $k => $p) {
             $p = self::unixpath($p);
-
-
             $path[$k] = str_replace($replace, '', $p);
         }
-
-
 
         return $is_array ? $path : $path[0];
     }
 
     // получение оптимального CHMOD, разрешающего запись
     static function getChmodToWrite($is_dir = false) {
-        if (preg_match('#mpm#i', @$_SERVER ['SERVER_SOFTWARE'])) {
-            if ($is_dir) {
-                return 0770;
-            } else {
-                return 0660;
-            }
+        if ($is_dir) {
+            return 0700;
         } else {
-            if ($is_dir) {
-                return 0777;
-            } else {
-                return 0666;
-            }
+            return 0600;
         }
     }
 
     // получение оптимального CHMOD, разрешающего чтение файла
     static function getChmodToRead($is_dir = false) {
-        if (preg_match('#mpm#i', @$_SERVER ['SERVER_SOFTWARE'])) {
-            if ($is_dir) {
-                return 0550;
-            } else {
-                return 0440;
-            }
+        if ($is_dir) {
+            return 0500;
         } else {
-            if ($is_dir) {
-                return 0555;
-            } else {
-                return 0444;
-            }
+            return 0400;
         }
     }
 
@@ -88,7 +68,7 @@ abstract class filesystem {
      * Создание директории с установкой прав на запись
      * @param string $p путь
      * @return boolean
-     */            
+     */
     static function mkdir($p) {
         $p = self::systempath($p);
         if (@mkdir($p, filesystem::getChmodToWrite(true), true)) {
@@ -105,10 +85,10 @@ abstract class filesystem {
      */
     static function rmdir($dir, $delete_this_dir = true) {
         $dir = realpath($dir);
-        
+
         if (!$dir)
             return false;
-        
+
         $od = opendir($dir);
         while ($rd = readdir($od)) {
             if ($rd == '.' || $rd == '..')

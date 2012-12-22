@@ -66,9 +66,8 @@ html, body, #main{
 }
 
 #adt_top{
-    border-radius: 5px;
+    border-radius: 2px;
 }
-
 
 #menu{
     display: inline-block;
@@ -92,12 +91,29 @@ html, body, #main{
 }
 
 .form{
-    border-radius: 5px;
+    background: #f0f0f0;
+    border: 1px #DBDBDB solid;
+    padding: 5px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+}
+
+.form select{
+    border: 1px solid #CCC;
+    padding: 1px;
+    border-radius: 2px;
+}
+
+.form input[type="text"], .form input[type="password"], .form textarea{
     margin-bottom: 10px;
 }
 
 .form input[type="text"], .form input[type="password"]{
     margin-right: 5px;
+    padding: 3px 6px;
+    border: 1px #CCC solid;
+    border-radius: 2px;
+    box-shadow: 1px 1px 8px -4px black inset;
 }
 
 .form input[type="submit"]{
@@ -112,7 +128,7 @@ html, body, #main{
     box-shadow: 0 1px 7px -3px black inset;
     background-color: #F7F7F7;
     border-radius: 2px;
-    border: 1px #B6B6B6 solid;
+    border: 1px #CCC solid;
     padding: 3px;
 }
 .form textarea:focus{
@@ -125,18 +141,23 @@ html, body, #main{
 }
 
 .post{
+    background: #f0f0f0;
+    border: 1px #DBDBDB solid;
+    color: #686868 !important;
+    padding: 3px;
+
     display: block !important;
     border-top-style: none !important;
     font-size: 90%;
 }
 .post:first-child{
     border-top-style: solid !important;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
 }
 .post:last-child{
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
 }
 
 .post td{
@@ -157,6 +178,7 @@ html, body, #main{
 
 a.post:hover{
     text-decoration: none !important;
+    background-color: white;
 }
 
 .post td.right{
@@ -257,7 +279,7 @@ a.post:hover{
     margin-left: 7px;
 }
 
-div.quote{
+.DCMS_quote{
     border: 1px solid #979797;
     border-radius: 2px;
     background-color: white;
@@ -266,11 +288,11 @@ div.quote{
     color: #838383;
     margin-left: 24px;
 }
-div.quote a{
+.DCMS_quote a{
     color: #838383;
 }
 
-.photo{
+.DCMS_photo{
     display: block;
     margin: 2px auto;
     background: #EBEBEB;
@@ -279,11 +301,15 @@ div.quote a{
     border-radius: 5px;
 }
 
-.nick_on{
+.DCMS_nick_on{
     text-shadow: 1px 1px 4px #00E900;
 }
 
-.code_php{
+.DCMS_nick_off{
+
+}
+
+.DCMS_phpcode{
     max-height: 400px;
     max-width: 684px;
     overflow: auto;

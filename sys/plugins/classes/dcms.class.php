@@ -2,9 +2,7 @@
 
 class dcms extends browser {
 
-    protected $_counters = array();
     protected $_data = array();
-    var $license;
 
     function __construct() {
         parent::__construct();
@@ -45,15 +43,10 @@ class dcms extends browser {
 VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($description) . "')");
     }
 
-    public function __call($name, $arg) {
-        switch ($name) {
-            case 'count':return $this->_count($arg[0]);
-            default:return false;
-        }
-    }
-
     public function __get($name) {
         switch ($name) {
+            case 'salt_user':return $this->salt.@$_SERVER['HTTP_USER_AGENT'];
+                break;            
             case 'subdomain_main': return $this->_subdomain_main();
                 break;
             case 'browser_type': return $this->_browser_type();
@@ -118,26 +111,7 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
         return $this->browser_type_auto;
     }
 
-    // счетчики
-    protected function _count($item) {
-        if (!isset($this->_counters[$item])) {
-            switch ($item) {
-                // кол-во пользователей
-                case 'users': $this->_counters[$item] = mysql_result(mysql_query("SELECT COUNT(*) FROM `users`"), 0);
-                    break;
-                // пользователи онлайн
-                case 'users_online': $this->_counters[$item] = mysql_result(mysql_query("SELECT COUNT(*) FROM `users_online`"), 0);
-                    break;
-                // гости онлайн
-                case 'guest_online': $this->_counters[$item] = mysql_result(mysql_query("SELECT COUNT(*) FROM `guest_online` WHERE `conversions` >= '5'"), 0);
-                    break;
 
-                default:$this->_counters[$item] = false;
-            }
-        }
-
-        return $this->_counters[$item];
-    }
 
     /**
      * Загрузка настроек

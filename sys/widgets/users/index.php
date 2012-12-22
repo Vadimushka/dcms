@@ -34,7 +34,7 @@ $post->hightlight = true;
 $post->icon('users');
 $post->title = __('Сейчас на сайте');
 $post->url = '/online.users.php';
-$post->counter = $dcms->count('users_online');
+$post->counter = mysql_result(mysql_query("SELECT COUNT(*) FROM `users_online`"), 0);
 
 
 $post = $listing->post();
@@ -42,7 +42,7 @@ $post->hightlight = true;
 $post->icon('guest');
 $post->title = __('Гости на сайте');
 $post->url = '/online.guest.php';
-$post->counter = $dcms->count('guest_online');
+$post->counter = mysql_result(mysql_query("SELECT COUNT(*) FROM `guest_online`"), 0);
 
 
 $listing->display();

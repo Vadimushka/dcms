@@ -56,7 +56,7 @@ DCMS.Event.on('user_update', user_update);
  * Сворачиваем поле ввода до дефолтных размеров
  */
 function textareaOnBlur(textarea){
-    //DCMS.Animation.style(textarea, 'height', [textarea.offsetHeight+'px',''] , 300);
+    //DCMS.Animation.style(textarea, 'height', '' , 300);
 }
 
 function textareaOnChange(textarea){
@@ -77,6 +77,6 @@ function textareaOnChange(textarea){
         DCMS.Dom.setStyle(testdiv, attributes_copy[i], DCMS.Dom.getComputedValue(textarea, attributes_copy[i]));
     }    
     
-    DCMS.Animation.style(textarea, 'height', [textarea.offsetHeight+'px', testdiv.offsetHeight+'px'] , 300);
+    DCMS.Animation.style(textarea, 'height', DCMS.Dom.getComputedValue(testdiv, 'height') , 300);
     testdiv.parentNode.removeChild(testdiv);
 }

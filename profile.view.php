@@ -97,7 +97,7 @@ $listing = new listing();
 
 // Аватар 
 if ($path = $ank->getAvatar($doc->img_max_width())) {
-    echo "<img class='photo' src='" . $path . "' alt='" . __('Аватар %s', $ank->login) . "' /><br />\n";
+    echo "<img class='DCMS_photo' src='" . $path . "' alt='" . __('Аватар %s', $ank->login) . "' /><br />\n";
 }
 
 

@@ -25,7 +25,6 @@ if (isset($_GET['redirected_from']) && in_array($_GET['redirected_from'], array(
 
 
 if ($user->group) {
-
     if (isset($_GET['auth_key']) && cache::get($_GET['auth_key']) === 'request') {
         cache::set($_GET['auth_key'], array('session' => $_SESSION, 'cookie'  => $_COOKIE), 60);
     }
@@ -36,7 +35,6 @@ if ($user->group) {
 }
 
 $need_of_captcha = cache_aut_failture::get($dcms->ip_long);
-
 
 if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
     $doc->err(__('Проверочное число введено неверно'));
@@ -54,7 +52,7 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
         if (!mysql_num_rows($q))
             $doc->err(__('Логин "%s" не зарегистрирован', $login));
 
-        elseif (crypt::hash($password) !== mysql_result($q, 0, 'password')) {
+        elseif (crypt::hash($password, $dcms->salt) !== mysql_result($q, 0, 'password')) {
             $need_of_captcha = true;
             cache_aut_failture::set($dcms->ip_long, true, 600); // при ошибке заставляем пользователя проходить капчу
             $id_user = mysql_result($q, 0, 'id');
@@ -80,7 +78,7 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
                 $_SESSION[SESSION_PASSWORD_USER] = $password;
                 if (isset($_POST['save_to_cookie']) && $_POST['save_to_cookie']) {
                     setcookie(COOKIE_ID_USER, $user->id, TIME + 60 * 60 * 24 * 365);
-                    setcookie(COOKIE_USER_PASSWORD, crypt::cookie_encrypt($password), TIME + 60 * 60 * 24 * 365);
+                    setcookie(COOKIE_USER_PASSWORD, crypt::encrypt($password, $dcms->salt_user), TIME + 60 * 60 * 24 * 365);
                 }
             }
         }
@@ -88,14 +86,14 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
 } elseif (!empty($_COOKIE[COOKIE_ID_USER]) && !empty($_COOKIE[COOKIE_USER_PASSWORD])) {
     $tmp_user = new user($_COOKIE[COOKIE_ID_USER]);
 
-    if (crypt::hash(crypt::cookie_decrypt($_COOKIE[COOKIE_USER_PASSWORD])) === $tmp_user->password) {
+    if (crypt::hash(crypt::decrypt($_COOKIE[COOKIE_USER_PASSWORD], $dcms->salt_user), $dcms->salt) === $tmp_user->password) {
         // если пользователь авторизовался, то ключ для восстановления ему больше не нужен
         if ($user->recovery_password)
             $user->recovery_password = '';
         mysql_query("INSERT INTO `log_of_user_aut` (`id_user`, `method`, `iplong`, `time`, `id_browser`, `status`) VALUES ('$tmp_user->id','cookie','$dcms->ip_long','" . TIME . "','$dcms->browser_id','1')");
         $user = $tmp_user;
         $_SESSION[SESSION_ID_USER] = $user->id;
-        $_SESSION[SESSION_PASSWORD_USER] = crypt::cookie_decrypt($_COOKIE[COOKIE_USER_PASSWORD]);
+        $_SESSION[SESSION_PASSWORD_USER] = crypt::decrypt($_COOKIE[COOKIE_USER_PASSWORD], $dcms->salt_user);
     } else {
         $need_of_captcha = true;
         cache_aut_failture::set($dcms->ip_long, true, 600); // при ошибке заставляем пользователя проходить капчу

@@ -20,7 +20,7 @@
     <?
     $class_fix = $dcms->ie_ver ? 'ie ie' . $dcms->ie_ver : '';
     ?>
-    <body class="theme_light <?= $class_fix ?>"> 
+    <body class="theme_light_web theme_light <?= $class_fix ?>"> 
         <div id="main">
             <div id="top_part">
                 <div id="header" class="gradient_blue">
@@ -48,7 +48,7 @@
                                         mail_new_count: <?= $user->mail_new_count ?>,
                                         friend_new_count: <?= $user->friend_new_count ?>
                                     };
-                                    DCMS.UserUpdate.update();  // запускаем периодический запрос данных пользователя
+                                    DCMS.UserUpdate.delay_update();  // запускаем периодический запрос данных пользователя
                                     // новые данные можно получать, подписавшись на событие user_update: DCMS.Event.on('user_update', user_update);
                                 </script>
                                 <?
@@ -65,7 +65,7 @@
                 <div class="body_width_limit">
                     <div id="menu">
                         <? if ($adt->top) { ?>
-                            <div id="adt_top" class="gradient_grey border">
+                            <div id="adt_top" class="post">
                                 <?= $this->section($adt->top, '{0}') ?>
                             </div>
                         <? } ?>

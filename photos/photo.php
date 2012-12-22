@@ -104,7 +104,7 @@ if ($photo->id_user && $photo->id_user == $user->id) {
 }
 
 if ($screen = $photo->getScreen($doc->img_max_width(), 0)) {
-    echo "<img class='photo' src='" . $screen . "' alt='" . __('Фото') . " " . for_value($photo->runame) . "' /><br />\n";
+    echo "<img class='DCMS_photo' src='" . $screen . "' alt='" . __('Фото') . " " . for_value($photo->runame) . "' /><br />\n";
 }
 
 $can_write = true;

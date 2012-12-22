@@ -91,7 +91,7 @@ if ($step == 2 && isset($_GET['final']) && isset($_POST['sex'])) {
             $a_code = md5(passgen());
 
             mysql_query("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `a_code`, `reg_mail`)
-values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::hash($_POST['password']) . "', '$sex', '$a_code', '" . my_esc($_POST['mail']) . "')");
+values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::hash($_POST['password'], $dcms->salt) . "', '$sex', '$a_code', '" . my_esc($_POST['mail']) . "')");
             $id_user = mysql_insert_id();
             if ($id_user && is_numeric($id_user)) {
 

@@ -938,22 +938,22 @@ class bbcode {
                 $time = (int) $log [1];
                 $ank = new user((int) $log[2]);
             } else {
-                return '<div class="quote">' . $this->get_html($elem['val']) . '</div>';
+                return '<div class="DCMS_quote">' . $this->get_html($elem['val']) . '</div>';
             }
         } elseif (!empty($elem['attrib']['time']) && !empty($elem['attrib']['id_user'])) {
             $time = (int) $elem['attrib']['time'];
             $ank = new user((int) $elem['attrib']['id_user']);
         } else {
-            return '<div class="quote">' . $this->get_html($elem['val']) . '</div>';
+            return '<div class="DCMS_quote">' . $this->get_html($elem['val']) . '</div>';
         }
 
 
         if ($time && $ank->id) {
-            $title = "<span class='quote'><a href='/profile.view.php?id=$ank->id'>" . $ank->nick() . "</a> (" . vremja($time) . ")</span>:";
+            $title = "<span class='DCMS_quote_title'><a href='/profile.view.php?id=$ank->id'>" . $ank->nick() . "</a> (" . vremja($time) . ")</span>:";
         } else {
             $title = '';
         }
-        return '<div class="quote">' . $title . $this->get_html($elem['val']) . '</div>';
+        return '<div class="DCMS_quote">' . $title . $this->get_html($elem['val']) . '</div>';
     }
 
     function img_2html($elem) {
@@ -982,7 +982,7 @@ class bbcode {
     function php_2html($elem) {
         $code = "<?php\n" . trim(preg_replace('#^\<\?(php)?|\?\>$#i', '', @$elem['val'][0]['str'])) . "\n?>";
         $code = highlight_string($code, true);
-        $code = preg_replace('#<code>(.*?)</code>#si', '<div class="code_php">\\1</div>', $code);
+        $code = preg_replace('#<code>(.*?)</code>#si', '<div class="DCMS_phpcode">\\1</div>', $code);
         $code = preg_replace("#[\n\r\t]+#", '', $code);
         return $code;
     }
