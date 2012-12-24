@@ -16,6 +16,20 @@
                 display: none !important;
             }
         </style>
+        <script>
+            LANG = {
+                bbcode_b: '<?= __('Текст жирным шрифтом') ?>',
+                bbcode_i: '<?= __('Текст курсивом') ?>',
+                bbcode_u: '<?= __('Подчеркнутый текст') ?>',
+                bbcode_img: '<?= __('Вставка изображения') ?>',
+                bbcode_php: '<?= __('Выделение PHP-кода') ?>',
+                bbcode_big: '<?= __('Увеличенный размер шрифта') ?>',
+                bbcode_small: '<?= __('Уменьшенный размер шрифта') ?>',
+                bbcode_gradient:'<?= __('Цветовой градиент') ?>',
+                bbcode_hide: '<?= __('Скрытый текст') ?>',
+                bbcode_spoiler: '<?= __('Свернутый текст') ?>'
+            };
+        </script>
     </head>
     <?
     $class_fix = $dcms->ie_ver ? 'ie ie' . $dcms->ie_ver : '';

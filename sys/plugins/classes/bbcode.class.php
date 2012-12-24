@@ -149,7 +149,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'vremja', 'no', 'php','gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'vremja', 'no', 'php','gradient', 'localimg', 'spoiler')
         ),
         'color' => array(
             'handler' => 'color_2html',
@@ -875,7 +875,7 @@ class bbcode {
         } else {
             $title = __('Скрытый текст');
         }
-        return '<div class="spoiler"><span class="spoiler_title">' . for_value($title) . '</span><div class="spoiler_content">' . $this->get_html($elem['val']) . '</div></div>';
+        return '<div class="DCMS_spoiler"><span class="DCMS_spoiler_title">' . for_value($title) . '</span><div class="DCMS_spoiler_content">' . $this->get_html($elem['val']) . '</div></div>';
 
 
         return smiles::bbcode($elem['val'][0]['str']);

@@ -1,3 +1,128 @@
+function ready(f){
+    DCMS.Event.on('ready', f);
+}
+
+Event = (function() {
+
+    var guid = 0;
+    
+    function fixEvent(event) {
+        event = event || window.event;
+  
+        if ( event.isFixed ) {
+            return event;
+        }
+        event.isFixed = true;
+  
+        event.preventDefault = event.preventDefault || function(){
+            this.returnValue = false;
+        }
+        event.stopPropagation = event.stopPropagaton || function(){
+            this.cancelBubble = true;
+        }
+    
+        if (!event.target) {
+            event.target = event.srcElement;
+        }
+  
+        if (!event.relatedTarget && event.fromElement) {
+            event.relatedTarget = event.fromElement == event.target ? event.toElement : event.fromElement;
+        }
+  
+        if ( event.pageX == null && event.clientX != null ) {
+            var html = document.documentElement, body = document.body;
+            event.pageX = event.clientX + (html && html.scrollLeft || body && body.scrollLeft || 0) - (html.clientLeft || 0);
+            event.pageY = event.clientY + (html && html.scrollTop || body && body.scrollTop || 0) - (html.clientTop || 0);
+        }
+  
+        if ( !event.which && event.button ) {
+            event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
+        }
+	
+        return event;
+    }  
+  
+    /* Вызывается в контексте элемента всегда this = element */
+    function commonHandle(event) {
+        event = fixEvent(event);
+    
+        var handlers = this.events[event.type];
+
+        for ( var g in handlers ) {
+            var handler = handlers[g];
+            var ret = handler.call(this, event);
+            if ( ret === false ) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }
+    }
+  
+    return {
+        add: function(elem, types, handler) {
+            if (elem.setInterval && ( elem != window && !elem.frameElement ) ) {
+                elem = window;
+            }
+      
+            if (!handler.guid) {
+                handler.guid = ++guid;
+            }
+      
+            if (!elem.events) {
+                elem.events = {};
+                elem.handle = function(event) {
+                    if (typeof Event !== "undefined") {
+                        return commonHandle.call(elem, event);
+                    }
+                }
+            }
+	  
+            types = DCMS.isArray(types)?types:[types];
+            for (var i=0; i<types.length; i++){
+                var type = types[i];
+                if (!elem.events[type]) {
+                    elem.events[type] = {};        
+      
+                    if (elem.addEventListener)
+                        elem.addEventListener(type, elem.handle, false);
+                    else if (elem.attachEvent)
+                        elem.attachEvent("on" + type, elem.handle);
+                }
+      
+                elem.events[type][handler.guid] = handler;
+            
+            }
+        },
+    
+        remove: function(elem, type, handler) {
+            var handlers = elem.events && elem.events[type];
+      
+            if (!handlers) return;
+      
+            delete handlers[handler.guid];
+      
+            for(var any in handlers) return ;
+            if (elem.removeEventListener)
+                elem.removeEventListener(type, elem.handle, false);
+            else if (elem.detachEvent)
+                elem.detachEvent("on" + type, elem.handle);
+		
+            delete elem.events[type];
+	
+	  
+            for (var any in elem.events)
+                return;
+            try {
+                delete elem.handle;
+                delete elem.events; 
+            } catch(e) { // IE
+                elem.removeAttribute("handle");
+                elem.removeAttribute("events");
+            }
+        } 
+    }
+}());
+
 function getXmlHttp() {
     var xmlhttp;
     try {
@@ -655,11 +780,12 @@ DCMS.Animation = {
         return true;
     };
 
-DCMS.getEventHandler = function(func, context){    
+DCMS.getEventHandler = function(func, context){
+    context = context || window;
     if (typeof func !== 'function')
         throw new TypeError("Обработчиком события должна быть функция");
     
-    return function(){            
+    return function(){
         return func.apply(context, arguments);
     };
     
@@ -795,14 +921,18 @@ DCMS.Dom = {
         return ~domNode.className.split(' ').indexOf(className);
     };
 
-    DCMS.Dom.create = function(tagName, classes, parent){
+    DCMS.Dom.create = function(tagName, classes, parent, before){
         var dom = document.createElement(tagName);
     
         if (classes)
             DCMS.Dom.classAdd(dom, classes);
     
-        if (DCMS.isDom(parent))
-            parent.appendChild(dom);
+        if (DCMS.isDom(parent)){
+            if (DCMS.isDom(before))
+                parent.insertBefore(dom, before);            
+            else
+                parent.appendChild(dom);            
+        }           
     
         return dom;
     };
@@ -832,13 +962,60 @@ DCMS.Dom = {
             units: q
         };
     };
+    
+    DCMS.Dom.inputInsert = function(node, Open, Close, CursorEnd) {    
+    node.focus();
+    if (window.attachEvent && navigator.userAgent.indexOf('Opera') === -1) {                                        
+        var s = node.sel;
+        if(s){                                  
+            var l = s.text.length;
+            s.text = Open + s.text + Close;
+            s.moveEnd("character", -Close.length);
+            s.moveStart("character", -l);                                           
+            s.select();                
+        }
+    } else {                                              
+        var ss = node.scrollTop;
+        var sel1 = node.value.substr(0, node.selectionStart);
+        var sel2 = node.value.substr(node.selectionEnd);
+        var sel = node.value.substr(node.selectionStart, node.selectionEnd - node.selectionStart);  
+        
+        
+        node.value = sel1 + Open + sel + Close + sel2;
+        if (CursorEnd){
+            node.selectionStart = sel1.length + Open.length + sel.length + Close.length;
+            node.selectionEnd = node.selectionStart;
+        }else{            
+            node.selectionStart = sel1.length + Open.length;
+            node.selectionEnd = node.selectionStart + sel.length;            
+        }
+        node.scrollTop = ss; 
+                                                    
+    }
+    return false;
+}
 
 
-    DCMS.Dom.events = {
-        add: function(dom, event, func, context){
-            Event.add(dom, event, DCMS.getEventHandler(func, context));
-        },
-        remove: function(dom, event, func, context){
-            Event.remove(dom, event, DCMS.getEventHandler(func, context));
-        }    
-    };
+if ( document.addEventListener ) {
+    // Use the handy event callback
+    document.addEventListener( "DOMContentLoaded", function(){
+        document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
+        DCMS.Event.trigger('ready');
+    }, false );
+
+// If IE event model is used
+} else if ( document.attachEvent ) {
+    // ensure firing before onload,
+    // maybe late but safe also for iframes
+    document.attachEvent("onreadystatechange", function(){
+        if ( document.readyState === "complete" ) {
+            document.detachEvent( "onreadystatechange", arguments.callee );
+            DCMS.Event.trigger('ready');
+        }
+    });
+}else{
+    window.onload = function(){
+        DCMS.Event.trigger('ready');
+    } 
+}
+

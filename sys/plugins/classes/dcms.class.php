@@ -17,8 +17,14 @@ class dcms extends browser {
      */
     public function distribution($mess, $group_min = 2) {
         $q = mysql_query("SELECT `id` FROM `users` WHERE `group` >= '" . intval($group_min) . "'");
-        while ($ank = mysql_fetch_assoc($q)) {
-            $ank = new user($ank['id']);
+        $users = array();
+        while ($ank_ids = mysql_fetch_assoc($q)) {
+            $users[] = $ank_ids['id'];
+        }
+        new user($users); // предзагрузка данных пользователей из базы
+
+        foreach ($users as $id_user) {
+            $ank = new user($id_user);
             $ank->mess($mess);
         }
     }
@@ -45,8 +51,8 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
 
     public function __get($name) {
         switch ($name) {
-            case 'salt_user':return $this->salt.@$_SERVER['HTTP_USER_AGENT'];
-                break;            
+            case 'salt_user':return $this->salt . @$_SERVER['HTTP_USER_AGENT'];
+                break;
             case 'subdomain_main': return $this->_subdomain_main();
                 break;
             case 'browser_type': return $this->_browser_type();
@@ -106,12 +112,8 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
                 return 'web';
             }
         }
-
-
         return $this->browser_type_auto;
     }
-
-
 
     /**
      * Загрузка настроек

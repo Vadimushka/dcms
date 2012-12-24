@@ -32,7 +32,7 @@ class user extends plugins {
             if (array_key_exists($id_user, $cache))
                 $users_return[$id_user] = $cache[$id_user];
             else
-                $users_from_mysql[] = $id_user;
+                $users_from_mysql[] = (int)$id_user;
         }
 
         if ($users_from_mysql) {

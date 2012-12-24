@@ -35,7 +35,7 @@ if (!empty($_GET['id']) && !empty($_GET['code'])) {
         elseif (!is_valid::password($_POST['password1']))
             $doc->err(__('Не корректный новый пароль'));
         else {
-            $ank->password = crypt::hash($_POST['password1']);
+            $ank->password = crypt::hash($_POST['password1'], $dcms->salt);
             $ank->recovery_password = '';
             $doc->msg(__('Пароль успешно изменен'));
             header('Refresh: 2; url=/login.php?' . passgen());

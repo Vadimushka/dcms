@@ -55,11 +55,12 @@ DCMS.Event.on('user_update', user_update);
 /**
  * Сворачиваем поле ввода до дефолтных размеров
  */
-function textareaOnBlur(textarea){
-    //DCMS.Animation.style(textarea, 'height', '' , 300);
+function onTextareaBlur(){
+//DCMS.Animation.style(textarea, 'height', '' , 300);
 }
 
-function textareaOnChange(textarea){
+function onTextareaChange(){
+    textarea = this;
     var hasInnerText = (document.getElementsByTagName("body")[0].innerText != undefined) ? true : false;
         
     var attributes_copy = ['width', 'font', 'padding'];    
@@ -80,3 +81,116 @@ function textareaOnChange(textarea){
     DCMS.Animation.style(textarea, 'height', DCMS.Dom.getComputedValue(testdiv, 'height') , 300);
     testdiv.parentNode.removeChild(testdiv);
 }
+
+function onTextareaBBcodeClickB(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[b]', '[/b]');
+}
+function onTextareaBBcodeClickU(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[u]', '[/u]');
+}
+function onTextareaBBcodeClickI(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[i]', '[/i]');
+}
+function onTextareaBBcodeClickBIG(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[big]', '[/big]');
+}
+function onTextareaBBcodeClickSMALL(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[small]', '[/small]');
+}
+
+
+function onTextareaBBcodeClickIMG(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[img]http://', '[/img]');
+}
+function onTextareaBBcodeClickPHP(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[php]', '[/php]');
+}
+function onTextareaBBcodeClickGRADIENT(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[gradient from="#bc009a" to="#008e21"]', '[/gradient]');
+}
+function onTextareaBBcodeClickHIDE(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[hide balls="0" group="0"]', '[/hide]');
+}
+function onTextareaBBcodeClickSPOILER(event){
+    var textarea = this.parentNode.parentNode.lastChild;
+    DCMS.Dom.inputInsert(textarea, '[spoiler title="'+LANG.bbcode_spoiler+'"]', '[/spoiler]');
+}
+
+function textareaModify(){
+    var texareas = document.querySelectorAll('textarea');
+    for (var i =0; i < texareas.length; i++){
+        var textarea = texareas[i];
+        Event.add(textarea, 'blur', onTextareaBlur);
+        Event.add(textarea, ['keyup', 'paste', 'cut', 'change', 'focus', 'input'], onTextareaChange);
+                
+        var node_txt_wrapper = DCMS.Dom.create('div', 'textarea_wrapper', textarea.parentNode, textarea);        
+        node_txt_wrapper.appendChild(textarea);
+        var node_bbcode = DCMS.Dom.create('div', 'textarea_bbcode', node_txt_wrapper, textarea);
+        var node_bb_b = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_b+'">B</span>', '', node_bbcode);
+        Event.add(node_bb_b, 'click', onTextareaBBcodeClickB);
+        var node_bb_i = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_i+'">I</span>', '', node_bbcode);
+        Event.add(node_bb_i, 'click', onTextareaBBcodeClickI);
+        var node_bb_u = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_u+'">U</span>', '', node_bbcode);
+        Event.add(node_bb_u, 'click', onTextareaBBcodeClickU);
+        
+        var node_bb_big = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_big+'">BIG</span>', '', node_bbcode);
+        Event.add(node_bb_big, 'click', onTextareaBBcodeClickBIG);
+        var node_bb_small = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_small+'">small</span>', '', node_bbcode);
+        Event.add(node_bb_small, 'click', onTextareaBBcodeClickSMALL);
+        
+        
+        
+        var node_bb_img = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_img+'">IMG</span>', '', node_bbcode);
+        Event.add(node_bb_img, 'click', onTextareaBBcodeClickIMG);
+        
+        var node_bb_php = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_php+'">PHP</span>', '', node_bbcode);
+        Event.add(node_bb_php, 'click', onTextareaBBcodeClickPHP);
+        
+        var node_bb_gradient = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_gradient+'"><font color="#BC009A">G</font><font color="#A4118A">R</font><font color="#8D237B">A</font><font color="#75356C">D</font><font color="#5E475D">I</font><font color="#46584E">E</font><font color="#2F6A3F">N</font><font color="#177C30">T</font></span>', '', node_bbcode);
+        Event.add(node_bb_gradient, 'click', onTextareaBBcodeClickGRADIENT);
+        
+        
+        
+        var node_bb_spoiler = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_spoiler+'">SPOILER</span>', '', node_bbcode);
+        Event.add(node_bb_spoiler, 'click', onTextareaBBcodeClickSPOILER);
+        
+        var node_bb_hide = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_hide+'">HIDE</span>', '', node_bbcode);
+        Event.add(node_bb_hide, 'click', onTextareaBBcodeClickHIDE);
+    }  
+}
+
+ready(textareaModify);
+
+function onSpoilerClick(){
+    
+    if (DCMS.Dom.classHas(this.parentNode, 'expanded')){
+        DCMS.Dom.classRemove(this.parentNode, 'expanded');
+        DCMS.Dom.classAdd(this.parentNode, 'collapsed');
+        DCMS.Animation.style(this.nextSibling, 'height', '0');
+    }else{
+        DCMS.Dom.classRemove(this.parentNode, 'collapsed');
+        DCMS.Dom.classAdd(this.parentNode, 'expanded');
+        DCMS.Animation.style(this.nextSibling, 'height', '');
+    }
+    return false;
+}
+
+function spoilersModify(){
+    var spoilers = document.querySelectorAll('.DCMS_spoiler_title');
+    for (var i =0; i < spoilers.length; i++){
+        var spoiler = spoilers[i];
+        DCMS.Dom.classAdd(spoiler.parentNode, 'collapsed');
+        DCMS.Dom.setStyle(spoiler.nextSibling, 'height', '0');
+        Event.add(spoiler, 'click', onSpoilerClick);
+    }    
+}
+ready(spoilersModify);

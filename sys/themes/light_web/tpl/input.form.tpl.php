@@ -47,13 +47,7 @@
                 ' />';
                 break;
             case 'textarea':                
-                    echo '<textarea
-                        onblur="textareaOnBlur(this)"
-                        onfocus="textareaOnChange(this)"
-                        onchange="textareaOnChange(this)"
-                        onkeyup="textareaOnChange(this)"
-                        oncut="textareaOnChange(this)"
-                        onpaste="textareaOnChange(this)"' .
+                    echo '<textarea ' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                     '>' .

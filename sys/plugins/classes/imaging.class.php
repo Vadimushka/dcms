@@ -26,7 +26,7 @@ abstract class imaging {
         $x2 = imagesx($img2);
         $y2 = imagesy($img2);
 
-        if ($x < $x2 || $y < $y2)
+        if ($x < $x2 * 2 || $y < $y2 * 2)
             return false;
 
         imagecopy($img, $img2, $x - $x2, $y - $y2, 0, 0, $x2, $y2);
