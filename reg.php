@@ -132,7 +132,7 @@ values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::
             $doc->err(__('Пользователь с таким e-mail уже зарегистрирован'));
         else {
             mysql_query("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `reg_mail`)
-values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::hash($_POST['password']) . "', '$sex', '" . my_esc($inv['email']) . "')");
+values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::hash($_POST['password'], $dcms->salt) . "', '$sex', '" . my_esc($inv['email']) . "')");
             $id_user = mysql_insert_id();
 
 
@@ -152,7 +152,7 @@ values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::
             }
         }
     } else {
-        mysql_query("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`) values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::hash($_POST['password']) . "', '$sex')");
+        mysql_query("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`) values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::hash($_POST['password'], $dcms->salt) . "', '$sex')");
 
         $id_user = mysql_insert_id();
         if ($id_user && is_numeric($id_user)) {

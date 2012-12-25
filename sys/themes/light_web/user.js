@@ -108,18 +108,22 @@ function onTextareaBBcodeClickIMG(event){
     var textarea = this.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '[img]http://', '[/img]');
 }
+
 function onTextareaBBcodeClickPHP(event){
     var textarea = this.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '[php]', '[/php]');
 }
+
 function onTextareaBBcodeClickGRADIENT(event){
     var textarea = this.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '[gradient from="#bc009a" to="#008e21"]', '[/gradient]');
 }
+
 function onTextareaBBcodeClickHIDE(event){
     var textarea = this.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '[hide balls="0" group="0"]', '[/hide]');
 }
+
 function onTextareaBBcodeClickSPOILER(event){
     var textarea = this.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '[spoiler title="'+LANG.bbcode_spoiler+'"]', '[/spoiler]');
