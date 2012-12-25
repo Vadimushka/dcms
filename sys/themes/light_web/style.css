@@ -369,7 +369,11 @@ a.post:hover{
 .DCMS_spoiler{
     border: 1px #ccc solid;
     border-radius: 2px;
-    padding: 3px;
+    padding: 3px;    
+}
+
+.DCMS_spoiler > .DCMS_spoiler_title{
+    cursor: pointer;
 }
 
 .DCMS_spoiler.expanded > .DCMS_spoiler_title:before{
