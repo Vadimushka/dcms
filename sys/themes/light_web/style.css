@@ -96,12 +96,15 @@ html, body, #main{
     padding: 5px;
     border-radius: 2px;
     margin-bottom: 10px;
+    box-shadow: 0 0 0 1px whiteSmoke inset;
+    font-size: 12px;
 }
 
 .form select{
     border: 1px solid #CCC;
     padding: 1px;
     border-radius: 2px;
+    outline: 1px solid #F7F7F7;
 }
 
 .form input[type="text"], .form input[type="password"], .form textarea{
@@ -113,7 +116,14 @@ html, body, #main{
     padding: 3px 6px;
     border: 1px #CCC solid;
     border-radius: 2px;
-    box-shadow: 1px 1px 8px -4px black inset;
+    box-shadow: 1px 1px 7px -4px black inset, 0 0 0 1px #F7F7F7;
+}
+
+.form input[type="text"]:disabled, .form input[type="password"]:disabled{
+    border-color: #DADADA;
+    background-color: #EEE;
+    box-shadow: none;
+    color: #666;
 }
 
 .form input[type="submit"]{
@@ -166,12 +176,9 @@ html, body, #main{
     cursor: default;
 }
 
-
 .form .textarea_wrapper .textarea_bbcode span:hover{
     border-color: #CFCFCF;
 }
-
-
 
 .form input[type="text"]:focus, .form input[type="password"]:focus, .form textarea:focus{
     border-color: #A8A8A8;
@@ -195,6 +202,8 @@ html, body, #main{
     display: block !important;
     border-top-style: none !important;
     font-size: 90%;
+
+    box-shadow: 0 0 0 1px whiteSmoke inset;
 }
 .post:first-child{
     border-top-style: solid !important;
@@ -244,8 +253,17 @@ a.post:hover{
 
 .post .actions a{
     padding: 2px;
-    opacity: 0.7;
+    opacity: 0.1;
+    transition:all 300ms;
+    -moz-transition:all 300ms; /* Firefox 4 */
+    -webkit-transition:all 300ms; /* Safari и Chrome */
+    -o-transition:all 300ms; /* Opera */
 }
+
+.post:hover .actions a{    
+    opacity: 0.5;
+}
+
 .post .actions a:hover{
     opacity: 1;
 }
@@ -259,6 +277,7 @@ a.post:hover{
     float: right;
     font-weight: bold;
     color: #3F7EFD;
+    box-shadow: 0 0 0 1px white, 0px 0px 2px -1px black inset;
 }
 
 .pages{

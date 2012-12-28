@@ -32,7 +32,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow','gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
         ),
         'no' => array(
             'handler' => 'no_2html',
@@ -41,7 +41,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'smile', 'color', 'red', 'green', 'blue', 'yellow','gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
         ),
         'i' => array(
             'handler' => 'i_2html',
@@ -50,7 +50,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow','gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
         ),
         'b' => array(
             'handler' => 'b_2html',
@@ -59,7 +59,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow','gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
         ),
         'big' => array(
             'handler' => 'big_2html',
@@ -68,7 +68,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow','gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
         ),
         'mark' => array(
             'handler' => 'mark_2html',
@@ -86,7 +86,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow','gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'vremja', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
         ),
         'user' => array(
             'handler' => 'user_2html',
@@ -113,7 +113,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'vremja', 'no', 'php', 'hide', 'spoiler', 'color', 'red', 'green', 'blue', 'yellow', 'localimg','gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'vremja', 'no', 'php', 'hide', 'spoiler', 'color', 'red', 'green', 'blue', 'yellow', 'localimg', 'gradient')
         ),
         'localimg' => array(
             'handler' => 'img_2html',
@@ -131,7 +131,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'smile', 'color', 'red', 'green', 'blue', 'yellow','gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
         ),
         'php' => array(
             'handler' => 'php_2html',
@@ -149,7 +149,7 @@ class bbcode {
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'vremja', 'no', 'php','gradient', 'localimg', 'spoiler')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'vremja', 'no', 'php', 'gradient', 'localimg', 'spoiler')
         ),
         'color' => array(
             'handler' => 'color_2html',
@@ -773,7 +773,7 @@ class bbcode {
 
 
         $text = nl2br($text);
-        $text = str_replace('  ', '&nbsp;&nbsp;', $text);
+        //$text = str_replace('  ', '&nbsp;&nbsp;', $text);
 
         foreach ($this->mnemonics as $mnemonic => $value) {
             $text = str_replace($mnemonic, $value, $text);
@@ -957,8 +957,9 @@ class bbcode {
     }
 
     function img_2html($elem) {
-        global $doc;
-
+        static $design = false;
+        if ($design === false)
+            $design = new design ();
 
         if (empty($elem['attrib']['file'])) {
             return false;
@@ -974,7 +975,7 @@ class bbcode {
 
         $file = new files_file(FILES . '/.bbcode', $file . '.jpg');
 
-        if ($screen = $file->getScreen($doc->img_max_width())) {
+        if ($screen = $file->getScreen($design->img_max_width())) {
             return '<img src="' . $screen . '" alt="' . for_value($elem['val'][0]['str']) . '" />';
         }
     }

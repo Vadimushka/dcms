@@ -198,3 +198,60 @@ function spoilersModify(){
     }    
 }
 ready(spoilersModify);
+
+function listing_auto_update(listing_node, url){
+    var ids = [];
+    for (var i = 0; i < listing_node.children.length; i++){
+        ids.push(listing_node.children[i].id);
+    }
+    DCMS.listing_update(url, ids,
+        function(data){
+            // success
+            listing_update(listing_node, data);
+            setTimeout(function(){
+                // повтор
+                listing_auto_update(listing_node, url);
+            }, 7000);
+        },
+        function(){
+            // error
+            setTimeout(function(){
+                // повтор
+                listing_auto_update(listing_node, url);
+            }, 30000);
+        });
+}
+
+function listing_update(listing_node, data){
+    var json = JSON.parse(data);    
+    if (!json)
+        return;
+    // console.log(json);
+    
+    for(var i = 0; i < json.add.length; i++){
+        var dom_before = false, dom_after = false;
+        var add = json.add[i];
+        if (add.after_id){
+            dom_after = listing_node.querySelector('#'+add.after_id);
+            dom_before = dom_after?dom_after.nextSibling:false;            
+        }
+        else if (!dom_before){
+            dom_before = listing_node.children[0];
+        //console.log(dom_before);
+        }
+        
+        var dom = DCMS.Dom.createFromHtml(add.html, false, listing_node, dom_before);
+        DCMS.Dom.setStyle(dom, 'opacity', '0');
+        DCMS.Animation.style(dom, 'opacity', '1', 500);
+    }
+    
+    for(i = 0; i < json.remove.length; i++){
+        var remove = json.remove[i];
+        var dom_remove = listing_node.querySelector('#'+remove);
+        if (DCMS.isDom(dom_remove)){
+            DCMS.Animation.style(dom_remove, 'opacity', '0', 500, function(){
+                this.parentNode.removeChild(this);
+            });
+        }
+    }
+}

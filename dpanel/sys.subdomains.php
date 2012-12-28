@@ -7,16 +7,14 @@ $doc->title = __('Поддомены');
 
 $browser_types = array('wap', 'pda', 'itouch', 'web');
 
-if (!$dcms->check_domain_work) {
+if (!$dcms->check_domain_work)
     $dcms->check_domain_work = passgen();
-}
 
 function domain_check($domain) {
     global $dcms;
     $http = new http_client('http://' . $domain . '/?check_domain_work');
     $http->timeout = 10;
-    $content = $http->getContent();
-    return $dcms->check_domain_work === $content;
+    return $dcms->check_domain_work === $http->getContent();
 }
 
 if (isset($_POST ['save'])) {
@@ -120,4 +118,6 @@ foreach ($browser_types as $b_type) {
 
 $form->button(__('Применить'), 'save');
 $form->display();
+
+$doc->ret(__('Админка'), '/dpanel/');
 ?>

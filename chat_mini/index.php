@@ -73,8 +73,7 @@ if ($can_write) {
     }
 }
 
-
-$listing = new listing;
+$listing = new listing();
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `chat_mini`"), 0); // количество сообщений
@@ -82,24 +81,22 @@ $pages->this_page(); // получаем текущую страницу
 
 $q = mysql_query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
 while ($message = mysql_fetch_assoc($q)) {
+ 
     $ank = new user($message['id_user']);
-
     $post = $listing->post();
-
+    $post->id = 'chat_post_'.$message['id'];
     $post->url = 'actions.php?id=' . $message['id'];
-
-
     $post->time = vremja($message['time']);
     $post->title = $ank->nick();
     $post->post = output_text($message['message']);
     $post->icon($ank->icon());
+
 }
-
-
+$listing->setAjaxUpdateUrl('ajax.php?page='.$pages->this_page);
 $listing->display(__('Сообщения отсутствуют'));
 $pages->display('?'); // вывод страниц
 
-if ($user->group >= 3) {
+if ($user->group >= 3)
     $doc->act(__('Удаление сообщений'), 'message.delete_all.php');
-}
+
 ?>

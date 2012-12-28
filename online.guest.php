@@ -2,11 +2,11 @@
 
 include_once 'sys/inc/start.php';
 $doc = new document();
-$doc->title = __('Гости на сайте');
-
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `guest_online`"), 0);
+$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `guest_online` WHERE `conversions` >= '5'"), 0);
 $pages->this_page(); // получаем текущую страницу
+
+$doc->title = __('Гости на сайте (%s)', $pages->posts);
 
 $q = mysql_query("SELECT * FROM `guest_online` WHERE `conversions` >= '5' ORDER BY `time_start` DESC LIMIT $pages->limit");
 

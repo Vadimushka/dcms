@@ -9,6 +9,10 @@ class listing extends ui_contaner {
         $this->_tpl_file = 'listing.tpl';
     }
 
+    public function setAjaxUpdateUrl($url){
+        $this->_data['ajax_update_url'] = $url;
+    }
+    
     /**
      * Добавление поста
      * @return listing_post

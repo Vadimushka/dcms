@@ -509,6 +509,10 @@ var DCMS = {
 
         var xhr = getXmlHttp();
         xhr.open(settings.post ? "POST" : 'GET', settings.url, true);
+        
+        if (settings.post){
+            xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        }
         xhr.onreadystatechange = function() {
             if (xhr.readyState != 4)
                 return;
@@ -716,9 +720,7 @@ DCMS.Animation = {
     DCMS.Animation.style = function(dom, property, value, duration, callbackEnd){
         if (!dom || !dom.style)
             return false;
-        
-        //value = value.toString();
-        
+       
         DCMS.Animation.stop(dom, property);
     
         if (!DCMS.isNumber(duration))
@@ -728,8 +730,6 @@ DCMS.Animation = {
         
         property = property.toCamel();
     
-    
-    
         var styleStart, styleEnd;
         if (DCMS.isArray(value) && value.length == 2){
             styleStart = DCMS.Dom.parseStyle(value[0]);
@@ -738,8 +738,6 @@ DCMS.Animation = {
             styleStart = DCMS.Dom.parseStyle(DCMS.Dom.getComputedValue(dom, property));
             styleEnd = DCMS.Dom.parseStyle(value == '' ? DCMS.Dom.getDefaultValue(dom, property): value);            
         }
-    
-        // console.log(styleStart.value + styleStart.units, styleEnd.value + styleEnd.units);
     
         if (styleEnd.units == '%')
             styleEnd = DCMS.Dom.parseStyle(DCMS.Dom.getProbeValue(dom, property, styleEnd.value + styleEnd.units));
@@ -764,11 +762,11 @@ DCMS.Animation = {
             }
                         
             if (step == 1){
-                dom.style[property] = styleEnd.value + styleEnd.units;
+                dom.style[property] = value;
                 
                 DCMS.Animation.stop(dom, property);
                 if (DCMS.isFunction(callbackEnd))
-                    callbackEnd();
+                    callbackEnd.call(dom);
             }                            
         }
     
@@ -937,7 +935,7 @@ DCMS.Dom = {
         return dom;
     };
 
-    DCMS.Dom.createFromHtml = function(html, classes, parent){
+    DCMS.Dom.createFromHtml = function(html, classes, parent, before){
         var div = document.createElement('div');
         div.innerHTML = html;
         var dom = div.firstChild;
@@ -945,8 +943,12 @@ DCMS.Dom = {
         if (classes)
             DCMS.Dom.classAdd(dom, classes);
     
-        if (DCMS.isDom(parent))
-            parent.appendChild(dom);
+        if (DCMS.isDom(parent)){
+            if (DCMS.isDom(before))
+                parent.insertBefore(dom, before);            
+            else
+                parent.appendChild(dom);            
+        } 
     
         return dom;
     };
@@ -964,36 +966,36 @@ DCMS.Dom = {
     };
     
     DCMS.Dom.inputInsert = function(node, Open, Close, CursorEnd) {    
-    node.focus();
-    if (window.attachEvent && navigator.userAgent.indexOf('Opera') === -1) {                                        
-        var s = node.sel;
-        if(s){                                  
-            var l = s.text.length;
-            s.text = Open + s.text + Close;
-            s.moveEnd("character", -Close.length);
-            s.moveStart("character", -l);                                           
-            s.select();                
-        }
-    } else {                                              
-        var ss = node.scrollTop;
-        var sel1 = node.value.substr(0, node.selectionStart);
-        var sel2 = node.value.substr(node.selectionEnd);
-        var sel = node.value.substr(node.selectionStart, node.selectionEnd - node.selectionStart);  
+        node.focus();
+        if (window.attachEvent && navigator.userAgent.indexOf('Opera') === -1) {                                        
+            var s = node.sel;
+            if(s){                                  
+                var l = s.text.length;
+                s.text = Open + s.text + Close;
+                s.moveEnd("character", -Close.length);
+                s.moveStart("character", -l);                                           
+                s.select();                
+            }
+        } else {                                              
+            var ss = node.scrollTop;
+            var sel1 = node.value.substr(0, node.selectionStart);
+            var sel2 = node.value.substr(node.selectionEnd);
+            var sel = node.value.substr(node.selectionStart, node.selectionEnd - node.selectionStart);  
         
         
-        node.value = sel1 + Open + sel + Close + sel2;
-        if (CursorEnd){
-            node.selectionStart = sel1.length + Open.length + sel.length + Close.length;
-            node.selectionEnd = node.selectionStart;
-        }else{            
-            node.selectionStart = sel1.length + Open.length;
-            node.selectionEnd = node.selectionStart + sel.length;            
-        }
-        node.scrollTop = ss; 
+            node.value = sel1 + Open + sel + Close + sel2;
+            if (CursorEnd){
+                node.selectionStart = sel1.length + Open.length + sel.length + Close.length;
+                node.selectionEnd = node.selectionStart;
+            }else{            
+                node.selectionStart = sel1.length + Open.length;
+                node.selectionEnd = node.selectionStart + sel.length;            
+            }
+            node.scrollTop = ss; 
                                                     
+        }
+        return false;
     }
-    return false;
-}
 
 
 if ( document.addEventListener ) {
@@ -1019,3 +1021,11 @@ if ( document.addEventListener ) {
     } 
 }
 
+DCMS.listing_update = function(url, ids, callback, callback_err){
+    DCMS.Ajax({
+        url: url,
+        post:'skip_ids='+ids.join(','),
+        callback: callback,
+        error: callback_err
+    });
+};

@@ -7,13 +7,15 @@ class pages {
     public $items_per_page = 10; // количество пунктов на одну страницу
     public $this_page = 1; // текущая страница
 
-    function pages($posts = 0) {
+    function __construct($posts = 0) {
         global $user;
         $this->items_per_page = $user->items_per_page;
         $this->posts = $posts;
     }
 
-    // получение текущей страницы
+    /**
+     * Рассчет текущей страницы
+     */
     function this_page() {
         $this->count();
         if (isset($_GET['page'])) {
@@ -37,6 +39,10 @@ class pages {
         }
     }
 
+    /**
+     * Для подстановки в MYSQL LIMIT
+     * @return type
+     */
     function limit() {
         return $this->my_start() . ', ' . $this->items_per_page;
     }
@@ -51,7 +57,9 @@ class pages {
         return $this->items_per_page * $this->this_page;
     }
 
-    // пересчет количества страниц
+    /**
+     * пересчет кол-ва страниц
+     */
     function count() {
         if (!$this->posts) {
             $this->pages = 1;
@@ -60,7 +68,10 @@ class pages {
         }
     }
 
-    // вывод списка страниц
+    /**
+     * Вывод списка страниц
+     * @param type $link ссылка, к которой будет добавлено page={num}
+     */
     function display($link) {
         if ($this->pages > 1) {
             $list = new design();
@@ -71,6 +82,10 @@ class pages {
         }
     }
 
+    /**
+     * Вывод списка страниц
+     * @param type $link ссылка, к которой будет добавлено page={num}
+     */
     function listing($link) {
         $this->display($link);
     }
