@@ -46,13 +46,13 @@
                 ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                 ' />';
                 break;
-            case 'textarea':                
-                    echo '<textarea class="gradient_grey invert border padding"' .
-                    ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
-                    ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
-                    '>' .
-                    ($element['info']['value'] ? text::for_value($element['info']['value']) : '') .
-                    '</textarea>';
+            case 'textarea':
+                echo '<textarea class="gradient_grey invert border padding"' .
+                ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
+                ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
+                '>' .
+                ($element['info']['value'] ? text::for_value($element['info']['value']) : '') .
+                '</textarea>';
                 break;
             case 'checkbox':
                 echo '<label><input type="checkbox"' .
@@ -96,7 +96,11 @@
         if ($element['br'])
             echo '<br />';
     }
+
     echo '</form>';
     ?>
+    <? if ($refresh_url) { ?>
+        <a class="refresh" title="<?= __('Обновить') ?>" href="<?= $refresh_url ?>"><img src="<?= $path ?>/img/refresh.png" alt="" /></a>
+    <? } ?>
 </div>
 

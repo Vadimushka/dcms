@@ -99,14 +99,17 @@
     ?>
     <span class="msg"></span>
     <span class="err"></span>
-    <?
-    echo '</form>';
-    ?>
     <div class="waiter"></div>
+    <? if ($refresh_url) { ?>
+        <a class="refresh" title="<?= __('Обновить') ?>" href="<?= $refresh_url ?>"><img src="<?= $path ?>/img/refresh.png" alt="" /></a>
+    <? } ?>
+        <?
+        echo '</form>';
+        ?>    
 </div>
 <? if ($ajax_url) { ?>
     <script>
         form_ajax_submit(document.getElementById('<?= $id ?>'), '<?= $ajax_url ?>');
     </script>
-<?
+    <?
 }?>

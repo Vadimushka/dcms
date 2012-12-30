@@ -18,7 +18,7 @@ if (isset($_GET ['id'])) {
         $doc->msg(__('Писать запрещено'), 'write_denied');
         $can_write = false;
     }
-    
+
     $accept_send = $ank->id && $ank->group && $ank->id != $user->id && $can_write;
 
     if ($ank->mail_only_friends && !$ank->is_friend($user)) {
@@ -55,14 +55,15 @@ if (isset($_GET ['id'])) {
 
     if ($accept_send) {
         $form = new form("/my.mail.php?id=$id_kont&amp;" . passgen());
-        $form ->textarea('mess', __('Сообщение'));
-        
+        $form->textarea('mess', __('Сообщение'));
+
         if ($user->group <= $ank->group && !$ank->is_friend($user))
             $form->captcha();
-        
-        $form ->button(__('Отправить'), 'post', false);
-        $form ->button(__('Обновить'), 'refresh', false);
-        $form ->display();        
+
+        $form->button(__('Отправить'), 'post', false);
+        $form->refresh_url("/my.mail.php?id=$id_kont&amp;" . passgen());
+        //$form ->button(__('Обновить'), 'refresh', false);
+        $form->display();
     }
 
 
@@ -77,7 +78,7 @@ WHERE (`id_user` = '{$user->id}' AND `id_sender` = '$id_kont')
 ORDER BY `id` DESC
 LIMIT $pages->limit");
     // отметка о прочтении писем
-    mysql_query("UPDATE `mail` SET `is_read` = '1' WHERE `id_user` = '{$user->id}' AND `id_sender` = '$id_kont'");    
+    mysql_query("UPDATE `mail` SET `is_read` = '1' WHERE `id_user` = '{$user->id}' AND `id_sender` = '$id_kont'");
     if (preg_match('#Changed: ([0-9]+)#i', mysql_info(), $ch)) {
         if ($ch [1]) {
             $user->mail_new_count = $user->mail_new_count - $ch [1];
@@ -113,7 +114,7 @@ if (isset($_GET ['only_unreaded'])) {
 }
 
 $pages = new pages ();
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) FROM `mail` WHERE ".implode(' AND ', $sql_where)), 0); // количество написавших пользователей
+$pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) FROM `mail` WHERE " . implode(' AND ', $sql_where)), 0); // количество написавших пользователей
 $pages->this_page(); // получаем текущую страницу
 
 $q = mysql_query("SELECT `users`.`id`,
@@ -123,7 +124,7 @@ $q = mysql_query("SELECT `users`.`id`,
         COUNT(`mail`.`id`) AS `count`
 FROM `mail`
 LEFT JOIN `users` ON `mail`.`id_sender` = `users`.`id`
-WHERE ".implode(' AND ', $sql_where)."
+WHERE " . implode(' AND ', $sql_where) . "
 GROUP BY `mail`.`id_sender`
 ORDER BY `time` DESC
 LIMIT $pages->limit");

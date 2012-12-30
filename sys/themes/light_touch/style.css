@@ -50,6 +50,16 @@
 .form{
     border-radius: 5px;
     margin-bottom: 10px;
+    position: relative;
+}
+
+.form .refresh{
+    display: block;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 16px;
+    height: 16px;
 }
 
 .form input, .form select{
