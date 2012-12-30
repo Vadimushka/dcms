@@ -98,7 +98,7 @@ class document extends design {
         }
 
 
-        if ($dcms->debug && $user->group == groups::max()) {
+        if ($dcms->debug && $user && $user->group == groups::max()) {
             debug::display();
         }
     }

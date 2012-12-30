@@ -1,4 +1,5 @@
 <?php
+
 // Проверяем версию PHP
 version_compare(PHP_VERSION, '5.2', '>=') or die('Требуется PHP >= 5.2');
 
@@ -106,6 +107,7 @@ function dcmsAutoload($class_name) {
         include_once ($path);
     }
 }
+
 // регистрируем функцию для автоматической загрузки классов
 spl_autoload_register('dcmsAutoload');
 
@@ -368,14 +370,12 @@ if (!cache_events::get('clear_tmp_dir')) {
 
 // авторизация пользователя
 if (!empty($_SESSION [SESSION_ID_USER])) {
-
     // авторизация по сессии
     $user = new user($_SESSION [SESSION_ID_USER]);
-
-    if ($user->password !== crypt::hash($_SESSION [SESSION_PASSWORD_USER], $dcms->salt)) {
+    if ($user->password !== crypt::hash($_SESSION[SESSION_PASSWORD_USER], $dcms->salt)) {
         $user = new user(false);
-        unset($_SESSION [SESSION_ID_USER]);
-        unset($_SESSION [SESSION_PASSWORD_USER]);
+        unset($_SESSION[SESSION_ID_USER]);
+        unset($_SESSION[SESSION_PASSWORD_USER]);
     }
     debug::step('авторизация пользователя по сессии');
 } elseif (!empty($_COOKIE [COOKIE_ID_USER]) && !empty($_COOKIE [COOKIE_USER_PASSWORD]) && $_SERVER ['SCRIPT_NAME'] !== '/login.php' && $_SERVER ['SCRIPT_NAME'] !== '/captcha.php') {

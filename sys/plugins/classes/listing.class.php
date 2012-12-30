@@ -9,10 +9,12 @@ class listing extends ui_contaner {
         $this->_tpl_file = 'listing.tpl';
     }
 
-    public function setAjaxUpdateUrl($url){
-        $this->_data['ajax_update_url'] = $url;
+    public function setForm($form) {
+        if (!is_a($form, 'form'))
+            return;
+        $this->_data['form'] = $form;
     }
-    
+
     /**
      * Добавление поста
      * @return listing_post
@@ -37,12 +39,12 @@ class listing extends ui_contaner {
     public function fetch($text_if_empty = '') {
 
         $this->_data['sortable'] = $this->sortable;
-        
+
         if ($text_if_empty && !$this->count()) {
             $post = $this->add(new listing_post($text_if_empty));
-            $post->icon('empty');            
+            $post->icon('empty');
         }
-        
+
         return parent::fetch();
     }
 

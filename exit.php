@@ -22,7 +22,7 @@ session_destroy();
 session_name(SESSION_NAME) or die(__('Невозможно инициализировать сессии'));
 @session_start() or die(__('Невозможно инициализировать сессии'));
 
-$user = new user(false);
+$user = new user();
 /*
 if (isset($_GET['return'])) {
     header('Refresh: 1; url=' . $_GET['return']);

@@ -239,36 +239,15 @@ div.vote_name {
     padding-bottom: 4px;
 }
 td.votes {
-
     margin: 2px;
     border: 1px #B4B4B4 solid;
     border-radius: 2px;
-    background: #dee2e4;
-    background: -moz-linear-gradient(top, #dadee0, #f7f7f7); /* Firefox 3.6+ */
-    /* Chrome 1-9, Safari 4-5 */
-    background: -webkit-gradient(linear, left top, left bottom, 
-        color-stop(0%,#dadee0), color-stop(100%,#f7f7f7));
-    /* Chrome 10+, Safari 5.1+ */
-    background: -webkit-linear-gradient(top, #dadee0, #f7f7f7);
-    background: -o-linear-gradient(top, #dadee0, #f7f7f7); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #dadee0, #f7f7f7); /* IE10 */
-    background: linear-gradient(top, #dadee0, #f7f7f7); /* CSS3 */
 }
-td.votes div {
-    height: 30px;   
-    outline: 1px #B4B4B4 solid;
+td.votes > div > div {
+    height: 30px;
     border-radius: 2px;
-
-    background: #f7f7f7;
-    background: -moz-linear-gradient(top, #f7f7f7, #dadee0); /* Firefox 3.6+ */
-    /* Chrome 1-9, Safari 4-5 */
-    background: -webkit-gradient(linear, left top, left bottom, 
-        color-stop(0%,#f7f7f7), color-stop(100%,#dadee0));
-    /* Chrome 10+, Safari 5.1+ */
-    background: -webkit-linear-gradient(top, #f7f7f7, #dadee0);
-    background: -o-linear-gradient(top, #f7f7f7, #dadee0); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #f7f7f7, #dadee0); /* IE10 */
-    background: linear-gradient(top, #f7f7f7, #dadee0); /* CSS3 */ 
+    min-width: 30px;
+    padding: 6px;
 }
 td.votes_add {
     width: 30px;
@@ -283,22 +262,8 @@ td.votes_add a {
 
     border: 1px #B4B4B4 solid;
     border-radius: 2px;
-
-    background: #f7f7f7;
-    background: -moz-linear-gradient(top, #f7f7f7, #dadee0); /* Firefox 3.6+ */
-    /* Chrome 1-9, Safari 4-5 */
-    background: -webkit-gradient(linear, left top, left bottom, 
-        color-stop(0%,#f7f7f7), color-stop(100%,#dadee0));
-    /* Chrome 10+, Safari 5.1+ */
-    background: -webkit-linear-gradient(top, #f7f7f7, #dadee0);
-    background: -o-linear-gradient(top, #f7f7f7, #dadee0); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #f7f7f7, #dadee0); /* IE10 */
-    background: linear-gradient(top, #f7f7f7, #dadee0); /* CSS3 */
-
-
     color: #4F5155;
     text-shadow: 0 -1px 1px white;
-
 }
 
 

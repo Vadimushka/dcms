@@ -15,10 +15,14 @@ class ui {
     protected $_tpl_file;
     protected $_data = array();
 
+    public function __get($name) {
+        return array_key_exists($name, $this->_data) ? $this->_data[$name] : false;
+    }
+
     public function __construct() {
         $this->_data['id'] = $this->_getNewId();
     }
-    
+
     /**
      * Возвращает уникальный идентификатор класса на странице
      * @staticvar array $id
@@ -28,6 +32,10 @@ class ui {
         static $id = array();
         $class = get_class($this);
         return $class . '_' . @++$id[$class];
+    }
+
+    public function setAjaxUrl($url) {
+        $this->_data['ajax_url'] = $url;
     }
 
     public function fetch() {

@@ -507,8 +507,12 @@ var DCMS = {
         if (!settings)
             throw "Не заданы параметры запроса";
 
+        var url = settings.url.split('?');
+        url[1] =  (url[1] ? url[1] + '&': '') + '_r='+Math.random();
+        
+
         var xhr = getXmlHttp();
-        xhr.open(settings.post ? "POST" : 'GET', settings.url, true);
+        xhr.open(settings.post ? "POST" : 'GET', url.join('?'), true);
         
         if (settings.post){
             xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -524,7 +528,8 @@ var DCMS = {
                     settings.error.call(this, xhr.statusText);
             }
         }
-        xhr.send(settings.post);
+        
+        xhr.send(DCMS.objectToPost(settings.post));
     },
 
     UserUpdate: {
@@ -827,6 +832,19 @@ DCMS.isDom = function(dom){
     return dom && DCMS.isFunction(dom.appendChild);
 };
 
+DCMS.objectToPost = function(obj){
+    if (DCMS.isScalar(obj))
+        return obj;
+    var pairs = [];
+    
+    for (var key in obj){
+        pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+    }
+    
+    
+    return pairs.join('&');
+};
+
 DCMS.countProp = function(obj){
     var count = 0;
         
@@ -937,7 +955,13 @@ DCMS.Dom = {
 
     DCMS.Dom.createFromHtml = function(html, classes, parent, before){
         var div = document.createElement('div');
-        div.innerHTML = html;
+        try{
+            div.innerHTML = html;
+        }
+        catch(e){
+            console.log(e);
+        }
+        
         var dom = div.firstChild;
     
         if (classes)

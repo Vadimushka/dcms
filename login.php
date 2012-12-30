@@ -26,7 +26,7 @@ if (isset($_GET['redirected_from']) && in_array($_GET['redirected_from'], array(
 
 if ($user->group) {
     if (isset($_GET['auth_key']) && cache::get($_GET['auth_key']) === 'request') {
-        cache::set($_GET['auth_key'], array('session' => $_SESSION, 'cookie'  => $_COOKIE), 60);
+        cache::set($_GET['auth_key'], array('session' => $_SESSION, 'cookie' => $_COOKIE), 60);
     }
 
     $doc->clean();
@@ -108,9 +108,8 @@ if ($user->group) {
     // удаляем информацию как о госте
     mysql_query("DELETE FROM `guest_online` WHERE `ip_long` = '$dcms->ip_long' AND `browser` = '" . my_esc($dcms->browser) . "'");
 
-
     if (isset($_GET['auth_key']) && cache::get($_GET['auth_key']) === 'request') {
-        cache::set($_GET['auth_key'], array('session' => $_SESSION, 'cookie'  => $_COOKIE), 60);
+        cache::set($_GET['auth_key'], array('session' => $_SESSION, 'cookie' => $_COOKIE), 60);
     }
 
     $doc->clean();
@@ -118,22 +117,16 @@ if ($user->group) {
     exit;
 }
 
-$form = new design();
-
 if (isset($_GET['return'])) {
     $doc->ret('Вернуться', for_value($return));
 }
 
-$form->assign('method', 'post');
-$form->assign('action', '?' . passgen() . '&amp;return=' . for_value($return));
-$elements = array();
-$elements[] = array('type'  => 'input_text', 'title' => __('Логин'), 'br'    => 1, 'info'  => array('name'      => 'login'));
-$elements[] = array('type'  => 'password', 'title' => __('Пароль') . ' (<a href="/pass.php">' . __('забыли') . '</a>)', 'br'    => 1, 'info'  => array('name'      => 'password'));
-$elements[] = array('type' => 'checkbox', 'br'   => 1, 'info' => array('value' => 1, 'name'  => 'save_to_cookie', 'text'  => __('Запомнить меня')));
-if ($need_of_captcha) {
-    $elements[] = array('type'      => 'captcha', 'session'   => captcha::gen(), 'br'        => 1);
-}
-$elements[] = array('type' => 'submit', 'br'   => 0, 'info' => array('value' => __('Авторизация'))); // кнопка
-$form->assign('el', $elements);
-$form->display('input.form.tpl');
+$form = new form('?' . passgen() . '&amp;return=' . for_value($return));
+$form->input('login', __('Логин'));
+$form->password('password', __('Пароль') . ' [' . '[url=/pass.php]' . __('забыли') . '[/url]]');
+$form->checkbox('save_to_cookie', __('Запомнить меня'));
+if ($need_of_captcha)
+    $form->captcha();
+$form->button(__('Авторизация'));
+$form->display();
 ?>

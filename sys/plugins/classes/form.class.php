@@ -11,7 +11,11 @@ class form extends ui {
         $this->set_url($url);
         $this->set_method($post ? 'post' : 'get');
     }
-
+    
+    function refresh_url($url){
+        $this->_data['refresh_url'] = $url;
+    }
+    
     function html($html, $br = false){
         $this->_data['el'][] = array(
             'type' => 'text',
@@ -90,7 +94,7 @@ class form extends ui {
             $type = 'input_text'; // так уж изначально было задумано. Избавляться будем постепенно
 
         $input['type'] = $type;
-        $input['title'] = text::for_value($title);
+        $input['title'] = text::output_text($title);
         $input['br'] = (bool) $br;
 
         $info = array();

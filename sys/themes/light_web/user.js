@@ -199,7 +199,7 @@ function spoilersModify(){
 }
 ready(spoilersModify);
 
-function listing_auto_update(listing_node, url){
+function listing_auto_update(listing_node, url, no_recurce){
     var ids = [];
     for (var i = 0; i < listing_node.children.length; i++){
         ids.push(listing_node.children[i].id);
@@ -208,17 +208,21 @@ function listing_auto_update(listing_node, url){
         function(data){
             // success
             listing_update(listing_node, data);
-            setTimeout(function(){
-                // повтор
-                listing_auto_update(listing_node, url);
-            }, 7000);
+            if (!no_recurce){
+                setTimeout(function(){
+                    // повтор
+                    listing_auto_update(listing_node, url);
+                }, 7000);
+            }
         },
         function(){
             // error
-            setTimeout(function(){
-                // повтор
-                listing_auto_update(listing_node, url);
-            }, 30000);
+            if (!no_recurce){
+                setTimeout(function(){
+                    // повтор
+                    listing_auto_update(listing_node, url);
+                }, 30000);
+            }
         });
 }
 
@@ -247,11 +251,97 @@ function listing_update(listing_node, data){
     
     for(i = 0; i < json.remove.length; i++){
         var remove = json.remove[i];
-        var dom_remove = listing_node.querySelector('#'+remove);
-        if (DCMS.isDom(dom_remove)){
-            DCMS.Animation.style(dom_remove, 'opacity', '0', 500, function(){
-                this.parentNode.removeChild(this);
-            });
+        if (remove){
+            var dom_remove = listing_node.querySelector('#'+remove);
+            if (DCMS.isDom(dom_remove)){
+                DCMS.Animation.style(dom_remove, 'opacity', '0', 500, function(){
+                    this.parentNode.removeChild(this);
+                });
+            }
         }
+    }
+}
+
+
+function form_ajax_submit(node_form, url){
+    Event.add(node_form, ['submit'], function(){
+        return onFormSubmit(node_form, url);
+    });
+}
+
+function onFormSubmit(node_form, url){
+    var data = {};
+    for (var i = 0; i< node_form.elements.length; i++){
+        data[node_form.elements[i].name ] = node_form.elements[i].value;
+    }
+    form_lock(node_form);
+    DCMS.Ajax({
+        url: url,
+        post: data,
+        callback: function(cdata){
+            if (cdata){
+                var json = JSON.parse(cdata); 
+                if (json.err)
+                    form_err(node_form, json.err);
+                else if(json.msg){
+                    form_msg(node_form, json.msg);
+                    //node_form.reset();
+                    
+                    if (json.form)
+                        form_set_values(node_form, json.form);
+                    
+                    DCMS.Event.trigger('form_submited', node_form);
+                }
+            }
+            form_unlock(node_form);
+            
+        },
+        error: function(){
+            form_err(node_form, LANG.form_submit_error)
+            form_unlock(node_form);
+        }
+    });
+    
+    return false;
+}
+
+function form_lock(node_form){
+    node_form.disabled = 'disabled';
+    DCMS.Dom.classAdd(node_form, 'submiting');
+}
+
+function form_unlock(node_form){
+    node_form.disabled = '';
+    DCMS.Dom.classRemove(node_form, 'submiting');
+}
+
+function form_set_values(node_form, values){
+    for (var i = 0; i< node_form.elements.length; i++){
+        var name = node_form.elements[i].name;
+        if (typeof (values[name]) !== 'undefined')
+            node_form.elements[i].value = values[name];
+    }
+}
+
+function form_msg(node_form, msg){
+    var msg_node = node_form.querySelector('.msg');
+    if (msg_node){
+        msg_node.innerHTML = msg;
+        DCMS.Animation.style(msg_node, 'opacity', '0', 5000, function(){
+            DCMS.Dom.setStyle(this, 'opacity', '');
+            this.innerHTML = '';
+        });        
+    }
+        
+}
+
+function form_err(node_form, msg){
+    var msg_node = node_form.querySelector('.err');
+    if (msg_node){
+        msg_node.innerHTML = msg;
+        DCMS.Animation.style(msg_node, 'opacity', '0', 5000, function(){
+            DCMS.Dom.setStyle(this, 'opacity', '');
+            this.innerHTML = '';
+        });  
     }
 }

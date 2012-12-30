@@ -1,6 +1,6 @@
 <div class="form">
     <?=
-    '<form' .
+    '<form id="' . $id . '"' .
     ($method ? ' method="' . $method . '"' : '') .
     ($action ? ' action="' . $action . '"' : '') .
     ($files ? ' enctype="multipart/form-data"' : '')
@@ -46,13 +46,13 @@
                 ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                 ' />';
                 break;
-            case 'textarea':                
-                    echo '<textarea ' .
-                    ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
-                    ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
-                    '>' .
-                    ($element['info']['value'] ? text::for_value($element['info']['value']) : '') .
-                    '</textarea>';
+            case 'textarea':
+                echo '<textarea ' .
+                ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
+                ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
+                '>' .
+                ($element['info']['value'] ? text::for_value($element['info']['value']) : '') .
+                '</textarea>';
                 break;
             case 'checkbox':
                 echo '<label><input type="checkbox"' .
@@ -96,6 +96,17 @@
         if ($element['br'])
             echo '<br />';
     }
+    ?>
+    <span class="msg"></span>
+    <span class="err"></span>
+    <?
     echo '</form>';
     ?>
+    <div class="waiter"></div>
 </div>
+<? if ($ajax_url) { ?>
+    <script>
+        form_ajax_submit(document.getElementById('<?= $id ?>'), '<?= $ajax_url ?>');
+    </script>
+<?
+}?>

@@ -9,9 +9,9 @@
             </td>
         </tr>
         <tr>
-            <td class="votes">
+            <td class="votes gradient_grey invert">
                 <div>
-                    <div class="votes" style=" width:<?=$votes[$i]['pc']?>%; box-sizing: border-box;">
+                    <div class="votes gradient_blue" style=" width:<?=$votes[$i]['pc']?>%; box-sizing: border-box;">
                         <?=$votes[$i]['pc']?>%
                     </div>
 
@@ -20,7 +20,7 @@
             <?if ($is_add){?>
             <td class="votes_add">
                 <div>
-                    <a href="<?=$votes[$i]['url']?>">+</a>
+                    <a class="gradient_blue" href="<?=$votes[$i]['url']?>">+</a>
                 </div>
             </td>
             <?}?>

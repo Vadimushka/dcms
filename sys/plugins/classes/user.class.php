@@ -6,8 +6,10 @@ class user extends plugins {
     protected $_update = array();
     protected $_data = array();
 
-    function __construct($id_or_arrayToCache) {
-        if (is_array($id_or_arrayToCache)) {
+    function __construct($id_or_arrayToCache = false) {
+        if ($id_or_arrayToCache === false) {
+            $this->_guest_init();
+        } elseif (is_array($id_or_arrayToCache)) {
             $this->_usersFromCache($id_or_arrayToCache);
             $this->_guest_init();
         } else {
@@ -32,7 +34,7 @@ class user extends plugins {
             if (array_key_exists($id_user, $cache))
                 $users_return[$id_user] = $cache[$id_user];
             else
-                $users_from_mysql[] = (int)$id_user;
+                $users_from_mysql[] = (int) $id_user;
         }
 
         if ($users_from_mysql) {

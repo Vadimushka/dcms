@@ -1,4 +1,4 @@
-<div class="votes gradient_grey border">
+<div class="votes">
     <span class="vote_name"><?= $name ?></span>
     <table style="width: 100%">
         <?

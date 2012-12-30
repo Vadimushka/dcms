@@ -22,3 +22,4 @@ index.html
 /tpl_c/
 /tpl_cache/
 ispmanager
+php_errors.log
