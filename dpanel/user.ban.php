@@ -38,7 +38,8 @@ if (!$code && !isset($_GET ['skip'])) {
 
     $form = new form('?id_ank=' . $ank->id . '&amp;link=' . urlencode($link) . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
     $form->text('link', __('Ссылка'), $link);
-    $form->bbcode('[url=' . $link . ']' . __('Перейти к нарушению') . '[/url]');
+    if ($link)
+        $form->bbcode('[url="' . $link . '"]' . __('Перейти к нарушению') . '[/url]');
     $form->select('code', __('Нарушение'), $codes->options());
     $form->button(__('Далее'));
     $form->display();
@@ -139,7 +140,7 @@ while ($c = mysql_fetch_assoc($q)) {
         $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]";
     elseif (TIME < $c['time_end'])
         $post->content[] = __('Осталось: %s', vremja($c['time_end']));
-    
+
     if ($c['link'])
         $post->content[] = __('Ссылка на нарушение: %s', $c['link']);
     $post->content[] = __('Комментарий: %s', $c['comment']);
@@ -149,7 +150,8 @@ $listing->display(__('Нарушения отсутствуют'));
 
 $form = new form('?id_ank=' . $ank->id . '&amp;code=' . urlencode($code) . '&amp;link=' . urlencode($link) . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
 $form->text('link', __('Ссылка'), $link);
-$form->bbcode('[url=' . $link . ']' . __('Перейти к нарушению') . '[/url]');
+if ($link)
+    $form->bbcode('[url="' . $link . '"]' . __('Перейти к нарушению') . '[/url]');
 $form->select('code', __('Нарушение'), $codes->options($code));
 
 if (!$min || $min < 3600) {

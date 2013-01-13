@@ -8,10 +8,11 @@ abstract class mail {
      */
     static function queue_process() {
         // кто-то уже занялся отправкой сообщений
-        if (cache::get('mail.send_is_process')) {
+        if (cache_events::get('mail.send_is_process')) {
             return false;
         }
-
+        // остальные запросы пусть пропускают отправку
+        cache_events::set('mail.send_is_process', true, 5);
 
         $q = mysql_query("SELECT * FROM `mail_queue` LIMIT 10");
         if (!mysql_num_rows($q)) {
@@ -19,7 +20,7 @@ abstract class mail {
         }
 
         // другие запросы не должны мешать отправке текущих сообщений
-        cache::set('mail.send_is_process', true, 30);
+        cache_events::set('mail.send_is_process', true, 30);
 
         while ($queue = mysql_fetch_assoc($q)) {
             if (mail::send($queue ['to'], $queue ['title'], $queue ['content'])) {
@@ -27,7 +28,7 @@ abstract class mail {
             }
         }
         // разрешаем другим запросам отправлять сообщения
-        cache::set('mail.send_is_process', false);
+        cache_events::set('mail.send_is_process', false);
         return true;
     }
 

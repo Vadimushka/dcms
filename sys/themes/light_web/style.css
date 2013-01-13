@@ -93,12 +93,12 @@ html, body, #main{
 
 .form{
     position: relative;
-    background: #f0f0f0;
+    background: #FAFAFA;
     border: 1px #DBDBDB solid;
     padding: 5px;
     border-radius: 2px;
     margin-bottom: 10px;
-    box-shadow: 0 0 0 1px whiteSmoke inset;
+    box-shadow: 0 0 0 1px #FCFCFC inset, 0 1px 17px -9px black;
     font-size: 12px;
 }
 
@@ -123,7 +123,7 @@ html, body, #main{
     position: absolute;
     bottom: 3px;
     right: 3px;
-    
+
 }
 
 .form .waiter{
@@ -235,25 +235,22 @@ html, body, #main{
 
 .listing{
     margin-bottom: 10px;
-    box-shadow: 0 1px 19px -9px black;
+    box-shadow: 0 1px 17px -9px black;
 }
 
 .post{
-    transition:all 500ms;
-    -moz-transition:all 500ms; /* Firefox 4 */
-    -webkit-transition:all 500ms; /* Safari и Chrome */
-    -o-transition:all 500ms; /* Opera */
-
-    background: #f0f0f0;
+    transition: all 500ms;
+    -moz-transition: all 500ms;
+    -webkit-transition: all 500ms;
+    -o-transition: all 500ms;
+    background: #FAFAFA;
     border: 1px #DBDBDB solid;
     color: #686868 !important;
     padding: 3px;
-
     display: block !important;
     border-top-style: none !important;
     font-size: 90%;
-
-    box-shadow: 0 0 0 1px whiteSmoke inset;
+    box-shadow: 0 0 0 1px #FCFCFC inset;
 }
 
 .post:first-child{
@@ -411,11 +408,11 @@ a.post:hover{
 }
 
 .DCMS_quote{
-    border: 1px solid #979797;
+    border: 1px solid #E4E4E4;
     border-radius: 2px;
     background-color: white;
-    box-shadow: 0 1px 10px -4px black inset;
-    padding: 2px;
+    box-shadow: 0 1px 6px -4px black inset;
+    padding: 6px;
     color: #838383;
     margin-left: 24px;
 }
@@ -445,11 +442,11 @@ a.post:hover{
     max-height: 400px;
     max-width: 684px;
     overflow: auto;
-    border: 1px solid #CCC;
+    border: 1px solid #E2E2E2;
     padding: 5px;
     border-radius: 2px;
-    background-color: #EEE;
-    box-shadow: 0 0 10px -5px black inset;
+    background-color: #F7F7F7;
+    box-shadow: 0 0 8px -5px black inset;
 }
 
 .DCMS_spoiler{

@@ -761,7 +761,7 @@ DCMS.Animation = {
                 dom.style[property] = DCMS.Animation.colorStep(colorStart, colorEnd, step);
             //console.log(DCMS.Animation.colorStep(colorStart, colorEnd, step));                
             }else if (DCMS.isNumber(styleEnd.value)){
-                dom.style[property] = parseFloat(styleStart.value + (styleEnd.value - styleStart.value) * step) + units; 
+                dom.style[property] = parseFloat(styleStart.value + (styleEnd.value - styleStart.value) * step).toFixed(2) + units; 
             } else{
                 step = 1;
             }

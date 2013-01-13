@@ -80,9 +80,11 @@
                 <div class="body_width_limit">
                     <div id="menu">
                         <? if ($adt->top) { ?>
+                        <div class="listing">
                             <div id="adt_top" class="post">
                                 <?= $this->section($adt->top, '{0}') ?>
                             </div>
+                        </div>
                         <? } ?>
                         <?
                         $menu = new menu('main');

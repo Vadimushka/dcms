@@ -64,7 +64,7 @@ function onTextareaChange(){
     var hasInnerText = (document.getElementsByTagName("body")[0].innerText != undefined) ? true : false;
         
     var attributes_copy = ['width', 'font', 'padding'];    
-    var testdiv = DCMS.Dom.createFromHtml('<div style="position: absolute; left: 99999px;word-break: break-all;white-space: pre-wrap" />', false, textarea.parentNode);
+    var testdiv = DCMS.Dom.createFromHtml('<div style="position: absolute; left: -9999px;word-break: break-all;white-space: pre-wrap" />', false, textarea.parentNode);
     
     var testvalue = textarea.value + "\n\n";
     

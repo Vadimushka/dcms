@@ -393,10 +393,12 @@ if ($user->id === false && isset($_SESSION [SESSION_ID_USER])) {
     unset($_SESSION [SESSION_ID_USER]);
 }
 
-// удаление пользователей, вышедших из онлайна
-mysql_query("DELETE FROM `users_online` WHERE `time_last` < '" . (TIME - SESSION_LIFE_TIME) . "'");
-debug::step('удаление пользователей, вышедших из онлайна');
-
+if (!cache_events::get('clear_users_online')) {
+    cache_events::set('clear_users_online', true, 30);
+    // удаление пользователей, вышедших из онлайна (раз в 30 сек)
+    mysql_query("DELETE FROM `users_online` WHERE `time_last` < '" . (TIME - SESSION_LIFE_TIME) . "'");
+    debug::step('удаление пользователей, вышедших из онлайна');
+}
 
 // обработка данных пользователя
 if ($user->id !== false) {
