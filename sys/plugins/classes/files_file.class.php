@@ -17,8 +17,6 @@ class files_file {
      * @param string $filename
      */
     function __construct($path_dir_abs, $filename) {
-
-
         $this->ratings = array(
             -2 => __('Ужасный файл'),
             -1 => __('Плохой файл'),
@@ -26,8 +24,6 @@ class files_file {
             1 => __('Хороший файл'),
             2 => __('Отличный файл')
         );
-
-
 
         $this->_data['id'] = 0;
         $this->_data['runame'] = convert::to_utf8($filename); // имя на русском (чтобы небыло пустым)
@@ -61,80 +57,74 @@ class files_file {
         // получение дополнительных сведений о файле
         $this->_getPropertiesAuto();
 
-        if (!$this->_data['id']) {
+        if (!$this->id)
             $this->_baseAdd();
-        }
     }
 
+    /**
+     * переименование файла
+     * @param type $runame
+     * @param type $name
+     * @return boolean
+     */
     public function rename($runame, $name = false) {
-        if ($this->_data['name'] {0} == '.')
+        if ($this->name {0} == '.')
             return false;
 
         if ($name && $name {0} == '.')
             return false;
 
-        if ($name && file_exists($this->_data['path_dir_abs'] . '/' . $name))
+        if ($name && file_exists($this->path_dir_abs . '/' . $name))
             return false;
 
-        if ($name && @rename($this->_data['path_file_abs'], $this->_data['path_dir_abs'] . '/' . $name)) {
+        if ($name && @rename($this->path_file_abs, $this->path_dir_abs . '/' . $name)) {
             // переименовываем скрины
             foreach ($this->_screens as $scr_key => $scr_file) {
-                if (@rename($this->_data['path_dir_abs'] . '/' . $scr_file, $this->_data['path_dir_abs'] . '/.' . $name . '.' . $scr_key . '.jpg'))
+                if (@rename($this->path_dir_abs . '/' . $scr_file, $this->path_dir_abs . '/.' . $name . '.' . $scr_key . '.jpg'))
                     $this->_screens[$scr_key] = '.' . $name . '.' . $scr_key . '.jpg';
             }
             // переименовываем конфиг
-            @rename($this->_data['path_dir_abs'] . '/.' . $this->_data['name'] . '.ini', $this->_data['path_dir_abs'] . '/.' . $name . '.ini');
-            $this->_data['name'] = $name;
-            // вычисление дополнительных путей
-            $this->_setPathes($this->_data['path_dir_abs']);
+            @rename($this->path_dir_abs . '/.' . $this->name . '.ini', $this->path_dir_abs . '/.' . $name . '.ini');
+            $this->name = $name;
         }
 
-        $this->_data['runame'] = $runame;
-        // обновление инфы в кэше (в базе)
-        $this->_baseUpdate();
-        $dir = new files($this->_data['path_dir_abs']);
-        $dir->cacheClear();
-        $this->_need_save = true;
+        $this->runame = $runame;
         return true;
     }
 
+    /**
+     * Перемещение файла
+     * @global type $user
+     * @param type $path_dir_abs
+     * @return boolean
+     */
     public function moveTo($path_dir_abs) {
         global $user;
 
         $dir = new files($path_dir_abs);
-
 
         if ($dir->group_show > $user->group || $dir->group_write > $user->group) {
             // если нет прав на просмотр или запись в папку
             return false;
         }
 
-
-        if (@rename($this->_data['path_file_abs'], $dir->path_abs . '/' . $this->_data['name'])) {
+        if (@rename($this->path_file_abs, $dir->path_abs . '/' . $this->name)) {
             // переименовываем скрины
             foreach ($this->_screens as $scr_key => $scr_file) {
-                if (@rename($this->_data['path_dir_abs'] . '/' . $scr_file, $dir->path_abs . '/.' . $this->_data['name'] . '.' . $scr_key . '.jpg'))
-                    $this->_screens[$scr_key] = '.' . $this->_data['name'] . '.' . $scr_key . '.jpg';
+                if (@rename($this->path_dir_abs . '/' . $scr_file, $dir->path_abs . '/.' . $this->name . '.' . $scr_key . '.jpg'))
+                    $this->_screens[$scr_key] = '.' . $this->name . '.' . $scr_key . '.jpg';
             }
             // переименовываем конфиг
-            @rename($this->_data['path_dir_abs'] . '/.' . $this->_data['name'] . '.ini', $dir->path_abs . '/.' . $this->_data['name'] . '.ini');
-
-
-            $dir_old = new files($this->_data['path_dir_abs']);
-            $dir_old->cacheClear();
-
-            // вычисление дополнительных путей
-            $this->_setPathes($dir->path_abs);
-
-            // обновление инфы в кэше (в базе)
-            $this->_baseUpdate();
-            $dir->cacheClear();
-            $this->_need_save = true;
+            @rename($this->path_dir_abs . '/.' . $this->name . '.ini', $dir->path_abs . '/.' . $this->name . '.ini');
+            $this->path_dir_abs = $dir->path_abs;
             return true;
         }
     }
 
-    // получение списка доступных ключей для сортировки
+    /**
+     * Список доступных ключей (для сортировки)
+     * @return array
+     */
     public function getKeys() {
         $keys = array();
         if (!empty($this->_data['time_create']))
@@ -175,9 +165,12 @@ class files_file {
         return $keys;
     }
 
-    // удаление данного файла и всех файлов, относящихся к нему
+    /**
+     * Удаление данного файла и всей дополнительной информации к нему.
+     * @return boolean
+     */
     public function delete() {
-        if (!file_exists($this->_data['path_file_abs']) || @unlink($this->_data['path_file_abs'])) {
+        if (!file_exists($this->path_file_abs) || @unlink($this->path_file_abs)) {
             // удаляем скрины
             if ($this->_screens) {
                 foreach ($this->_screens as $num => $scr_file) {
@@ -186,10 +179,10 @@ class files_file {
             }
 
             // удаляем конфиг
-            @unlink($this->_data['path_dir_abs'] . '/.' . $this->_data['name'] . '.ini');
+            @unlink($this->path_dir_abs . '/.' . $this->name . '.ini');
 
             $this->_baseDelete();
-            $dir = new files($this->_data['path_dir_abs']);
+            $dir = new files($this->path_dir_abs);
             $dir->cacheClear();
             $this->_need_save = false;
             $this->__destruct();
@@ -197,10 +190,15 @@ class files_file {
         }
     }
 
-    // проверяем, можно ли голосавать
+    /**
+     * проверяем, можно ли голосовать
+     * @global type $user
+     * @param type $set
+     * @return int
+     */
     public function rating_my($set = false) {
         global $user;
-        $q = mysql_query("SELECT `rating` FROM `files_rating` WHERE `id_file` = '{$this->_data['id']}' AND `id_user` = '{$user->id}'");
+        $q = mysql_query("SELECT `rating` FROM `files_rating` WHERE `id_file` = '{$this->id}' AND `id_user` = '{$user->id}'");
         if (mysql_num_rows($q)) {
             $my_rating = mysql_result($q, 0);
         } else {
@@ -211,68 +209,76 @@ class files_file {
             if ($set && $my_rating) {
                 // Изменяем запись
                 $my_rating = (int) $set;
-                mysql_query("UPDATE `files_rating` SET `rating` = '$my_rating', `time` = '" . TIME . "' WHERE `id_file` = '{$this->_data['id']}' AND `id_user` = '{$user->id}' LIMIT 1");
+                mysql_query("UPDATE `files_rating` SET `rating` = '$my_rating', `time` = '" . TIME . "' WHERE `id_file` = '{$this->id}' AND `id_user` = '{$user->id}' LIMIT 1");
             } elseif ($set) {
                 // Вносим запись
                 $my_rating = (int) $set;
-                mysql_query("INSERT INTO `files_rating` (`id_file`, `id_user`, `time`, `rating`) VALUES ('{$this->_data['id']}', '{$user->id}', '" . TIME . "', '$my_rating')");
+                mysql_query("INSERT INTO `files_rating` (`id_file`, `id_user`, `time`, `rating`) VALUES ('{$this->id}', '{$user->id}', '" . TIME . "', '$my_rating')");
             } elseif ($my_rating) {
                 // Удаляем запись
                 $my_rating = 0;
-                mysql_query("DELETE FROM `files_rating` WHERE `id_file` = '{$this->_data['id']}' AND `id_user` = '{$user->id}'");
+                mysql_query("DELETE FROM `files_rating` WHERE `id_file` = '{$this->id}' AND `id_user` = '{$user->id}'");
             }
 
             $this->rating_update();
         }
 
-
         return $my_rating;
     }
 
+    /**
+     * Обновление рейтинга
+     */
     public function rating_update() {
         $q = mysql_query("SELECT AVG(`rating`) AS `rating`, COUNT(`id_user`) AS `rating_count` FROM `files_rating` WHERE `id_file` = '{$this->_data['id']}'");
         $data = mysql_fetch_assoc($q);
-
-        $this->_data['rating'] = $data['rating'];
-        $this->_data['rating_count'] = $data['rating_count'];
-        $this->_need_save = true;
+        $this->rating = $data['rating'];
+        $this->rating_count = $data['rating_count'];
     }
 
-    // получение дополнительных сведений о файле
+    /**
+     * Извлечение дополнительных сведений о файле
+     * @return boolean
+     */
     protected function _getPropertiesAuto() {
-        if (!empty($this->_data['properties_auto_comlete']))
+        if ($this->properties_auto_comlete)
             return false;
-        if ($desc = files_types::getPropertiesType($this->_data['path_file_abs'])) {
+        if ($desc = files_types::getPropertiesType($this->path_file_abs)) {
             if (@function_exists('set_time_limit')) {
                 @set_time_limit(30);
             }
             $propert = "files_properties_$desc";
-            $prop_obj = new $propert($this->_data['path_file_abs']);
+            $prop_obj = new $propert($this->path_file_abs);
             if ($prop = $prop_obj->getProperties()) {
                 $this->_data = array_merge((array) $prop, $this->_data);
             }
         }
-        $this->_data['properties_auto_comlete'] = 1;
-        $dir = new files($this->_data['path_dir_abs']);
-        $dir->cacheClear();
-        $this->_need_save = true;
+        $this->properties_auto_comlete = 1;
     }
 
-    // получение кол-ва скриншотов
+    /**
+     * Кол-во скриншотов
+     * @return type
+     */
     public function getScreensCount() {
         $this->_createScreensAuto();
         return count($this->_screens);
     }
 
-    // получение скриншота определенного размера
+    /**
+     * Получение скриншота определенного размера (путь в браузере)
+     * @param type $img_max_width
+     * @param type $num
+     * @return string|boolean
+     */
     public function getScreen($img_max_width, $num = 0) {
         $this->_createScreensAuto();
         if (!empty($this->_screens[$num])) {
-            $screen_path_rel = '/sys/tmp/public.' . md5($this->_data['path_file_rel']) . '.num' . $num . '.width' . $img_max_width . '.jpg';
+            $screen_path_rel = '/sys/tmp/public.' . md5($this->path_file_rel) . '.num' . $num . '.width' . $img_max_width . '.jpg';
 
             if (file_exists(H . $screen_path_rel))
                 return $screen_path_rel;
-            if (!$img = @imagecreatefromjpeg($this->_data['path_dir_abs'] . '/' . $this->_screens[$num]))
+            if (!$img = @imagecreatefromjpeg($this->path_dir_abs . '/' . $this->_screens[$num]))
                 return false;
             $img_screen = imaging::to_screen($img, $img_max_width);
 
@@ -284,24 +290,34 @@ class files_file {
         }
     }
 
+    /**
+     * Добавление скриншота
+     * @param type $img
+     * @return boolean
+     */
     public function screenAdd($img) {
         sort($this->_screens);
         $key = count($this->_screens);
-        $scr = '.' . $this->_data['name'] . '.' . $key . '.jpg';
-        if (!@imagejpeg($img, $this->_data['path_dir_abs'] . '/' . $scr, 85))
+        $scr = '.' . $this->name . '.' . $key . '.jpg';
+        if (!@imagejpeg($img, $this->path_dir_abs . '/' . $scr, 85))
             return false;
         $this->_screens[$key] = $scr;
         $this->_need_save = true;
         return true;
     }
 
+    /**
+     * Удаление скриншота
+     * @param type $num
+     * @return boolean
+     */
     public function screenDelete($num) {
         if (empty($this->_screens[$num]))
             return false;
 
-        if (@unlink($this->_data['path_dir_abs'] . '/' . $this->_screens[$num]) || !file_exists($this->_data['path_dir_abs'] . '/' . $this->_screens[$num])) {
+        if (@unlink($this->path_dir_abs . '/' . $this->_screens[$num]) || !file_exists($this->path_dir_abs . '/' . $this->_screens[$num])) {
             // удаление уменьшенных копий скриншотов
-            $screen_path_tmp = (array) glob(H . '/sys/tmp/public.' . md5($this->_data['path_file_rel']) . '.num' . $num . '.width*.jpg');
+            $screen_path_tmp = (array) glob(H . '/sys/tmp/public.' . md5($this->path_file_rel) . '.num' . $num . '.width*.jpg');
             foreach ($screen_path_tmp as $path_to_delete) {
                 @unlink($path_to_delete);
             }
@@ -313,12 +329,27 @@ class files_file {
         }
     }
 
+    /**
+     * Удаление скриншотов и установка отметки, что автоматически скриншоты еще не генерировались
+     */
+    public function screensReset() {
+        $count = $this->getScreensCount();
+        for ($i = 0; $i < $count; $i++) {
+            $this->screenDelete($i);
+        }
+        $this->screens_auto_comlete = 0;
+    }
+
+    /**
+     * Автоматическое создание скриншотов
+     * @return boolean
+     */
     protected function _createScreensAuto() {
-        if (!empty($this->_data['screens_auto_comlete']))
+        if ($this->screens_auto_comlete)
             return false;
-        if ($screen = files_types::getScreenType($this->_data['path_file_abs'])) {
+        if ($screen = files_types::getScreenType($this->path_file_abs)) {
             $screener = "files_screen_$screen";
-            $scr_obj = new $screener($this->_data['path_file_abs']);
+            $scr_obj = new $screener($this->path_file_abs);
 
             if (@function_exists('set_time_limit')) {
                 @set_time_limit(30);
@@ -331,99 +362,120 @@ class files_file {
                 }
             }
         }
-        $this->_data['screens_auto_comlete'] = 1;
-        $dir = new files($this->_data['path_dir_abs']);
-        $dir->cacheClear();
-        $this->_need_save = true;
+        $this->screens_auto_comlete = 1;
     }
 
+    /**
+     * Название иконки по типу файла
+     * @return string
+     */
     public function icon() {
-        return files_types::getIconType($this->_data['path_file_abs']);
+        return files_types::getIconType($this->path_file_abs);
     }
 
-    public function image($size = 48) {
-        if ($screen = $this->getScreen($size)) {
+    /**
+     * Ссылка на уменьшенное изображение
+     * @param type $size макс. ширина в пикселях
+     * @return string
+     */
+    public function image($size = 48, $num = 0) {
+        if ($screen = $this->getScreen($size, $num)) {
             return $screen;
         }
+        return false;
     }
 
-    // установка путей
+    /**
+     * Установка путей
+     * @param type $path_dir_abs
+     */
     protected function _setPathes($path_dir_abs) {
         // полный путь к папке
-        $this->_data['path_dir_abs'] = filesystem::unixpath($path_dir_abs);
+        $this->path_dir_abs = filesystem::unixpath($path_dir_abs);
         // полный путь к файлу
-        $this->_data['path_file_abs'] = $this->_data['path_dir_abs'] . '/' . $this->_data['name'];
+        $this->path_file_abs = $this->path_dir_abs . '/' . $this->name;
         // относительный путь к папке
-        $this->_data['path_dir_rel'] = str_replace(filesystem::unixpath(FILES), '', $this->_data['path_dir_abs']);
+        $this->path_dir_rel = str_replace(filesystem::unixpath(FILES), '', $this->path_dir_abs);
         // относительный путь к файлу
-        $this->_data['path_file_rel'] = $this->_data['path_dir_rel'] . '/' . $this->_data['name'];
+        $this->path_file_rel = $this->path_dir_rel . '/' . $this->name;
     }
 
-    // заносим сведения о файле в базу
+    /**
+     * Заносим сведения о файле в базу
+     * @return boolean
+     */
     protected function _baseAdd() {
-        if ($this->_data['id'])
+        if ($this->id)
             return false;
-        if ($this->_data['name'] {
-                0} == '.')
+        if ($this->name{0} == '.')
             return false;
 
         mysql_query("INSERT INTO `files_cache` (`path_file_rel`, `time_add`, `group_show`, `runame`)
-VALUES ('" . my_esc(convert::to_utf8($this->_data['path_file_rel'])) . "', '" . intval($this->_data['time_add']) . "', '" . intval($this->_data['group_show']) . "', '" . my_esc($this->_data['runame']) . "')");
-        $this->_data['id'] = mysql_insert_id();
-        $this->_need_save = true;
+VALUES ('" . my_esc(convert::to_utf8($this->path_file_rel)) . "', '" . intval($this->time_add) . "', '" . intval($this->group_show) . "', '" . my_esc($this->runame) . "')");
+        return (bool) $this->id = mysql_insert_id();
     }
 
-    // обновляем сведения о файле в базе
+    /**
+     * обновляем сведения о файле в базе данных
+     */
     protected function _baseUpdate() {
         mysql_query("UPDATE `files_cache`
-SET `path_file_rel` = '" . my_esc(convert::to_utf8($this->_data['path_file_rel'])) . "',
-`time_add` = '" . intval($this->_data['time_add']) . "',
-`group_show` = '" . intval($this->_data['group_show']) . "',
-`runame` = '" . my_esc($this->_data['runame']) . "'
-WHERE `id` = '" . intval($this->_data['id']) . "' LIMIT 1");
+SET `path_file_rel` = '" . my_esc(convert::to_utf8($this->path_file_rel)) . "',
+`time_add` = '" . intval($this->time_add) . "',
+`group_show` = '" . intval($this->group_show) . "',
+`runame` = '" . my_esc($this->runame) . "'
+WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
     }
 
-    // удаляем сведения о файле в базе
+    /**
+     * Удаляем сведения о файле из базы данных
+     * @return boolean
+     */
     protected function _baseDelete() {
         // удаление файла из кэша базы
-        mysql_query("DELETE FROM `files_cache` WHERE `id` = '" . intval($this->_data['id']) . "' LIMIT 1");
+        mysql_query("DELETE FROM `files_cache` WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
         // удаление комментов к файлу
-        mysql_query("DELETE FROM `files_comments` WHERE `id_file` = '" . intval($this->_data['id']) . "'");
+        mysql_query("DELETE FROM `files_comments` WHERE `id_file` = '" . intval($this->id) . "'");
         // удаление рейтингов файла
-        mysql_query("DELETE FROM `files_rating` WHERE `id_file` = '" . intval($this->_data['id']) . "'");
+        mysql_query("DELETE FROM `files_rating` WHERE `id_file` = '" . intval($this->id) . "'");
         return true;
     }
 
-    // получение пути к папке для ссылки
+    /**
+     * Возвращение поти в файлу для ссылки
+     * @return string
+     */
     public function getPath() {
-        $path_rel = preg_split('#/+#', $this->_data['path_dir_rel']);
+        $path_rel = preg_split('#/+#', $this->path_dir_rel);
         foreach ($path_rel as $key => $value) {
             $path_rel[$key] = urlencode($value);
         }
-        return implode('/', $path_rel) . '/' . urlencode($this->_data['name']);
+        return implode('/', $path_rel) . '/' . urlencode($this->name);
     }
 
-    // получение размера файла
+    /**
+     * размер файла в байтах
+     * @return integer
+     */
     protected function _getSize() {
-        $size = @filesize($this->_data['path_file_abs']);
-        $this->_data['size'] = $size;
-        $this->_need_save = true;
-        return $size;
+        $size = @filesize($this->path_file_abs);
+        return $this->size = $size;
     }
 
-    // получение даты и времени создания файла
+    /**
+     * Дата и время создания файла в формате UNIXTIMESTAMP
+     * @return integer
+     */
     protected function _getTimeCreate() {
-        $time = @filemtime($this->_data['path_file_abs']);
-        $this->_data['time_create'] = $time;
-        $this->_need_save = true;
-        return $time;
+        $time = @filemtime($this->path_file_abs);
+        return $this->time_create = $time;
     }
 
     function __get($n) {
         global $dcms;
         switch ($n) {
-            case 'rating_name':return $this->ratings[round($this->_data['rating'])];
-            case 'description_small': return empty($this->_data[$n]) ? text::substr($this->_data['description'], $dcms->browser_type == 'web' ? 512 : 256) : $this->_data[$n];
+            case 'rating_name':return $this->ratings[round($this->rating)];
+            case 'description_small': return empty($this->_data[$n]) ? text::substr($this->description, $dcms->browser_type == 'web' ? 512 : 256) : $this->_data[$n];
             case 'time_create': return isset($this->_data[$n]) ? $this->_data[$n] : $this->_getTimeCreate();
             case 'size': return isset($this->_data[$n]) ? $this->_data[$n] : $this->_getSize();
             default: return isset($this->_data[$n]) ? $this->_data[$n] : false;
@@ -431,23 +483,39 @@ WHERE `id` = '" . intval($this->_data['id']) . "' LIMIT 1");
     }
 
     function __set($n, $v) {
-        if (!isset($this->_data[$n]))
+        if (!is_scalar($n) || !is_scalar($v))
             return false;
+        
+        if ($this->_data[$n] == $v)
+            return false;
+
+        if ($n == 'path_dir_abs') {
+            $dir_old = new files($this->path_dir_abs);
+            $dir_old->cacheClear();
+        }
+
         $this->_data[$n] = $v;
         $this->_need_save = true;
 
-        if ($n == 'path_dir_abs') {
-            $this->_setPathes($v);
-            $this->_baseUpdate();
+        if (in_array($n, array('screens_auto_comlete', 'properties_auto_comlete', 'path_dir_abs'))) {
+            $dir_new = new files($this->path_dir_abs);
+            $dir_new->cacheClear();
         }
-
-        if ($n == 'group_show' || $n == 'time_add' || $n == 'path_file_rel' || $n == 'runame')
+        
+        if ($n == 'path_dir_abs') {
+            $this->_setPathes($this->path_dir_abs);
+        }
+        
+        if (in_array($n, array('group_show', 'time_add', 'path_file_rel', 'runame')))
             $this->_baseUpdate();
     }
 
+    /**
+     * Сохранение информации о файле
+     */
     public function save_data() {
-        if ($this->_data['name'] {0} !== '.') {
-            ini::save($this->_data['path_dir_abs'] . '/.' . $this->_data['name'] . '.ini', array('CONFIG' => $this->_data, 'SCREENS' => $this->_screens), true);
+        if ($this->name{0} !== '.') {
+            ini::save($this->path_dir_abs . '/.' . $this->name . '.ini', array('CONFIG' => $this->_data, 'SCREENS' => $this->_screens), true);
         }
     }
 

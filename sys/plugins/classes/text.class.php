@@ -87,7 +87,7 @@ abstract class text {
         $str = (string) $str;
         // обработка ника
         //$str = preg_replace_callback('#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31})([\!\.\,\ \)\(]|$)#uim', array('text', 'nick'), $str);
-        $str = preg_replace("#(^( |\r|\n)+)|(( |\r|\n)+$)|([^\pL\r\n\s0-9" . preg_quote(' []|`@\'"-_+=~!#:;$%^&*()?/\\.,<>{}©', '#') . "]+)#ui", '', $str);
+        $str = preg_replace("#(^( |\r|\n)+)|(( |\r|\n)+$)|([^\pL\r\n\s0-9" . preg_quote(' []|`@\'"-_+=~!#:;$%^&*()?/\\.,<>{}©№', '#') . "]+)#ui", '', $str);
 
         $inputbbcode = new inputbbcode($str);
         $str = $inputbbcode->get_html();

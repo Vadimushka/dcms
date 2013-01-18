@@ -55,6 +55,18 @@ abstract class filesystem {
         }
     }
 
+    
+    /**
+     * Заменяет разделитель директорий на указанный
+     * Удаляет повторные разделители
+     * @param string $path путь
+     * @param string $sep разделитель
+     * @return string 
+     */
+    public static function setPathSeparator($path, $sep = '/') {
+        return preg_replace('/[\\\\\/]+/', $sep, $path);
+    }
+    
     // получаем путь в стиле *UNIX
     static function unixpath($path) {
         return str_replace('\\', '/', $path);
@@ -216,6 +228,20 @@ abstract class filesystem {
             }
             closedir($od);
         }
+    }
+    
+    public static function getFilesByPattern($path_abs, $pattern = '/.*/', $recursive = false) {
+        $list = array();
+        $paths = (array) glob(realpath($path_abs) . '/*');
+
+        foreach ($paths as $path) {
+            if (is_file($path) && preg_match($pattern, basename($path)))
+                $list[] = self::setPathSeparator($path);
+            elseif ($recursive)
+                $list = array_merge($list, self::getFilesByPattern($path, $pattern, $recursive));
+        }
+
+        return $list;
     }
 
 }
