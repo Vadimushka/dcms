@@ -109,6 +109,9 @@ DCMS.Dom = {
             DCMS.Dom.classAdd(dom, classes);
     
         if (DCMS.isDom(parent)){
+            if (dom.id && document.getElementById(dom.id))
+                return dom;
+            
             if (DCMS.isDom(before))
                 parent.insertBefore(dom, before);            
             else

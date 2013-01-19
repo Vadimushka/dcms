@@ -60,7 +60,7 @@ function onTextareaBlur(){
 }
 
 function onTextareaChange(){
-    textarea = this;
+    var textarea = this;
     var hasInnerText = (document.getElementsByTagName("body")[0].innerText != undefined) ? true : false;
         
     var attributes_copy = ['width', 'font', 'padding'];    
@@ -245,8 +245,9 @@ function listing_update(listing_node, data){
         }
         
         var dom = DCMS.Dom.createFromHtml(add.html, false, listing_node, dom_before);
-        DCMS.Dom.setStyle(dom, 'opacity', '0');
-        DCMS.Animation.style(dom, 'opacity', '1', 500);
+        
+        DCMS.Animation.style(dom, 'opacity', ['0', '1'], 1000);
+        DCMS.Animation.style(dom, 'height', ['0px', ''], 500);
     }
     
     for(i = 0; i < json.remove.length; i++){

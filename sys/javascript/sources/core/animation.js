@@ -81,11 +81,12 @@ DCMS.Animation = {
     
         var styleStart, styleEnd;
         if (DCMS.isArray(value) && value.length == 2){
-            styleStart = DCMS.Dom.parseStyle(value[0]);
-            styleEnd = DCMS.Dom.parseStyle(value[1]);
+            styleStart = DCMS.Dom.parseStyle(value[0] === '' ? DCMS.Dom.getComputedValue(dom, property) : value[0]);
+            styleEnd = DCMS.Dom.parseStyle(value[1] === '' ? DCMS.Dom.getDefaultValue(dom, property): value[1]); 
+            value = value[1];
         }else{
             styleStart = DCMS.Dom.parseStyle(DCMS.Dom.getComputedValue(dom, property));
-            styleEnd = DCMS.Dom.parseStyle(value == '' ? DCMS.Dom.getDefaultValue(dom, property): value);            
+            styleEnd = DCMS.Dom.parseStyle(value === '' ? DCMS.Dom.getDefaultValue(dom, property): value);            
         }
     
         if (styleEnd.units == '%')

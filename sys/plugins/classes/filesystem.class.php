@@ -55,7 +55,6 @@ abstract class filesystem {
         }
     }
 
-    
     /**
      * Заменяет разделитель директорий на указанный
      * Удаляет повторные разделители
@@ -66,7 +65,7 @@ abstract class filesystem {
     public static function setPathSeparator($path, $sep = '/') {
         return preg_replace('/[\\\\\/]+/', $sep, $path);
     }
-    
+
     // получаем путь в стиле *UNIX
     static function unixpath($path) {
         return str_replace('\\', '/', $path);
@@ -196,40 +195,21 @@ abstract class filesystem {
 
         $yesterday = TIME - 86400;
 
-        // получаем список папок, в которых могут содержаться временные файлы
-        $dirs = array(H . '/sys/tmp');
-
-        $th_o = opendir(H . '/sys/themes');
-        while ($th_r = readdir($th_o)) {
-            if ($th_r {0} === '.') {
+        $od = opendir(H . '/sys/tmp');
+        while ($rd = readdir($od)) {
+            if ($rd {0} === '.') {
+                // файлы, начинающиеся с точки пропускаем
                 continue;
             }
-            if (!is_dir(H . '/sys/themes/' . $th_r . '/tpl_cache')) {
+            if (filemtime(H . '/sys/tmp/' . $rd) > $yesterday) {
+                // файл еще не старый
                 continue;
             }
-            $dirs [] = H . '/sys/themes/' . $th_r . '/tpl_cache';
+            @unlink(H . '/sys/tmp/' . $rd);
         }
-        closedir($th_o);
-
-
-        $count = count($dirs);
-        for ($i = 0; $i < $count; $i++) {
-            $od = opendir($dirs [$i]);
-            while ($rd = readdir($od)) {
-                if ($rd {0} === '.') {
-                    // файлы, начинающиеся с точки пропускаем
-                    continue;
-                }
-                if (filemtime($dirs [$i] . '/' . $rd) > $yesterday) {
-                    // файл еще не старый
-                    continue;
-                }
-                @unlink($dirs [$i] . '/' . $rd);
-            }
-            closedir($od);
-        }
+        closedir($od);
     }
-    
+
     public static function getFilesByPattern($path_abs, $pattern = '/.*/', $recursive = false) {
         $list = array();
         $paths = (array) glob(realpath($path_abs) . '/*');

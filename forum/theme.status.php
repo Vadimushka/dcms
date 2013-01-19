@@ -25,6 +25,13 @@ if (!mysql_num_rows($q)) {
 }
 $theme = mysql_fetch_assoc($q);
 
+
+$doc->ret(__('Действия'), 'theme.actions.php?id=' . $theme['id']);
+$doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);
+$doc->ret(empty($theme['topic_name']) ? __('В раздел') : $theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);
+$doc->ret(empty($theme['category_name']) ? __('В категорию') : $theme['category_name'], 'category.php?id=' . $theme['id_category']);
+$doc->ret(__('Форум'), './');
+
 $group_write_open = $theme['topic_group_write'];
 $group_write_close = $theme['topic_group_write'] + 1;
 
@@ -49,6 +56,7 @@ if (!empty($_POST['open'])) {
  VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','0','" . TIME . "','" . my_esc($message) . "','$theme[group_show]','$theme[group_edit]')");
 
         $doc->msg(__('Тема успешно открыта для обсуждения'));
+        exit;
     }
 }
 
@@ -67,6 +75,7 @@ if (!empty($_POST['close'])) {
         mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
  VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','0','" . TIME . "','" . my_esc($message) . "','$theme[group_show]','$theme[group_edit]')");
         $doc->msg(__('Тема успешно закрыта для обсуждения'));
+        exit;
     }
 }
 
@@ -78,9 +87,5 @@ else
     $form->button(__('Открыть для обсуждения'), 'open');
 $form->display();
 
-$doc->ret(__('Действия'), 'theme.actions.php?id=' . $theme['id']);
-$doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);
-$doc->ret(empty($theme['topic_name']) ? __('В раздел') : $theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);
-$doc->ret(empty($theme['category_name']) ? __('В категорию') : $theme['category_name'], 'category.php?id=' . $theme['id_category']);
-$doc->ret(__('Форум'), './');
+
 ?>

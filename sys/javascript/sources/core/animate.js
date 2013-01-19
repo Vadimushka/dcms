@@ -6,47 +6,42 @@ DCMS.Animate = function(duration, callback, delta){
         this.delta = DCMS.Animate.deltaFunctions[delta];    
     else 
         this.delta = DCMS.Animate.deltaFunctions['life'];
-        
-    if (duration == undefined)
-        duration = 1000;     
+          
     
     if (typeof callback != 'function')
         throw new Error('callback не является функцией');
     else
         this.callback = callback;
     
-    this.step = this.start = 0;
-    this.end = 1;    
-    this.step_length = (this.end - this.start) / (duration / 13);    
-    this.timeInterval = setInterval(DCMS.getEventHandler(this.Step, this), 13);
+    this.duration = duration || 1000;
+    this.runned = true;
+    this.interval = 20;
+    this.start = new Date().getTime();
+    this.Step();
 };
 
-    DCMS.Animate.prototype.IsEnded = function(){
-        return this.step >= this.end;
-    };
+    DCMS.Animate.prototype.End = function(to_end){
+        if (!this.runned)
+            return;
+        this.runned = false;
+    
+        if (to_end)
+            this.callback(1);
+    }
 
     DCMS.Animate.prototype.Step = function(){
-        this.step += this.step_length;
-
-        if (this.IsEnded()){
-            this.End();
+        if (!this.runned)
             return;
-        }
-        this.callback(this.delta(this.step));
-    };
-
-    DCMS.Animate.prototype.End = function(to_end_step){       
-    
-        if (to_end_step === undefined)
-            to_end_step = true;
-
-        this.step = this.end;
-    
-        if (this.timeInterval)
-            clearInterval(this.timeInterval);
-    
-        if (to_end_step)
-            this.callback(this.step);    
+        
+        var step = (new Date().getTime() - this.start)/ this.duration;
+        
+        if (step >= 1)
+            step = 1;
+        
+        this.callback(step == 1 ? 1 :this.delta(step));        
+        
+        if (step < 1)
+            setTimeout(DCMS.getEventHandler(this.Step, this), this.interval);
     };
 
     DCMS.Animate.deltaFunctions = {

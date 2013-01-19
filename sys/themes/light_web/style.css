@@ -239,10 +239,10 @@ html, body, #main{
 }
 
 .post{
-    transition: all 500ms;
-    -moz-transition: all 500ms;
-    -webkit-transition: all 500ms;
-    -o-transition: all 500ms;
+    transition: background, 500ms;
+    -moz-transition: background 500ms;
+    -webkit-transition: background 500ms;
+    -o-transition: background 500ms;
     background: #FAFAFA;
     border: 1px #DBDBDB solid;
     color: #686868 !important;
@@ -251,6 +251,7 @@ html, body, #main{
     border-top-style: none !important;
     font-size: 90%;
     box-shadow: 0 0 0 1px #FCFCFC inset;
+    overflow: hidden;
 }
 
 .post:first-child{

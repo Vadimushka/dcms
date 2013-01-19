@@ -156,9 +156,9 @@ class bbcode {
             'is_close' => false,
             'lbr' => 0,
             'rbr' => 0,
-            'ends' => array('user', 'smile', 'url', 'quote'),
+            'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no', 'url')
         ),
         'gradient' => array(
             'handler' => 'gradient_2html',
@@ -174,36 +174,36 @@ class bbcode {
             'is_close' => false,
             'lbr' => 0,
             'rbr' => 0,
-            'ends' => array('user', 'smile', 'url', 'quote'),
+            'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no', 'url')
         ),
         'green' => array(
             'handler' => 'color_2html',
             'is_close' => false,
             'lbr' => 0,
             'rbr' => 0,
-            'ends' => array('user', 'smile', 'url', 'quote'),
+            'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no', 'url')
         ),
         'blue' => array(
             'handler' => 'color_2html',
             'is_close' => false,
             'lbr' => 0,
             'rbr' => 0,
-            'ends' => array('user', 'smile', 'url', 'quote'),
+            'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no', 'url')
         ),
         'yellow' => array(
             'handler' => 'color_2html',
             'is_close' => false,
             'lbr' => 0,
             'rbr' => 0,
-            'ends' => array('user', 'smile', 'url', 'quote'),
+            'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'vremja', 'no', 'url')
         ),
         'vremja' => array(
             'handler' => 'vremja_2html',

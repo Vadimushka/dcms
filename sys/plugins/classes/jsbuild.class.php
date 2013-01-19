@@ -12,6 +12,7 @@ class jsbuild {
     }
 
     function buildTo($file_path) {
+        $javascriptCode = '';
         $this->_files_content = array();
         foreach ($this->_files AS $file) {
             $relpath = str_replace(filesystem::setPathSeparator($this->_dir_abs), '', $file);
@@ -30,7 +31,7 @@ class jsbuild {
             );
         }
 
-        $javascriptCode = "/* DCMS jsBuild system */\r\n\r\n\r\n\r\n";
+        $javascriptCode .= "/* DCMS jsBuild system */\r\n\r\n\r\n\r\n";
         foreach ($this->_files_content AS $path => $content) {
             $javascriptCode .= $this->getContent($path);
         }
