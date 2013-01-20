@@ -22,7 +22,7 @@ DCMS.Ajax = function(settings) {
         throw "Не заданы параметры запроса";
 
     var url = settings.url.split('?');
-    url[1] =  (url[1] ? url[1] + '&': '') + '_r='+Math.random();
+    url[1] =  (url[1] ? url[1] + '&': '') + '_='+Math.random().toString();
         
 
     var xhr = getXmlHttp();

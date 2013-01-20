@@ -13,8 +13,8 @@ if (isset($_POST['save'])) {
                 $doc->err(__('Не корректный новый пароль'));
             else {
                 $_SESSION[SESSION_PASSWORD_USER] = $_POST['password_new1'];
-                setcookie(COOKIE_USER_PASSWORD, crypt::cookie_encrypt($_POST['password_new1']), time() + 60 * 60 * 24 * 365);
-                $user->password = crypt::hash($_POST['password_new1']);
+                setcookie(COOKIE_USER_PASSWORD, crypt::cookie_encrypt($_POST['password_new1'], $user->salt_user), time() + 60 * 60 * 24 * 365);
+                $user->password = crypt::hash($_POST['password_new1'], $dcms->salt);
                 $doc->msg(__('Пароль успешно изменен'));
             }
         }

@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="/sys/themes/system.css" type="text/css" />
         <link rel="stylesheet" href="/sys/themes/theme_light.css" type="text/css" />
         <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css" />
-        <script charset="utf-8" src="/sys/javascript/build/dcms.js" type="text/javascript"></script>
+        <script charset="utf-8" src="/sys/javascript/dcms.js" type="text/javascript"></script>
         <script charset="utf-8" src="<?= $path ?>/user.js" type="text/javascript"></script>
         <meta http-equiv="Сontent-Type" content="application/xhtml+xml; charset=utf-8" />
         <? if ($description) { ?><meta name="description" content="<?= $description ?>" /><? } ?>

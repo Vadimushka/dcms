@@ -486,7 +486,7 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
         if (!is_scalar($n) || !is_scalar($v))
             return false;
         
-        if ($this->_data[$n] == $v)
+        if (array_key_exists($n, $this->_data) && $this->_data[$n] == $v)
             return false;
 
         if ($n == 'path_dir_abs') {

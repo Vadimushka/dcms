@@ -18,6 +18,7 @@ if (isset($_POST['save'])) {
 $form = new form('?' . passgen());
 $form->checkbox('log_of_visits', __('Журнал посещений'), $dcms->log_of_visits);
 $form->checkbox('log_of_referers', __('Журнал рефереров'), $dcms->log_of_referers);
+$form->checkbox('clear_tmp_dir', __('Чистка папки с временными файлами'), $dcms->clear_tmp_dir);
 
 $options = array();
 $options[] = array('3600', __('Раз в час'), $dcms->update_auto_time == '3600');

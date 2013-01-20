@@ -1,6 +1,6 @@
 <?php
 
-class jsbuild {
+class js_assembly {
 
     protected $_files = array(),
             $_dir_abs,

@@ -1,7 +1,7 @@
 <?php
 
 include_once 'sys/inc/start.php';
-$doc = new document(); // инициализация документа для браузера
+$doc = new document(1); // инициализация документа для браузера
 $doc->title = __('Общие настройки');
 
 if (isset($_POST['save'])) {

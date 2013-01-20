@@ -6,9 +6,9 @@ $doc->title = __('Сборка dcms.js');
 $doc->ret(__('Админка'), './');
 
 
-if (isset($_POST['build'])){
-    $jsbuild = new jsbuild(H.'/sys/javascript/sources/');
-    $jsbuild ->buildTo(H.'/sys/javascript/build/dcms.js');
+if (isset($_POST['build'])) {
+    $jsbuild = new js_assembly(H . '/sys/javascript/sources/');
+    $jsbuild->buildTo(H . '/sys/javascript/dcms.js');
     unset($jsbuild);
 }
 
@@ -22,7 +22,8 @@ $post->content[] = 'Путь к файлу для подключения в те
 $post = $listing->post();
 $post->icon('js');
 $post->title = __('Последний раз собирался:');
-$post->content[] = misc::vremja(filemtime(H . '/sys/javascript/build/dcms.js'));
+$time = filemtime(H . '/sys/javascript/dcms.js');
+$post->content[] = $time ? misc::vremja($time) : __('Еще не собирался');
 $listing->display();
 
 
