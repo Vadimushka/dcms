@@ -27,7 +27,9 @@ for ($i = 0; $i < $new_files && $i < $dcms->widget_items_count; $i++) {
     $post->url = "/files" . $files[$i]->getPath() . ".htm";
     $post->image = $files[$i]->image();
     $post->icon($files[$i]->icon());
-    $post->bottom = $ank->nick();
+    if ($ank->id)
+        $post->bottom = $ank->nick();
+    
 }
 
 if ($new_files > $dcms->widget_items_count) {

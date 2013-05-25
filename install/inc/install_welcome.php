@@ -7,7 +7,7 @@ class install_welcome {
 
     function form()
     {
-        echo "Добро пожаловать в мастер установки DCMS Seven<br />";
+        echo __("Добро пожаловать в мастер установки DCMS Seven"). '<br />';
         return true;
     }
 }

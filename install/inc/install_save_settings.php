@@ -14,7 +14,8 @@ class install_save_settings {
         if ($this->is_writed = ini::save(H . '/sys/ini/settings.ini', $this->settings)) {
             $return = true;
 
-            $_SESSION = array();
+            unset($_SESSION);
+            session_destroy();
 
             foreach ($_COOKIE as $key => $value) {
                 setcookie($key);

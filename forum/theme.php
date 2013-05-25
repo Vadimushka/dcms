@@ -144,13 +144,13 @@ foreach ($messages AS $message) {
     if (@is_dir($post_dir_path)) {
         $listing_files = new listing();
         $dir = new files($post_dir_path);
-        $content = $dir->getList('time_add:desc');
+        $content = $dir->getList('time_add:asc');
         $files = &$content['files'];
         $count = count($files);
         for ($i = 0; $i < $count; $i++) {
             $file = $listing_files->post();
             $file->title = for_value($files[$i]->runame);
-            $file->url = "/files" . $files[$i]->getPath() . ".htm?order=time_add:desc";
+            $file->url = "/files" . $files[$i]->getPath() . ".htm?order=time_add:asc";
             $file->content = output_text($files[$i]->properties);
             $file->icon($files[$i]->icon());
             $file->image = $files[$i]->image();

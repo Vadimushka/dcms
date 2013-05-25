@@ -113,7 +113,7 @@ $doc->title = __('Файлы к сообщению от "%s"', $autor->login);
 
 
 $listing = new listing();
-$content = $dir->getList('time_add:desc');
+$content = $dir->getList('time_add:asc');
 $files = &$content['files'];
 
 for ($i = 0; $i < count($files); $i++) {

@@ -9,5 +9,9 @@ $bb = new bb(H . '/sys/docs/license.txt');
 if ($bb->title)
     $doc->title = $bb->title;
 
-$bb->display();
+$listing = new listing();
+
+$post = $listing->post();
+$post->content[] = $bb->getText();
+$listing->display();
 ?>
