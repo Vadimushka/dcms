@@ -4,16 +4,21 @@ class adt extends menu {
 
     function __construct() {
         parent::__construct();
-        $this->menu_arr = array('Под заголовком' => array('id' => 'top', 'url' => '?id=top', 'icon' => 'adt.png'),
-            'Низ сайта' => array('id' => 'bottom', 'url' => '?id=bottom', 'icon' => 'adt.png'));
-        //return $this->menu('adt');
+        $this->menu_arr = array(
+            'Под заголовком' => array('id' => 'top', 'url' => '?id=top', 'icon' => 'adt.png'),
+            'Низ сайта' => array('id' => 'bottom', 'url' => '?id=bottom', 'icon' => 'adt.png')
+        );
     }
 
     function __get($id) {
         return $this->getArrayAdtForId($id);
     }
 
-    // проверка id на существование? получение названия площадки
+    /**
+     * Возвращает название рекламной площадки по id, если таковая существует
+     * @param type $id
+     * @return mixed(string||boolean)
+     */
     function getNameById($id) {
         foreach ($this->menu_arr as $key => $value) {
             if (isset($value['id']) && $value['id'] == $id)
@@ -23,7 +28,12 @@ class adt extends menu {
         return false;
     }
 
-    // получаем список рекламы в виде массива для определенного места
+    /**
+     * Получение рекламной позиции в виде массива
+     * @global dcms $dcms
+     * @param string $id площадка (top, bottom)
+     * @return array
+     */
     private function getArrayAdtForId($id) {
         global $dcms;
         $return = array();

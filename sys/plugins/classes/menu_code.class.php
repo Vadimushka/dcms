@@ -69,5 +69,3 @@ class menu_code extends menu {
     }
 
 }
-
-?>

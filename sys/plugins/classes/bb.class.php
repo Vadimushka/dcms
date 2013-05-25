@@ -25,14 +25,25 @@ class bb {
         }
     }
 
+    /**
+     * Возвращает содержимое без заголовка
+     * @return string
+     */
     public function getText() {
         return $this->_content;
     }
 
+    /**
+     * Возвращает содержимое с форматированием без заголовка
+     * @return string
+     */
     public function fetch() {
         return output_text(trim($this->_content));
     }
 
+    /**
+     * Отправляет отформатирование содержимое в браузер
+     */
     public function display() {
         echo $this->fetch();
     }
@@ -50,11 +61,7 @@ class bb {
         $path_user_lang = str_replace('{lang}', $user_lang['xml_lang'], $path);
         if (file_exists($path_user_lang)) {
             return $path_user_lang;
-        }
-        
-        
-        
-        
+        } 
     }
 
 }

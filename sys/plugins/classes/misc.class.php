@@ -2,6 +2,10 @@
 
 abstract class misc {
 
+    /**
+     * Удаление пользователя и всех связанных с ним данных
+     * @param int $id Идентификатор пользователя
+     */
     static function user_delete($id) {
         $id = (int) $id;
         $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
@@ -11,7 +15,12 @@ abstract class misc {
         mysql_query("DELETE FROM `users` WHERE `id` = '$id' LIMIT 1");
     }
 
-    
+    /**
+     * Запись данных в системный лог
+     * @param string $text Текст сообщения
+     * @param string $module Модуль, к которому относится сообщение
+     * @return boolean
+     */
     static function log($text, $module = 'system') {
         $time = date("H:i:s d.m.Y");
         $file = H . '/sys/logs/' . basename($module) . '.log';
@@ -27,11 +36,25 @@ abstract class misc {
         return true;
     }
 
-    // перемещение ключа $key массива $array на $step шагов
+    /**
+     * перемещение ключа $key массива $array на $step шагов
+     * @param type $array
+     * @param type $key
+     * @param type $step
+     * @return type
+     */
     static function array_key_move(&$array, $key, $step = 1) {
         return arraypos::move($array, $key, $step);
     }
 
+    /**
+     * 
+     * @param int $num
+     * @param string $one
+     * @param string $two
+     * @param string $more
+     * @return string
+     */
     static function number($num, $one, $two, $more) {
         $num = (int) $num;
         $l2 = substr($num, strlen($num) - 2, 2);
@@ -53,8 +76,15 @@ abstract class misc {
         }
     }
 
-    // получение возраста
-    static function get_age($g, $m, $d, $read = 0) {
+    /**
+     * Вычисление возраста
+     * @param int $g Год
+     * @param int $m Месяц
+     * @param int $d День
+     * @param boolean $read 
+     * @return string
+     */
+    static function get_age($g, $m, $d, $read = false) {
         if (strlen($g) == 2)
             $g += 1900;
         if (strlen($g) == 3)
@@ -70,7 +100,11 @@ abstract class misc {
         return $age;
     }
 
-    // читабельное представление размера информации
+    /**
+     * Читабельное представление размера информации
+     * @param int $filesize размер в байтах
+     * @return string размер в (KB, MB...)
+     */
     static function size_data($filesize = 0) {
         $filesize_ed = __('байт');
         if ($filesize >= 1024) {
@@ -97,7 +131,13 @@ abstract class misc {
         return $filesize . ' ' . $filesize_ed;
     }
 
-    // читабельное представление времени
+    /**
+     * читабельное представление времени с учетом часового пояса пользователя
+     * @global \user $user
+     * @param int $time Время в формате timestamp
+     * @param boolean $adaptive Адаптивное представлени (вместо полной даты использовать "сегодня", "вчера")
+     * @return string
+     */
     static function vremja($time = null, $adaptive = true) {
         if ($time > TIME) {
             $time -= TIME;
@@ -171,7 +211,12 @@ abstract class misc {
         }
     }
 
-    // вывод названия месяца по-русски
+    /**
+     * Вывод названия месяца
+     * @param int $num номер месяца (с 1)
+     * @param int $v вариант написания
+     * @return string
+     */
     static function rus_mes($num, $v = 1) {
         switch ($num) {
             case 1:return __('Январ' . ($v ? 'я' : 'ь'));
@@ -191,5 +236,3 @@ abstract class misc {
     }
 
 }
-
-?>

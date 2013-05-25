@@ -48,5 +48,3 @@ class stemmer {
         return $stem;
     }
 }
-
-?>

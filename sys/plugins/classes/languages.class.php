@@ -2,12 +2,22 @@
 
 abstract class languages {
 
+    /**
+     * Проверяет существование языкового пакета
+     * @param string $code языковой пакет
+     * @return boolean
+     */
     static public function exists($code) {
         // проверка на существование языка
         $list = self::getList();
         return isset($list[$code]);
     }
 
+    /**
+     * Возвращает конфиг языкового пакета
+     * @param string $code
+     * @return boolean|array
+     */
     static public function getConfig($code) {
         if (!self::exists($code)) {
             return false;
@@ -16,6 +26,11 @@ abstract class languages {
         return $list[$code];
     }
 
+    /**
+     * Возвращает список доступных языковых пакетов
+     * @staticvar type $list
+     * @return array
+     */
     static public function getList() {
         static $list;
 
@@ -34,6 +49,10 @@ abstract class languages {
         return $list;
     }
 
+    /**
+     * Возвращает список языковых пакетов без использования кэша
+     * @return array
+     */
     static public function getRealList() {
         $list = array();
 
@@ -69,10 +88,11 @@ abstract class languages {
         return $list;
     }
 
+    /**
+     * очистка кэша списка языковых пакетов
+     */
     static public function clearCache() {
         cache::set('languages', false);
     }
 
 }
-
-?>

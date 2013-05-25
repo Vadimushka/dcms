@@ -7,9 +7,13 @@ class files {
     protected $_need_save = false; // необходимость сохранения параметров директории
     protected $_screens = array(); // список скриншотов
     protected $_keys = array(); // ключи, доступные для сортировки
-    var $user_sort = 'position';
-    var $error; // последняя ошибка
+    public $user_sort = 'position';
+    public $error; // последняя ошибка
 
+    /**
+     * Работа с директорией загруц-центра
+     * @param string $path_abs Абсолютный путь к папке загруз-центра
+     */
     function __construct($path_abs) {
         $path_abs = realpath($path_abs);
         $this->_data ['type'] = 'folder'; // тип содержимого для иконки (по-умолчанию: папка)
@@ -38,6 +42,11 @@ class files {
         $this->_setPathes($path_abs);
     }
 
+    /**
+     * Импорт файла
+     * @param string $url
+     * @return boolean|\files_file
+     */
     public function fileImport($url) {
         if (function_exists('set_time_limit')) {
             set_time_limit(30);
@@ -123,6 +132,11 @@ class files {
         return $f_obj;
     }
 
+    /**
+     * Добавление локальных(или выгруженных) файлов в папку
+     * @param type $files
+     * @return \files_file
+     */
     public function filesAdd($files) {
         // добавление файлов в папку
         $ok = array();
@@ -151,6 +165,9 @@ class files {
         return $ok;
     }
 
+    /**
+     * Очистка кэша листинга директории
+     */
     public function cacheClear() {
         // очистка кэша директории (а также проверка соответствия записей в базе реальным файлам)
         $path_rel_ru = convert::to_utf8($this->_data ['path_rel']);
@@ -175,6 +192,12 @@ class files {
         $this->_need_save = true;
     }
 
+    /**
+     * Создает папку в данной папке
+     * @param type $runame
+     * @param type $name
+     * @return boolean|\files
+     */
     public function mkdir($runame, $name = false) {
         // создание папки
         if ($name)
@@ -196,6 +219,10 @@ class files {
         return $new_dir;
     }
 
+    /**
+     * Удаление текущей папки со всем содержимым
+     * @return boolean
+     */
     public function delete() {
         // удаление папки со всем содержимым
         // если папки не существует, то и удалять ее не можем.
@@ -236,7 +263,11 @@ class files {
         }
     }
 
-    // получение новых файлов
+    /**
+     * Возвращает массив новых файлов
+     * @global \user $user
+     * @return \files_file
+     */
     public function getNewFiles() {
         $time = NEW_TIME;
         global $user;
@@ -258,7 +289,12 @@ class files {
         return $content;
     }
 
-    // поиск файлов в папке и во всех вложенных папках
+    /**
+     * Поиск файлов в данной папке и во всех вложенных папках
+     * @global \user $user
+     * @param string $search часть имени файла
+     * @return \files_file
+     */
     protected function _search($search) {
         global $user;
         $content = array('dirs' => array(), 'files' => array());
@@ -279,6 +315,12 @@ class files {
         return $content;
     }
 
+    /**
+     * Кол-во файлов в папке
+     * @global \user $user
+     * @param boolean $is_new считать только новые файлы
+     * @return int
+     */
     public function count($is_new = false) {
         if ($is_new) {
             $time = NEW_TIME;
@@ -299,6 +341,10 @@ class files {
         return $count;
     }
 
+    /**
+     * Возможные ключи для сортировки файлов в данной папке
+     * @return array
+     */
     public function getKeys() {
         // получение возможных ключей для сортировки папки
         $keys = array();
@@ -309,7 +355,10 @@ class files {
         return array_merge($keys, $this->_keys);
     }
 
-    // получаем содержимое директории
+    /**
+     * Содержимое данной директории
+     * @return \files_file
+     */
     protected function _getListFull() {
 
         if ($content = cache::get('files.' . $this->_data ['path_rel'])) {
@@ -337,6 +386,12 @@ class files {
         return $content;
     }
 
+    /**
+     * Callback для сортировки директорий
+     * @param type $f1
+     * @param type $f2
+     * @return type
+     */
     function _sort_cmp_dir($f1, $f2) {
         if ($f1->position == $f2->position) {
             return strcmp($f1->runame, $f2->runame);
@@ -344,6 +399,12 @@ class files {
         return ($f1->position < $f2->position) ? -1 : 1;
     }
 
+    /**
+     * callback для сортировки файлов
+     * @param type $f1
+     * @param type $f2
+     * @return int
+     */
     protected function _sort_cmp_files($f1, $f2) {
         $sn = $this->user_sort;
         if ($f1->$sn == $f2->$sn) {
@@ -352,9 +413,14 @@ class files {
         return ($f1->$sn < $f2->$sn) ? - 1 : 1;
     }
 
+    /**
+     * Получение списка папок и файлов с применением сортировки
+     * @param type $list
+     * @param type $sort
+     * @return type
+     */
     protected function _listSort($list, $sort) {
         usort($list ['dirs'], array($this, '_sort_cmp_dir'));
-
 
         if (!$sort) {
             $sort = $this->sort_default;
@@ -365,13 +431,16 @@ class files {
             $list ['files'] = array_reverse($list ['files']);
         }
 
-
-
         return $list;
     }
 
+    /**
+     * Фильтрация недоступных пользователю папок и файлов
+     * @global \user $user
+     * @param type $list
+     * @return type
+     */
     protected function _listFilter($list) {
-        // исключение из списка всех недоступных пользователю папок и файлов
         global $user;
         $list2 = array();
         $c = count($list);
@@ -382,7 +451,11 @@ class files {
         return $list2;
     }
 
-    // проверка существования папки
+    /**
+     * Проверка на существование подпапки с указанным именем
+     * @param string $name Имя подпапки
+     * @return boolean
+     */
     public function is_dir($name) {
         $list = $this->getList();
 
@@ -394,7 +467,11 @@ class files {
         return false;
     }
 
-    // проверка существования файла
+    /**
+     * Проверка на существование файла с указанным именем
+     * @param string $name Имя файла
+     * @return boolean
+     */
     public function is_file($name) {
         $list = $this->getList();
 
@@ -406,7 +483,12 @@ class files {
         return false;
     }
 
-    // получаем список содержимого директории в отфильтрованном и отсортированном виде
+    /**
+     * Возвращает содержимое директории
+     * @param string $sort Ключ сортировки (список ключей можно получить методом getKeys)
+     * @param string $search Фильтр по имени файла
+     * @return array
+     */
     public function getList($sort = false, $search = false) {
         if ($search) {
             $list = $this->_search($search); // получение списка файлов по запросу
@@ -420,8 +502,11 @@ class files {
         return $list;
     }
 
+    /**
+     * Путь директории на русском языке
+     * @return string
+     */
     public function getPathRu() {
-        // получение пути на русском языке
         $return = array();
         $all_path = array();
         if ($this->_data ['path_rel']) {
@@ -449,8 +534,11 @@ class files {
         return ($return ? implode('/', $return) . '/' : '') . $this->_data ['runame'];
     }
 
+    /**
+     * Получение пути к папке для ссылки
+     * @return type
+     */
     public function getPath() {
-        // получение пути к папке для ссылки
         $path_rel = preg_split('#/+#', $this->_data ['path_rel']);
         foreach ($path_rel as $key => $value) {
             $path_rel [$key] = urlencode($value);
@@ -458,6 +546,10 @@ class files {
         return implode('/', $path_rel) . '/';
     }
 
+    /**
+     * Список скриншотов (относительные пути)
+     * @return array
+     */
     public function getScreens() {
         // получение скриншотов папки
         $screens = array();
@@ -468,6 +560,12 @@ class files {
         return $screens;
     }
 
+    /**
+     * Массив путей для возврата к родительским директориям
+     * @global \user $user
+     * @param int $k максимальное кол-во путей
+     * @return array [path, runame]
+     */
     public function ret($k = 5) {
         // вывод массива путей для возврата
         global $user;
@@ -497,18 +595,26 @@ class files {
                         $k++;
                         continue;
                     }
-                    $return [] = array('path'   => $cnf->getPath(), 'runame' => $cnf->runame);
+                    $return [] = array('path' => $cnf->getPath(), 'runame' => $cnf->runame);
                 }
             }
         }
         return $return;
     }
 
+    /**
+     * Иконка папки
+     * @return string
+     */
     public function icon() {
-        // получение иконки
         return $this->_data ['type'];
     }
 
+    /**
+     * Перемещение папки
+     * @param string $new_path_abs абсолютный путь к папке в загруз-центре
+     * @return boolean
+     */
     public function move($new_path_abs) {
         // перемещение папки
         $new_path_abs = filesystem::unixpath($new_path_abs);
@@ -544,6 +650,12 @@ class files {
         $this->_data ['path_rel'] = str_replace(filesystem::unixpath(FILES), '', $this->_data ['path_abs']);
     }
 
+    /**
+     * Переименование папки
+     * @param string $runame Отображаемое имя папки
+     * @param string $realname Реально имя папки на сервере
+     * @return boolean
+     */
     public function rename($runame, $realname) {
         // переименование папки
         if ($this->_data ['path_rel'] && $this->_data ['name'] {0} !== '.') {
@@ -568,6 +680,11 @@ class files {
         return true;
     }
 
+    /**
+     * Список всех вложенных папок (рекурсивно)
+     * @param string $exclude Абсолютный путь, который будет исключен из перебора
+     * @return array \files
+     */
     public function getPathesRecurse($exclude = false) {
         // получение всех объектов папок (рекурсивно)
         $dirs = array();
@@ -594,9 +711,12 @@ class files {
         return $dirs;
     }
 
+    /**
+     * установка группы пользователей, которым разрешено просматривать директорию
+     * данный параметр будет рекурсивно применен ко всем вложенным объектам
+     * @param int $group_show
+     */
     public function setGroupShowRecurse($group_show) {
-        // установка группы пользователей, которым разрешено просматривать директорию
-        // данный параметр будет рекурсивно применен ко всем вложенным объектам
         $od = @opendir($this->_data ['path_abs']);
         while ($rd = @readdir($od)) {
             if ($rd {0} == '.')
@@ -611,7 +731,6 @@ class files {
                 $file->group_show = $group_show;
             }
         }
-
         @closedir($od);
         $this->cacheClear();
         $this->_data ['group_show'] = $group_show;
@@ -635,9 +754,7 @@ class files {
     function __destruct() {
         if ($this->_need_save) {
             $this->_data ['time_last'] = TIME; // время последних действий
-
-
-            ini::save($this->_data ['path_abs'] . '/' . $this->_config_file_name, array('CONFIG'  => $this->_data, 'SCREENS' => $this->_screens, 'ADDKEYS' => $this->_keys), true);
+            ini::save($this->_data ['path_abs'] . '/' . $this->_config_file_name, array('CONFIG' => $this->_data, 'SCREENS' => $this->_screens, 'ADDKEYS' => $this->_keys), true);
         }
     }
 

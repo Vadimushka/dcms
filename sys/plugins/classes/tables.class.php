@@ -1,6 +1,6 @@
 <?php
 class tables {
-    var $tables = array();
+    public $tables = array();
 
     function __construct()
     {
@@ -9,7 +9,13 @@ class tables {
             $this->tables[] = $table[0];
         }
     }
-    // получение sql запроса на создание таблицы
+    
+    /**
+     * получение sql запроса на создание таблицы
+     * @param string $table Имя таблицы
+     * @param boolean $auto_increment включать в запрос значение auto increment
+     * @return string
+     */
     function get_create($table, $auto_increment = true)
     {
         $sql = "/* Структура таблицы `$table` */\r\n";
@@ -19,6 +25,13 @@ class tables {
         }
         return $sql . $row[1];
     }
+    
+    /**
+     * Получение дампа таблицы для вставки
+     * @param name $table Имя таблицы
+     * @param int $c_ins Максимальное кол-во строк в одном INSERT`е
+     * @return string
+     */
     function get_data($table, $c_ins = 2000)
     {
         $sql = '';
@@ -52,14 +65,28 @@ class tables {
 
         return $sql;
     }
-    function save_create($path, $table, $ai = 0)
+    
+    /**
+     * Сохранение запроса на создание таблицы в файл
+     * @param string $path путь к сохраняемому файлу
+     * @param string $table имя таблицы
+     * @param boolean $ai auto_increment
+     * @return boolean
+     */
+    function save_create($path, $table, $ai = false)
     {
         return @file_put_contents($path, $this->get_create($table, $ai));
     }
+    
+    /**
+     * Сохранение дампа таблицы в файл
+     * @param string $path путь к сохраняемому файлу
+     * @param string $table имя таблицы
+     * @param int $c_ins Максимальное кол-во строк в одном INSERT`е
+     * @return boolean
+     */
     function save_data($path, $table, $c_ins = 2000)
     {
         return @file_put_contents($path, $this->get_data($table, $c_ins));
     }
 }
-
-?>

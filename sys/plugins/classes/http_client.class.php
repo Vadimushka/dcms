@@ -1,6 +1,8 @@
-
 <?php
 
+/**
+ * Своя реализация curl
+ */
 class http_client {
 
     public $ua = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.83 Safari/535.11';
@@ -21,11 +23,17 @@ class http_client {
     public $errn;
     public $errs;
 
+    /**
+     * @param string $url
+     */
     function __construct($url) {
         $this->_url = $url;
         $this->dataReset();
     }
 
+    /**
+     * Сброс всех данных для запроса
+     */
     public function dataReset() {
         $this->_boundary = passgen();
         $this->_post = array();
@@ -35,18 +43,17 @@ class http_client {
         $this->errs = '';
     }
 
+    /**
+     * Подключение к сокету хоста или прокси сервера
+     * @return boolean
+     */
     protected function _connect() {
-
-
 
         if ($this->_http_proxy) {
             $purl = @parse_url($this->_http_proxy);
         } else {
             $purl = @parse_url($this->_url);
         }
-
-
-
 
         if (!empty($purl['host'])) {
             $port = empty($purl['port']) ? 80 : $purl['port'];
@@ -109,12 +116,19 @@ class http_client {
         }
     }
 
+    /**
+     * Закрытие подключения
+     */
     protected function _disconnect() {
         fclose($this->_sock);
         misc::log('Сокет закрыт', 'http_client');
-//$this->dataReset();
     }
 
+    /**
+     * Установка прокси-сервера
+     * @param string $proxy Адрес прокси
+     * @param boolean $socks используется socks
+     */
     public function set_proxy($proxy, $socks = true) {
         if ($proxy === false) {
             $this->_http_proxy = false;
@@ -127,15 +141,31 @@ class http_client {
         }
     }
 
+    /**
+     * Установка POST переменной
+     * @param string $name Имя 
+     * @param string $value Значение
+     */
     public function set_post($name, $value = '') {
         $this->_post[$name] = $value;
     }
 
+    /**
+     * Установка COOKIE
+     * @param string $name Имя
+     * @param string $value Значение
+     */
     public function set_cookie($name, $value = null) {
-//$this->_cookie[] = $name . '=' . $value;
         $this->_cookie[] = urlencode($name) . '=' . urlencode($value);
     }
 
+    /**
+     * Прикрепление файла для отправки
+     * @param string $name Имя поля, в котором будет передаваться файл
+     * @param string $path Путь к файлу на сервере
+     * @param string $filename Имя файла
+     * @return boolean
+     */
     public function set_file($name, $path, $filename = false) {
 
         if (!$content = @file_get_contents($path)) {
@@ -151,6 +181,12 @@ class http_client {
         return true;
     }
 
+    /**
+     * Сохранение полученных данных в файл
+     * @param string $file_path путь к файлу на сервере
+     * @param int $max_size максимальный размер принимаемых данных
+     * @return boolean
+     */
     public function save_content($file_path, $max_size = 0) {
         misc::log('Запрос на сохранение файла (' . $this->_url . ')', 'http_client');
 
@@ -166,11 +202,7 @@ class http_client {
             return false;
         }
 
-
-
         fputs($this->_sock, $this->getOutputHeaders());
-// echo nl2br($this -> _getOutputHeaders());
-// заголовки
 
         $headers = '';
         while (!feof($this->_sock)) {
@@ -180,9 +212,6 @@ class http_client {
             }
             $headers .= $data;
         }
-
-// misc::log($headers, 'http_client');
-// сохраняем контент
 
         $saved = 0;
         while (!feof($this->_sock)) {
@@ -205,7 +234,7 @@ class http_client {
         $size = filesize($file_path);
         if ($size) {
             misc::log('Файл успешно получен и сохранен ' . misc::size_data($size), 'http_client');
-        } else {            
+        } else {
             misc::log('Получен файл с нулевым размером', 'http_client');
         }
 
@@ -214,6 +243,10 @@ class http_client {
         return (bool) $size;
     }
 
+    /**
+     * Получение имени файла из ответа
+     * @return string
+     */
     public function getFileName() {
         $headers = $this->get_headers();
         if ($headers) {
@@ -226,14 +259,28 @@ class http_client {
         return basename($path['path']);
     }
 
+    /**
+     * Получение заголовков ответа
+     * @return string
+     */
     public function getHeaders() {
         return $this->get_headers();
     }
 
+    /**
+     * Получение содержимого ответа
+     * @param boolean $with_headers включать заголовки
+     * @return string
+     */
     public function getContent($with_headers = false) {
         return $this->get_content($with_headers);
     }
 
+    /**
+     * Получение содержимого ответа
+     * @param boolean $with_headers включать заголовки
+     * @return string
+     */
     public function get_content($with_headers = false) {
         misc::log('Запрос на получение контента (' . $this->_url . ')', 'http_client');
         if (!$this->_connect()) {
@@ -274,6 +321,10 @@ class http_client {
         return $content;
     }
 
+    /**
+     * Получение заголовков ответа
+     * @return string
+     */
     public function get_headers() {
         misc::log('Запрос на получение заголовков (' . $this->_url . ')', 'http_client');
         if (!$this->_connect()) {
@@ -294,10 +345,13 @@ class http_client {
         }
         misc::log('Заголовки успешно получены', 'http_client');
         $this->_disconnect();
-//misc::log($headers, 'http_client');
         return $headers;
     }
 
+    /**
+     * формирование данных для multipart/form-data
+     * @return string
+     */
     protected function _multipart() {
         $data = array();
 
@@ -316,6 +370,10 @@ class http_client {
         return implode("\r\n", $data) . "\r\n--{$this->_boundary}--\r\n";
     }
 
+    /**
+     * Получение заголовков запроса
+     * @return string
+     */
     function getOutputHeaders() {
         $headers = array();
         $purl = @parse_url($this->_url);

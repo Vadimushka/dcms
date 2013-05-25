@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * сборщик JavaScript
+ */
 class js_assembly {
 
     protected $_files = array(),

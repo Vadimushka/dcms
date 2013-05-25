@@ -3,7 +3,12 @@
 // конвертер кодировки
 abstract class convert {
 
-    // конвертируем из UTF в нужную кодировку (по-умолчанию Windows 1251)
+    /**
+     * конвертируем из UTF в нужную кодировку (по-умолчанию Windows 1251)
+     * @param string $str Строка
+     * @param string $to Целевая кодировка
+     * @return string
+     */
     static function of_utf8($str, $to = 'cp1251') {
         if (self::charset($str) == 'UTF-8') {
             if (function_exists('mb_substr')) {
@@ -16,7 +21,12 @@ abstract class convert {
         return $str;
     }
 
-    // конвертируем в UTF из заданной кодировки (по-умолчанию Windows 1251)
+    /**
+     * конвертируем в UTF из заданной кодировки (по-умолчанию Windows 1251)
+     * @param string $str строка
+     * @param string $from исходная кодировка
+     * @return string
+     */
     static function to_utf8($str, $from = 'cp1251') {
         if (self::charset($str) == $from) {
             if (function_exists('mb_substr')) {
@@ -29,6 +39,11 @@ abstract class convert {
         return $str;
     }
 
+    /**
+     * Определение UTF-8 кодировки
+     * @param string $str
+     * @return string кодировка (UTF-8 или cp1251)
+     */
     static function charset($str) {
         if (preg_match('#[[:alpha:]]+#ui', $str)) {
             return 'UTF-8';

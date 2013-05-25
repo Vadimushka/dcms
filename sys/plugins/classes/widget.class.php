@@ -28,7 +28,10 @@ class widget {
         }
     }
 
-    // отображаем виджет
+    /**
+     * Выводим сформированный HTML код виджета в браузер
+     * @return boolean
+     */
     function display() {
         if (!$this->_isset) {
             return false;
@@ -45,7 +48,12 @@ class widget {
         }
     }
 
-    // получаем содержимое виджета
+    /**
+     * Возврат содержимого виджета
+     * @global \user $user
+     * @global \dcms $dcms
+     * @return string
+     */
     function getContent() {
         if (!$this->_isset) {
             return false;
@@ -68,7 +76,13 @@ class widget {
         return $content;
     }
 
-    // получаем уникальный идентификатор в кэше
+    /**
+     * уникальный идентификатор в кэше
+     * @global \user $user
+     * @global \dcms $dcms
+     * @global \language_pack $user_language_pack
+     * @return boolean
+     */
     protected function _getCacheId() {
         if (!$this->_isset) {
             return false;

@@ -9,21 +9,13 @@ version_compare(PHP_VERSION, '5.2', '>=') or die('Требуется PHP >= 5.2'
  */
 require_once dirname(__FILE__) . '/initialization.php';
 
-debug::step('Инициализация системы');
-
 // во время автоматического обновления не должно быть запросов со стороны пользователя
 if (cache_events::get('system.update.work')) {
     exit('Выполняется обновление системы. Пожалуйста, обновите страницу позже.');
 }
-/* ---------------------- */
-
-
-
 
 // загрузка основного класса с настройками
 $dcms = new dcms ();
-debug::step('Загрузка основного класса с настройками');
-
 if (isset($_GET['check_domain_work'])) {
     // проверка доступности поддомена.
     // используется при включении поддомена для определенного типа браузера
@@ -52,11 +44,9 @@ if ($dcms->subdomain_theme_redirect && empty($subdomain_theme_redirect_disable))
 if ($_SESSION['language'] && languages::exists($_SESSION['language'])) {
     // языковой пакет из сессии
     $user_language_pack = new language_pack($_SESSION['language']);
-    debug::step('Загрузка языкового пакета из сессии');
 } else if ($dcms->language && languages::exists($dcms->language)) {
     // системный языковой пакет
     $user_language_pack = new language_pack($dcms->language);
-    debug::step('Загрузка системного языкового пакета');
 }
 
 // этот параметр будут влиять на счетчики
@@ -72,16 +62,11 @@ if ($dcms->new_time_as_date) {
 @mysql_select_db($dcms->mysql_base) or die('Нет доступа к выбранной базе данных');
 mysql_query('SET NAMES "utf8"');
 
-debug::step('Подключение к MySQL');
-
 // отправка писем из очереди
 mail::queue_process();
-debug::step('Отправка писем из очереди');
-
 // запись рефералов
 if ($dcms->log_of_referers) {
     $log_of_referers = new log_of_referers ();
-    debug::step('Запись рефералов');
 }
 
 // запись посещений
@@ -92,7 +77,6 @@ if ($dcms->log_of_visits) {
         cache_events::set('log_of_visits', true, mt_rand(82800, 86400));
         $log_of_visits->tally(); // подведение итогов        
     }
-    debug::step('Запись посещений');
 }
 
 // Автоматическое обновление системы
@@ -120,7 +104,6 @@ if ($dcms->update_auto && $dcms->update_auto_time && !cache_events::get('system.
             $admin->mess($mess);
         }
     }
-    debug::step('Автоматическое обновление системы');
 }
 
 // очистка от пользователей, которые не подтвердили регистрацию в течении суток.
@@ -134,7 +117,6 @@ if ($dcms->clear_users_not_verify && !cache_events::get('clear_users_not_verify'
             misc::user_delete($u['id']);
         }
     }
-    debug::step('очистка от пользователей, которые не подтвердили регистрацию в течении суток');
 }
 
 // очистка от устаревших временных файлов (чтобы не забивалась папка sys/tmp)
@@ -143,7 +125,6 @@ if (!cache_events::get('clear_tmp_dir')) {
     misc::log('Запускаем удаление временных файлов', 'system.tmp');
     filesystem::deleteOldTmpFiles();
     misc::log('Удаление временных файлов завершено', 'system.tmp');
-    debug::step('очистка от устаревших временных файлов');
 }
 
 // авторизация пользователя
@@ -155,7 +136,6 @@ if (!empty($_SESSION [SESSION_ID_USER])) {
         unset($_SESSION[SESSION_ID_USER]);
         unset($_SESSION[SESSION_PASSWORD_USER]);
     }
-    debug::step('авторизация пользователя по сессии');
 } elseif (!empty($_COOKIE [COOKIE_ID_USER]) && !empty($_COOKIE [COOKIE_USER_PASSWORD]) && $_SERVER ['SCRIPT_NAME'] !== '/login.php' && $_SERVER ['SCRIPT_NAME'] !== '/captcha.php') {
     // авторизация по COOKIE (получение сессии, по которой пользователь авторизуется)
     header('Location: /login.php?cookie&return=' . URL);
@@ -163,7 +143,6 @@ if (!empty($_SESSION [SESSION_ID_USER])) {
 } else {
     // пользователь будет являться гостем
     $user = new user(false);
-    debug::step('авторизация пользователя (гость)');
 }
 
 // удаляем сессию пользователя, если по ней не удалось авторизоваться
@@ -175,10 +154,8 @@ if (!cache_events::get('clear_users_online')) {
     cache_events::set('clear_users_online', true, 30);
     // удаление пользователей, вышедших из онлайна (раз в 30 сек)
     mysql_query("DELETE FROM `users_online` WHERE `time_last` < '" . (TIME - SESSION_LIFE_TIME) . "'");
-    debug::step('удаление пользователей, вышедших из онлайна');
 }
 
-debug::step('перед обработкой данных пользователя');
 // обработка данных пользователя
 if ($user->id !== false) {
 
@@ -218,7 +195,6 @@ if ($user->id !== false) {
         }
     }
 }
-debug::step('обработка данных пользователя');
 
 if ($user->is_ban_full && $_SERVER ['SCRIPT_NAME'] != '/ban.php') {
     // при полном бане никуда кроме страницы бана нельзя
@@ -232,8 +208,7 @@ if ($dcms->debug && $user->group == groups::max() && @function_exists('ini_set')
     ini_set('display_errors', true);
 }
 
-if ($user->language && languages::exists($user->language)) {
+if ($user->group && $user->language != $user_language_pack->code && languages::exists($user->language)) {
     $user_language_pack = new language_pack($user->language);
-    debug::step('Загрузка языкового пакета пользователя');
 }
 ?>

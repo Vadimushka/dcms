@@ -3,7 +3,7 @@
 class native_templating {
 
     public $cache_template = true; // кэширование шаблона в памяти. Используется eval вместо include
-    public $dir_template = ''; // папка с файлами шаблонов
+    protected $_dir_template = ''; // папка с файлами шаблонов
     protected $_assigned = array(); // переменные, которые будут переданы в шаблон
 
     function __construct() {
@@ -65,8 +65,8 @@ class native_templating {
         if (strpos($tpl_name, 'file:') === 0) {
             $abs_path = text::substr($tpl_name, 256, 5, '');
             $tpl_path = dirname($abs_path) . '/' . basename($abs_path, '.tpl') . '.tpl.php';
-        } elseif ($this->dir_template) {
-            $tpl_path = $this->dir_template . '/' . basename($tpl_name, '.tpl') . '.tpl.php';
+        } elseif ($this->_dir_template) {
+            $tpl_path = $this->_dir_template . '/' . basename($tpl_name, '.tpl') . '.tpl.php';
         } else {
             $tpl_path = $tpl_name;
         }
@@ -92,6 +92,13 @@ class native_templating {
         return $templates[$tpl_path];
     }
 
+    /**
+     * Перебирает массив, вставляя значения ключей в шаблон
+     * @param array $array входной массив. первый уровень перебирается, ключи второго используются для вставки в шаблон значений
+     * @param string $tpl шаблон вида <a href="{url}">{name}</a>
+     * @param boolean $reverse
+     * @return string
+     */
     protected function section($array, $tpl, $reverse = false) {
         $return = '';
         if ($reverse)
@@ -102,6 +109,12 @@ class native_templating {
         return $return;
     }
 
+    /**
+     * Вставка произвольных данных из массива в шаблон
+     * @param array $data ассоциативный массив вида $data = array('url' => 'http://...', 'name' => 'Название ссылки')
+     * @param string $tpl шаблон вида <a href="{url}">{name}</a>
+     * @return string
+     */
     protected function replace($data, $tpl) {
         $keys = array();
         $values = array();

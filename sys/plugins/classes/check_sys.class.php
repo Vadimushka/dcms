@@ -10,6 +10,12 @@ class check_sys {
         $this->_checkSys();
     }
 
+    /**
+     * Возвращает массив файлов с ошибками CHMOD
+     * @param string $path путь относительно корня сайта
+     * @param string $errorIfNotExists если путь не существует, то считать ошибкой
+     * @return array
+     */
     static public function getChmodErr($path, $errorIfNotExists = false) {
         $err = array();
 

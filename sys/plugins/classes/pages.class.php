@@ -41,18 +41,24 @@ class pages {
 
     /**
      * Для подстановки в MYSQL LIMIT
-     * @return type
+     * @return string
      */
     function limit() {
         return $this->my_start() . ', ' . $this->items_per_page;
     }
 
-    // старт извлечения из базы
+    /**
+     * старт извлечения из базы
+     * @return int
+     */
     function my_start() {
         return $this->items_per_page * ($this->this_page - 1);
     }
 
-    // конец
+    /**
+     * конец
+     * @return int
+     */
     function end() {
         return $this->items_per_page * $this->this_page;
     }
@@ -100,5 +106,3 @@ class pages {
     }
 
 }
-
-?>

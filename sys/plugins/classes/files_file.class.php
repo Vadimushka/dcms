@@ -485,7 +485,7 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
     function __set($n, $v) {
         if (!is_scalar($n) || !is_scalar($v))
             return false;
-        
+
         if (array_key_exists($n, $this->_data) && $this->_data[$n] == $v)
             return false;
 
@@ -501,11 +501,11 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
             $dir_new = new files($this->path_dir_abs);
             $dir_new->cacheClear();
         }
-        
+
         if ($n == 'path_dir_abs') {
             $this->_setPathes($this->path_dir_abs);
         }
-        
+
         if (in_array($n, array('group_show', 'time_add', 'path_file_rel', 'runame')))
             $this->_baseUpdate();
     }

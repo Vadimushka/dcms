@@ -8,6 +8,10 @@ class files_screen_ff {
         $this->_path_abs = $path_abs;
     }
 
+    /**
+     * Получение массива скриншотов из видео
+     * @return boolean|array
+     */
     public function getScreen() {
         if (!class_exists('ffmpeg_movie'))
             return false;

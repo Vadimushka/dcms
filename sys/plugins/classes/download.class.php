@@ -2,19 +2,32 @@
 
 class download {
 
-    var $path;
-    var $name;
-    var $mime = 'application/octet-stream';
+    public $path;
+    public $name;
+    public $mime = 'application/octet-stream';
 
-    function download($name, $path) {
+    /**
+     * 
+     * @param string $name Название файла для отображения в браузере
+     * @param string $path Абсолютный путь к файлу на сервере
+     */
+    function __construct($name, $path) {
         $this->path = $path;
         $this->name = $name;
     }
 
+    /**
+     * Существует ли agqk на сервере
+     * @return bool
+     */
     function exists() {
         return is_file($this->path);
     }
 
+    /**
+     * Отправляет запрошенное содержимое в браузер
+     * @return int кол-во отправленных байт
+     */
     function output() {
         $this->mime = $this->get_mime();
         @ob_end_clean();
@@ -75,9 +88,12 @@ class download {
         return $downloaded; // возвращаем кол-во скачаных байт
     }
 
+    /**
+     * получение mime-типа файла по расширению
+     * @return string
+     */
     function get_mime() {
-        // получение mime-типа файла по расширению
-        return files_types::get_mime($this->name);        
+        return files_types::get_mime($this->name);
     }
 
 }

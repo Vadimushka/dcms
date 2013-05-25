@@ -24,10 +24,10 @@ php_value default_charset UTF-8
 Options -Indexes
 
 # переопределяем страницы ошибок
-#ErrorDocument 400 /error.php?err=400
-#ErrorDocument 401 /error.php?err=401
-#ErrorDocument 402 /error.php?err=402
-#ErrorDocument 403 /error.php?err=403
-#ErrorDocument 404 /error.php?err=404
-#ErrorDocument 500 /error.php?err=500
-#ErrorDocument 502 /error.php?err=502
+ErrorDocument 400 /error.php?err=400
+ErrorDocument 401 /error.php?err=401
+ErrorDocument 402 /error.php?err=402
+ErrorDocument 403 /error.php?err=403
+ErrorDocument 404 /error.php?err=404
+ErrorDocument 500 /error.php?err=500
+ErrorDocument 502 /error.php?err=502

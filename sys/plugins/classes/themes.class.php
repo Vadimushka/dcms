@@ -2,12 +2,22 @@
 
 abstract class themes {
 
+    /**
+     * Проверка на существование темы оформления
+     * @param string $code имя темы оформления (название папки с темой)
+     * @param string $type тип темы оформления
+     * @return boolean
+     */
     static public function exists($code, $type = 'all') {
-        // проверка на существование языка
         $list = self::getList($type);
         return isset($list[$code]);
     }
 
+    /**
+     * Получение конфига темы оформления
+     * @param string $code имя темы оформления (название папки с темой)
+     * @return array
+     */
     static public function getConfig($code) {
         if (!self::exists($code)) {
             return false;
@@ -16,6 +26,12 @@ abstract class themes {
         return $list[$code];
     }
 
+    /**
+     * Возвращает список тем оформления
+     * @staticvar boolean|array $list
+     * @param string $type тип тем
+     * @return array
+     */
     static public function getList($type = 'all') {
         static $list = false;
 
@@ -33,6 +49,12 @@ abstract class themes {
         return self::filterType($list, $type);
     }
 
+    /**
+     * Фильтр тем оформления по типу
+     * @param array $list список тем
+     * @param string $type тип тем
+     * @return array
+     */
     static protected function filterType($list, $type = 'all') {
         if ($type != 'all') {
             foreach ($list as $dir => $conf) {
@@ -45,6 +67,11 @@ abstract class themes {
         return $list;
     }
 
+    /**
+     * Получение списка тем без кэширования
+     * @global \dcms $dcms
+     * @return array
+     */
     static public function getRealList() {
         global $dcms;
         $list = array();
@@ -86,6 +113,12 @@ abstract class themes {
         return $list;
     }
 
+    /**
+     * Свойства темы оформления из конфига
+     * @param array $config
+     * @param string $dir
+     * @return array
+     */
     static protected function properties($config, $dir) {
         if (empty($config['VARS'])) {
             $vars = array();
@@ -124,10 +157,11 @@ abstract class themes {
         return $info;
     }
 
+    /**
+     * очистка кэша списка тем
+     */
     static public function clearCache() {
         cache::set('themes', false);
     }
 
 }
-
-?>

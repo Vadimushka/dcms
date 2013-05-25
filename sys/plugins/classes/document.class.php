@@ -21,20 +21,36 @@ class document extends design {
         ob_start();
     }
 
-    // добавление в список ошибок
+    /**
+     * Сообщение об ошибке в верху страницы 
+     * @param type $err
+     */
     function err($err) {
         $this->err[] = array('text' => text::filter($err, 1));
     }
 
-    // добавление в список сообщений
+    /**
+     * Сообщение в верху страницы
+     * @param string $msg
+     */
     function msg($msg) {
         $this->msg[] = array('text' => text::filter($msg, 1));
     }
 
+    /**
+     * Добавление ссылки на возврат
+     * @param string $name отображаемое название
+     * @param string $link URL ссылки
+     */
     function ret($name, $link) {
         $this->returns[] = array($name, $link);
     }
 
+    /**
+     * Добавление ссылки "Действие"
+     * @param string $name отображаемое название
+     * @param string $link URL ссылки
+     */
     function act($name, $link) {
         $this->actions[] = array($name, $link);
     }
@@ -48,31 +64,31 @@ class document extends design {
         exit;
     }
 
+    /**
+     * Формирование HTML документа и отправка данных браузеру
+     * @global dcms $dcms
+     */
     private function output() {
+        global $dcms;
         if ($this->outputed) {
-            return false;
+            // повторная отправка html кода вызовет нарушение синтаксиса документа, да и вообще нам этого нафиг не надо
+            return;
         }
         $this->outputed = true;
-
-        global $dcms, $user;
-
-
         header('Cache-Control: no-store, no-cache, must-revalidate', true);
         header('Expires: ' . date('r'), true);
+
+
+
         // для осла (IE) как обычно отдельное условие
         if ($dcms->browser == 'Microsoft Internet Explorer') {
-            header('Content-Type: text/html; charset=utf-8', true);
-            header('X-UA-Compatible: IE=edge', true);
-        } else {
-            switch ($this->theme['content']) {
-                case 'wml':header('Content-Type: text/vnd.wap.wml; charset=utf-8', true);
-                    break;
-                case 'xhtml':header('Content-Type: application/xhtml+xml; charset=utf-8', true);
-                    break;
-                default:header('Content-Type: text/html; charset=utf-8', true);
-                    break;
-            }
-        }
+            $content_type = 'text/html';
+            header('X-UA-Compatible: IE=edge', true); // отключение режима совместимости в осле
+        } else if ($this->theme['content'] === 'xhtml')
+            $content_type = 'application/xhtml+xml';
+        else
+            $content_type = 'text/html';
+        header('Content-Type: ' . $content_type . '; charset=utf-8', true);
 
         $this->assign('adt', new adt()); // реклама
         $this->assign('description', $this->description, 1); // описание страницы (meta)
@@ -82,34 +98,32 @@ class document extends design {
         $this->assign('err', $this->err); // сообщения об ошибке
         $this->assign('msg', $this->msg); // сообщения
         $this->assign('title', $this->title, 1); // заголовок страницы
-        $this->assign('content', @ob_get_clean());
-        $this->assign('document_generation_time', round(microtime(true) - TIME_START, 3));
-        debug::step('Перед формированием страницы');
+        $this->assign('content', @ob_get_clean()); // то, что попало в буфер обмена при помощи echo (display())
+        $this->assign('document_generation_time', round(microtime(true) - TIME_START, 3)); // время генерации страницы
 
         if ($dcms->align_html) {
+            // форматирование HTML кода
             $document_content = $this->fetch('document.tpl');
-            debug::step('Формирование страницы');
             $align = new alignedxhtml();
             echo $align->parse($document_content);
-            debug::step('Форматирование HTML');
         } else {
             $this->display('document.tpl');
-            debug::step('Формирование страницы');
-        }
-
-
-        if ($dcms->debug && $user && $user->group == groups::max()) {
-            debug::display();
         }
     }
 
+    /**
+     * Очистка вывода
+     * Тема оформления применяться не будет
+     */
     function clean() {
         $this->outputed = true;
         @ob_clean();
     }
 
+    /**
+     * То что срабатывает при exit
+     */
     function __destruct() {
-
         $this->output();
     }
 

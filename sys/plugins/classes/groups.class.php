@@ -10,6 +10,11 @@ abstract class groups {
         return $ini;
     }
 
+    /**
+     * Название группы
+     * @param int $group
+     * @return string
+     */
     static function name($group) {
         $ini = self::load_ini();
         if (isset($ini[$group]['name']))
@@ -17,10 +22,19 @@ abstract class groups {
         return 'Ошибка группы';
     }
 
+    /**
+     * Группа создателя
+     * @return int
+     */
     static function max() {
         return max(array_keys(self::load_ini()));
     }
 
+    /**
+     * Возвращает массив пользователей (с указанной группы или администратора)
+     * @param int $group группа
+     * @return \user
+     */
     static function getAdmins($group = false) {
         $users = array();
         if ($group === false) {
@@ -36,5 +50,3 @@ abstract class groups {
     }
 
 }
-
-?>

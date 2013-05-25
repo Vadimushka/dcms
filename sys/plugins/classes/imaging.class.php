@@ -2,6 +2,12 @@
 
 abstract class imaging {
 
+    /**
+     * Создание уменьшенной копии изображения
+     * @param gd2 $img
+     * @param int $max_width максимальная ширина изображения
+     * @return gd2
+     */
     public static function to_screen($img, $max_width = 200) {
         $x = imagesx($img);
         $y = imagesy($img);
@@ -18,6 +24,11 @@ abstract class imaging {
         return $img;
     }
 
+    /**
+     * Накладывает копирайт на изображение
+     * @param type $img
+     * @return boolean
+     */
     public static function add_copyright(&$img) {
         if (!$img2 = @imagecreatefrompng(H . '/sys/images/copyright/to_screen.png'))
             return false;
@@ -32,6 +43,12 @@ abstract class imaging {
         imagecopy($img, $img2, $x - $x2, $y - $y2, 0, 0, $x2, $y2);
     }
 
+    /**
+     * Добавляет иконку типа файла на изображение скриншота
+     * @param type $img
+     * @param type $path
+     * @return boolean
+     */
     public static function add_icon(&$img, $path) {
         $type = files_types::getIconType($path);
         if (!$img2 = @imagecreatefrompng(H . '/sys/images/icons_files/' . $type . '.png'))

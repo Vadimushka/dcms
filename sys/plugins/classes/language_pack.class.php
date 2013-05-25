@@ -18,7 +18,6 @@ class language_pack {
     function __construct($code = false) {
         static $_for_translate;
 
-
         if ($code && languages::exists($code)) {
             $this->_isset = true;
             $this->code = $code;
@@ -43,8 +42,11 @@ class language_pack {
         }
     }
 
+    /**
+     * Загрузка данных языкового пакета (используется кэш)
+     * @return array
+     */
     protected function _load() {
-        // загрузка всех данных языкового пакета
         if ($data = cache::get('language.' . $this->code)) {
             return $data;
         }
@@ -80,6 +82,11 @@ class language_pack {
         return $this->getString($str);
     }
 
+    /**
+     * возврат переведенной строки
+     * @param string $str строка в коде
+     * @return string переведенная строка
+     */
     public function getString($str) {
         if (empty($this->_default[$str])) {
             // пополнение общего списка переводимых фраз
@@ -97,8 +104,6 @@ class language_pack {
             // языковой пакет не выбран
             return $str;
         }
-
-
 
         if (!$this->_loaded) {
             // если языковой пакет еще не загружен, то загружаем
@@ -122,6 +127,9 @@ class language_pack {
         return $str;
     }
 
+    /**
+     * очистка кэша языкового пакета
+     */
     function clearCache() {
         cache::set('language.data.' . $this->code, false);
     }
@@ -133,5 +141,3 @@ class language_pack {
     }
 
 }
-
-?>

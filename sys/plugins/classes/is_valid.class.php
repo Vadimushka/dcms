@@ -2,18 +2,27 @@
 
 abstract class is_valid {
 
-    //wmid
+    /**
+     * Проверка на соответствие WMID
+     * @param string $wmid
+     * @return boolean
+     */
     static function wmid($wmid) {
         if (preg_match("#^[0-9]{12}$#", $wmid))
             return true;
     }
 
-    // логин Skype
+    /**
+     * Проверка на соответствие логину skype
+     * @param string $skype
+     * @return boolean
+     */
     static function skype($skype) {
         if (preg_match("#^[a-z][a-z0-9_\-\.]{5,31}$#ui", $skype))
             return true;
     }
 
+   
     static function telnumber($login) {
         if (preg_match('#^\+?([0-9]+)$#', $login, $m)) {
             return '+' . $m[1];
@@ -21,7 +30,11 @@ abstract class is_valid {
         return $login;
     }
 
-    // ник для DCMS
+    /**
+     * Проверяет на возможность использования строки в качестве ника
+     * @param string $nick
+     * @return boolean
+     */
     static function nick($nick) {
         // проверка на длину логина и возможные символы
         if (!preg_match("#^[a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31}$#ui", $nick)) {
@@ -38,24 +51,33 @@ abstract class is_valid {
         return true;
     }
 
-    // адрес электронной почты
+    /**
+     * Проверка на соответствие email
+     * @param string $mail
+     * @return boolean
+     */
     static function mail($mail) {
         if (preg_match('#^[a-z0-9\-\._]+\@([a-z0-9-_]+\.)+([a-z0-9]{2,4})\.?$#ui', $mail))
             return true;
     }
 
-    // пароль для DCMS
+    /**
+     * Проверяет на соответствие паролю
+     * @param string $pass
+     * @return boolean
+     */
     static function password($pass) {
-
         if (preg_match("#^[a-zа-яё0-9\-\_\ ]{6,32}$#ui", $pass)) {
             return true;
         }
     }
 
-    // проверка на подозрительность
+    /**
+     * Проверка ника на подозрительность
+     * @param string $str
+     * @return boolean
+     */
     static function suspicion($str) {
-
-
         // три и более согласных подряд
         if (preg_match('#[БВГДЖЗКЛМНПРСТФХЦЧШЩBCDFGHJKLMNPQRSTVXZ]{4,}#ui', $str, $m)) {
             return $m[0];
@@ -69,7 +91,17 @@ abstract class is_valid {
         return false;
     }
 
-    // проверка на присутствие нецензурной лексики
+    /**
+     * Проверка на мат
+     * @staticvar array $pretext
+     * @staticvar array $badwords
+     * @staticvar array $re_trans
+     * @staticvar array $trans
+     * @param string $s
+     * @param type $delta
+     * @param type $continue
+     * @return string|boolean
+     */
     static function mat($s, $delta = 3, $continue = "\xe2\x80\xa6") {
         static $pretext = array(
     '[уyоo]_?        (?=[еёeхx])',

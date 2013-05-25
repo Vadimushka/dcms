@@ -8,6 +8,10 @@ class files_screen_xap {
         $this->_path_abs = $path_abs;
     }
 
+    /**
+     * Возвращает иконку приложения в GD
+     * @return gd2
+     */
     public function getScreen() {
         $pclzip = new PclZip($this->_path_abs);
         $manifest_xml = $pclzip->extract(PCLZIP_OPT_BY_NAME, 'WMAppManifest.xml', PCLZIP_OPT_EXTRACT_AS_STRING);

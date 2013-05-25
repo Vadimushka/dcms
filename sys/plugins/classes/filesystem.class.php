@@ -1,7 +1,15 @@
 <?php
 
+/**
+ * костыли для работы с файловой системой
+ */
 abstract class filesystem {
 
+    /**
+     * Возвращает массив строк из текстового файла
+     * @param type $path Путь к текстовому файлу
+     * @return array
+     */
     static function fileToArray($path) {
         $array = array();
         $array2 = array();
@@ -14,11 +22,16 @@ abstract class filesystem {
                 continue;
             }
 
-            $array [] = $value;
+            $array[] = $value;
         }
         return $array;
     }
 
+    /**
+     * Возвращает путь относительно корневой директории сайта
+     * @param string $path абсолютный путь
+     * @return string относительный путь
+     */
     static function getRelPath($path) {
         $is_array = false;
         if (is_array($path)) {
@@ -37,7 +50,11 @@ abstract class filesystem {
         return $is_array ? $path : $path[0];
     }
 
-    // получение оптимального CHMOD, разрешающего запись
+    /**
+     * Возвращает оптимальный CHMOD на запись
+     * @param bollean $is_dir для папки
+     * @return int
+     */
     static function getChmodToWrite($is_dir = false) {
         if ($is_dir) {
             return 0700;
@@ -46,7 +63,11 @@ abstract class filesystem {
         }
     }
 
-    // получение оптимального CHMOD, разрешающего чтение файла
+    /**
+     * Возвращает оптимальный CHMOD на чтение
+     * @param bollean $is_dir для папки
+     * @return int
+     */
     static function getChmodToRead($is_dir = false) {
         if ($is_dir) {
             return 0500;
@@ -128,6 +149,11 @@ abstract class filesystem {
         }
     }
 
+    /**
+     * Получение всех папкок (рекурсивно)
+     * @param string $dir путь к директории
+     * @return array
+     */
     static function getAllDirs($dir) {
         $list = array();
 
@@ -149,6 +175,11 @@ abstract class filesystem {
         return $list;
     }
 
+    /**
+     * Получение всех файлов (рекурсивно)
+     * @param string $dir путь к директории
+     * @return array
+     */
     static function getAllFiles($dir) {
         $list = array();
         $list_n = array();
@@ -176,7 +207,10 @@ abstract class filesystem {
         return $list;
     }
 
-    // получаем общий размер устаревших временных файлов
+    /**
+     * Возвращает общий размер всех устаревших временных файлов
+     * @return type
+     */
     static function getOldTmpFilesSize() {
         $files = self::getOldTmpFiles();
         $size = 0;
@@ -186,7 +220,9 @@ abstract class filesystem {
         return $size;
     }
 
-    // удаляем временные файлы, которые не обновлялись более суток
+    /**
+     * Удаление устаревших временных файлов
+     */
     static function deleteOldTmpFiles() {
         if (@function_exists('set_time_limit')) {
             @set_time_limit(300); // ставим ограничение на 5 минут
@@ -210,6 +246,13 @@ abstract class filesystem {
         closedir($od);
     }
 
+    /**
+     * Ищет все файлы по указанному пути, соответствующие регулярному выражению
+     * @param путь поиска $path_abs
+     * @param шаблон имени файла $pattern
+     * @param boolean $recursive искать во вложенных папках
+     * @return array
+     */
     public static function getFilesByPattern($path_abs, $pattern = '/.*/', $recursive = false) {
         $list = array();
         $paths = (array) glob(realpath($path_abs) . '/*');

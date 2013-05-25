@@ -84,5 +84,3 @@ abstract class sql_parser {
     }
 
 }
-
-?>

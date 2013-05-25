@@ -1,9 +1,16 @@
 <?php
-// мега велосипед для работы с позициями элементов в массиве.
 
+/**
+ * мега велосипед для работы с позициями элементов в массиве.
+ */
 abstract class arraypos {
 
-    // получение позиции элемента в массиве
+    /**
+     * Получение позиции элемента в массиве
+     * @param array $array Собственно, массив
+     * @param mixed $key ключ элемента массива
+     * @return int|boolean позиция элемента или false
+     */
     static function getPosition($array, $key) {
         $i = 1;
         foreach ($array as $key2 => $value) {
@@ -15,13 +22,17 @@ abstract class arraypos {
         return false;
     }
 
-    // установка позиции элемента
+    /**
+     * установка позиции элемента в массиве
+     * @param array $array массив
+     * @param mixed $key ключ
+     * @param int $step_to
+     * @return boolean
+     */
     static function setPosition(&$array, $key, $step_to = 1) {
-        
-        if (!isset($array[$key])){
+        if (!array_key_exists($key, $array)){
             return false;
         }
-        
         
         $step_to--;
         $step_of = self::getPosition($array, $key) - 1;
@@ -39,7 +50,6 @@ abstract class arraypos {
             return true;
         }
 
-        
         $move = $tmp_array[$step_of];
         if (isset($tmp_array[$step_to])) {
             // опускаем элементы для освобождения требуемой позиции
@@ -69,7 +79,13 @@ abstract class arraypos {
         return true;
     }
 
-    // перемещение ключа $key массива $array на $step шагов
+    /**
+     * перемещение ключа $key массива $array на $step шагов
+     * @param array $array
+     * @param mixed $key
+     * @param int $step
+     * @return boolean
+     */
     static function move(&$array, $key, $step = 1) {
         $pos = self::getPosition($array, $key);
         return self::setPosition($array, $key, $pos + $step);

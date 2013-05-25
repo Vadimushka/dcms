@@ -8,6 +8,10 @@ class files_screen_ico {
         $this->_path_abs = $path_abs;
     }
 
+    /**
+     * Получение массива скриншотов из ICO
+     * @return array
+     */
     public function getScreen() {
         $ico = new ico($this->_path_abs);
         $get_icon = 0;

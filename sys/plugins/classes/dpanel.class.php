@@ -2,6 +2,9 @@
 
 abstract class dpanel {
 
+    /**
+     * Проверка страницы капчей
+     */
     static function check_access() {
         if (self::is_access()) {
             self::access();
@@ -11,24 +14,37 @@ abstract class dpanel {
         }
     }
 
-    static function is_access() {        
+    /**
+     * Проверяет, была ли введена капча
+     * @return bool
+     */
+    static function is_access() {
         return cache_dpanel_access::get(self::key());
     }
 
+    /**
+     * Разрешает доступ
+     */
     static function access() {
-        
         cache_dpanel_access::set(self::key(), true, 3600);
     }
 
-    static function access_delete() {        
+    /**
+     * Удаляет разрешение на доступ
+     */
+    static function access_delete() {
         cache_dpanel_access::set(self::key(), false, 1);
     }
 
-    static function key(){
+    /**
+     * Ключ идентификации пользователя, для которого разрешается доступ
+     * @global dcms $dcms
+     * @global user $user
+     * @return string
+     */
+    static function key() {
         global $dcms, $user;
-        return 'dpanel.access.'.$user->id . '.' . (string)$dcms->ip_long . '.' . (string)$dcms->browser;
+        return 'dpanel.access.' . $user->id . '.' . (string) $dcms->ip_long . '.' . (string) $dcms->browser;
     }
-    
-}
 
-?>
+}

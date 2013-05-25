@@ -10,7 +10,11 @@ abstract class smiles {
         return $ini;
     }
 
-    // обработка смайлов
+    /**
+     * Обработка смайлов во входящем сообщении
+     * @param type $str
+     * @return type
+     */
     static function input($str) {
         $smiles = self::get_ini();
         $str = preg_replace('#([\.:\*])(' . implode('|', array_keys($smiles)) . ')\1#uim', '[smile]\2[/smile]', $str);
@@ -24,7 +28,4 @@ abstract class smiles {
         }
         return '<img src="/sys/images/smiles/' . $smiles[$smile] . '.gif" alt="' . $smile . '" />';
     }
-
 }
-
-?>

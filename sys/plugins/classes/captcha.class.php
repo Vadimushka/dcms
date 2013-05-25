@@ -1,6 +1,10 @@
 <?php
 abstract class captcha {
-    // генерация проверочного кода и сессии
+    
+    /**
+     * генерация проверочного кода и возврат сессии
+     * @return type
+     */
     static function gen()
     {
         $code = '';
@@ -11,12 +15,23 @@ abstract class captcha {
         $_SESSION['captcha_session'][$sess] = (string)$code;
         return $sess;
     }
-    // получение кода по сессии (для отображения капчи)
+    
+    /**
+     * получение кода по сессии (для отображения капчи)
+     * @param string $sess
+     * @return string
+     */
     static function getCode($sess)
     {
         return (!empty($_SESSION['captcha_session'][$sess]))?$_SESSION['captcha_session'][$sess]:false;
     }
-    // проверка, введенного пользователем, кода по сессии и последующее удаление сессии
+    
+    /**
+     * проверка, введенного пользователем, кода по сессии и последующее удаление сессии
+     * @param string $code введенный код
+     * @param string $sess сессия
+     * @return boolean
+     */
     static function check($code, $sess)
     {
         if (empty($_SESSION['captcha_session'][$sess]))return false;
@@ -26,5 +41,3 @@ abstract class captcha {
         return $return;
     }
 }
-
-?>

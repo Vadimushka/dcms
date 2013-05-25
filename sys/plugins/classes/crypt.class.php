@@ -25,11 +25,22 @@ abstract class crypt {
         return $iv;
     }
 
-    // делаем хэш пароля с наложением соли (покажем большой куй всем сервисам с md5 базами)
+    /**
+     * делаем хэш пароля с наложением соли (покажем большой куй всем сервисам с md5 базами)
+     * @param string $pass Исходный пароль
+     * @param string $salt Соль
+     * @return string Хэш пароля
+     */
     static function hash($pass, $salt) {
         return md5($salt . md5((string) $pass) . md5($salt) . $salt);
     }
 
+    /**
+     * Шифрование данных указанным ключем
+     * @param string $str Исходная строка
+     * @param string $key Ключ
+     * @return string Шифрованные данные
+     */
     static function encrypt($str, $key) {
         if ($iv = self::getIV()) {
             $td = mcrypt_module_open('rijndael-256', '', 'ofb', '');
@@ -44,9 +55,14 @@ abstract class crypt {
         return base64_encode(base64_encode($str));
     }
 
+    /**
+     * Расшифровка данных указанным ключем
+     * @param string $str Шифрованная строка
+     * @param string $key Ключ
+     * @return string Исходные данные
+     */
     static function decrypt($str, $key) {
         $str = base64_decode(base64_decode($str));
-
         if ($iv = self::getIV()) {
             $td = mcrypt_module_open('rijndael-256', '', 'ofb', '');
             $ks = @mcrypt_enc_get_key_size($td);

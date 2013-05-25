@@ -36,5 +36,3 @@ class ui_contaner extends ui {
     }
 
 }
-
-?>

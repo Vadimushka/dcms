@@ -10,11 +10,14 @@ class files_properties_id3 {
         $this->_path_abs = $path_abs;
     }
 
+    /**
+     * Получение свойств из файла
+     * @return array
+     */
     public function getProperties() {
         $properties = array();
         $getID3 = new getID3;
         $ThisFileInfo = $getID3->analyze($this->_path_abs);
-        // getid3_lib::CopyTagsToComments($ThisFileInfo);
         $properties['properties'] = array();
 
         if (!empty($ThisFileInfo['playtime_string']) && !empty($ThisFileInfo['playtime_seconds'])) {
@@ -55,11 +58,7 @@ class files_properties_id3 {
                     $tags[$key2] = implode(', ', $value2);
             }
         }
-        /*
-          foreach ($tags as $key=>$value) {
-          $properties[] = $key .': '. $value."\n";
-          }
-         */
+        
         if (!empty($tags['title']))
             $properties['title'] = $tags['title'];
         if (!empty($tags['artist']))
@@ -92,5 +91,3 @@ class files_properties_id3 {
     }
 
 }
-
-?>

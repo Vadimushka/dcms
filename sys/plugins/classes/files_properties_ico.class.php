@@ -8,6 +8,10 @@ class files_properties_ico {
         $this->_path_abs = $path_abs;
     }
 
+    /**
+     * Получение свойств из файла
+     * @return array
+     */
     public function getProperties() {
         $properties = array();
         $ico = new ico($this->_path_abs);
@@ -32,5 +36,3 @@ class files_properties_ico {
     }
 
 }
-
-?>

@@ -19,7 +19,6 @@ if (!empty($_GET['set_lang'])) {
 
         $doc->msg(__('Языковой пакет %s (%s) успешно выбран', $lang->name, $lang->enname));
 
-
         if (!empty($_GET['return'])) {
             header('Refresh: 1; url=' . $_GET['return']);
             exit;

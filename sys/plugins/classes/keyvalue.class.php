@@ -2,6 +2,11 @@
 
 abstract class keyvalue {
 
+    /**
+     * Возвращает ассоциативный массив из файла формата key = "value"
+     * @param string $path абсолютный путь к файлу на сервере
+     * @return boolean|array
+     */
     public static function read($path) {
         $array = array();
         if (!$file = @file_get_contents($path)) {
@@ -16,6 +21,12 @@ abstract class keyvalue {
         return $array;
     }
 
+    /**
+     * Сохраниение ассоциативного массива в файл
+     * @param string $path путь к файлу для сохранения
+     * @param array $array двумерный ассоциативный массив
+     * @return boolean
+     */
     public static function save($path, $array) {
         $tmp_file = TMP . '/tmp.' . passgen() . '.ini';
         $content = array();
@@ -23,7 +34,6 @@ abstract class keyvalue {
         foreach ($array as $key => $value) {
             $content[] = $key . ' = "' . $value . '"';
         }
-
 
         // сохраняем во временный файл
         if (!@file_put_contents($tmp_file, implode("\r\n", $content))) {
@@ -42,10 +52,7 @@ abstract class keyvalue {
             return false;
         }
 
-
         return true;
     }
 
 }
-
-?>
