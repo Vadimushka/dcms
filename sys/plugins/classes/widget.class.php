@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Виджет
+ */
 class widget {
 
     protected $_isset = false;
@@ -151,5 +154,3 @@ class widget {
     }
 
 }
-
-?>

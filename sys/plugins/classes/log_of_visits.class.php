@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Запись посещений
+ */
 class log_of_visits {
 
     function __construct() {

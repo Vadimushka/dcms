@@ -1,6 +1,8 @@
 <?php
 
-// класс для работы с пользователем
+/**
+ * Пользователь
+ */
 class user extends plugins {
 
     protected $_update = array();

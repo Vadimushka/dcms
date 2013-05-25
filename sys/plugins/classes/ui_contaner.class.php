@@ -1,15 +1,5 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of ui_contaner
- *
- * @author DESURE
- */
 class ui_contaner extends ui {
 
     protected $_ui_list = array(); // список содержищихся элементов

@@ -1,7 +1,16 @@
 <?php
 
+/**
+ * Работа с текстом
+ */
 abstract class text {
 
+    /**
+     * Фильтрация текста
+     * @param type $str
+     * @param type $type
+     * @return type
+     */
     static function filter($str, $type = 1) {
         switch ($type) {
             case 1: return self::for_value($str);

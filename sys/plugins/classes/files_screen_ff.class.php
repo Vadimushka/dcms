@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Получение скриншота при помощи php_ffmpeg
+ */
 class files_screen_ff {
 
     protected $_path_abs;

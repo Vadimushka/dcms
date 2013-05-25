@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Работа с таблицами в базе
+ */
 class tables {
     public $tables = array();
 

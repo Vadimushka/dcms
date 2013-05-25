@@ -8,10 +8,9 @@ require_once dirname(__FILE__) . '/../sys/inc/initialization.php';
     $user_language_pack = new language_pack('english');
 }
 
-function myhash($pass, $salt) {
-    return md5($salt . md5((string) $pass) . md5($salt) . $salt);
-}
-
+/**
+ * подключение к базе данных на этапе установки
+ */
 function db_connect() {
     $settings = &$_SESSION['settings'];
     mysql_connect($settings['mysql_host'], $settings['mysql_user'], $settings['mysql_pass']) or die(__('Нет соединения с сервером базы'));

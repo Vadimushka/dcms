@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Получение скриншота из иконки XAP приложения (WindowsPhone)
+ */
 class files_screen_xap {
 
     protected $_path_abs;

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Класс для формирования HTML документа.
+ */
 class document extends design {
 
     public $title = 'Заголовок';

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Дизайн. Конфигуратор шаблонизатора.
+ */
 class design extends native_templating {
 
     public $theme;

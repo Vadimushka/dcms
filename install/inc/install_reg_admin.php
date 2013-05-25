@@ -59,7 +59,7 @@ class install_reg_admin {
 
                         $sex = (int) !empty($_POST['sex']);
                         $this->pass2 = $this->pass1 = $_POST['password'];
-                        mysql_query("INSERT INTO `users` (`reg_date`, `group`, `login`, `password`, `sex`) values('" . TIME . "', '6', '" . my_esc($this->login) . "', '" . myhash($this->pass1, $this->settings['salt']) . "', '$sex')");
+                        mysql_query("INSERT INTO `users` (`reg_date`, `group`, `login`, `password`, `sex`) values('" . TIME . "', '6', '" . my_esc($this->login) . "', '" . crypt::hash($this->pass1, $this->settings['salt']) . "', '$sex')");
                         $return = true;
                     }
                 }else {

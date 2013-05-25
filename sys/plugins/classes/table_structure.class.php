@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Работа со структурами таблиц
+ */
 class table_structure {
     var $_structure = array(); // поля и индексы таблицы
     var $_properties = array();

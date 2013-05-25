@@ -1,7 +1,15 @@
 <?php
 
+/**
+ * Парсинг SQL
+ */
 abstract class sql_parser {
 
+    /**
+     * Выполняет запросы из SQL файла
+     * @param string $file путь к sql файлу
+     * @return int кол-во выполненых запросов
+     */
     static public function executeQueriesFromFile($file) {
         $queries = self::getQueriesFromFile($file);
         $count = 0;
@@ -16,10 +24,20 @@ abstract class sql_parser {
         return $count;
     }
 
+    /**
+     * Получение списка запросов из SQL файла
+     * @param string $file путь к sql файлу
+     * @return array
+     */
     static public function getQueriesFromFile($file) {
         return self::getQueries(file_get_contents($file));
     }
 
+    /**
+     * Получение списка запросов из SQL строки
+     * @param string $sql SQL запросы
+     * @return array
+     */
     static public function getQueries($sql) {
         $queries = array();
         $strlen = strlen($sql);

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Свойства файла ICO
+ */
 class files_properties_ico {
 
     protected $_path_abs;

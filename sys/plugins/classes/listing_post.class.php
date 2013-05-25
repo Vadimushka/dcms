@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * UI. Пост в списке постов
+ */
 class listing_post extends ui {
 
     public $id = 0;

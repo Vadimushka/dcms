@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Реклама
+ */
 class adt extends menu {
 
     function __construct() {

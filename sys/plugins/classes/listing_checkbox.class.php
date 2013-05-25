@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * UI. Пост с чекбоксом в списке
+ */
 class listing_checkbox extends ui {
 
     protected $_data = array();

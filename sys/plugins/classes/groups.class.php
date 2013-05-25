@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Группы пользователей
+ */
 abstract class groups {
 
     static function load_ini() {

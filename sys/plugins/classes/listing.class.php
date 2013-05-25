@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * UI. Генератор списка постов, сообщений, файлов и прочей информации, которую можно отобразить списком.
+ */
 class listing extends ui_contaner {
 
     public $sortable = false;

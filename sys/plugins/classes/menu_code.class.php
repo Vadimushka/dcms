@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Список возможных нарушений
+ */
 class menu_code extends menu {
 
     function __construct($menu_name) {

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Языковой пакет
+ */
 class language_pack {
 
     protected $_isset = false;

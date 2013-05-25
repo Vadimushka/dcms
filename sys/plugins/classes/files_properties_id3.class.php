@@ -2,6 +2,9 @@
 
 include_once H . '/sys/plugins/id3/getid3/getid3.php';
 
+/**
+ * Получение свойств из медиа файлов с использованием библиотеки getid3
+ */
 class files_properties_id3 {
 
     protected $_path_abs;

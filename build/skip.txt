@@ -23,3 +23,4 @@ index.html
 /tpl_cache/
 ispmanager
 php_errors.log
+api

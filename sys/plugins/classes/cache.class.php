@@ -69,6 +69,9 @@ class cache_file {
 
 }
 
+/**
+ * Кэширование данных в sys/tmp
+ */
 abstract class cache {
 
     /**
@@ -177,20 +180,9 @@ abstract class cacher {
 
 }
 
-abstract class cache_group extends cacher {
-
-    const cache_name = 'cache_group';
-
-    public static function get($name) {
-        return parent::get(self::cache_name, $name);
-    }
-
-    public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
-    }
-
-}
-
+/**
+ * кэширование счетчиков
+ */
 abstract class cache_counters extends cacher {
 
     const cache_name = 'counters';
@@ -205,6 +197,9 @@ abstract class cache_counters extends cacher {
 
 }
 
+/**
+ * кэширование виджетов
+ */
 abstract class cache_widgets extends cacher {
 
     const cache_name = 'widgets';
@@ -219,6 +214,9 @@ abstract class cache_widgets extends cacher {
 
 }
 
+/**
+ * кэширование посещений
+ */
 abstract class cache_log_of_visits extends cacher {
 
     const cache_name = 'log_of_visits';
@@ -233,6 +231,9 @@ abstract class cache_log_of_visits extends cacher {
 
 }
 
+/**
+ * кэширование информации о дуступе в панель управления (админку)
+ */
 abstract class cache_dpanel_access extends cacher {
 
     const cache_name = 'dpanel';
@@ -247,6 +248,9 @@ abstract class cache_dpanel_access extends cacher {
 
 }
 
+/**
+ * кэширование неудачных авторизаций
+ */
 abstract class cache_aut_failture extends cacher {
 
     const cache_name = 'aut_failture';
@@ -261,6 +265,9 @@ abstract class cache_aut_failture extends cacher {
 
 }
 
+/**
+ * кэширование событий
+ */
 abstract class cache_events extends cacher {
 
     const cache_name = 'events';
@@ -274,21 +281,3 @@ abstract class cache_events extends cacher {
     }
 
 }
-
-// для совместимости
-class cache_old {
-
-    function get($key) {
-        return cache::get($key);
-    }
-
-    function set($key, $data, $ttl = false) {
-        return cache::set($key, $data, $ttl);
-    }
-
-}
-
-// данная переменная использовалась для совместимости со старыми модулями.
-// можно раскомментировать, если есть такая необходимости, но лучше использовать абстрактный класс cache
-//$cache = new cache_old();
-?>

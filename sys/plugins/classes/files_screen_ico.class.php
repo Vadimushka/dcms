@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Получение скриншотов к файлу ICO
+ */
 class files_screen_ico {
 
     protected $_path_abs;

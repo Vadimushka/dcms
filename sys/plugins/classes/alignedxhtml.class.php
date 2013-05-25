@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Форматирование HTML кода
+ */
 class alignedxhtml {
 
     public $SPACER;

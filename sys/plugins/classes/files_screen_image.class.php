@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Получение скриншота к графическим файлам
+ */
 class files_screen_image {
 
     protected $_path_abs;

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Список языковых пакетов
+ */
 abstract class languages {
 
     /**

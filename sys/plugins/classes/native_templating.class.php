@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Шаблонизатор с PHP синтаксисом 
+ */
 class native_templating {
 
     public $cache_template = true; // кэширование шаблона в памяти. Используется eval вместо include

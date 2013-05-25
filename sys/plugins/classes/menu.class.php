@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * UI. Меню /sys/ini/menu.*.ini
+ */
 class menu {
 
     public $icons = true; // отображение иконок меню    

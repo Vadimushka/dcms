@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Информация о типах файлов
+ */
 abstract class files_types {
 
     /**

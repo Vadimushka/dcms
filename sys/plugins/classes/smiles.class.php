@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Работа со смайлами
+ */
 abstract class smiles {
 
     static function get_ini() {

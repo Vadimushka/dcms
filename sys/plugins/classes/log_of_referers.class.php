@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Запись переходов с других сайтов
+ */
 class log_of_referers {
     var $is_referer = false;
     private $url = array();
@@ -43,5 +47,3 @@ class log_of_referers {
         mysql_query("INSERT INTO `log_of_referers` (`id_site`, `time`, `full_url`) VALUES ('$id', '" . TIME . "', '" . my_esc($this->referer) . "')");
     }
 }
-
-?>

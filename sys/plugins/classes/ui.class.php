@@ -1,14 +1,7 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of ui
- *
- * @author DESURE
+ * Базовый класс для интерфейса с использованием шаблонов
  */
 class ui {
 

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Базовый класс системы. Объек хранится в глобальной переменной $dcms
+ */
 class dcms extends browser {
 
     protected $_data = array();
@@ -31,10 +34,10 @@ class dcms extends browser {
 
     /**
      * Запись действий администратора или системы
-     * @global type $user
-     * @param type $module
-     * @param type $description
-     * @param type $is_system
+     * @global \user $user
+     * @param string $module Название модуля
+     * @param string $description Описание действия
+     * @param boolean $is_system Если сестемное действие
      * @return type
      */
     public function log($module, $description, $is_system = false) {

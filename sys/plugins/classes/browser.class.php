@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Информация о браузере
+ */
 class browser {
 
     var $browser_type_auto;

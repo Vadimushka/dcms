@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * Предварительная обработка BBCODE.
+ * Используется для того, чтобы скрыть содержимое в теге HIDE, даже когда не нужна обработка BBCODE. Например, при цитировании
+ */
 class prebbcode extends bbcode {
 
     var $info_about_tags = array(

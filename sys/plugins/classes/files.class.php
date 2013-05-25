@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Работа с директориями загруз-центра
+ */
 class files {
 
     protected $_config_file_name = '.!config.dir.ini'; // название конфиг-файла

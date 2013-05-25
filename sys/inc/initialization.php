@@ -32,33 +32,57 @@ if (file_exists($_SERVER ['DOCUMENT_ROOT'] . '/sys/plugins/classes/dcms.class.ph
     unset($rel_path, $searched_file, $abs_path);
 }
 
-// Временные папки
+/**
+ * временная папка
+ */
 define('TEMP', H . '/sys/tmp');
+/**
+ * временная папка
+ */
 define('TMP', H . '/sys/tmp');
-// папка со всеми пользовательскими файлами
+/**
+ * Путь к папке загруз-центра
+ */
 define('FILES', realpath(H . '/sys/files'));
-// временная метка unix
+/**
+ * UNIXTIMESTAMP 
+ */
 define('TIME', time());
-// временная метка на начало текущих суток
+/**
+ * UNIXTIMESTAMP на начало текущих суток
+ */
 define('DAY_TIME', mktime(0, 0, 0));
-// главная страница
+/**
+ * true, если мы на главной странице
+ */
 define('IS_MAIN', $_SERVER['SCRIPT_NAME'] == '/index.php');
-// время жизни сессии, а также время последней активности пользователей, считающихся онлайн
+/**
+ * время жизни сессии, а также время последней активности пользователей, считающихся онлайн
+ */
 define('SESSION_LIFE_TIME', 600);
-// имя сессии
+/**
+ * имя сессии
+ */
 define('SESSION_NAME', 'DCMS_SESSION');
-// ключ сессий, в котором хранится идентификатор пользователя
+/**
+ * ключ сессий, в котором хранится идентификатор пользователя
+ */
 define('SESSION_ID_USER', 'DCMS_SESSION_ID_USER');
-// ключ сессий, в котором хранится пароль пользователя
+/**
+ * ключ сессий, в котором хранится пароль пользователя
+ */
 define('SESSION_PASSWORD_USER', 'DCMS_SESSION_PASSWORD_USER');
-// идентификатор пользователя в COOKIE
+/**
+ * идентификатор пользователя в COOKIE
+ */
 define('COOKIE_ID_USER', 'DCMS_COOKIE_ID_USER');
-// пароль пользователя в COOKIE
+/**
+ * пароль пользователя в COOKIE
+ */
 define('COOKIE_USER_PASSWORD', 'DCMS_COOKIE_USER_PASSWORD');
 
 
 if (@function_exists('ini_set')) {
-
     // время жизни сессии
     ini_set('session.cache_expire', SESSION_LIFE_TIME);
 
@@ -85,20 +109,26 @@ if (function_exists('iconv')) {
     iconv_set_encoding('internal_encoding', 'UTF-8');
 }
 
-// функция автоматической загрузки классов
+/**
+ * автоматическая загрузка классов
+ * @param type $class_name
+ */
 function dcmsAutoload($class_name) {
     $path = H . '/sys/plugins/classes/' . strtolower($class_name) . '.class.php';
     if (file_exists($path)) {
         include_once ($path);
     }
 }
-// регистрируем функцию для автоматической загрузки классов
 spl_autoload_register('dcmsAutoload');
 
 include_once (H . '/sys/plugins/classes/cache.class.php');
 
 
-// генератор пароля
+/**
+ * Генератор пароля
+ * @param int $len Длина пароля
+ * @return string
+ */
 function passgen($len = 32) {
     $password = '';
     $small = 'abcdefghijklmnopqrstuvwxyz';
@@ -119,8 +149,6 @@ function passgen($len = 32) {
     }
     return $password;
 }
-
-/* Переназначение функций */
 
 /**
  * Псевдоним mysql_real_escape_string
@@ -180,9 +208,10 @@ function size_data($filesize = 0) {
 $user_language_pack = new language_pack(false);
 
 /**
- * Локализация текстовой строки
+ * Локализация текстовой строки.
+ * ВНИМАНИЕ!!! не использовать динамические строки
  * @global language_pack $user_language_pack
- * @return string
+ * @return string Локализованная строка
  */
 function __() {
     $args = func_get_args();

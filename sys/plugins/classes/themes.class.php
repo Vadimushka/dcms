@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Список тем оформления
+ */
 abstract class themes {
 
     /**
