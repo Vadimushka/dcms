@@ -122,6 +122,4 @@ if ($cron_time && $cron_time > TIME - 10) {
     }
 }
 
-
-
 unset($cron_time);

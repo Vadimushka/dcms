@@ -8,6 +8,10 @@ class user extends plugins {
     protected $_update = array();
     protected $_data = array();
 
+    /**
+     * 
+     * @param boolean|int|array $id_or_arrayToCache Идентификатор пользователя или массив идентификаторов для запроса из базы и помещения в кэш
+     */
     function __construct($id_or_arrayToCache = false) {
         if ($id_or_arrayToCache === false) {
             $this->_guest_init();
@@ -21,9 +25,9 @@ class user extends plugins {
 
     /**
      * Получение данных сразу нескольких пользователей и помещение их в кэш
-     * @staticvar array $cache
-     * @param type $get_users_by_id
-     * @return type
+     * @staticvar array $cache Массив с кэшем данных пользователей
+     * @param array $get_users_by_id Массив идентификаторов пользователей
+     * @return array Массив данных запрошенных пользователей
      */
     protected function _usersFromCache($get_users_by_id) {
         static $cache = array(); // кэш пользователей
@@ -63,10 +67,9 @@ class user extends plugins {
 
     /**
      * инициализация данных пользователя
-     * @global type $dcms
+     * @global \dcms $dcms
      * @staticvar array $cache
-     * @param type $id
-     * @return boolean
+     * @param int $id
      */
     protected function _user_init($id) {
         $this->_guest_init();
@@ -78,7 +81,7 @@ class user extends plugins {
             $this->_data ['login'] = '[' . $dcms->system_nick . ']';
             $this->_data ['group'] = 6;
             $this->_data ['description'] = __('Системный бот. Создан для уведомлений.');
-            return true;
+            return;
         }
 
         $users = $this->_usersFromCache($id);
@@ -88,8 +91,8 @@ class user extends plugins {
 
     /**
      * проверка бана пользователя
-     * @staticvar array $is_ban
-     * @return boolean
+     * @staticvar array $is_ban Массив с кэшем забаненых пользователй
+     * @return boolean Забанен ли пользователь
      */
     protected function _is_ban() {
         static $is_ban = array();
@@ -103,8 +106,8 @@ class user extends plugins {
 
     /**
      * проверка полного (запрет навигации) бана пользователя
-     * @staticvar array $is_ban_full
-     * @return boolean
+     * @staticvar array $is_ban_full Массив с кэшем забаненых пользователей
+     * @return boolean Пользователь забанен с запретом навигации по сайту
      */
     protected function _is_ban_full() {
         static $is_ban_full = array();
@@ -118,9 +121,9 @@ class user extends plugins {
 
     /**
      * проверяет, находится ли пользователь сейчас в онлайне
-     * @staticvar array $online
-     * @param integer $id_user
-     * @return boolean
+     * @staticvar array $online Массив с кэшем пользователей, находящихся в данный момент онлайн
+     * @param integer $id_user Идентификатор пользователя
+     * @return boolean Пользователь онлайн
      */
     protected function _is_online($id_user) {
         static $online = false;
@@ -131,14 +134,13 @@ class user extends plugins {
                 $online[$on ['id_user']] = true;
             }
         }
-
         return isset($online[$id_user]);
     }
 
     /**
      * Проверка на возможность писать сообщения
-     * @global dcms $dcms
-     * @return boolean
+     * @global \dcms $dcms
+     * @return boolean Пользователь может писать сообщения
      */
     protected function _is_writeable() {
         if ($this->_is_ban())
@@ -159,6 +161,12 @@ class user extends plugins {
         }
     }
 
+    /**
+     * 
+     * @global \dcms $dcms
+     * @param string $n ключ
+     * @return mixed значение
+     */
     function __get($n) {
         global $dcms;
         switch ($n) {
@@ -185,9 +193,15 @@ class user extends plugins {
         }
     }
 
+    /**
+     * 
+     * @global \dcms $dcms
+     * @param string $n ключ
+     * @param string $v значение
+     */
     function __set($n, $v) {
         if (empty($this->_data ['id']))
-            return false;
+            return;
         global $dcms;
         switch ($n) {
             case 'theme' :
@@ -215,5 +229,4 @@ class user extends plugins {
             mysql_query("UPDATE `users` SET " . implode(', ', $sql) . " WHERE `id` = '" . $this->_data ['id'] . "' LIMIT 1");
         }
     }
-
 }

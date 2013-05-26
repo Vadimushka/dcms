@@ -22,6 +22,12 @@ class prebbcode extends bbcode {
         parent::__construct($code);
     }
 
+    /**
+     * Переопределение метода в bbcode
+     * Возвращает принятую строку без изменений
+     * @param string $text
+     * @return string
+     */
     function insert_smiles($text) {
         return $text;
     }
@@ -43,5 +49,3 @@ class prebbcode extends bbcode {
     }
 
 }
-
-?>

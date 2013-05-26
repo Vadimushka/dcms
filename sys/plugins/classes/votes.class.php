@@ -10,10 +10,20 @@ class votes {
     public $description;
     protected $_count_max = 0;
 
+    /**
+     * Инициализация голосования
+     * @param string $description Описание голосования
+     */
     public function __construct($description = '') {
         $this->description = $description;
     }
 
+    /**
+     * Добавляем вариант ответа
+     * @param string $name Название варианта ответа
+     * @param string $count Кол-во голосов за данный вариант ответа
+     * @param string $url Ссылка на голосование за данный вариант
+     */
     public function vote($name, $count, $url) {
         //$this->_count_max = max($this->_count_max, $count);
         $this->_count_max +=$count;

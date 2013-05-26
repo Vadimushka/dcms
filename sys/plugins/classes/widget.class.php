@@ -1,16 +1,18 @@
 <?php
 
 /**
- * Виджет
+ * Работа с виджетами
  */
 class widget {
 
     protected $_isset = false;
     protected $_data = array();
 
+    /**
+     * Инициализация виджета
+     * @param string $path Путь к папке виджета
+     */
     function __construct($path) {
-
-
         $this->_data ['path_abs'] = realpath($path);
         $this->_data ['runame'] = $this->_data ['name'] = basename($this->_data ['path_abs']);
         $this->_data ['version'] = '1.0'; // версия
@@ -33,11 +35,10 @@ class widget {
 
     /**
      * Выводим сформированный HTML код виджета в браузер
-     * @return boolean
      */
     function display() {
         if (!$this->_isset) {
-            return false;
+            return;
         }
         if (($content = $this->getContent()) !== false) {
             if (!$this->_data ['skin'])
@@ -59,13 +60,12 @@ class widget {
      */
     function getContent() {
         if (!$this->_isset) {
-            return false;
+            return;
         }
 
         if ($cache_content = cache_widgets::get($this->_getCacheId())) {
             return $cache_content;
         }
-
 
         global $user, $dcms; // могут использоваться в виджете
         ob_start();
@@ -145,11 +145,14 @@ class widget {
         $this->_data [$n] = $v;
     }
 
+    /**
+     * Сохранение конфига виджета
+     * @return boolean
+     */
     function saveData() {
         if (!$this->_isset) {
-            return false;
+            return;
         }
-
         return ini::save($this->_data ['path_abs'] . '/config.ini', $this->_data);
     }
 

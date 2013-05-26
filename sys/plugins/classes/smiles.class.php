@@ -15,8 +15,8 @@ abstract class smiles {
 
     /**
      * Обработка смайлов во входящем сообщении
-     * @param type $str
-     * @return type
+     * @param string $str
+     * @return string
      */
     static function input($str) {
         $smiles = self::get_ini();
@@ -24,6 +24,11 @@ abstract class smiles {
         return $str;
     }
 
+    /**
+     * Получение тега IMG со смайлом по его названию
+     * @param string $smile название смайла
+     * @return string
+     */
     static function bbcode($smile) {
         $smiles = self::get_ini();
         if (empty($smiles[$smile])) {

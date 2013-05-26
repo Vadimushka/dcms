@@ -14,10 +14,10 @@ class native_templating {
     }
 
     /**
-     * Передача переменной в шаблон
-     * @param type $name
-     * @param type $value
-     * @return type
+     * Установка переменной в шаблон
+     * @param string $name Ключ переменной
+     * @param mixed $value Значение
+     * @param int $filter Тип фильтрации. 0 - без фильтрации, 1 - экранирование HTML, 2 - полноценная обработка BBCODE с фильтрацией
      */
     public function assign($name, $value = null, $filter = 0) {
         if (is_array($name)) {
@@ -32,8 +32,8 @@ class native_templating {
 
     /**
      * Получение обработанного шаблона
-     * @param type $tpl_file
-     * @return null
+     * @param string $tpl_file Путь к файлу шаблона или его имя, если указан dir_template
+     * @return string HTML код после обработки
      */
     public function fetch($tpl_file) {
         if (($tpl_path = $this->_getTemplatePath($tpl_file)) === false) {
@@ -53,7 +53,7 @@ class native_templating {
 
     /**
      * выводим обработанный шаблон
-     * @param type $tpl_file
+     * @param string $tpl_file Путь к файлу шаблона или его имя, если указан dir_template
      */
     public function display($tpl_file) {
         echo $this->fetch($tpl_file);
@@ -61,8 +61,8 @@ class native_templating {
 
     /**
      * получение пути к файлу шаблона
-     * @param type $tpl_name
-     * @return boolean
+     * @param string $tpl_name Путь к файлу шаблона или его имя, если указан dir_template
+     * @return string Путь к файлу шаблона
      */
     protected function _getTemplatePath($tpl_name) {
         if (strpos($tpl_name, 'file:') === 0) {
@@ -84,8 +84,8 @@ class native_templating {
     /**
      * Получение содержимого шаблона (по возможности из кэша)
      * @staticvar array $templates
-     * @param type $tpl_path
-     * @return type
+     * @param string $tpl_path Путь к файлу шаблона или его имя, если указан dir_template
+     * @return string
      */
     protected function _getTemplate($tpl_path) {
         static $templates = array();
@@ -129,5 +129,3 @@ class native_templating {
     }
 
 }
-
-?>
