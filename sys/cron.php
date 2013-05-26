@@ -21,8 +21,8 @@ if ($cron_time && $cron_time > TIME - 10) {
         mail::queue_process(true);
         misc::log('Очередь писем обработана', 'cron');
     }
-    
-    
+
+
     /**
      * Подведение итогов посещаемости
      */
@@ -101,7 +101,27 @@ if ($cron_time && $cron_time > TIME - 10) {
     }
 
     misc::log('Очистка пользователей, не подтвердивших регистрацию', 'cron');
-    misc::log('finish'."\r\n", 'cron');
+    misc::log('finish' . "\r\n", 'cron');
+
+    /**
+     * Архивация log файлов объемом более 1MB
+     */
+    if (!cache_events::get('log_archive')) {
+        cache_events::set('log_archive', true, mt_rand(82800, 86400));
+        $log_files = (array) @glob(H . '/sys/logs/*.log');
+        foreach ($log_files AS $path) {
+            if (filesize($path) < 1048576)
+                continue;
+            $filename = basename($path, '.log');
+            $zip_file = H . '/sys/logs/' . $filename . '_' . date("Y.m.d_H.i") . '.zip';
+            $zip = new PclZip($zip_file);
+            $zip->create($path, PCLZIP_OPT_REMOVE_ALL_PATH);
+            unset($zip);
+            @unlink($path);
+        }
+    }
 }
+
+
 
 unset($cron_time);
