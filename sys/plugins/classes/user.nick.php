@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Возвращает ник пользователя
+ * Использовать как $user->nick()
+ * @param \user $user
+ * @param array $args
+ * @return string Ник пользователя
+ */
 function user_nick($user, $args) {
 
     if ($user->id === false) {

@@ -9,22 +9,32 @@ version_compare(PHP_VERSION, '5.2', '>=') or die('Требуется PHP >= 5.2'
  */
 require_once dirname(__FILE__) . '/initialization.php';
 
-// во время автоматического обновления не должно быть запросов со стороны пользователя
+/**
+ * во время автоматического обновления не должно быть запросов со стороны пользователя
+ */
 if (cache_events::get('system.update.work')) {
     exit('Выполняется обновление системы. Пожалуйста, обновите страницу позже.');
 }
 
-// загрузка основного класса с настройками
-$dcms = new dcms ();
+/**
+ * загрузка системных параметров
+ * @global \dcms $dcms Основной объект системы
+ */
+$dcms = new dcms();
+
+/**
+ *  проверка доступности поддомена.
+ *  используется при включении поддомена для определенного типа браузера
+ */
 if (isset($_GET['check_domain_work'])) {
-    // проверка доступности поддомена.
-    // используется при включении поддомена для определенного типа браузера
     echo $dcms->check_domain_work;
     exit;
 }
 
+/**
+ * переадресация на поддомен, соответствующий типу браузера   
+ */
 if ($dcms->subdomain_theme_redirect && empty($subdomain_theme_redirect_disable)) {
-    // переадресация на поддомен, соответствующий типу браузера    
     if ($_SERVER['HTTP_HOST'] === $dcms->subdomain_main) {
         // проверяем, что мы находимся на главном домене, а не на поддомене
         // свойство, в котором хранится значение поддомена для данного типа браузера
@@ -40,6 +50,7 @@ if ($dcms->subdomain_theme_redirect && empty($subdomain_theme_redirect_disable))
         }
     }
 }
+
 
 if ($_SESSION['language'] && languages::exists($_SESSION['language'])) {
     // языковой пакет из сессии
@@ -58,76 +69,38 @@ if ($dcms->new_time_as_date) {
     define('NEW_TIME', TIME - 86400);
 }
 
+/**
+ * Подключение к базе данных
+ */
 @mysql_connect($dcms->mysql_host, $dcms->mysql_user, $dcms->mysql_pass) or die('Нет соединения с MySQL сервером');
 @mysql_select_db($dcms->mysql_base) or die('Нет доступа к выбранной базе данных');
 mysql_query('SET NAMES "utf8"');
 
-// отправка писем из очереди
+/**
+ * Поэтапная отправка писем из очереди
+ */
 mail::queue_process();
-// запись рефералов
+
+/**
+ * Запись переходов со сторонних сайтов
+ * @global \log_of_referers $log_of_referers
+ */
 if ($dcms->log_of_referers) {
-    $log_of_referers = new log_of_referers ();
+    $log_of_referers = new log_of_referers();
 }
 
-// запись посещений
+/**
+ * Запись посещений
+ * @global log_of_visits $log_of_visits
+ */
 if ($dcms->log_of_visits) {
-    $log_of_visits = new log_of_visits ();
-    // подведение итогов (хоть раз в сутки, чтобы не забивалась таблица)
-    if (!cache_events::get('log_of_visits')) {
-        cache_events::set('log_of_visits', true, mt_rand(82800, 86400));
-        $log_of_visits->tally(); // подведение итогов        
-    }
+    $log_of_visits = new log_of_visits();
 }
 
-// Автоматическое обновление системы
-if ($dcms->update_auto && $dcms->update_auto_time && !cache_events::get('system.update.auto')) {
-    cache_events::set('system.update.auto', true, $dcms->update_auto_time);
-    include H . '/sys/inc/update.php';
-
-    $update = new update();
-    if (version_compare($update->version, $dcms->version, '>')) {
-
-        if ($dcms->update_auto == 2 && @function_exists('ignore_user_abort') && @function_exists('set_time_limit')) {
-            if ($update->start()) {
-                // новая версия установлена
-                $mess = __('Обновление DCMS (с %s по %s) успешно выполнено', $dcms->version, $update->version);
-            } else {
-                // при установке новой версии возникла ошибка
-                $mess = __('При обновлении DCMS (с %s по %s) произошла ошибка', $dcms->version, $update->version);
-            }
-        } else {
-            $mess = __('Вышла новая версия DCMS: %s. [url=/dpanel/sys.update.php]Обновить[/url]', $update->version);
-        }
-
-        $admins = groups::getAdmins();
-        foreach ($admins AS $admin) {
-            $admin->mess($mess);
-        }
-    }
-}
-
-// очистка от пользователей, которые не подтвердили регистрацию в течении суток.
-if ($dcms->clear_users_not_verify && !cache_events::get('clear_users_not_verify')) {
-    cache_events::set('clear_users_not_verify', true, mt_rand(82800, 86400));
-
-    $q = mysql_query("SELECT `id` FROM `users` WHERE `a_code` <> '' AND `reg_date` < '" . (TIME - 86400) . "'");
-    if ($count_delete = mysql_num_rows($q)) {
-        misc::log('Будет удалено неактивированных пользователей: ' . $count_delete, 'system.users');
-        while ($u = mysql_fetch_assoc($q)) {
-            misc::user_delete($u['id']);
-        }
-    }
-}
-
-// очистка от устаревших временных файлов (чтобы не забивалась папка sys/tmp)
-if (!cache_events::get('clear_tmp_dir')) {
-    cache_events::set('clear_tmp_dir', true, mt_rand(82800, 86400));
-    misc::log('Запускаем удаление временных файлов', 'system.tmp');
-    filesystem::deleteOldTmpFiles();
-    misc::log('Удаление временных файлов завершено', 'system.tmp');
-}
-
-// авторизация пользователя
+/**
+ * авторизация пользователя
+ * @global \user $user
+ */
 if (!empty($_SESSION [SESSION_ID_USER])) {
     // авторизация по сессии
     $user = new user($_SESSION [SESSION_ID_USER]);
@@ -145,23 +118,19 @@ if (!empty($_SESSION [SESSION_ID_USER])) {
     $user = new user(false);
 }
 
-// удаляем сессию пользователя, если по ней не удалось авторизоваться
+/**
+ * удаляем сессию пользователя, если по ней не удалось авторизоваться
+ */
 if ($user->id === false && isset($_SESSION [SESSION_ID_USER])) {
     unset($_SESSION [SESSION_ID_USER]);
 }
 
-if (!cache_events::get('clear_users_online')) {
-    cache_events::set('clear_users_online', true, 30);
-    // удаление пользователей, вышедших из онлайна (раз в 30 сек)
-    mysql_query("DELETE FROM `users_online` WHERE `time_last` < '" . (TIME - SESSION_LIFE_TIME) . "'");
-}
 
-// обработка данных пользователя
+/**
+ * обработка данных пользователя
+ */
 if ($user->id !== false) {
-
     $user->last_visit = TIME; // запись последнего посещения
-
-
     if (AJAX) {
         // при AJAX запросе только обновляем сведения о времени последнего посещения, чтобы пользователь оставался в онлайне
         mysql_query("UPDATE `users_online` SET `time_last` = '" . TIME . "' WHERE `id_user` = '$user->id' LIMIT 1");
@@ -196,19 +165,32 @@ if ($user->id !== false) {
     }
 }
 
+$cron_time = cache_events::get('cron');
+if ($cron_time < TIME - 180) {
+    misc::log('cron не настроен на сервере. вызываем вручную', 'cron');
+    include H . '/sys/cron.php';
+}
+unset($cron_time);
+
+/**
+ * при полном бане никуда кроме страницы бана нельзя
+ */
 if ($user->is_ban_full && $_SERVER ['SCRIPT_NAME'] != '/ban.php') {
-    // при полном бане никуда кроме страницы бана нельзя
     header('Location: /ban.php?' . SID);
     exit;
 }
 
-// включаем полный показ ошибок для создателя, если включено в админке
+/**
+ * включаем полный показ ошибок для создателя, если включено в админке
+ */
 if ($dcms->debug && $user->group == groups::max() && @function_exists('ini_set')) {
     ini_set('error_reporting', E_ALL);
     ini_set('display_errors', true);
 }
 
+/**
+ * пользовательский языковой пакет
+ */
 if ($user->group && $user->language != $user_language_pack->code && languages::exists($user->language)) {
     $user_language_pack = new language_pack($user->language);
 }
-?>

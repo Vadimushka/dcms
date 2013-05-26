@@ -2,7 +2,8 @@
 
 /**
  * Получение аватара пользователя
- * @param user $user
+ * Использовать как $user->getAvatar([макс. ширина аватара в пикселях])
+ * @param \user $user
  * @param array $args
  * @return string
  */

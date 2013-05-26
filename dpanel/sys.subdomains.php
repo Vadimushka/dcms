@@ -10,6 +10,12 @@ $browser_types = array('wap', 'pda', 'itouch', 'web');
 if (!$dcms->check_domain_work)
     $dcms->check_domain_work = passgen();
 
+/**
+ * Проверка доступности домена, а также проверка что по этому домену открывается сайт с данной системой
+ * @global \dcms $dcms
+ * @param string $domain
+ * @return boolean
+ */
 function domain_check($domain) {
     global $dcms;
     $http = new http_client('http://' . $domain . '/?check_domain_work');

@@ -1,8 +1,15 @@
 <?php
 
+/**
+ * Класс для обновления системы
+ */
 class update {
 
-    protected $_tmp_path = false, $_backup_path = false, $_zip = false, $_checked = false, $_skip = array();
+    protected $_tmp_path = false,
+            $_backup_path = false,
+            $_zip = false,
+            $_checked = false,
+            $_skip = array();
     var $version = false;
     var $err = array();
 
@@ -36,6 +43,10 @@ class update {
         }
     }
 
+    /**
+     * Получение информации о последней версии
+     * @return boolean|string Номер последней версии
+     */
     public function getLatestVersion() {
         // последняя версия DCMS
         $curl = new http_client('http://dcms.su/build/config.ini');
@@ -45,8 +56,6 @@ class update {
             $this->log('Не удалось получить информацию о последней версии');
             return false;
         }
-
-
 
         if (!$conf = ini::openString($config_content)) {
             $this->log('Не удалось прочитать информацию о последней версии');
@@ -58,13 +67,13 @@ class update {
             return false;
         }
 
-
         return $conf['version_last'] . '.' . $conf['build_num'];
     }
 
+    /**
+     * Скачивание последней версии
+     */
     protected function _downloadLatestVersion() {
-        // скачивание последней версии      
-
         global $dcms;
         if (!$newversion = $this->getLatestVersion()) {
             return false;
@@ -87,6 +96,9 @@ class update {
         }
     }
 
+    /**
+     * Распаковка
+     */
     protected function _extract() {
         $zip = new PclZip($this->_zip);
         if ($zip->extract(PCLZIP_OPT_PATH, $this->_tmp_path . '/')) {
@@ -98,9 +110,12 @@ class update {
         }
     }
 
+    /**
+     * Проверка содержимого пакета обновления
+     * @return boolean
+     */
     protected function _check() {
 
-        // проверка содержимого пакета обновления
         if (!file_exists($this->_tmp_path . '/to_delete.ini')) {
             return false;
         }
@@ -115,16 +130,17 @@ class update {
 
         foreach ($to_update as $fname) {
             if (!file_exists($this->_tmp_path . '/' . $fname)) {
-                // отсутствует заявленный в обновлении файл
                 return false;
             }
         }
         return true;
     }
 
+    /**
+     * проверка соответствия обновления текущей версии движка
+     */
     protected function _check_version() {
         global $dcms;
-        // проверка соответствия обновления текущей версии движка
         if (!$version = keyvalue::read($this->_tmp_path . '/version.ini')) {
             return false;
         }
@@ -138,6 +154,10 @@ class update {
         return true;
     }
 
+    /**
+     * Есть возможность обновить движок
+     * @return boolean
+     */
     public function is_updateble() {
         if (!$this->_checked) {
             return false;
@@ -145,14 +165,25 @@ class update {
         return $this->version;
     }
 
+    /*
+     * Список файлов, подлежащих обновлению
+     */
     public function getUpdatebleFiles() {
         return keyvalue::read($this->_tmp_path . '/to_update.ini');
     }
 
+    /**
+     * Установка списка пропускаемых файлов
+     * @param type $files
+     */
     public function setSkipFiles($files) {
         $this->_skip = (array) $files;
     }
 
+    /**
+     * Запуск обновления
+     * @return boolean
+     */
     public function start() {
         if (!$this->is_updateble()) {
             return false;
@@ -164,15 +195,16 @@ class update {
         return $return;
     }
 
+    /**
+     * Запуск обновления
+     * @return boolean
+     */
     protected function _start() {
-        // запуск обновления
         set_time_limit(600); // время на обновление движка ставим 10 минут. Этого более чем достаточно для выполнения всех действий.
         ignore_user_abort(); // нельзя прерывать процесс обновления даже если пользователем он отменен.
 
         $this->log('Начинаем процесс обновления');
         $this->log('Файл обновления: ' . $this->_zip);
-
-
 
         $to_delete = (array) keyvalue::read($this->_tmp_path . '/to_delete.ini');
         $files_to_backup = $to_update = (array) keyvalue::read($this->_tmp_path . '/to_update.ini');
@@ -181,16 +213,11 @@ class update {
             $files_to_backup[] = $file;
         }
 
-
-
         foreach ($this->_skip as $file) {
             if ($key = array_search($file, $to_update)) {
                 unset($to_update[$key]);
             }
         }
-
-
-
 
         $this->log('Создаем резервную копию обновляемых файлов');
         if (!$this->_backup_path = $this->_backup_create($files_to_backup)) {
@@ -199,8 +226,6 @@ class update {
             return false;
         }
         $this->log('Резервная копия успешно создана');
-
-
 
         $this->log('Удаляем старые файлы системы');
         if (!$this->_delete($to_delete)) {
@@ -214,7 +239,6 @@ class update {
             return false;
         }
         $this->log('Файлы успешно удалены');
-
 
         $this->log('Начинаем процесс обновления');
         if (!$this->_update_files($to_update)) {
@@ -239,17 +263,25 @@ class update {
         return true;
     }
 
+    /**
+     * Сообщение в системный лог
+     * @param string $text
+     */
     public function log($text) {
-        //echo $text . "<br />";
         misc::log($text, 'system.update');
     }
 
+    /**
+     * создание бэкапа обновляемых и удаляемых файлов
+     * @global \dcms $dcms
+     * @param array $files Список файлов
+     * @return boolean|string Путь к созданному архиву или false в случае неудачи
+     */
     protected function _backup_create($files) {
-        // создание бэкапа обновляемых и удаляемых файлов
         global $dcms;
 
         $to_backup = array();
-        foreach ($files as $key => $value) {
+        foreach ($files as $value) {
             if (!file_exists(H . '/' . $value)) {
                 continue;
             }
@@ -265,18 +297,23 @@ class update {
             return false;
         }
 
-
         return $zip_file;
     }
 
+    /**
+     * Восстановление из резервной копии в случае ошибки
+     */
     protected function _recovery() {
-        // восстановление бэкапа при неудаче
         $zip = new PclZip($this->_backup_path);
         return $zip->extract(PCLZIP_OPT_PATH, H . '/');
     }
 
+    /**
+     * удаление файлов, заданных обновлением
+     * @param array $to_delete Список файлов
+     * @return boolean
+     */
     protected function _delete($to_delete) {
-        // удаление файлов, заданных обновлением
         foreach ($to_delete as $path => $hash) {
             $file = H . '/' . $path;
             if (!file_exists($file)) {
@@ -290,8 +327,12 @@ class update {
         return true;
     }
 
+    /**
+     * замена файлов
+     * @param array $to_update Список файлов
+     * @return boolean
+     */
     protected function _update_files($to_update) {
-        // замена файлов
         foreach ($to_update as $file) {
             $dirname = dirname(H . '/' . $file);
 
@@ -314,10 +355,10 @@ class update {
         return true;
     }
 
+    /**
+     * обновление структуры таблиц в базе данных
+     */
     protected function _sql() {
-        // обновление структуры таблиц в базе данных
-
-
         $tables_exists = new tables();
         $table_files = (array) glob(H . '/sys/preinstall/base.create.*.ini');
         $tables = array();
@@ -326,11 +367,8 @@ class update {
             $tables[] = $m[1];
         }
 
-
         foreach ($tables as $table) {
-
             $tab = new table_structure(H . '/sys/preinstall/base.create.' . $table . '.ini');
-            // если такая таблица уже существует, то получаем запрос на ее изменение
             if (in_array($table, $tables_exists->tables)) {
                 $tab_old = new table_structure();
                 $tab_old->loadFromBase($table);
@@ -344,13 +382,7 @@ class update {
     }
 
     function __destruct() {
-
         filesystem::rmdir($this->_tmp_path, true);
-
-        //@unlink($this->_backup_path);
-        //@unlink($this->_zip);
     }
 
 }
-
-?>

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Проверка на то, является ли пользователь другом
+ * Использовать как $user->is_friend($ank)
+ * @param \user $user
+ * @param array $args
+ * @return boolean
+ */
 function user_is_friend($user, $args) {
     if (!$user->id) {
         return false;

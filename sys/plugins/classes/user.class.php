@@ -217,5 +217,3 @@ class user extends plugins {
     }
 
 }
-
-?>

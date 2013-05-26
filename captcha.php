@@ -5,6 +5,11 @@ include_once 'sys/inc/start.php';
 $x = 100; // ширина капчи
 $y = 40; // высота
 
+/**
+ * Добавление нелинейных искажений к изображению, для усложнения распознавания изображения с проверочным кодом
+ * @param gd2 $img
+ * @return gd2
+ */
 function MultiWave($img) {
     $width = imagesx($img);
     $height = imagesy($img);

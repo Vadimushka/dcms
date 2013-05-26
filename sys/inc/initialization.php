@@ -1,10 +1,23 @@
 <?php
+
+/**
+ * @const TIME_START Время запуска скрипта в миллисекундах
+ */
 define('TIME_START', microtime(true)); // время запуска скрипта
+
+/**
+ * @const DCMS Метка о DCMS
+ */
 define('DCMS', true);
-// проверка на AJAX запрос
+
+/**
+ * @const AJAX скрипт вызван AJAX запросом
+ */
 define('AJAX', strtolower(@$_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
-// проверка операционной системы
+/**
+ * @const IS_WINDOWS Запущено ли на винде
+ */
 if (!defined('IS_WINDOWS')) {
     define('IS_WINDOWS', strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 }
@@ -14,6 +27,9 @@ if (@function_exists('ini_set')) {
     ini_set('date.timezone', 'Europe/Moscow');
 }
 
+/**
+ * @const H путь к корневой директории сайта
+ */
 if (file_exists($_SERVER ['DOCUMENT_ROOT'] . '/sys/plugins/classes/dcms.class.php')) {
     define('H', $_SERVER ['DOCUMENT_ROOT']); // корневая директория сайта
 } else {
@@ -33,51 +49,51 @@ if (file_exists($_SERVER ['DOCUMENT_ROOT'] . '/sys/plugins/classes/dcms.class.ph
 }
 
 /**
- * временная папка
+ * @const TEMP временная папка
  */
 define('TEMP', H . '/sys/tmp');
 /**
- * временная папка
+ * @const TMP временная папка
  */
 define('TMP', H . '/sys/tmp');
 /**
- * Путь к папке загруз-центра
+ * @const FILES Путь к папке загруз-центра
  */
 define('FILES', realpath(H . '/sys/files'));
 /**
- * UNIXTIMESTAMP 
+ * @const TIME UNIXTIMESTAMP 
  */
 define('TIME', time());
 /**
- * UNIXTIMESTAMP на начало текущих суток
+ * @const DAY_TIME UNIXTIMESTAMP на начало текущих суток
  */
 define('DAY_TIME', mktime(0, 0, 0));
 /**
- * true, если мы на главной странице
+ * @const IS_MAIN true, если мы на главной странице
  */
 define('IS_MAIN', $_SERVER['SCRIPT_NAME'] == '/index.php');
 /**
- * время жизни сессии, а также время последней активности пользователей, считающихся онлайн
+ * @const SESSION_LIFE_TIME время жизни сессии, а также время последней активности пользователей, считающихся онлайн
  */
 define('SESSION_LIFE_TIME', 600);
 /**
- * имя сессии
+ * @const SESSION_NAME имя сессии
  */
 define('SESSION_NAME', 'DCMS_SESSION');
 /**
- * ключ сессий, в котором хранится идентификатор пользователя
+ * @const SESSION_ID_USER ключ сессий, в котором хранится идентификатор пользователя
  */
 define('SESSION_ID_USER', 'DCMS_SESSION_ID_USER');
 /**
- * ключ сессий, в котором хранится пароль пользователя
+ * @const SESSION_PASSWORD_USER ключ сессий, в котором хранится пароль пользователя
  */
 define('SESSION_PASSWORD_USER', 'DCMS_SESSION_PASSWORD_USER');
 /**
- * идентификатор пользователя в COOKIE
+ * @const COOKIE_ID_USER идентификатор пользователя в COOKIE
  */
 define('COOKIE_ID_USER', 'DCMS_COOKIE_ID_USER');
 /**
- * пароль пользователя в COOKIE
+ * @const COOKIE_USER_PASSWORD пароль пользователя в COOKIE
  */
 define('COOKIE_USER_PASSWORD', 'DCMS_COOKIE_USER_PASSWORD');
 
@@ -96,7 +112,9 @@ if (@function_exists('ini_set')) {
     ini_set('display_errors', true);
 }
 
-// текущая страница
+/**
+ * @const URL текущая страница.
+ */
 define('URL', urlencode($_SERVER ['REQUEST_URI']));
 
 if (function_exists('mb_internal_encoding')) {
@@ -111,7 +129,7 @@ if (function_exists('iconv')) {
 
 /**
  * автоматическая загрузка классов
- * @param type $class_name
+ * @param string $class_name имя класса
  */
 function dcmsAutoload($class_name) {
     $path = H . '/sys/plugins/classes/' . strtolower($class_name) . '.class.php';
@@ -119,10 +137,10 @@ function dcmsAutoload($class_name) {
         include_once ($path);
     }
 }
+
 spl_autoload_register('dcmsAutoload');
 
 include_once (H . '/sys/plugins/classes/cache.class.php');
-
 
 /**
  * Генератор пароля
@@ -205,6 +223,9 @@ function size_data($filesize = 0) {
     return misc::size_data($filesize);
 }
 
+/**
+ * @global \language_pack $user_language_pack Текущий языковой пакет
+ */
 $user_language_pack = new language_pack(false);
 
 /**
@@ -237,9 +258,9 @@ function __() {
     return eval('return sprintf($string,' . implode(',', $args4eval) . ');');
 }
 
-/* Инициализация механизма сессий  */
-session_name(SESSION_NAME) or die('Невозможно инициализировать сессии');
-@session_start() or die('Невозможно инициализировать сессии');
+@session_name(SESSION_NAME) or die(__('Невозможно инициализировать сессии'));
+@session_start() or die(__('Невозможно инициализировать сессии'));
+/**
+ * @const SESS Идентификатор сессии
+ */
 define('SESS', preg_replace('#[^a-z0-9]#i', '', session_id()));
-/* ------------------------------- */
-?>

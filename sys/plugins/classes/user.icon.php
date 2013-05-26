@@ -1,6 +1,12 @@
 <?php
 
-function user_icon($user, $args) {
+/**
+ * Получение иконки пользователя
+ * Использовать как $user->icon()
+ * @param \user $user
+ * @return string
+ */
+function user_icon($user) {
 
 
     // система 

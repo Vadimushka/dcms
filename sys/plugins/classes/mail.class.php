@@ -7,25 +7,30 @@ abstract class mail {
 
     /**
      * отправка писем из очереди
+     * @param boolean $all Отправка сразу всех писем
      * @return boolean
      */
-    static function queue_process() {
+    static function queue_process($all = false) {
         // кто-то уже занялся отправкой сообщений
-        if (cache_events::get('mail.send_is_process')) {
+        if (!$all && cache_events::get('mail.send_is_process')) {
             return false;
         }
         // остальные запросы пусть пропускают отправку
         cache_events::set('mail.send_is_process', true, 5);
 
-        $q = mysql_query("SELECT * FROM `mail_queue` LIMIT 10");
+        $limit = $all ? '' : ' LIMIT 10';
+        $q = mysql_query("SELECT * FROM `mail_queue`" . $limit);
         if (!mysql_num_rows($q)) {
             return false;
         }
 
-        // другие запросы не должны мешать отправке текущих сообщений
-        cache_events::set('mail.send_is_process', true, 30);
-
         while ($queue = mysql_fetch_assoc($q)) {
+            if (function_exists('set_time_limit')) {
+                @set_time_limit(30);
+            }
+
+            // другие запросы не должны мешать отправке текущих сообщений
+            cache_events::set('mail.send_is_process', true, 30);
             if (mail::send($queue ['to'], $queue ['title'], $queue ['content'])) {
                 mysql_query("DELETE FROM `mail_queue` WHERE `id` = '{$queue['id']}' LIMIT 1");
             }
