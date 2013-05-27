@@ -37,9 +37,9 @@ class install_check_old_version {
 
     function form() {
         if ($this->old_version) {
-            echo '<label><input type="checkbox" checked="checked" value="1" name="convert_old_version" />' . __('Импортировать данные из старой версии') . '</label><br />';
+            echo '<label><input type="checkbox" checked="checked" value="1" name="convert_old_version" />' . __('Импортировать данные из старой версии') . '</label>';
         } else {
-            echo __("Таблицы от старой версии движка не обнаружены") . "<br />";
+            echo __("Таблицы от старой версии движка не обнаружены");
         }
 
         return true;

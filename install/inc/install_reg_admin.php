@@ -84,10 +84,10 @@ class install_reg_admin {
         echo "<div style='background-color:" . ($this->err_pass2 ? '#FFADB0' : '#ADFFB0') . "'>";
         echo __('Подтверждение') . ":<br /><input type='password' name='password_retry' value='" . for_value($this->pass2) . "' /><br />";
         echo "</div>";
-        echo __('Пол') . ":<br /><select name='sex'><option value='1'>" . __('Мужской') . "</option><option value='0'>" . __('Женский') . "</option></select><br />";
+        echo __('Пол') . ":<br /><select name='sex'><option value='1'>" . __('Мужской') . "</option><option value='0'>" . __('Женский') . "</option></select>";
 
         if ($this->adm_count)
-            echo '<label><input type="checkbox" checked="checked" value="1" name="clear_adm" />' . __('Разжаловать всех админов') . '</label><br />';
+            echo '<br /><label><input type="checkbox" checked="checked" value="1" name="clear_adm" />' . __('Разжаловать всех админов') . '</label>';
 
         return true;
     }

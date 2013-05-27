@@ -30,9 +30,9 @@ class install_settings_old_version {
     {
         if (!$this->return) {
             echo "Файл настроек с предыдущей версии не загружен<br />";
-            echo "Проверьте файл sys/dat/settings.ini<br />";
+            echo "Проверьте файл sys/dat/settings.ini";
         }else {
-            echo "Файл настроек с предыдущей версии успешно загружен<br />";
+            echo "Файл настроек с предыдущей версии успешно загружен";
         }
 
         return $this->return;

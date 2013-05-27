@@ -53,7 +53,7 @@ if (isset($_POST['to_start'])) {
     @session_start() or die(__('Невозможно инициализировать сессии'));
     exit;
 }
-echo "<form method='post' action='?" . passgen() . "'>";
+echo "<form class='form_header' method='post' action='?" . passgen() . "'>";
 echo "<input type='submit' name='to_start' value='" . __('В начало') . "' />";
 echo "<input type='submit' name='refresh' value='" . __('Обновить') . "' />";
 echo "</form>";
@@ -69,8 +69,13 @@ if (isset($_POST['next_step'])) {
     exit;
 }
 
-echo "<form method='post' action='?" . passgen() . "'>";
-if ($inst_obj->form())
+echo "<form class='form_content' method='post' action='?" . passgen() . "'><div class='form_content'>";
+
+$returned = $inst_obj->form();
+
+echo "</div>";
+
+if ($returned)
     echo "<input type='submit' name='next_step' value='" . __('Далее') . "' />";
 else
     echo "<input type='submit' name='refresh' value='" . __('Обновить') . "' />";

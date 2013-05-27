@@ -360,7 +360,7 @@ class install_convert_old_version {
         echo "<input type='submit' name='adt' value='" . __('Реклама и баннеры') . "' /><br />";
 
         echo '<img src="/install/' . (empty($this->news) ? 'wait' : 'ok') . '.png" alt="" />';
-        echo "<input type='submit'$dis_users name='news' value='" . __('Новости') . "' /><br />";
+        echo "<input type='submit'$dis_users name='news' value='" . __('Новости') . "' />";
 
         return !empty($this->users);
     }

@@ -23,7 +23,7 @@ class install_load_preinstall {
     function form()
     {
         if ($this->is_loaded)
-            echo "<span style='font-weight:bold'>".__('Предустановки успешно загружены')."</span><br />";
+            echo "<span style='font-weight:bold'>".__('Предустановки успешно загружены')."</span>";
         // echo output_text(print_r($_SESSION['settings'],1));
         return $this->is_loaded;
     }

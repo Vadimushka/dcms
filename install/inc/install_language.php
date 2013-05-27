@@ -23,8 +23,7 @@ class install_language {
             echo "<input type='radio' name='language' value='$key'$checked />";
             echo "<img src='{$l['icon']}' alt='' />";
             echo $l['enname'];
-            echo "</label>";
-            echo "<br />";
+            echo "</label><br />";
         }
         return true;
     }

@@ -27,7 +27,7 @@ class install_check_platform {
     function form() {
         $ok = $this->check();
         if ($ok)
-            echo "<span style='font-weight:bold'>" . __('Все зависимости удовлетворены') . "</span><br />";
+            echo "<span style='font-weight:bold'>" . __('Все зависимости удовлетворены') . "</span>";
         return $ok;
     }
 

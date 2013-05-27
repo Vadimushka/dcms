@@ -53,17 +53,17 @@ class install_load_sql {
     }
 
     function form() {
-        echo __('На данном этапе создадутся необходимые для работы движка таблицы в базе данных. Если в базе уже находятся какие-либо таблицы, к ним будет добавлен префикс с временной меткой') . '.<br />';
+        echo __('На данном этапе создадутся необходимые для работы движка таблицы в базе данных. Если в базе уже находятся какие-либо таблицы, к ним будет добавлен префикс с временной меткой');
 
         global $options;
         if (!empty($options['new_base'])) {
             $files = glob(H . '/sys/preinstall/base.data.*.sql');
 
             if ($files)
-                echo '<label><input type="checkbox" checked="checked" value="1" name="load_data" />' . __('Загрузить содержимое таблиц') . '</label><br />';
+                echo '<br /><label><input type="checkbox" checked="checked" value="1" name="load_data" />' . __('Загрузить содержимое таблиц') . '</label>';
         }
         if (!empty($_SESSION['install_load_sql_false']))
-            echo __("При выполнении SQL запросов возникли ошибки") . "<br />";
+            echo "<br />".__("При выполнении SQL запросов возникли ошибки") ;
 
         return true;
     }
