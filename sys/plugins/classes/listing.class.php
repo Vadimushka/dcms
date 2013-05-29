@@ -20,7 +20,7 @@ class listing extends ui_contaner {
 
     /**
      * Добавление поста
-     * @return listing_post
+     * @return \listing_post
      */
     public function post() {
         return $this->add(new listing_post());
@@ -28,7 +28,7 @@ class listing extends ui_contaner {
 
     /**
      * Добавление чекбокса
-     * @return listing_checkbox
+     * @return \listing_checkbox
      */
     public function checkbox() {
         return $this->add(new listing_checkbox());
