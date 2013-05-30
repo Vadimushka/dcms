@@ -183,7 +183,7 @@
 		
 		
 
-		<b>Located at</b> <a href="source-class-votes.html#3-45" title="Go to source code">sys/plugins/classes/votes.class.php</a><br />
+		<b>Located at</b> <a href="source-class-votes.html#3-55" title="Go to source code">sys/plugins/classes/votes.class.php</a><br />
 	</div>
 
 
@@ -201,16 +201,25 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-votes.html#13-15" title="Go to source code">__construct</a>( <span>mixed <var>$description</var> = <span class="php-quote">''</span></span> )</code>
+		<code><a href="source-class-votes.html#13-19" title="Go to source code">__construct</a>( <span>string <var>$description</var> = <span class="php-quote">''</span></span> )</code>
 
 		<div class="description short">
 			
+<p>Инициализация голосования</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>Инициализация голосования</p>
 
 
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$description</var></dt>
+					<dd><code>string</code><br>$description Описание голосования</dd>
+				</dl></div>
 
 
 
@@ -230,16 +239,29 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_vote">#</a>
-		<code><a href="source-class-votes.html#17-21" title="Go to source code">vote</a>( <span>mixed <var>$name</var></span>, <span>mixed <var>$count</var></span>, <span>mixed <var>$url</var></span> )</code>
+		<code><a href="source-class-votes.html#21-31" title="Go to source code">vote</a>( <span>string <var>$name</var></span>, <span>string <var>$count</var></span>, <span>string <var>$url</var></span> )</code>
 
 		<div class="description short">
 			
+<p>Добавляем вариант ответа</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>Добавляем вариант ответа</p>
 
 
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name Название варианта ответа</dd>
+					<dt><var>$count</var></dt>
+					<dd><code>string</code><br>$count Кол-во голосов за данный вариант ответа</dd>
+					<dt><var>$url</var></dt>
+					<dd><code>string</code><br>$url Ссылка на голосование за данный вариант</dd>
+				</dl></div>
 
 
 
@@ -259,7 +281,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_display">#</a>
-		<code><a href="source-class-votes.html#23-43" title="Go to source code">display</a>( <span>mixed <var>$is_add</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><a href="source-class-votes.html#33-53" title="Go to source code">display</a>( <span>mixed <var>$is_add</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			

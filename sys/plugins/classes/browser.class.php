@@ -3,287 +3,319 @@
 /**
  * Информация о браузере
  */
-class browser {
+abstract class browser {
 
-    var $browser_type_auto;
-    var $browser;
-    var $ip_long;
-    var $ie_ver = false;
-
-    function __construct() {
-        $this->browser_info();
-        $this->ip();
+    /**
+     * Возвращает версию IE или false
+     * @return integer|false
+     */
+    static function getIEver() {
+        $info = self::getBrowserInfo();
+        return $info['ie'];
     }
 
-    private function ip() {
-        $this->ip_long = sprintf("%u", ip2long($_SERVER['REMOTE_ADDR']));
-        // $this->ip=1827459359;
-        // IP адрес, получаемый из HTTP_X_FORWARDED_FOR передается клиентом, поэтому 100% доверять ему нельзя
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']) {
-            if (isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) && isset($_SERVER['HTTP_USER_AGENT']) && preg_match('#Opera#i', $_SERVER['HTTP_USER_AGENT'])) {
-                $this->ip_proxy = sprintf("%u", ip2long($_SERVER['HTTP_X_FORWARDED_FOR']));
-            }
-        }
+    /**
+     * Возвращает тип браузера
+     * @return string wap|pda|itouch|web
+     */
+    static function getType() {
+        $info = self::getBrowserInfo();
+        return $info['type'];
     }
 
-    private function browser_info() {
+    /**
+     * Возвращает название браузера и его мажорную версию
+     * @return string
+     */
+    static function getName() {
+        $info = self::getBrowserInfo();
+        return $info['name'];
+    }
+
+    /**
+     * Возвращает информацию о IP в формате IP_LONG
+     * @staticvar boolean|string $ipLong
+     * @return string
+     */
+    static function getIpLong() {
+        static $ipLong = false;
+        if ($ipLong === false)
+            $ipLong = sprintf("%u", ip2long($_SERVER['REMOTE_ADDR']));
+        return $ipLong;
+    }
+
+    /**
+     * Возвращает информацию о браузере
+     * @staticvar boolean|array $info
+     * @return array
+     */
+    static function getBrowserInfo() {
+        static $info = false;
+        if ($info === false)
+            $info = self::_getBrowserinfo();
+        return $info;
+    }
+
+    static protected function _getBrowserinfo() {
         $user_agent = @$_SERVER['HTTP_USER_AGENT'];
-        $this->browser_type_auto = 'wap';
-        $this->browser = 'Нет данных';
+        $info = array(
+            'name' => 'Нет данных',
+            'type' => 'wap',
+            'ie' => false
+        );
+
         // определение названия браузера
         if (preg_match('#^([a-z0-9\-\_ ]+)/([0-9]+\.[0-9]+)#i', $user_agent, $b)) {
-            $this->browser = $b[1] . (!empty($b[2]) ? ' ' . $b[2] : '');
-            $this->browser_type_auto = 'pda';
+            $info['name'] = $b[1] . (!empty($b[2]) ? ' ' . $b[2] : '');
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#MSIE ([0-9]+)#ui', $user_agent, $bv)) {
-            $this->browser = 'Microsoft Internet Explorer';
-            $this->browser_type_auto = 'web';            
-            $this->ie_ver = $bv[1];
+            $info['name'] = 'Microsoft Internet Explorer';
+            $info['type'] = 'web';
+            $info['ie'] = $bv[1];
         }
 
         if (preg_match('#America Online Browser#i', $user_agent)) {
-            $this->browser = 'AOL Explorer';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'AOL Explorer';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#(Avant|Advanced) Browser#i', $user_agent)) {
-            $this->browser = 'Avant Browser';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Avant Browser';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Camino/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
-            $this->browser = 'Camino ' . $v[1];
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Camino ' . $v[1];
+            $info['type'] = 'web';
         }
 
         if (preg_match('#ELinks#i', $user_agent)) {
-            $this->browser = 'ELinks';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'ELinks';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Epiphany#i', $user_agent)) {
-            $this->browser = 'Epiphany';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Epiphany';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Flock#i', $user_agent)) {
-            $this->browser = 'Flock';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Flock';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#IceWeasel#i', $user_agent)) {
-            $this->browser = 'GNU IceWeasel';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'GNU IceWeasel';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#IceCat#i', $user_agent)) {
-            $this->browser = 'GNU IceCat';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'GNU IceCat';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Microsoft Pocket Internet Explorer#i', $user_agent)) {
-            $this->browser = 'Internet Explorer Mobile';
-            $this->browser_type_auto = 'pda';
+            $info['name'] = 'Internet Explorer Mobile';
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#MSPIE#i', $user_agent)) {
-            $this->browser = 'Internet Explorer Mobile';
-            $this->browser_type_auto = 'pda';
+            $info['name'] = 'Internet Explorer Mobile';
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#Windows.+Smartphone#i', $user_agent)) {
-            $this->browser = 'Internet Explorer Mobile';
-            $this->browser_type_auto = 'pda';
+            $info['name'] = 'Internet Explorer Mobile';
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#Konqueror#i', $user_agent)) {
-            $this->browser = 'Konqueror';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Konqueror';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Links#i', $user_agent)) {
-            $this->browser = 'Links';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Links';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Lynx#i', $user_agent)) {
-            $this->browser = 'Lynx';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Lynx';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Minimo#i', $user_agent)) {
-            $this->browser = 'Minimo';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Minimo';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#(Firebird|Phoenix|Firefox)/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
-            $this->browser = 'Mozilla Firefox ' . $v[2];
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Mozilla Firefox ' . $v[2];
+            $info['type'] = 'web';
         }
 
         if (preg_match('#NetPositive#i', $user_agent)) {
-            $this->browser = 'NetPositive';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'NetPositive';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Opera/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
-            $ver = $this->browser_version($user_agent);
-            $this->browser = 'Opera ' . ($ver ? $ver : $v[1]);
-            $this->browser_type_auto = 'web';
+            $ver = self::_browser_version($user_agent);
+            $info['name'] = 'Opera ' . ($ver ? $ver : $v[1]);
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Opera Mini/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
-            $this->browser = 'Opera Mini ' . $v[1];
-            $this->browser_type_auto = 'wap';
+            $info['name'] = 'Opera Mini ' . $v[1];
+            $info['type'] = 'wap';
         }
 
         if (preg_match('#Opera Mobi#i', $user_agent)) {
-            $ver = $this->browser_version($user_agent);
-            if ($tel = $this->phone_model($user_agent))
-                $this->browser = 'Opera Mobile' . ($ver ? ' ' . $ver : '') . ' (' . $tel[0] . ')';
+            $ver = self::_browser_version($user_agent);
+            if ($tel = self::_phone_model($user_agent))
+                $info['name'] = 'Opera Mobile' . ($ver ? ' ' . $ver : '') . ' (' . $tel[0] . ')';
             else
-                $this->browser = 'Opera Mobile' . ($ver ? ' ' . $ver : '');
-            $this->browser_type_auto = 'pda';
+                $info['name'] = 'Opera Mobile' . ($ver ? ' ' . $ver : '');
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#(SymbOS|Symbian).+Opera ([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
-            if ($tel = $this->phone_model($user_agent))
-                $this->browser = 'Opera Mobile ' . $v[2] . ' (' . $tel[0] . ')';
+            if ($tel = self::_phone_model($user_agent))
+                $info['name'] = 'Opera Mobile ' . $v[2] . ' (' . $tel[0] . ')';
             else
-                $this->browser = 'Opera Mobile ' . $v[2] . ' (Symbian)';
-            $this->browser_type_auto = 'pda';
+                $info['name'] = 'Opera Mobile ' . $v[2] . ' (Symbian)';
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#Windows CE.+Opera ([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
-            if ($tel = $this->phone_model($user_agent))
-                $this->browser = 'Opera Mobile ' . $v[1] . ' (' . $tel[0] . ')';
+            if ($tel = self::_phone_model($user_agent))
+                $info['name'] = 'Opera Mobile ' . $v[1] . ' (' . $tel[0] . ')';
             else
-                $this->browser = 'Opera Mobile ' . $v[1] . ' (Win)';
-            $this->browser_type_auto = 'pda';
+                $info['name'] = 'Opera Mobile ' . $v[1] . ' (Win)';
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#PlayStation Portable#i', $user_agent)) {
-            $this->browser = 'PlayStation Portable';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'PlayStation Portable';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Safari#i', $user_agent)) {
-            $this->browser = 'Safari';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Safari';
+            $info['type'] = 'web';
         }
 
-
-
-
-
         if (preg_match('#SeaMonkey#i', $user_agent)) {
-            $this->browser = 'SeaMonkey';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'SeaMonkey';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Shiira#i', $user_agent)) {
-            $this->browser = 'Shiira';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Shiira';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#w3m#i', $user_agent)) {
-            $this->browser = 'w3m';
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'w3m';
+            $info['type'] = 'web';
         }
 
         if (preg_match('#Chrome/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
-            $this->browser = 'Google Chrome ' . $v[1];
-            $this->browser_type_auto = 'web';
+            $info['name'] = 'Google Chrome ' . $v[1];
+            $info['type'] = 'web';
         }
 
         if (preg_match('#SONY/COM#i', $user_agent)) {
-            $this->browser = 'Sony mylo';
-            $this->browser_type_auto = 'pda';
+            $info['name'] = 'Sony mylo';
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#Nitro#i', $user_agent)) {
-            $this->browser = 'Nintendo DS';
-            $this->browser_type_auto = 'pda';
+            $info['name'] = 'Nintendo DS';
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#^Openwave#i', $user_agent)) {
-            $this->browser = 'Openwave';
-            $this->browser_type_auto = 'pda';
+            $info['name'] = 'Openwave';
+            $info['type'] = 'pda';
         }
 
         if (preg_match('#UCWEB#i', $user_agent)) {
-            $this->browser = 'UCWEB';
-            $this->browser_type_auto = 'wap';
+            $info['name'] = 'UCWEB';
+            $info['type'] = 'wap';
         }
 
         if (preg_match('#BOLT/([0-9]+\.[0-9]+)#i', $user_agent, $m)) {
-            $this->browser = 'BOLT ' . $m[1];
-            $this->browser_type_auto = 'wap';
+            $info['name'] = 'BOLT ' . $m[1];
+            $info['type'] = 'wap';
         }
-        if ($tel = $this->phone_model($user_agent)) {
+        if ($tel = self::_phone_model($user_agent)) {
             // определение модели телефона
-            $this->browser = $tel[0];
-            $this->browser_type_auto = $tel[1];
+            $info['name'] = $tel[0];
+            $info['type'] = $tel[1];
         }
 
         if (isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) && preg_match('#Opera Mini/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
             $user_agent_opera = $_SERVER['HTTP_X_OPERAMINI_PHONE_UA'];
-            if ($tel = $this->phone_model($user_agent_opera)) {
-                $this->browser = 'Opera Mini ' . $v[1] . ' (' . $tel[0] . ')';
-                $this->browser_type_auto = version_compare($v[1], 4, '>=') ? 'pda' : $tel[1];
+            if ($tel = self::_phone_model($user_agent_opera)) {
+                $info['name'] = 'Opera Mini ' . $v[1] . ' (' . $tel[0] . ')';
+                $info['type'] = version_compare($v[1], 4, '>=') ? 'pda' : $tel[1];
             }
         }
 
         if (preg_match('#iPhone#i', $user_agent)) {
-            $this->browser = 'iPhone';
-            $this->browser_type_auto = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
+            $info['name'] = 'iPhone';
+            $info['type'] = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
         }
 
         if (preg_match('#iPod#i', $user_agent)) {
-            $this->browser = 'iPod';
-            $this->browser_type_auto = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
+            $info['name'] = 'iPod';
+            $info['type'] = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
         }
 
         if (preg_match('#iPad#i', $user_agent)) {
-            $this->browser = 'iPad';
-            $this->browser_type_auto = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
+            $info['name'] = 'iPad';
+            $info['type'] = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
         }
         if (preg_match('#Bada#i', $user_agent)) {
-            // $this->browser = 'Samsung Bada';
-            $this->browser_type_auto = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
+            // $info['name'] = 'Samsung Bada';
+            $info['type'] = preg_match('#Opera Mini#i', $user_agent) ? 'pda' : 'itouch';
         }
 
         if (preg_match('#Android#i', $user_agent)) {
             if (preg_match('#Opera Mini#i', $user_agent)) {
-                $this->browser = 'Opera Mini (Android)';
-                $this->browser_type_auto = 'pda';
+                $info['name'] = 'Opera Mini (Android)';
+                $info['type'] = 'pda';
             } else {
-                // $this->browser = 'Android';
-                $this->browser_type_auto = 'itouch';
+                // $info['name'] = 'Android';
+                $info['type'] = 'itouch';
             }
         }
 
         if (preg_match('#Windows Phone#i', $user_agent)) {
 
             if (preg_match('#Opera Mini#i', $user_agent)) {
-                $this->browser = 'Opera Mini (Windows Phone)';
-                $this->browser_type_auto = 'pda';
+                $info['name'] = 'Opera Mini (Windows Phone)';
+                $info['type'] = 'pda';
             } else {
 
-                // $this->browser = 'Windows Phone 7';
-                $this->browser_type_auto = 'itouch';
+                // $info['name'] = 'Windows Phone 7';
+                $info['type'] = 'itouch';
             }
         }
+
+        return $info;
     }
 
-    protected function browser_version($user_agent) {
+    static protected function _browser_version($user_agent) {
         // определение версии браузера
         if (preg_match('#Version/([0-9]+(\.[0-9]+)?)#i', $user_agent, $v))
             return $v[1];
     }
 
-    protected function phone_model($ua) {
+    static protected function _phone_model($ua) {
         // определение модели устройства
         if (preg_match('#SonyEricsson([0-9a-z]+)#i', $ua, $b)) {
             return array('SonyEricsson ' . $b[1], 'wap');
@@ -320,21 +352,4 @@ class browser {
         return false;
     }
 
-    protected function browser_id() {
-        static $browser_id = false;
-
-        if ($browser_id === false) {
-            $q = mysql_query("SELECT * FROM `browsers` WHERE `name` = '" . my_esc($this->browser) . "' LIMIT 1");
-            if (mysql_num_rows($q)) {
-                $browser_id = mysql_result($q, 0);
-            } else {
-                $q = mysql_query("INSERT INTO `browsers` (`type`, `name`) VALUES ('$this->browser_type_auto','" . my_esc($this->browser) . "')");
-                $browser_id = mysql_insert_id();
-            }
-        }
-        return $browser_id;
-    }
-
 }
-
-?>

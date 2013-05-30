@@ -3,12 +3,11 @@
 /**
  * Базовый класс системы. Объек хранится в глобальной переменной $dcms
  */
-class dcms extends browser {
+class dcms {
 
     protected $_data = array();
 
     function __construct() {
-        parent::__construct();
         // загрузка настроек
         $this->_load_settings();
     }
@@ -54,23 +53,38 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
 
     public function __get($name) {
         switch ($name) {
-            case 'salt_user':return $this->salt . @$_SERVER['HTTP_USER_AGENT'];
+            case 'salt_user':
+                return $this->salt . @$_SERVER['HTTP_USER_AGENT'];
                 break;
-            case 'subdomain_main': return $this->_subdomain_main();
+            case 'subdomain_main':
+                return $this->_subdomain_main();
                 break;
-            case 'browser_type': return $this->_browser_type();
+            case 'browser_name':
+                return browser::getName();
                 break;
-            case 'browser_id': return $this->browser_id();
+            case 'browser_type':
+                return $this->_browser_type();
                 break;
-            case 'items_per_page': return $this->_data['items_per_page_' . $this->browser_type];
+            case 'browser_type_auto':
+                return browser::getType();
                 break;
-            case 'img_max_width':return $this->_data['img_max_width_' . $this->browser_type];
+            case 'browser_id':
+                return $this->_browser_id();
                 break;
-            case 'widget_items_count':return $this->_data['widget_items_count_' . $this->browser_type];
+            case 'items_per_page':
+                return $this->_data['items_per_page_' . $this->browser_type];
                 break;
-            case 'theme':return $this->_data['theme_' . $this->browser_type];
+            case 'img_max_width':
+                return $this->_data['img_max_width_' . $this->browser_type];
                 break;
-            default:return empty($this->_data[$name]) ? false : $this->_data[$name];
+            case 'widget_items_count':
+                return $this->_data['widget_items_count_' . $this->browser_type];
+                break;
+            case 'theme':
+                return $this->_data['theme_' . $this->browser_type];
+                break;
+            default:
+                return empty($this->_data[$name]) ? false : $this->_data[$name];
         }
     }
 
@@ -94,6 +108,10 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
         return $domain;
     }
 
+    /**
+     * Тип браузера
+     * @return string
+     */
     protected function _browser_type() {
         if ($this->subdomain_wap_enable) {
             if (0 === strpos($_SERVER['HTTP_HOST'], $this->subdomain_wap . '.')) {
@@ -118,6 +136,21 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
         return $this->browser_type_auto;
     }
 
+    protected function _browser_id() {
+        static $browser_id = false;
+
+        if ($browser_id === false) {
+            $q = mysql_query("SELECT * FROM `browsers` WHERE `name` = '" . my_esc(browser::getName()) . "' LIMIT 1");
+            if (mysql_num_rows($q)) {
+                $browser_id = mysql_result($q, 0);
+            } else {
+                $q = mysql_query("INSERT INTO `browsers` (`type`, `name`) VALUES ('" . my_esc(browser::getType()) . "','" . my_esc(browser::getName()) . "')");
+                $browser_id = mysql_insert_id();
+            }
+        }
+        return $browser_id;
+    }
+
     /**
      * Загрузка настроек
      */
@@ -128,7 +161,8 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
             if (file_exists(H . '/install/index.php')) {
                 header("Location: /install/");
                 exit;
-            } else
+            }
+            else
                 exit('Файл настроек не может быть загружен');
         }
         $this->_data = array_merge($settings_default['DEFAULT'], $this->_data, $settings, $settings_default['REPLACE']);
@@ -152,5 +186,3 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
     }
 
 }
-
-?>

@@ -168,20 +168,6 @@
 
 	</div>
 
-	<dl class="tree">
-		<dd style="padding-left:0px">
-			<a href="class-browser.html"><span>browser</span></a>
-			
-			
-			
-		</dd>
-		<dd style="padding-left:30px">
-			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>dcms</span></b>			
-			
-			
-		</dd>
-	</dl>
 
 
 
@@ -196,7 +182,7 @@
 		
 		
 
-		<b>Located at</b> <a href="source-class-dcms.html#3-154" title="Go to source code">sys/plugins/classes/dcms.class.php</a><br />
+		<b>Located at</b> <a href="source-class-dcms.html#3-186" title="Go to source code">sys/plugins/classes/dcms.class.php</a><br />
 	</div>
 
 
@@ -228,8 +214,6 @@
 
 
 
-				<h4>Overrides</h4>
-				<div class="list"><code><a href="class-browser.html#___construct">browser::__construct()</a></code></div>
 
 		</div>
 		</div></td>
@@ -333,7 +317,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___get">#</a>
-		<code><a href="source-class-dcms.html#55-75" title="Go to source code">__get</a>( <span>mixed <var>$name</var></span> )</code>
+		<code><a href="source-class-dcms.html#55-87" title="Go to source code">__get</a>( <span>mixed <var>$name</var></span> )</code>
 
 		<div class="description short">
 			
@@ -362,7 +346,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___set">#</a>
-		<code><a href="source-class-dcms.html#77-90" title="Go to source code">__set</a>( <span>mixed <var>$name</var></span>, <span>mixed <var>$value</var></span> )</code>
+		<code><a href="source-class-dcms.html#89-102" title="Go to source code">__set</a>( <span>mixed <var>$name</var></span>, <span>mixed <var>$value</var></span> )</code>
 
 		<div class="description short">
 			
@@ -391,7 +375,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#__subdomain_main">#</a>
-		<code><a href="source-class-dcms.html#92-95" title="Go to source code">_subdomain_main</a>( )</code>
+		<code><a href="source-class-dcms.html#104-107" title="Go to source code">_subdomain_main</a>( )</code>
 
 		<div class="description short">
 			
@@ -413,14 +397,51 @@
 
 		<td class="attributes"><code>
 			 protected 
-			
+			string
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#__browser_type">#</a>
-		<code><a href="source-class-dcms.html#97-119" title="Go to source code">_browser_type</a>( )</code>
+		<code><a href="source-class-dcms.html#109-135" title="Go to source code">_browser_type</a>( )</code>
+
+		<div class="description short">
+			
+<p>Тип браузера</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Тип браузера</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="_browser_id" id="__browser_id">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#__browser_id">#</a>
+		<code><a href="source-class-dcms.html#137-150" title="Go to source code">_browser_id</a>( )</code>
 
 		<div class="description short">
 			
@@ -449,7 +470,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#__load_settings">#</a>
-		<code><a href="source-class-dcms.html#121-135" title="Go to source code">_load_settings</a>( )</code>
+		<code><a href="source-class-dcms.html#152-167" title="Go to source code">_load_settings</a>( )</code>
 
 		<div class="description short">
 			
@@ -482,7 +503,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_save_settings">#</a>
-		<code><a href="source-class-dcms.html#137-152" title="Go to source code">save_settings</a>( <span>mixed <var>$doc</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><a href="source-class-dcms.html#169-184" title="Go to source code">save_settings</a>( <span>mixed <var>$doc</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -510,16 +531,6 @@
 	</tr>
 	</table>
 
-	<table class="summary inherited">
-	<caption>Methods inherited from <a href="class-browser.html#methods">browser</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-browser.html#_browser_id">browser_id()</a>, 
-			<a href="class-browser.html#_browser_version">browser_version()</a>, 
-			<a href="class-browser.html#_phone_model">phone_model()</a>
-		</code></td>
-	</tr>
-	</table>
 
 
 
@@ -558,17 +569,6 @@
 	</tr>
 	</table>
 
-	<table class="summary inherited">
-	<caption>Properties inherited from <a href="class-browser.html#properties">browser</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-browser.html#$browser"><var>$browser</var></a>, 
-			<a href="class-browser.html#$browser_type_auto"><var>$browser_type_auto</var></a>, 
-			<a href="class-browser.html#$ie_ver"><var>$ie_ver</var></a>, 
-			<a href="class-browser.html#$ip_long"><var>$ip_long</var></a>
-		</code></td>
-	</tr>
-	</table>
 
 
 

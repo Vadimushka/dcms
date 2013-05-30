@@ -163,7 +163,11 @@
 
 	<div class="description">
 	
-<p>Работа со структурами таблиц</p>
+<p>Работа со структурами таблиц.
+Используется для выявления изменений в
+структурах таблиц при обновлении движка и
+формирования соответствующих SQL
+запросов.</p>
 
 	</div>
 
@@ -181,7 +185,7 @@
 		
 		
 
-		<b>Located at</b> <a href="source-class-table_structure.html#3-200" title="Go to source code">sys/plugins/classes/table_structure.class.php</a><br />
+		<b>Located at</b> <a href="source-class-table_structure.html#3-251" title="Go to source code">sys/plugins/classes/table_structure.class.php</a><br />
 	</div>
 
 
@@ -199,16 +203,25 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-table_structure.html#9-12" title="Go to source code">__construct</a>( <span>mixed <var>$path</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><a href="source-class-table_structure.html#12-19" title="Go to source code">__construct</a>( <span>string <var>$path</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
+<p>загрузка структуры из INI файла</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>загрузка структуры из INI файла</p>
 
 
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path Путь к файлу со структурой таблицы</dd>
+				</dl></div>
 
 
 
@@ -228,14 +241,20 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_clear">#</a>
-		<code><a href="source-class-table_structure.html#14-18" title="Go to source code">clear</a>( )</code>
+		<code><a href="source-class-table_structure.html#21-27" title="Go to source code">clear</a>( )</code>
 
 		<div class="description short">
 			
+<p>Очистка данных о структуре загруженной
+таблицы</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>Очистка данных о структуре загруженной
+таблицы</p>
+
 
 
 
@@ -257,16 +276,25 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_loadFromIniFile">#</a>
-		<code><a href="source-class-table_structure.html#20-28" title="Go to source code">loadFromIniFile</a>( <span>mixed <var>$path</var></span> )</code>
+		<code><a href="source-class-table_structure.html#29-42" title="Go to source code">loadFromIniFile</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
+<p>загрузка структуры из INI файла</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>загрузка структуры из INI файла</p>
 
 
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path Путь к файлу со структурой таблицы</dd>
+				</dl></div>
 
 
 
@@ -286,16 +314,27 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_loadFromBase">#</a>
-		<code><a href="source-class-table_structure.html#30-68" title="Go to source code">loadFromBase</a>( <span>mixed <var>$table</var></span> )</code>
+		<code><a href="source-class-table_structure.html#44-93" title="Go to source code">loadFromBase</a>( <span>string <var>$table</var></span> )</code>
 
 		<div class="description short">
 			
+<p>получение структуры таблицы из
+подключенной базы</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>получение структуры таблицы из
+подключенной базы</p>
 
 
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$table</var></dt>
+					<dd><code>string</code><br>$table Имя таблицы</dd>
+				</dl></div>
 
 
 
@@ -308,24 +347,37 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			boolean
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_saveToIniFile">#</a>
-		<code><a href="source-class-table_structure.html#70-73" title="Go to source code">saveToIniFile</a>( <span>mixed <var>$path</var></span> )</code>
+		<code><a href="source-class-table_structure.html#95-102" title="Go to source code">saveToIniFile</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
+<p>сохранение структуры в INI файл</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>сохранение структуры в INI файл</p>
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
 
 
@@ -337,24 +389,34 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			string
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getSQLQueryCreate">#</a>
-		<code><a href="source-class-table_structure.html#75-105" title="Go to source code">getSQLQueryCreate</a>( )</code>
+		<code><a href="source-class-table_structure.html#104-143" title="Go to source code">getSQLQueryCreate</a>( )</code>
 
 		<div class="description short">
 			
+<p>получение SQL запроса на создание
+таблицы</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>получение SQL запроса на создание
+таблицы</p>
 
 
 
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>SQL запрос на создание таблицы<br />
+				</div>
 
 
 
@@ -366,24 +428,40 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			string
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getSQLQueryChange">#</a>
-		<code><a href="source-class-table_structure.html#107-199" title="Go to source code">getSQLQueryChange</a>( <span>mixed <var>$tStruct_obj</var></span> )</code>
+		<code><a href="source-class-table_structure.html#145-250" title="Go to source code">getSQLQueryChange</a>( <span><code><a href="class-table_structure.html">table_structure</a></code> <var>$tStruct_obj</var></span> )</code>
 
 		<div class="description short">
 			
+<p>получение SQL запроса на изменение
+таблицы</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>получение SQL запроса на изменение
+таблицы</p>
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$tStruct_obj</var></dt>
+					<dd><code><code><a href="class-table_structure.html">table_structure</a></code></code><br>$tStruct_obj Структура целевой таблицы</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>SQL запрос для приведения структуры таблицы
+к $tStruct_obj<br />
+				</div>
 
 
 
@@ -408,12 +486,12 @@
 	<caption>Properties summary</caption>
 	<tr data-order="_structure" id="$_structure">
 		<td class="attributes"><code>
-			public  
+			protected  
 			array
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-table_structure.html#7" title="Go to source code"><var>$_structure</var></a>
+				<a href="source-class-table_structure.html#9" title="Go to source code"><var>$_structure</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
 		<td class="description"><div>
@@ -431,12 +509,12 @@
 	</tr>
 	<tr data-order="_properties" id="$_properties">
 		<td class="attributes"><code>
-			public  
+			protected  
 			array
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-table_structure.html#8" title="Go to source code"><var>$_properties</var></a>
+				<a href="source-class-table_structure.html#10" title="Go to source code"><var>$_properties</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
 		<td class="description"><div>

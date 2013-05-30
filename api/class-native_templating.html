@@ -229,41 +229,39 @@
 
 		<td class="attributes"><code>
 			 public 
-			type
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_assign">#</a>
-		<code><a href="source-class-native_templating.html#16-31" title="Go to source code">assign</a>( <span>type <var>$name</var></span>, <span>type <var>$value</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$filter</var> = <span class="php-num">0</span></span> )</code>
+		<code><a href="source-class-native_templating.html#16-31" title="Go to source code">assign</a>( <span>string <var>$name</var></span>, <span>mixed <var>$value</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$filter</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			
-<p>Передача переменной в шаблон</p>
+<p>Установка переменной в шаблон</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Передача переменной в шаблон</p>
+<p>Установка переменной в шаблон</p>
 
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$name</var></dt>
-					<dd><code>type</code><br>$name</dd>
+					<dd><code>string</code><br>$name Ключ переменной</dd>
 					<dt><var>$value</var></dt>
-					<dd><code>type</code><br>$value</dd>
+					<dd><code>mixed</code><br>$value Значение</dd>
 					<dt><var>$filter</var></dt>
-					<dd></dd>
+					<dd><code>integer</code><br>$filter Тип фильтрации. 0 - без фильтрации, 1 -
+экранирование HTML, 2 - полноценная обработка
+BBCODE с фильтрацией</dd>
 				</dl></div>
 
-				<h4>Returns</h4>
-				<div class="list">
-					<code>type</code><br />
-				</div>
 
 
 
@@ -275,14 +273,14 @@
 
 		<td class="attributes"><code>
 			 public 
-			null
+			string
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetch">#</a>
-		<code><a href="source-class-native_templating.html#33-52" title="Go to source code">fetch</a>( <span>type <var>$tpl_file</var></span> )</code>
+		<code><a href="source-class-native_templating.html#33-52" title="Go to source code">fetch</a>( <span>string <var>$tpl_file</var></span> )</code>
 
 		<div class="description short">
 			
@@ -299,12 +297,13 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$tpl_file</var></dt>
-					<dd><code>type</code><br>$tpl_file</dd>
+					<dd><code>string</code><br>$tpl_file Путь к файлу шаблона или его имя, если
+указан dir_template</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>null</code><br />
+					<code>string</code><br>HTML код после обработки<br />
 				</div>
 
 
@@ -324,7 +323,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_display">#</a>
-		<code><a href="source-class-native_templating.html#54-60" title="Go to source code">display</a>( <span>type <var>$tpl_file</var></span> )</code>
+		<code><a href="source-class-native_templating.html#54-60" title="Go to source code">display</a>( <span>string <var>$tpl_file</var></span> )</code>
 
 		<div class="description short">
 			
@@ -341,7 +340,8 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$tpl_file</var></dt>
-					<dd><code>type</code><br>$tpl_file</dd>
+					<dd><code>string</code><br>$tpl_file Путь к файлу шаблона или его имя, если
+указан dir_template</dd>
 				</dl></div>
 
 
@@ -355,14 +355,14 @@
 
 		<td class="attributes"><code>
 			 protected 
-			boolean
+			string
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#__getTemplatePath">#</a>
-		<code><a href="source-class-native_templating.html#62-82" title="Go to source code">_getTemplatePath</a>( <span>type <var>$tpl_name</var></span> )</code>
+		<code><a href="source-class-native_templating.html#62-82" title="Go to source code">_getTemplatePath</a>( <span>string <var>$tpl_name</var></span> )</code>
 
 		<div class="description short">
 			
@@ -379,12 +379,13 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$tpl_name</var></dt>
-					<dd><code>type</code><br>$tpl_name</dd>
+					<dd><code>string</code><br>$tpl_name Путь к файлу шаблона или его имя, если
+указан dir_template</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>boolean</code><br />
+					<code>string</code><br>Путь к файлу шаблона<br />
 				</div>
 
 
@@ -397,14 +398,14 @@
 
 		<td class="attributes"><code>
 			 protected 
-			type
+			string
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#__getTemplate">#</a>
-		<code><a href="source-class-native_templating.html#84-96" title="Go to source code">_getTemplate</a>( <span>type <var>$tpl_path</var></span> )</code>
+		<code><a href="source-class-native_templating.html#84-96" title="Go to source code">_getTemplate</a>( <span>string <var>$tpl_path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -423,12 +424,13 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$tpl_path</var></dt>
-					<dd><code>type</code><br>$tpl_path</dd>
+					<dd><code>string</code><br>$tpl_path Путь к файлу шаблона или его имя, если
+указан dir_template</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>type</code><br />
+					<code>string</code><br />
 				</div>
 
 

@@ -175,10 +175,10 @@
 </span><span id="14" class="l"><a class="l" href="#14"> 14: </a>    }
 </span><span id="15" class="l"><a class="l" href="#15"> 15: </a>
 </span><span id="16" class="l"><a class="l" href="#16"> 16: </a>    <span class="php-comment">/**
-</span></span><span id="17" class="l"><a class="l" href="#17"> 17: </a><span class="php-comment">     * Передача переменной в шаблон
-</span></span><span id="18" class="l"><a class="l" href="#18"> 18: </a><span class="php-comment">     * @param type $name
-</span></span><span id="19" class="l"><a class="l" href="#19"> 19: </a><span class="php-comment">     * @param type $value
-</span></span><span id="20" class="l"><a class="l" href="#20"> 20: </a><span class="php-comment">     * @return type
+</span></span><span id="17" class="l"><a class="l" href="#17"> 17: </a><span class="php-comment">     * Установка переменной в шаблон
+</span></span><span id="18" class="l"><a class="l" href="#18"> 18: </a><span class="php-comment">     * @param string $name Ключ переменной
+</span></span><span id="19" class="l"><a class="l" href="#19"> 19: </a><span class="php-comment">     * @param mixed $value Значение
+</span></span><span id="20" class="l"><a class="l" href="#20"> 20: </a><span class="php-comment">     * @param int $filter Тип фильтрации. 0 - без фильтрации, 1 - экранирование HTML, 2 - полноценная обработка BBCODE с фильтрацией
 </span></span><span id="21" class="l"><a class="l" href="#21"> 21: </a><span class="php-comment">     */</span>
 </span><span id="22" class="l"><a class="l" href="#22"> 22: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_assign" href="#_assign">assign</a>(<span class="php-var">$name</span>, <span class="php-var">$value</span> = <span class="php-keyword1">null</span>, <span class="php-var">$filter</span> = <span class="php-num">0</span>) {
 </span><span id="23" class="l"><a class="l" href="#23"> 23: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_array</span>(<span class="php-var">$name</span>)) {
@@ -193,8 +193,8 @@
 </span><span id="32" class="l"><a class="l" href="#32"> 32: </a>
 </span><span id="33" class="l"><a class="l" href="#33"> 33: </a>    <span class="php-comment">/**
 </span></span><span id="34" class="l"><a class="l" href="#34"> 34: </a><span class="php-comment">     * Получение обработанного шаблона
-</span></span><span id="35" class="l"><a class="l" href="#35"> 35: </a><span class="php-comment">     * @param type $tpl_file
-</span></span><span id="36" class="l"><a class="l" href="#36"> 36: </a><span class="php-comment">     * @return null
+</span></span><span id="35" class="l"><a class="l" href="#35"> 35: </a><span class="php-comment">     * @param string $tpl_file Путь к файлу шаблона или его имя, если указан dir_template
+</span></span><span id="36" class="l"><a class="l" href="#36"> 36: </a><span class="php-comment">     * @return string HTML код после обработки
 </span></span><span id="37" class="l"><a class="l" href="#37"> 37: </a><span class="php-comment">     */</span>
 </span><span id="38" class="l"><a class="l" href="#38"> 38: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_fetch" href="#_fetch">fetch</a>(<span class="php-var">$tpl_file</span>) {
 </span><span id="39" class="l"><a class="l" href="#39"> 39: </a>        <span class="php-keyword1">if</span> ((<span class="php-var">$tpl_path</span> = <span class="php-var">$this</span>-&gt;_getTemplatePath(<span class="php-var">$tpl_file</span>)) === <span class="php-keyword1">false</span>) {
@@ -214,7 +214,7 @@
 </span><span id="53" class="l"><a class="l" href="#53"> 53: </a>
 </span><span id="54" class="l"><a class="l" href="#54"> 54: </a>    <span class="php-comment">/**
 </span></span><span id="55" class="l"><a class="l" href="#55"> 55: </a><span class="php-comment">     * выводим обработанный шаблон
-</span></span><span id="56" class="l"><a class="l" href="#56"> 56: </a><span class="php-comment">     * @param type $tpl_file
+</span></span><span id="56" class="l"><a class="l" href="#56"> 56: </a><span class="php-comment">     * @param string $tpl_file Путь к файлу шаблона или его имя, если указан dir_template
 </span></span><span id="57" class="l"><a class="l" href="#57"> 57: </a><span class="php-comment">     */</span>
 </span><span id="58" class="l"><a class="l" href="#58"> 58: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_display" href="#_display">display</a>(<span class="php-var">$tpl_file</span>) {
 </span><span id="59" class="l"><a class="l" href="#59"> 59: </a>        <span class="php-keyword1">echo</span> <span class="php-var">$this</span>-&gt;fetch(<span class="php-var">$tpl_file</span>);
@@ -222,8 +222,8 @@
 </span><span id="61" class="l"><a class="l" href="#61"> 61: </a>
 </span><span id="62" class="l"><a class="l" href="#62"> 62: </a>    <span class="php-comment">/**
 </span></span><span id="63" class="l"><a class="l" href="#63"> 63: </a><span class="php-comment">     * получение пути к файлу шаблона
-</span></span><span id="64" class="l"><a class="l" href="#64"> 64: </a><span class="php-comment">     * @param type $tpl_name
-</span></span><span id="65" class="l"><a class="l" href="#65"> 65: </a><span class="php-comment">     * @return boolean
+</span></span><span id="64" class="l"><a class="l" href="#64"> 64: </a><span class="php-comment">     * @param string $tpl_name Путь к файлу шаблона или его имя, если указан dir_template
+</span></span><span id="65" class="l"><a class="l" href="#65"> 65: </a><span class="php-comment">     * @return string Путь к файлу шаблона
 </span></span><span id="66" class="l"><a class="l" href="#66"> 66: </a><span class="php-comment">     */</span>
 </span><span id="67" class="l"><a class="l" href="#67"> 67: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__getTemplatePath" href="#__getTemplatePath">_getTemplatePath</a>(<span class="php-var">$tpl_name</span>) {
 </span><span id="68" class="l"><a class="l" href="#68"> 68: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">strpos</span>(<span class="php-var">$tpl_name</span>, <span class="php-quote">'file:'</span>) === <span class="php-num">0</span>) {
@@ -245,8 +245,8 @@
 </span><span id="84" class="l"><a class="l" href="#84"> 84: </a>    <span class="php-comment">/**
 </span></span><span id="85" class="l"><a class="l" href="#85"> 85: </a><span class="php-comment">     * Получение содержимого шаблона (по возможности из кэша)
 </span></span><span id="86" class="l"><a class="l" href="#86"> 86: </a><span class="php-comment">     * @staticvar array $templates
-</span></span><span id="87" class="l"><a class="l" href="#87"> 87: </a><span class="php-comment">     * @param type $tpl_path
-</span></span><span id="88" class="l"><a class="l" href="#88"> 88: </a><span class="php-comment">     * @return type
+</span></span><span id="87" class="l"><a class="l" href="#87"> 87: </a><span class="php-comment">     * @param string $tpl_path Путь к файлу шаблона или его имя, если указан dir_template
+</span></span><span id="88" class="l"><a class="l" href="#88"> 88: </a><span class="php-comment">     * @return string
 </span></span><span id="89" class="l"><a class="l" href="#89"> 89: </a><span class="php-comment">     */</span>
 </span><span id="90" class="l"><a class="l" href="#90"> 90: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__getTemplate" href="#__getTemplate">_getTemplate</a>(<span class="php-var">$tpl_path</span>) {
 </span><span id="91" class="l"><a class="l" href="#91"> 91: </a>        <span class="php-keyword1">static</span> <span class="php-var"><a id="$templates" href="#$templates">$templates</a></span> = <span class="php-keyword1">array</span>();
@@ -289,10 +289,7 @@
 </span><span id="128" class="l"><a class="l" href="#128">128: </a>        <span class="php-keyword1">return</span> <span class="php-keyword2">str_replace</span>(<span class="php-var">$keys</span>, <span class="php-var">$values</span>, <span class="php-var">$tpl</span>);
 </span><span id="129" class="l"><a class="l" href="#129">129: </a>    }
 </span><span id="130" class="l"><a class="l" href="#130">130: </a>
-</span><span id="131" class="l"><a class="l" href="#131">131: </a>}
-</span><span id="132" class="l"><a class="l" href="#132">132: </a>
-</span><span id="133" class="l"><a class="l" href="#133">133: </a><span class="xlang">?&gt;</span>
-</span><span id="134" class="l"><a class="l" href="#134">134: </a></span></code></pre>
+</span><span id="131" class="l"><a class="l" href="#131">131: </a></span>}</code></pre>
 
 	<div id="footer">
 		DCMS Seven API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>

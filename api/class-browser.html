@@ -169,10 +169,6 @@
 
 
 
-	<div>
-		<h4>Direct known subclasses</h4>
-			<a href="class-dcms.html">dcms</a>
-	</div>
 
 
 
@@ -180,30 +176,217 @@
 
 
 	<div class="info">
-		
+		<b>Abstract</b><br />
 		
 		
 		
 
-		<b>Located at</b> <a href="source-class-browser.html#3-338" title="Go to source code">sys/plugins/classes/browser.class.php</a><br />
+		<b>Located at</b> <a href="source-class-browser.html#3-355" title="Go to source code">sys/plugins/classes/browser.class.php</a><br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="__construct" id="___construct">
+	<tr data-order="getIEver" id="_getIEver">
 
 		<td class="attributes"><code>
-			 public 
+			 public static
+			integer|false
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getIEver">#</a>
+		<code><a href="source-class-browser.html#8-15" title="Go to source code">getIEver</a>( )</code>
+
+		<div class="description short">
+			
+<p>Возвращает версию IE или false</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Возвращает версию IE или false</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>integer|false</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getType" id="_getType">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getType">#</a>
+		<code><a href="source-class-browser.html#17-24" title="Go to source code">getType</a>( )</code>
+
+		<div class="description short">
+			
+<p>Возвращает тип браузера</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Возвращает тип браузера</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>wap|pda|itouch|web<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getName" id="_getName">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getName">#</a>
+		<code><a href="source-class-browser.html#26-33" title="Go to source code">getName</a>( )</code>
+
+		<div class="description short">
+			
+<p>Возвращает название браузера и его
+мажорную версию</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Возвращает название браузера и его
+мажорную версию</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getIpLong" id="_getIpLong">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getIpLong">#</a>
+		<code><a href="source-class-browser.html#35-45" title="Go to source code">getIpLong</a>( )</code>
+
+		<div class="description short">
+			
+<p>Возвращает информацию о IP в формате IP_LONG</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Возвращает информацию о IP в формате IP_LONG</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getBrowserInfo" id="_getBrowserInfo">
+
+		<td class="attributes"><code>
+			 public static
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getBrowserInfo">#</a>
+		<code><a href="source-class-browser.html#47-57" title="Go to source code">getBrowserInfo</a>( )</code>
+
+		<div class="description short">
+			
+<p>Возвращает информацию о браузере</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Возвращает информацию о браузере</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="_getBrowserinfo" id="__getBrowserinfo">
+
+		<td class="attributes"><code>
+			 protected static
 			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-browser.html#13-16" title="Go to source code">__construct</a>( )</code>
+		<a class="anchor" href="#__getBrowserinfo">#</a>
+		<code><a href="source-class-browser.html#59-310" title="Go to source code">_getBrowserinfo</a>( )</code>
 
 		<div class="description short">
 			
@@ -221,18 +404,18 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="browser_version" id="_browser_version">
+	<tr data-order="_browser_version" id="__browser_version">
 
 		<td class="attributes"><code>
-			 protected 
+			 protected static
 			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_browser_version">#</a>
-		<code><a href="source-class-browser.html#280-284" title="Go to source code">browser_version</a>( <span>mixed <var>$user_agent</var></span> )</code>
+		<a class="anchor" href="#__browser_version">#</a>
+		<code><a href="source-class-browser.html#312-316" title="Go to source code">_browser_version</a>( <span>mixed <var>$user_agent</var></span> )</code>
 
 		<div class="description short">
 			
@@ -250,47 +433,18 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="phone_model" id="_phone_model">
+	<tr data-order="_phone_model" id="__phone_model">
 
 		<td class="attributes"><code>
-			 protected 
+			 protected static
 			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_phone_model">#</a>
-		<code><a href="source-class-browser.html#286-321" title="Go to source code">phone_model</a>( <span>mixed <var>$ua</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="browser_id" id="_browser_id">
-
-		<td class="attributes"><code>
-			 protected 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_browser_id">#</a>
-		<code><a href="source-class-browser.html#323-336" title="Go to source code">browser_id</a>( )</code>
+		<a class="anchor" href="#__phone_model">#</a>
+		<code><a href="source-class-browser.html#318-353" title="Go to source code">_phone_model</a>( <span>mixed <var>$ua</var></span> )</code>
 
 		<div class="description short">
 			
@@ -321,101 +475,6 @@
 
 
 
-	<table class="summary" id="properties">
-	<caption>Properties summary</caption>
-	<tr data-order="browser_type_auto" id="$browser_type_auto">
-		<td class="attributes"><code>
-			public  
-			mixed
-		</code></td>
-
-		<td class="name">
-				<a href="source-class-browser.html#8" title="Go to source code"><var>$browser_type_auto</var></a>
-		</td>
-		<td class="value"><code></code></td>
-		<td class="description"><div>
-			<a href="#$browser_type_auto" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="browser" id="$browser">
-		<td class="attributes"><code>
-			public  
-			mixed
-		</code></td>
-
-		<td class="name">
-				<a href="source-class-browser.html#9" title="Go to source code"><var>$browser</var></a>
-		</td>
-		<td class="value"><code></code></td>
-		<td class="description"><div>
-			<a href="#$browser" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="ip_long" id="$ip_long">
-		<td class="attributes"><code>
-			public  
-			mixed
-		</code></td>
-
-		<td class="name">
-				<a href="source-class-browser.html#10" title="Go to source code"><var>$ip_long</var></a>
-		</td>
-		<td class="value"><code></code></td>
-		<td class="description"><div>
-			<a href="#$ip_long" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="ie_ver" id="$ie_ver">
-		<td class="attributes"><code>
-			public  
-			boolean
-		</code></td>
-
-		<td class="name">
-				<a href="source-class-browser.html#11" title="Go to source code"><var>$ie_ver</var></a>
-		</td>
-		<td class="value"><code><span class="php-keyword1">false</span></code></td>
-		<td class="description"><div>
-			<a href="#$ie_ver" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	</table>
 
 
 
