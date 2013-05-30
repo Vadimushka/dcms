@@ -56,6 +56,9 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
             case 'salt_user':
                 return $this->salt . @$_SERVER['HTTP_USER_AGENT'];
                 break;
+            case 'ip_long':
+                return browser::getIpLong();
+                break;
             case 'subdomain_main':
                 return $this->_subdomain_main();
                 break;
