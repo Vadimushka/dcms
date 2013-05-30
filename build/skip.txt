@@ -15,6 +15,7 @@ nbproject
 .buildpath
 .project
 sys/ini/settings.ini
+sys/ini/iv.dat
 changelog.txt
 webstat
 cgi-bin
