@@ -33,7 +33,13 @@ $post->title = __('Список изменений');
 $post->icon('changelog');
 
 foreach ($ch_files as $ch_file) {
-    $post->content[] = '[b]' . basename($ch_file, '.txt') . "[/b]";
+    $ch_ver = basename($ch_file, '.txt');
+
+    if (version_compare($ch_ver, $conf_release['version_last'] . '.' . $conf_release['build_num'], '<='))
+        continue;
+
+    $post->content[] = '[b]' . $ch_ver . "[/b]";
+    
     $bb = new bb($ch_file);
     $post->content[] = trim($bb->getText());
 }
