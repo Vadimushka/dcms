@@ -23,7 +23,12 @@ $post->title = __('Список изменений');
 $post->icon('changelog');
 
 foreach ($ch_files as $ch_file) {
-    $post->content[] = '[b]' . basename($ch_file, '.txt') . "[/b]";
+    $ch_ver = basename($ch_file, '.txt');
+
+    if (version_compare($ch_ver, $conf['version_last'] . '.' . $conf['build_num'], '>'))
+        continue;
+
+    $post->content[] = '[b]' . $ch_ver . "[/b]";
     $bb = new bb($ch_file);
     $post->content[] = trim($bb->getText());
 }
@@ -46,7 +51,6 @@ $listing->display();
 
 
 $form = new form('download/' . $conf['version_last'] . '.' . $conf['build_num'] . '.zip', false);
-$form->button(__('Скачать %s', 'DCMS ' . $conf['version_last']));
+$form->button(__('Скачать %s', 'DCMS ' . $conf['version_last']. '.' . $conf['build_num']));
 $form->display();
-
 ?>
