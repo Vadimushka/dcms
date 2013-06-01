@@ -62,6 +62,13 @@ if (($ver = $update->is_updateble()) !== false) {
     $form->display();
 } else {
     $doc->msg(__('Вы используете последнюю версию: %s', $dcms->version));
+
+    $listing = new listing();
+    $post = $listing->post();
+    $post->title = __('Информация');
+    $post->icon('info');
+    $post->content[] = __('Проверяются только стабильные версии');
+    $listing->display();
 }
 
 $doc->ret(__('Админка'), '/dpanel/');
