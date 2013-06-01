@@ -15,19 +15,19 @@ if ($user->group) {
 $listing = new listing();
 
 $post = $listing->post();
-$post->icon = '/sys/images/icons/cms.png';
+$post->icon('cms');
 $post->url = '/build/';
 $post->hightlight = true;
 $post->title = __('Скачать') . ' DCMS ' . $conf['version_last'] . (($beta_show && $conf['version_last'] == $conf_beta['version_last']) ? '.' . $conf['build_num'] : '');
 
 $post = $listing->post();
-$post->icon = '/sys/images/icons/cms.png';
+$post->icon('cms');
 $post->url = '/build/updates.php';
 $post->title = __('Пакеты обновлений');
 
 if ($beta_show) {
     $post = $listing->post();
-    $post->icon = '/sys/images/icons/cms.png';
+    $post->icon('cms');
     $post->url = '/build/beta.php';
     $post->title = 'DCMS BETA ' . $conf_beta['version_last'] . '.' . $conf_beta['build_num'];
 }

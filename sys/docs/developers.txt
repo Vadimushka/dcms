@@ -2,9 +2,18 @@
 [big]Создатель и главный разработчик:[/big]
 - [b][url="http://dcms.su/profile.view.php?id=1"]DESURE[/url][/b]
 
+[b]Хотите присоединиться к числу разработчиков?[/b]
+[b]Обладаете хорошими знаниями PHP, MySQL и имеете опыт работы с DCMS?[/b]
+Пишите на [b]desure[/b]@mail.ru
+
 [big]Дизайнеры:[/big]
-- [b][url="http://dcms.su/profile.view.php?id=23"]VaiZerD[/url][/b]
 - [b][url="http://dcms.su/profile.view.php?id=1"]DESURE[/url][/b]
+
+[b]Хотите присоединиться к числу дизайнеров?[/b]
+[b]У вас есть чувство стиля?[/b]
+[b]Имеются знания PHP, HTML, CSS и опыт верстки под различные устройства?[/b]
+[b]Имеете опыт работы с DCMS?[/b]
+Пишите на [b]desure[/b]@mail.ru
 
 [big]Локализация:[/big]
 - [b][url="http://lysianka.org.ua/id1"]S1S13AF7[/url][/b]: Ukrainian

@@ -19,12 +19,10 @@ foreach ($nw as $path) {
 $listing->display();
 
 if ($err) { 
-    echo '<textarea>';
-    foreach ($err as $error) {
-        echo $error . "\r\n";
-    }
-    echo '</textarea><br />';
-    echo '* ' . __('В зависимости от настроек на хостинге, CHMOD для возможности записи должен быть от 644 до 666') . '<br />';
+    $form = new form();
+    $form->textarea('', '', implode("\r\n", $err));
+    $form->bbcode('* ' . __('В зависимости от настроек на хостинге, CHMOD для возможности записи должен быть от 644 до 666'));
+    $form->display();
 }else
     $doc->msg( __('Необходимые права на запись имеются'));
 

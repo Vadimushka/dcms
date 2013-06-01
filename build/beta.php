@@ -59,7 +59,7 @@ $listing->display();
 
 
 $form = new form('download/' . $conf['version_last'] . '.' . $conf['build_num'] . '.zip', false);
-$form->button(__('Скачать %s', 'DCMS ' . $conf['version_last'] . ' BETA'));
+$form->button(__('Скачать %s', 'DCMS ' . $conf['version_last']. '.' . $conf['build_num'] . ' BETA'));
 $form->display();
 
 if (groups::max() == $user->group) {

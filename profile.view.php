@@ -62,6 +62,53 @@ if ($user->group && $ank->id && $user->id != $ank->id && isset($_GET ['friend'])
     }
 }
 
+if ($user->group && $ank->id && $user->id != $ank->id) {
+    $q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$user->id' AND `id_friend` = '$ank->id' LIMIT 1");
+    if (mysql_num_rows($q)) {
+        $friend = mysql_fetch_assoc($q);
+        if ($friend ['confirm']) {
+            // пользователь находится в друзьях
+            if (isset($_GET ['friend']) && $_GET ['friend'] == 'delete') {
+                $form = new design ();
+                $form->assign('method', 'post');
+                $form->assign('action', "?id={$ank->id}&amp;friend&amp;" . passgen());
+                $elements = array();
+                $elements [] = array('type' => 'text', 'br' => 1, 'value' => output_text(__('Действительно хотите удалить пользователя "%s" из друзей?', $ank->login))); // правила
+                $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Да, удалить'))); // кнопка
+                $form->assign('el', $elements);
+                $form->display('input.form.tpl');
+            }
+
+            if (!$ank->is_friend($user))
+                echo "<b>" . __('Пользователь еще не подтвердил факт Вашей дружбы') . "</b><br />";
+            $doc->act(__('Удалить из друзей'), "?id={$ank->id}&amp;friend=delete");
+        } else {
+            // пользователь не в друзьях
+            $form = new design ();
+            $form->assign('method', 'post');
+            $form->assign('action', "?id={$ank->id}&amp;friend&amp;" . passgen());
+            $elements = array();
+            $elements [] = array('type' => 'text', 'br' => 1, 'value' => output_text(__('Пользователь "%s" предлагает Вам дружбу', $ank->login))); // правила
+            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'ok', 'value' => __('Принимаю'))); // кнопка
+            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'no', 'value' => __('Не принимаю'))); // кнопка
+            $form->assign('el', $elements);
+            $form->display('input.form.tpl');
+        }
+    } else {
+        if (isset($_GET ['friend']) && $_GET ['friend'] == 'add') {
+            $form = new design ();
+            $form->assign('method', 'post');
+            $form->assign('action', "?id={$ank->id}&amp;friend&amp;" . passgen());
+            $elements = array();
+            $elements [] = array('type' => 'text', 'br' => 1, 'value' => output_text(__('Предложить пользователю "%s" дружбу?', $ank->login))); // правила
+            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'add', 'value' => __('Предложить'))); // кнопка
+            $form->assign('el', $elements);
+            $form->display('input.form.tpl');
+        }
+        $doc->act(__('Добавить в друзья'), "?id={$ank->id}&amp;friend=add");
+    }
+}
+
 if ($ank->is_ban) {
     $ban_listing = new listing();
 
@@ -370,53 +417,6 @@ if (mysql_num_rows($q)) {
 
 $listing->display();
 
-
-if ($user->group && $ank->id && $user->id != $ank->id) {
-    $q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$user->id' AND `id_friend` = '$ank->id' LIMIT 1");
-    if (mysql_num_rows($q)) {
-        $friend = mysql_fetch_assoc($q);
-        if ($friend ['confirm']) {
-            // пользователь находится в друзьях
-            if (isset($_GET ['friend']) && $_GET ['friend'] == 'delete') {
-                $form = new design ();
-                $form->assign('method', 'post');
-                $form->assign('action', "?id={$ank->id}&amp;friend&amp;" . passgen());
-                $elements = array();
-                $elements [] = array('type' => 'text', 'br' => 1, 'value' => output_text(__('Действительно хотите удалить пользователя "%s" из друзей?', $ank->login))); // правила
-                $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Да, удалить'))); // кнопка
-                $form->assign('el', $elements);
-                $form->display('input.form.tpl');
-            }
-
-            if (!$ank->is_friend($user))
-                echo "<b>" . __('Пользователь еще не подтвердил факт Вашей дружбы') . "</b><br />";
-            $doc->act(__('Удалить из друзей'), "?id={$ank->id}&amp;friend=delete");
-        } else {
-            // пользователь не в друзьях
-            $form = new design ();
-            $form->assign('method', 'post');
-            $form->assign('action', "?id={$ank->id}&amp;friend&amp;" . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'text', 'br' => 1, 'value' => output_text(__('Пользователь "%s" предлагает Вам дружбу', $ank->login))); // правила
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'ok', 'value' => __('Принимаю'))); // кнопка
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'no', 'value' => __('Не принимаю'))); // кнопка
-            $form->assign('el', $elements);
-            $form->display('input.form.tpl');
-        }
-    } else {
-        if (isset($_GET ['friend']) && $_GET ['friend'] == 'add') {
-            $form = new design ();
-            $form->assign('method', 'post');
-            $form->assign('action', "?id={$ank->id}&amp;friend&amp;" . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'text', 'br' => 1, 'value' => output_text(__('Предложить пользователю "%s" дружбу?', $ank->login))); // правила
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'add', 'value' => __('Предложить'))); // кнопка
-            $form->assign('el', $elements);
-            $form->display('input.form.tpl');
-        }
-        $doc->act(__('Добавить в друзья'), "?id={$ank->id}&amp;friend=add");
-    }
-}
 
 if ($user->group && $ank->id != $user->id) {
     $doc->act(__('Написать сообщение'), "my.mail.php?id={$ank->id}");

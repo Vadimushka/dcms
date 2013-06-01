@@ -22,7 +22,7 @@ if ( document.addEventListener ) {
 }else{
     window.onload = function(){
         DCMS.Event.trigger('ready');
-    } 
+    };
 }
 
 DCMS.listing_update = function(url, ids, callback, callback_err){
