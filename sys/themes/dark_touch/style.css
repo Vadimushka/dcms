@@ -83,7 +83,7 @@ a{
 }
 
 .form{
-    margin: 0 15px;
+    margin: 0 10px;
     margin-bottom: 10px;
     padding: 5px;
     position: relative;
@@ -186,13 +186,17 @@ a{
 }
 
 .listing{
-    margin: 0 15px;
+    margin: 0 10px;
     margin-bottom: 10px;
     background-color: #0C0C0C;
     border-radius: 2px;
     box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.54), 0 0 0 3px #222;
     border: 1px solid;
     border-color: #151515 #0D0D0D #0D0D0D #151515;
+}
+
+.listing .listing{
+    margin: 5px;
 }
 
 .post > table{
@@ -289,7 +293,7 @@ a.post:hover{
 }
 
 #actions, #returns{
-    margin: 0 15px;
+    margin: 0 10px;
     margin-bottom: 15px;
     background-color: #0C0C0C;
     border-radius: 2px;
@@ -406,45 +410,65 @@ a.post:hover{
 
 
 /* Голосования */
-div.vote {
-    margin: 3px;
-    padding: 3px;
-
+div.votes {
+    margin: 0 10px;
+    margin-bottom: 15px;
+    background-color: #0C0C0C;
+    border-radius: 2px;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.54), 0 0 0 3px #222;
+    border: 1px solid;
+    border-color: #151515 #0D0D0D #0D0D0D #151515;
+    padding: 4px;
 }
-div.vote a:hover {
+div.votes a:hover {
     text-decoration: none;
 }
-div.vote_name {
+div.votes_name {
     font-weight: bold;
     font-size: x-small;
     padding-bottom: 4px;
 }
-td.votes {
-    margin: 2px;
-    border: 1px #B4B4B4 solid;
-    border-radius: 2px;
+
+td.vote_title{
+    padding-top: 10px;
+    font-size: 80%;
 }
-td.votes > div > div {
-    height: 30px;
-    border-radius: 2px;
-    min-width: 30px;
-    padding: 6px;
+
+td.vote_bar {
+    border: 1px #222 solid;
+    border-radius: 5px;
+    box-shadow: inset 1px 2px 5px 2px #000;
+    overflow: hidden;
 }
-td.votes_add {
+td.vote_bar div.vote_bar {
+    height: 36px;
+    min-width: 40px;
+    padding: 8px 6px;
+    background-color: #BB8E00;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset 0 -15px 20px rgba(0, 0, 0, 0.25), 1px 1px 2px rgba(0, 0, 0, 0.5);
+    border: 1px solid #271B00;
+    border-radius: 4px;
+    color: #222;
+    text-shadow: 0 -1px rgba(255, 255, 255, 0.16);
+}
+
+td.vote_add {
     width: 30px;
 }
-td.votes_add a {
+
+td.vote_add a {
     text-align: center;
     display: block;
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 38px;
     margin: 0px 3px 0px 3px;
-    padding: 5px;    
-
-    border: 1px #B4B4B4 solid;
-    border-radius: 2px;
-    color: #4F5155;
-    text-shadow: 0 -1px 1px white;
+    padding: 9px;
+    border: 1px solid;
+    border-color: #777 #444 #444 #777;
+    background-color: #555;
+    box-shadow: inset 0 16px 13px rgba(255, 255, 255, 0.1), 1px 1px 1px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    color: #222;
 }
 
 
