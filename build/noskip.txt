@@ -4,5 +4,6 @@ sys/files/.avatars/.!config.dir.ini
 sys/files/.photos/.!config.dir.ini
 sys/files/.obmen/.!config.dir.ini
 sys/files/.bbcode/.!config.dir.ini
+sys/files/.!config.dir.ini
 sys/tmp/.htaccess
 sys/logs/.htaccess
