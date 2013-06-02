@@ -219,7 +219,7 @@ abstract class text {
      * @return string
      */
     static function for_name($text) {
-        return trim(preg_replace('#[^\pL0-9\=\?\!\@\#\$^\*\(\)\-_\+ ,\.:;]+#ui', '', $text));
+        return trim(preg_replace('#[^\pL0-9\=\?\!\@\\\%/\#\$^\*\(\)\-_\+ ,\.:;]+#ui', '', $text));
     }
 
     /**
