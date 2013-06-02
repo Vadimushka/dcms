@@ -50,7 +50,7 @@ class cache_file {
 
             // удаленный кэш все равно вернет false, поэтому в целях незахламления папки tmp лучше файл удалить
             if (!$content) {
-                unlink($path);
+                @unlink($path);
                 continue;
             }
 

@@ -87,7 +87,7 @@ class document extends design {
         if ($dcms->browser == 'Microsoft Internet Explorer') {
             $content_type = 'text/html';
             header('X-UA-Compatible: IE=edge', true); // отключение режима совместимости в осле
-        } else if ($this->theme['content'] === 'xhtml')
+        } else if (!empty($this->theme['content']) && $this->theme['content'] === 'xhtml')
             $content_type = 'application/xhtml+xml';
         else
             $content_type = 'text/html';

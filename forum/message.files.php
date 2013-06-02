@@ -111,17 +111,16 @@ if (!empty($_FILES['file'])) {
 
 $doc->title = __('Файлы к сообщению от "%s"', $autor->login);
 
-
 $listing = new listing();
 $content = $dir->getList('time_add:asc');
-$files = &$content['files'];
 
-for ($i = 0; $i < count($files); $i++) {
+foreach ($content['files'] AS $file) {
     $post = $listing->post();
-    $post->icon($files[$i]->icon());
-    $post->title = for_value($files[$i]->runame);
-    $post->url = "/files{$dir->path_rel}/" . urlencode($files[$i]->name) . ".htm";
-    $post->content = output_text($files[$i]->properties);
+    $post->icon($file->icon());
+    $post->image = $file->image();
+    $post->title = for_value($file->runame);
+    $post->url = "/files{$dir->path_rel}/" . urlencode($file->name) . ".htm";
+    $post->content[] = $file->properties;
 }
 $listing->display(__('Вложения отсутствуют'));
 
