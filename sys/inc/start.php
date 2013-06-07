@@ -155,13 +155,13 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
         if (!AJAX) {
             // при ajax запросе данные о переходе засчитывать не будем
 
-            $q = mysql_query("SELECT * FROM `guest_online` WHERE `ip_long` = '{$dcms->ip_long}' AND `browser` = '" . my_esc($dcms->browser) . "' LIMIT 1");
+            $q = mysql_query("SELECT * FROM `guest_online` WHERE `ip_long` = '{$dcms->ip_long}' AND `browser` = '" . my_esc($dcms->browser_name) . "' LIMIT 1");
             if (mysql_num_rows($q)) {
                 // повторные переходы гостя
-                mysql_query("UPDATE `guest_online` SET `time_last` = '" . TIME . "', `request` = '" . my_esc($_SERVER ['REQUEST_URI']) . "', `conversions` = `conversions` + 1 WHERE  `ip_long` = '{$dcms->ip_long}' AND `browser` = '{$dcms->browser}' LIMIT 1");
+                mysql_query("UPDATE `guest_online` SET `time_last` = '" . TIME . "', `request` = '" . my_esc($_SERVER ['REQUEST_URI']) . "', `conversions` = `conversions` + 1 WHERE  `ip_long` = '{$dcms->ip_long}' AND `browser` = '{$dcms->browser_name}' LIMIT 1");
             } else {
                 // новый гость
-                mysql_query("INSERT INTO `guest_online` (`ip_long`, `browser`, `time_last`, `time_start`, `request` ) VALUES ('{$dcms->ip_long}', '" . my_esc($dcms->browser) . "', '" . TIME . "', '" . TIME . "', '" . my_esc($_SERVER ['REQUEST_URI']) . "')");
+                mysql_query("INSERT INTO `guest_online` (`ip_long`, `browser`, `time_last`, `time_start`, `request` ) VALUES ('{$dcms->ip_long}', '" . my_esc($dcms->browser_name) . "', '" . TIME . "', '" . TIME . "', '" . my_esc($_SERVER ['REQUEST_URI']) . "')");
             }
         }
     }

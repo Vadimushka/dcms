@@ -258,7 +258,8 @@ a.post:hover{
     font-size: 80%;
 }
 .post td.content{
-    font-size: 80%;    
+    font-size: 80%;
+    word-break: break-word;
 }
 
 .post td.bottom{
