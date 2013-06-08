@@ -71,10 +71,24 @@ if ($dcms->new_time_as_date) {
 
 /**
  * Подключение к базе данных
+
+ * Переходим на PDO
+ * Предлагаю, сделать двойное подключение, пока двиг не будет переписан под pdo,
+ * потом убрать обычное подключение через mysql_connect, но оставить возможность
+ * такого подключения (галочкой в админке) для совместимости движка со старыми модами
  */
 @mysql_connect($dcms->mysql_host, $dcms->mysql_user, $dcms->mysql_pass) or die('Нет соединения с MySQL сервером');
 @mysql_select_db($dcms->mysql_base) or die('Нет доступа к выбранной базе данных');
 mysql_query('SET NAMES "utf8"');
+
+try {
+    $db = new DebugPDO('mysql:host=' . $dcms->mysql_host . ';dbname=' . $dcms->mysql_base, $dcms->mysql_user, $dcms->mysql_pass);
+    $db->setAttribute(PDO :: ATTR_DEFAULT_FETCH_MODE, PDO :: FETCH_ASSOC);
+    $db->log_on();
+    $db->query("SET NAMES utf8;");
+} catch (Exception $e) {
+    die('Ошибка соединения с базой данных');
+}
 
 if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
     /**
@@ -134,34 +148,41 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
         $user->last_visit = TIME; // запись последнего посещения
         if (AJAX) {
             // при AJAX запросе только обновляем сведения о времени последнего посещения, чтобы пользователь оставался в онлайне
-            mysql_query("UPDATE `users_online` SET `time_last` = '" . TIME . "' WHERE `id_user` = '$user->id' LIMIT 1");
+            $res = $db->prepare("UPDATE `users_online` SET `time_last` = ? WHERE `id_user` = ? LIMIT 1");
+            $res->execute(Array(TIME, $user->id));
         } else {
 
             $user->conversions++; // счетчик переходов
 
-            $q = mysql_query("SELECT * FROM `users_online` WHERE `id_user` = '{$user->id}' LIMIT 1");
-            if (mysql_num_rows($q)) {
-                mysql_query("UPDATE `users_online` SET `conversions` = `conversions` + '1' , `time_last` = '" . TIME . "', `id_browser` = '$dcms->browser_id', `ip_long` = '$dcms->ip_long', `request` = '" . my_esc($_SERVER ['REQUEST_URI']) . "' WHERE `id_user` = '$user->id' LIMIT 1");
+            $q = $db->prepare("SELECT * FROM `users_online` WHERE `id_user` = ? LIMIT 1");
+            $q->execute(Array($user->id));
+            if ($q->fetch()) {
+                $res = $db->prepare("UPDATE `users_online` SET `conversions` = `conversions` + '1' , `time_last` = ?, `id_browser` = ?, `ip_long` = ?, `request` = ? WHERE `id_user` = ? LIMIT 1");
+                $res->execute(Array(TIME, $dcms->browser_id, $dcms->ip_long, $_SERVER ['REQUEST_URI'], $user->id));
             } else {
-                mysql_query("INSERT INTO `users_online` (`id_user`, `time_last`, `time_login`, `request`, `id_browser`, `ip_long`) VALUES ('$user->id', '" . TIME . "', '" . TIME . "', '" . my_esc($_SERVER ['REQUEST_URI']) . "', '$dcms->browser_id', '$dcms->ip_long')");
+                $res = $db->prepare("INSERT INTO `users_online` (`id_user`, `time_last`, `time_login`, `request`, `id_browser`, `ip_long`) VALUES (?, ?, ?, ?, ?, ?)");
+                $res->execute(Array($user->id, TIME, TIME, $_SERVER ['REQUEST_URI'], $dcms->browser_id, $dcms->ip_long));
                 $user->count_visit++; // счетчик посещений
             }
         }
     } else {
         // обработка гостя
         // зачистка гостей, вышедших из онлайна
-        mysql_query("DELETE FROM `guest_online` WHERE `time_last` < '" . (TIME - SESSION_LIFE_TIME) . "'");
+        $res = $db->query("DELETE FROM `guest_online` WHERE `time_last` < '" . (TIME - SESSION_LIFE_TIME) . "'");
 
         if (!AJAX) {
             // при ajax запросе данные о переходе засчитывать не будем
 
-            $q = mysql_query("SELECT * FROM `guest_online` WHERE `ip_long` = '{$dcms->ip_long}' AND `browser` = '" . my_esc($dcms->browser_name) . "' LIMIT 1");
-            if (mysql_num_rows($q)) {
+            $q = $db->prepare("SELECT * FROM `guest_online` WHERE `ip_long` = ? AND `browser` = ? LIMIT 1");
+            $q->execute(Array($dcms->ip_long, $dcms->browser_name));
+            if ($q->fetch()) {
                 // повторные переходы гостя
-                mysql_query("UPDATE `guest_online` SET `time_last` = '" . TIME . "', `request` = '" . my_esc($_SERVER ['REQUEST_URI']) . "', `conversions` = `conversions` + 1 WHERE  `ip_long` = '{$dcms->ip_long}' AND `browser` = '{$dcms->browser_name}' LIMIT 1");
+                $res = $db->prepare("UPDATE `guest_online` SET `time_last` = ?, `request` = ?, `conversions` = `conversions` + 1 WHERE  `ip_long` = ? AND `browser` = ? LIMIT 1");
+                $res->execute(Array(TIME, $_SERVER ['REQUEST_URI'], $dcms->ip_long, $dcms->browser_name));
             } else {
                 // новый гость
-                mysql_query("INSERT INTO `guest_online` (`ip_long`, `browser`, `time_last`, `time_start`, `request` ) VALUES ('{$dcms->ip_long}', '" . my_esc($dcms->browser_name) . "', '" . TIME . "', '" . TIME . "', '" . my_esc($_SERVER ['REQUEST_URI']) . "')");
+                $res = $db->prepare("INSERT INTO `guest_online` (`ip_long`, `browser`, `time_last`, `time_start`, `request` ) VALUES (?, ?, ?, ?, ?)");
+                $res->execute(Array($dcms->ip_long, $dcms->browser_name, TIME, TIME, $_SERVER ['REQUEST_URI']));
             }
         }
     }
