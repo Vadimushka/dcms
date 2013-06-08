@@ -9,15 +9,15 @@ if (!empty($_GET['set_lang'])) {
     if (!languages::exists($_GET['set_lang'])) {
         $doc->err(__('Запрашиваемый языковой пакет не найден'));
     } else {
-        $lang = new language_pack($_GET['set_lang']);
+        $user_language_pack = new language_pack($_GET['set_lang']);
 
         if ($user->group) {
-            $user->language = $lang->code;
+            $user->language = $user_language_pack->code;
         } else {
-            $_SESSION['language'] = $lang->code;
+            $_SESSION['language'] = $user_language_pack->code;
         }
 
-        $doc->msg(__('Языковой пакет %s (%s) успешно выбран', $lang->name, $lang->enname));
+        $doc->msg(__('Языковой пакет %s (%s) успешно выбран', $user_language_pack->name, $user_language_pack->enname));
 
         if (!empty($_GET['return'])) {
             header('Refresh: 1; url=' . $_GET['return']);
