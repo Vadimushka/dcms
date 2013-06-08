@@ -49,7 +49,7 @@ while ($themes = mysql_fetch_assoc($q)) {
     $last_msg = new user($themes['id_last']);
     $post->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . '<br />';
     $post->content .= "(<a href='category.php?id=$themes[id_category]'>" . for_value($themes['category_name']) . "</a> &gt; <a href='topic.php?id=$themes[id_topic]'>" . for_value($themes['topic_name']) . "</a>)<br />";
-    $post->bottom = __('Просмотров: %s ', $themes['views']);
+    $post->bottom = __('Просмотров: %s', $themes['views']);
     
 }
 
