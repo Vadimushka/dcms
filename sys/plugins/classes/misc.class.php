@@ -98,7 +98,7 @@ abstract class misc {
         elseif (date('n') == $m && date('j') < $d)
             $age--; // год не полный, если текущий месяц совпадает, но день меньше
         if ($read)
-            return $age . ' ' . self::number($age, 'год', 'года', 'лет');
+            return $age . ' ' . self::number($age, __('год'), __('года'), __('лет'));
 
         return $age;
     }
