@@ -7,12 +7,14 @@ class user extends plugins {
 
     protected $_update = array();
     protected $_data = array();
+    protected $db;
 
     /**
      * 
      * @param boolean|int|array $id_or_arrayToCache Идентификатор пользователя или массив идентификаторов для запроса из базы и помещения в кэш
      */
     function __construct($id_or_arrayToCache = false) {
+        $this->db = DB::me();
         if ($id_or_arrayToCache === false) {
             $this->_guest_init();
         } elseif (is_array($id_or_arrayToCache)) {
@@ -44,8 +46,10 @@ class user extends plugins {
         }
 
         if ($users_from_mysql) {
-            $q = mysql_query("SELECT * FROM `users` WHERE `id` IN (" . implode(',', $users_from_mysql) . ")");
-            while ($user_data = mysql_fetch_assoc($q)) {
+            $q = $this->db->prepare("SELECT * FROM `users` WHERE `id` IN (?)");
+            $q->execute(Array(implode(',', $users_from_mysql)));
+
+            while ($user_data = $q->fetch()) {
                 $id_user = $user_data['id'];
                 $users_return[$id_user] = $cache[$id_user] = $user_data;
             }
@@ -98,7 +102,9 @@ class user extends plugins {
         static $is_ban = array();
 
         if (!isset($is_ban [$this->_data ['id']])) {
-            $is_ban [$this->_data ['id']] = mysql_result(mysql_query("SELECT COUNT(*) FROM `ban` WHERE `id_user` = '{$this->_data['id']}' AND `time_start` < '" . TIME . "' AND (`time_end` is NULL OR `time_end` > '" . TIME . "')"), 0);
+            $res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `time_start` < ? AND (`time_end` is NULL OR `time_end` > ?)");
+            $res->execute(Array($this->_data['id'], TIME, TIME));
+            $is_ban [$this->_data ['id']] = $res->fetch();
         }
 
         return !empty($is_ban [$this->_data ['id']]);
@@ -113,7 +119,9 @@ class user extends plugins {
         static $is_ban_full = array();
 
         if (!isset($is_ban_full [$this->_data ['id']])) {
-            $is_ban_full [$this->_data ['id']] = mysql_result(mysql_query("SELECT COUNT(*) FROM `ban` WHERE `id_user` = '{$this->_data['id']}' AND `access_view` = '0' AND `time_start` < '" . TIME . "' AND (`time_end` is NULL OR `time_end` > '" . TIME . "')"), 0);
+            $res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `access_view` = '0' AND `time_start` < ? AND (`time_end` is NULL OR `time_end` > ?)");
+            $res->execute(Array($this->_data['id'], TIME, TIME));
+            $is_ban_full [$this->_data ['id']] = $res->fetch();
         }
 
         return !empty($is_ban_full [$this->_data ['id']]);
@@ -129,8 +137,8 @@ class user extends plugins {
         static $online = false;
         if ($online === false) {
             $online = array();
-            $q = mysql_query("SELECT `id_user` FROM `users_online`");
-            while ($on = mysql_fetch_assoc($q)) {
+            $q = $this->db->query("SELECT `id_user` FROM `users_online`");
+            while ($on = $q->fetch()) {
                 $online[$on ['id_user']] = true;
             }
         }
@@ -226,7 +234,8 @@ class user extends plugins {
             foreach ($this->_update as $key => $value) {
                 $sql [] = "`" . my_esc($key) . "` = '" . my_esc($value) . "'";
             }
-            mysql_query("UPDATE `users` SET " . implode(', ', $sql) . " WHERE `id` = '" . $this->_data ['id'] . "' LIMIT 1");
+            $this->db->query("UPDATE `users` SET " . implode(', ', $sql) . " WHERE `id` = '" . $this->_data ['id'] . "' LIMIT 1");
         }
     }
+
 }

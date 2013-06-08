@@ -6,6 +6,7 @@
 class dcms {
 
     protected $_data = array();
+    public $db;
 
     function __construct() {
         // загрузка настроек
@@ -18,9 +19,11 @@ class dcms {
      * @param integer $group_min
      */
     public function distribution($mess, $group_min = 2) {
-        $q = mysql_query("SELECT `id` FROM `users` WHERE `group` >= '" . intval($group_min) . "'");
+        $group_min = (int) $group_min;
+        $q = $this->db->prepare("SELECT `id` FROM `users` WHERE `group` >= ?");
+        $q->execute(Array($group_min));
         $users = array();
-        while ($ank_ids = mysql_fetch_assoc($q)) {
+        while ($ank_ids = $q->fetch()) {
             $users[] = $ank_ids['id'];
         }
         new user($users); // предзагрузка данных пользователей из базы
@@ -47,8 +50,9 @@ class dcms {
             $id_user = $user->id;
         }
 
-        return mysql_query("INSERT INTO `action_list_administrators` (`id_user`, `time`, `module`, `description`)
-VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($description) . "')");
+        $res = $this->db->prepare("INSERT INTO `action_list_administrators` (`id_user`, `time`, `module`, `description`) VALUES (?, ?, ?, ?)");
+        $res->execute(Array($id_user, TIME, $module, $description));
+        return true;
     }
 
     public function __get($name) {
@@ -143,12 +147,14 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
         static $browser_id = false;
 
         if ($browser_id === false) {
-            $q = mysql_query("SELECT * FROM `browsers` WHERE `name` = '" . my_esc(browser::getName()) . "' LIMIT 1");
-            if (mysql_num_rows($q)) {
-                $browser_id = mysql_result($q, 0);
+            $q = $this->db->prepare("SELECT * FROM `browsers` WHERE `name` = ? LIMIT 1");
+            $q->execute(Array(browser::getName()));
+            if ($row = $q->fetch()) {
+                $browser_id = $row['id'];
             } else {
-                $q = mysql_query("INSERT INTO `browsers` (`type`, `name`) VALUES ('" . my_esc(browser::getType()) . "','" . my_esc(browser::getName()) . "')");
-                $browser_id = mysql_insert_id();
+                $q = $this->db->prepare("INSERT INTO `browsers` (`type`, `name`) VALUES (?,?)");
+                $q->execute(Array(browser::getType(), browser::getName()));
+                $browser_id = $this->db->lastInsertId();
             }
         }
         return $browser_id;

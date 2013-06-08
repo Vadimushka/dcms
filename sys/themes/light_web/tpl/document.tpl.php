@@ -116,7 +116,9 @@
                         <?= __("Язык") ?>:<a href='/language.php?return=<?= URL ?>' style='background-image: url(<?= $lang->icon ?>); background-repeat: no-repeat; background-position: 5px 2px; padding-left: 23px;'><?= $lang->name ?></a>
                     </span>
                     <span id="generation">
-                        <?= __("Время генерации страницы: %s сек", $document_generation_time) ?>
+                        <?= __("Время генерации страницы: %s сек. ", $document_generation_time) ?> 
+                        <?= __("SQL запросов: %s, ", $sql_count) ?> 
+                        <?= __("SQL time: %s сек.", $sql_time) ?>
                     </span>                    
                 </div>
             </div>

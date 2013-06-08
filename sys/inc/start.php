@@ -82,12 +82,13 @@ if ($dcms->new_time_as_date) {
 mysql_query('SET NAMES "utf8"');
 
 try {
-    $db = new DebugPDO('mysql:host=' . $dcms->mysql_host . ';dbname=' . $dcms->mysql_base, $dcms->mysql_user, $dcms->mysql_pass);
+    $db = DB::me($dcms->mysql_host, $dcms->mysql_base, $dcms->mysql_user, $dcms->mysql_pass);
     $db->setAttribute(PDO :: ATTR_DEFAULT_FETCH_MODE, PDO :: FETCH_ASSOC);
     $db->log_on();
     $db->query("SET NAMES utf8;");
+    $dcms->db = $db;
 } catch (Exception $e) {
-    die('Ошибка соединения с базой данных');
+    die('Ошибка подключения к базе данных:' . $e->getMessage());
 }
 
 if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
@@ -168,7 +169,9 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
     } else {
         // обработка гостя
         // зачистка гостей, вышедших из онлайна
-        $res = $db->query("DELETE FROM `guest_online` WHERE `time_last` < '" . (TIME - SESSION_LIFE_TIME) . "'");
+        $time_last = TIME - SESSION_LIFE_TIME;
+        $res = $db->prepare("DELETE FROM `guest_online` WHERE `time_last` < ?");
+        $res->execute(Array($time_last));
 
         if (!AJAX) {
             // при ajax запросе данные о переходе засчитывать не будем
