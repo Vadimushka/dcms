@@ -11,6 +11,6 @@ foreach ($widgets as $widget_name => $show) {
     }
     $widget = new widget(H . '/sys/widgets/' . $widget_name); // открываем
     $widget->display(); // отображаем
-    // для теста
+    
 }
 ?>
