@@ -53,7 +53,7 @@ foreach ($themes_list as $theme) {
     $post->hightlight = $user->theme == $theme['dir'];
     $post->url = '?theme=' . urlencode($theme['dir']);
     $supported = in_array($dcms->browser_type, $theme['browsers']);
-    $post->content[] = __('Поддерживаемые типы браузеров: %s', implode(', ', $theme['browsers']));
+    if ($theme['browsers']) $post->content[] = __('Поддерживаемые типы браузеров: %s', implode(', ', $theme['browsers']));
     if (!$supported)
         $post->content[] = '[b]' . __('Тема может некорректно отображаться на Вашем устройстве') . '[/b]';
 }
