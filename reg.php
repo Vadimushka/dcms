@@ -12,15 +12,17 @@ if ($user->group) {
 if (!$dcms->reg_open) {
     $doc->access_denied(__('Регистрация временно закрыта'));
 }
+
+$error = false;
 // пригласительный
 $inv = &$_SESSION['reg']['invite'];
 if (!$inv && isset($_GET['invite']) && $_GET['invite']) {
-    $q = mysql_query("SELECT * FROM `invations` WHERE `code` = '" . my_esc($_GET['invite']) . "' AND `id_invite` IS NULL AND `email` IS NOT NULL LIMIT 1");
-    // echo mysql_error();exit;
-    if (mysql_num_rows($q)) {
+    $q = $db->prepare("SELECT * FROM `invations` WHERE `code` = ? AND `id_invite` IS NULL AND `email` IS NOT NULL LIMIT 1");
+    $q->execute(Array($_GET['invite']));
+    if ($inv = $q->fetch()) {
         // $doc->msg('Пригласительный учтен');
-        $inv = mysql_fetch_assoc($q);
-        mysql_query("UPDATE `invations` SET `code` = null WHERE `id` = '$inv[id]' LIMIT 1");
+        $res = $db->prepare("UPDATE `invations` SET `code` = null WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($inv['id']));
     } else {
         $doc->err(__('Пригласительный недействителен'));
     }
@@ -51,10 +53,12 @@ if ($step == 0 && isset($_GET['rules'])) {
 if ($step == 1 && isset($_GET['nick']) && isset($_POST['login'])) {
     if (is_valid::nick($_POST['login'])) {
         $login = $_POST['login'];
-        if (!mysql_result(mysql_query("SELECT COUNT(*) FROM `users` WHERE `login` = '" . my_esc($login) . "'"), 0)) {
-            if ($_POST['login'] != my_esc($_POST['login']))
-                $doc->msg(__('В нике содержатся запрещенные символы'));
-            else {
+        $res = $db->prepare("SELECT * FROM `users` WHERE login =?;");
+        $res->execute(Array($login));
+        if (!$res->fetch()) {
+            if ($_POST['login'] != htmlspecialchars($_POST['login'])) {
+                $doc->err(__('В нике содержатся запрещенные символы'));
+            } else {
                 $step = 2;
                 $_SESSION['reg']['login'] = $_POST['login'];
                 $doc->msg(__('Ник может быть успешно зарегистрирован'));
@@ -72,33 +76,55 @@ if ($step == 2 && isset($_GET['final']) && isset($_POST['sex'])) {
 
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
-    } elseif ($dcms->reg_with_mail && !$inv) {
+        $error = true;
+    }
+
+    if ($dcms->reg_with_mail && !$inv) {
         if (empty($_POST['mail'])) {
             $doc->err(__('Необходимо указать E-mail'));
-        } elseif (!is_valid::mail($_POST['mail'])) {
+            $error = true;
+        }
+        if (!is_valid::mail($_POST['mail'])) {
             $doc->err(__('Указан не корректный E-mail'));
-        } elseif (mysql_result(mysql_query("SELECT COUNT(*) FROM `users` WHERE `reg_mail` = '" . my_esc($_POST['mail']) . "'"), 0)) {
+            $error = true;
+        }
+
+        $res = $db->prepare("SELECT * FROM users WHERE `reg_mail`=?");
+        $res->execute(Array($_POST['mail']));
+        if ($res->fetch()) {
             $doc->err(__('Пользователь с таким e-mail уже зарегистрирован'));
-        } elseif (empty($_POST['password'])) {
+            $error = true;
+        }
+        if (empty($_POST['password'])) {
             $doc->err(__('Необходимо указать пароль'));
-        } elseif (empty($_POST['password_retry'])) {
+            $error = true;
+        }
+        if (empty($_POST['password_retry'])) {
             $doc->err(__('Необходимо подтвердить пароль'));
-        } elseif ($_POST['password_retry'] != $_POST['password']) {
+            $error = true;
+        }
+        if ($_POST['password_retry'] != $_POST['password']) {
             $doc->err(__('Введенные пароли не совпадают'));
-        } elseif (!is_valid::password($_POST['password'])) {
+            $error = true;
+        }
+        if (!is_valid::password($_POST['password'])) {
             $doc->err(__('Не корректный пароль'));
-        } else {
+            $error = true;
+        }
+
+        //Если нет ошибок
+        if (!$error) {
             $a_code = md5(passgen());
 
-            mysql_query("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `a_code`, `reg_mail`)
-values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::hash($_POST['password'], $dcms->salt) . "', '$sex', '$a_code', '" . my_esc($_POST['mail']) . "')");
-            $id_user = mysql_insert_id();
+            $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `a_code`, `reg_mail`) VALUES (?, ?, ?, ?, ?, ?)");
+            $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code, $_POST['mail']));
+            $id_user = $db->lastInsertId();
             if ($id_user && is_numeric($id_user)) {
-
 
                 if ($susp = is_valid::suspicion($inv['email'] . ' ' . $_SESSION['reg']['login'])) {
                     // подозрительный e-mail или логин
-                    mysql_query("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES ('$id_user', '" . my_esc($susp) . "')");
+                    $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
+                    $res->execute(Array($id_user, $susp));
                     $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике или адресе email была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]", 4);
                 }
 
@@ -111,7 +137,7 @@ values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::
                 $t->assign('url', 'http://' . $_SERVER['HTTP_HOST'] . '/activation.php?id=' . $id_user . '&amp;code=' . $a_code . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
                 if (mail::send($_POST['mail'], 'Регистрация', $t->fetch('file:' . H . '/sys/templates/mail.activation.tpl'))) {
                     $step = 3;
-                    $doc->msg(__('На Ваш E-mail отправлено письмо с ссылкой для активации аккаунта'));
+                    //$doc->msg(__('На Ваш E-mail отправлено письмо с ссылкой для активации аккаунта'));
                 } else
                     $doc->err(__('Ошибка при отправке email, попробуйте позже'));
             } else {
@@ -120,50 +146,67 @@ values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::
             }
         }
     } elseif ($inv) {
-        if (empty($_POST['password']))
+        if (empty($_POST['password'])) {
             $doc->err(__('Необходимо указать пароль'));
-        elseif (!isset($_POST['password_retry']))
-            $doc->err(__('Необходимо подтвердить пароль'));
-        elseif ($_POST['password_retry'] != $_POST['password'])
-            $doc->err(__('Введенные пароли не совпадают'));
-        elseif (!is_valid::password($_POST['password']))
-            $doc->err(__('Не корректный пароль'));
-        elseif (mysql_result(mysql_query("SELECT COUNT(*) FROM `users` WHERE `reg_mail` = '" . my_esc($inv['email']) . "'"), 0))
-            $doc->err(__('Пользователь с таким e-mail уже зарегистрирован'));
-        else {
-            mysql_query("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `reg_mail`)
-values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::hash($_POST['password'], $dcms->salt) . "', '$sex', '" . my_esc($inv['email']) . "')");
-            $id_user = mysql_insert_id();
+            $error = true;
+        }
 
+        if (!isset($_POST['password_retry'])) {
+            $doc->err(__('Необходимо подтвердить пароль'));
+            $error = true;
+        }
+
+        if ($_POST['password_retry'] != $_POST['password']) {
+            $doc->err(__('Введенные пароли не совпадают'));
+            $error = true;
+        }
+        if (!is_valid::password($_POST['password'])) {
+            $doc->err(__('Не корректный пароль'));
+            $error = true;
+        }
+
+        $res = $db->prepare("SELECT * FROM `users` WHERE `reg_mail` = ?");
+        $res->execute(Array($inv['email']));
+        if ($res->fetch()) {
+            $doc->err(__('Пользователь с таким e-mail уже зарегистрирован'));
+            $error = true;
+        }
+
+        //Если нет ошибок
+        if (!$error) {
+
+            $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `reg_mail`) VALUES(?, ?, ?, ?, ?)");
+            $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $inv['email']));
+            $id_user = $db->lastInsertId();
 
             if ($id_user && is_numeric($id_user)) {
 
                 if ($susp = is_valid::suspicion($inv['email'] . ' ' . $_SESSION['reg']['login'])) {
                     // подозрительный e-mail или логин
-                    mysql_query("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES ('$id_user', '" . my_esc($susp) . "')");
+                    $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
+                    $res->execute(Array($id_user, $susp));
                     $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике или адресе email была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]", 4);
                 }
 
-
-
-                mysql_query("UPDATE `invations` SET `id_invite` = '$id_user', `time_reg` = '" . TIME . "' WHERE `id` = '$inv[id]' LIMIT 1");
-                mysql_query("UPDATE `users` SET `balls` = `balls` * '1.1' WHERE `id` = '$inv[id_user]' LIMIT 1");
+                $res = $db->prepare("UPDATE `invations` SET `id_invite` = ?, `time_reg` = ? WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($id_user, TIME, $inv['id']));
+                $res = $db->prepare("UPDATE `users` SET `balls` = `balls` * '1.1' WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($inv['id_user']));
                 $step = 3;
             }
         }
     } else {
-        mysql_query("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`) values('" . TIME . "', '" . my_esc($_SESSION['reg']['login']) . "', '" . crypt::hash($_POST['password'], $dcms->salt) . "', '$sex')");
-
-        $id_user = mysql_insert_id();
+        $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`) VALUES (?, ?, ?, ?)");
+        $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex));
+        $id_user = $db->lastInsertId();
         if ($id_user && is_numeric($id_user)) {
 
             if ($susp = is_valid::suspicion($_SESSION['reg']['login'])) {
                 // подозрительный логин
-                mysql_query("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES ('$id_user', '" . my_esc($susp) . "')");
+                $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
+                $res->execute(Array($id_user, $susp));
                 $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]", 4);
             }
-
-
             $step = 3;
         } else {
             $doc->err(__('Ошибка при регистрации. Попробуйте позже'));
@@ -193,7 +236,7 @@ if ($step == 2) {
     $form->bbcode(__('Ваш ник: %s', '[b]' . $login . '[/b]'));
     $form->password('password', __('Пароль') . ' [6-32]');
     $form->password('password_retry', __('Повторите пароль'));
-    $form->select('sex', __('Ваш пол'), array(array(1, __('Мужской')), array(0, __('Женский'))));    
+    $form->select('sex', __('Ваш пол'), array(array(1, __('Мужской')), array(0, __('Женский'))));
     if ($dcms->reg_with_mail && !$inv) {
         $form->text('mail', __('Ваш E-mail') . '*');
         $form->bbcode('* ' . __('На Ваш E-mail придет письмо с ссылкой для активации аккаунта'));

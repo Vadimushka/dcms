@@ -47,28 +47,29 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
         $login = (string) $_POST['login'];
         $password = (string) $_POST['password'];
 
-        $q = mysql_query("SELECT `id`, `password` FROM `users` WHERE `login` = '" . my_esc($login) . "' LIMIT 1");
-
-        if (!mysql_num_rows($q))
+        $q = $db->prepare("SELECT `id`, `password` FROM `users` WHERE `login` = ? LIMIT 1");
+        $q->execute(Array($login));
+        if (!$row = $q->fetch()) {
             $doc->err(__('Логин "%s" не зарегистрирован', $login));
-
-        elseif (crypt::hash($password, $dcms->salt) !== mysql_result($q, 0, 'password')) {
+        } elseif (crypt::hash($password, $dcms->salt) !== $row['password']) {
             $need_of_captcha = true;
             cache_aut_failture::set($dcms->ip_long, true, 600); // при ошибке заставляем пользователя проходить капчу
-            $id_user = mysql_result($q, 0, 'id');
-            mysql_query("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES ('$id_user','post','$dcms->ip_long','" . TIME . "','$dcms->browser_id','0')");
+            $id_user = $row['id'];
+            $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'post',?,?,?,'0')");
+            $res->execute(Array($id_user, $dcms->ip_long, TIME, $dcms->browser_id));
             $doc->err(__('Вы ошиблись при вводе пароля'));
         } else {
-            $id_user = mysql_result($q, 0, 'id');
+            $id_user = $row['id'];
             $user_t = new user($id_user);
-            if (!$user_t->group)
+            if (!$user_t->group) {
                 $doc->err(__('Ошибка при получении профиля пользователя'));
-            elseif ($user_t->a_code) {
+            } elseif ($user_t->a_code) {
                 $doc->err(__('Аккаунт не активирован'));
             } else {
                 $user = $user_t;
                 cache_aut_failture::set($dcms->ip_long, false, 1);
-                mysql_query("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES ('$id_user','post','$dcms->ip_long','" . TIME . "','$dcms->browser_id','1')");
+                $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'post',?,?,?,'1')");
+                $res->execute(Array($id_user, $dcms->ip_long, TIME, $dcms->browser_id));
 
                 if ($user->recovery_password) {
                     // если пользователь авторизовался, то ключ для восстановления ему больше не нужен
@@ -90,14 +91,16 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
         // если пользователь авторизовался, то ключ для восстановления ему больше не нужен
         if ($user->recovery_password)
             $user->recovery_password = '';
-        mysql_query("INSERT INTO `log_of_user_aut` (`id_user`, `method`, `iplong`, `time`, `id_browser`, `status`) VALUES ('$tmp_user->id','cookie','$dcms->ip_long','" . TIME . "','$dcms->browser_id','1')");
+        $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`, `method`, `iplong`, `time`, `id_browser`, `status`) VALUES (?,'cookie',?,?,?,'1')");
+        $res->execute(Array($tmp_user->id, $dcms->ip_long, TIME, $dcms->browser_id));
         $user = $tmp_user;
         $_SESSION[SESSION_ID_USER] = $user->id;
         $_SESSION[SESSION_PASSWORD_USER] = crypt::decrypt($_COOKIE[COOKIE_USER_PASSWORD], $dcms->salt_user);
     } else {
         $need_of_captcha = true;
         cache_aut_failture::set($dcms->ip_long, true, 600); // при ошибке заставляем пользователя проходить капчу
-        mysql_query("INSERT INTO `log_of_user_aut` (`id_user`, `method`, `iplong`, `time`, `id_browser`, `status`) VALUES ('$tmp_user->id','cookie','$dcms->ip_long','" . TIME . "','$dcms->browser_id','0')");
+        $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`, `method`, `iplong`, `time`, `id_browser`, `status`) VALUES (?,'cookie',?,?,?,'0')");
+        $res->execute(Array($tmp_user->id, $dcms->ip_long, TIME, $dcms->browser_id));
         setcookie(COOKIE_ID_USER);
         setcookie(COOKIE_USER_PASSWORD);
     }
@@ -106,7 +109,8 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
 if ($user->group) {
     // авторизовались успешно
     // удаляем информацию как о госте
-    mysql_query("DELETE FROM `guest_online` WHERE `ip_long` = '$dcms->ip_long' AND `browser` = '" . my_esc($dcms->browser) . "'");
+    $res = $db->prepare("DELETE FROM `guest_online` WHERE `ip_long` = ? AND `browser` = ?;");
+    $res->execute(Array($dcms->ip_long, $dcms->browser));
 
     if (isset($_GET['auth_key']) && cache::get($_GET['auth_key']) === 'request') {
         cache::set($_GET['auth_key'], array('session' => $_SESSION, 'cookie' => $_COOKIE), 60);
