@@ -37,25 +37,26 @@ if (isset($_POST['complaint'])) {
     $code = !empty($_POST['code']) ? (string) $_POST['code'] : false;
     $comm = text::input_text(@$_POST['comment']);
 
+    $res = $db->prepare("SELECT * FROM `complaints` WHERE `id_user` = ? AND `id_ank` = ? AND `link` = ? AND `time` > ?");
+    $res->execute(Array($user->id, $ank->id, $link, NEW_TIME));
     if (!$link) {
         $doc->err(__('Не указана ссылка на нарушение'));
     } elseif (!isset($menu->menu_arr[$code])) {
         $doc->err(__('Не выбрано нарушение'));
     } elseif (!$comm) {
         $doc->err(__('Необходимо прокомментировать жалобу'));
-    } elseif (mysql_result(mysql_query("SELECT COUNT(*) FROM `complaints` WHERE `id_user` = '$user->id' AND `id_ank` = '$ank->id' AND `link` = '" . my_esc($link) . "' AND `time` > '" . NEW_TIME . "'"), 0))
+    } elseif ($res->fetch())
         $doc->err(__('Вы уже жаловались сегодня на этого пользователя'));
     else {
         if (isset($_GET['return'])) {
             header('Refresh: 1; url=' . $_GET['return']);
         }
 
-        mysql_query("INSERT INTO `complaints` (`time`, `id_user`, `id_ank`, `link`, `code`, `comment`)
-VALUES ('" . TIME . "', '$user->id', '$ank->id', '" . my_esc($link) . "', '" . my_esc($code) . "', '" . my_esc($comm) . "')");
-
+        $res=$db->prepare("INSERT INTO `complaints` (`time`, `id_user`, `id_ank`, `link`, `code`, `comment`) VALUES (?, ?, ?, ?, ?, ?)");
+        $res->execute(Array(TIME,$user->id,$ank->id,$link,$code,$comm));
         $doc->msg(__('Жалоба будет рассмотрена модератором'));
 
-
+        
 
         $mess = "Поступила [url=/dpanel/user.complaints.php]жалоба[/url] на пользователя [user]$ank->id[/user] от [user]$user->id[/user]";
         $admins = groups::getAdmins(2);

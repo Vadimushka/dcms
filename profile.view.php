@@ -23,30 +23,36 @@ $doc->keywords [] = $ank->login;
 
 if ($user->group && $ank->id && $user->id != $ank->id && isset($_GET ['friend'])) {
     // обработка действий с "другом"
-    $q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$user->id' AND `id_friend` = '$ank->id' LIMIT 1");
-    if (mysql_num_rows($q)) {
-        $friend = mysql_fetch_assoc($q);
+    $q = $db->prepare("SELECT * FROM `friends` WHERE `id_user` = ? AND `id_friend` = ? LIMIT 1");
+    $q->execute(Array($user->id, $ank->id));
+    if ($friend = $q->fetch()) {
         if ($friend ['confirm']) {
             // если Вы уже являетель другом
             if (isset($_POST ['delete'])) {
                 // удаляем пользователя из друзей
-                mysql_query("DELETE FROM `friends` WHERE `id_user` = '{$user->id}' AND `id_friend` = '{$ank->id}' OR `id_user` = '{$ank->id}' AND `id_friend` = '{$user->id}'");
+                $res = $db->prepare("DELETE FROM `friends` WHERE `id_user` = ? AND `id_friend` = ? OR `id_user` = ? AND `id_friend` = ?");
+                $res->execute(Array($user->id, $ank->id, $ank->id, $user->id));
                 $doc->msg(__('Пользователь успешно удален из друзей'));
             }
         } else {
             // если не являетесь другом
             if (isset($_POST ['no'])) {
                 // не принимаем предложение дружбы
-                mysql_query("DELETE FROM `friends` WHERE `id_user` = '$user->id' AND `id_friend` = '$ank->id' OR `id_user` = '$ank->id' AND `id_friend` = '$user->id'");
-                mysql_query("UPDATE `users` SET `friend_new_count` = `friend_new_count` - '1' WHERE `id` = '{$user->id}' LIMIT 1");
+                $res = $db->prepare("DELETE FROM `friends` WHERE `id_user` = ? AND `id_friend` = ? OR `id_user` = ? AND `id_friend` = ?");
+                $res->execute(Array($user->id, $ank->id, $ank->id, $user->id));
+                $db->prepare("UPDATE `users` SET `friend_new_count` = `friend_new_count` - '1' WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($user->id));
 
                 $doc->msg(__('Предложение дружбы отклонено'));
             } elseif (isset($_POST ['ok'])) {
                 // принимаем предложение дружбы
-                mysql_query("UPDATE `friends` SET `confirm` = '1' WHERE `id_user` = '$user->id' AND `id_friend` = '$ank->id' LIMIT 1");
-                mysql_query("UPDATE `users` SET `friend_new_count` = `friend_new_count` - '1' WHERE `id` = '{$user->id}' LIMIT 1");
+                $res = $db->prepare("UPDATE `friends` SET `confirm` = '1' WHERE `id_user` = ? AND `id_friend` = ? LIMIT 1");
+                $res->execute(Array($user->id, $ank->id));
+                $res = $db->prepare("UPDATE `users` SET `friend_new_count` = `friend_new_count` - '1' WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($user->id));
                 // на всякий случай пытаемся добавить поле (хотя оно уже должно быть), если оно уже есть, то дублироваться не будет
-                mysql_query("INSERT INTO `friends` (`confirm`, `id_user`, `id_friend`) VALUES ('1', '$ank->id', '$user->id')");
+                $res = $db->prepare("INSERT INTO `friends` (`confirm`, `id_user`, `id_friend`) VALUES ('1', ?, ?)");
+                $res->execute(Array($ank->id, $user->id));
                 $doc->msg(__('Предложение дружбы принято'));
             }
         }
@@ -54,18 +60,19 @@ if ($user->group && $ank->id && $user->id != $ank->id && isset($_GET ['friend'])
         if (isset($_GET ['friend']) && isset($_POST ['add'])) {
             // предлагаем дружбу
             // отметка о запросе дружбы
-            mysql_query("INSERT INTO `friends` (`confirm`, `id_user`, `id_friend`) VALUES ('0', '$ank->id', '$user->id'), ('1', '$user->id', '$ank->id')");
-            mysql_query("UPDATE `users` SET `friend_new_count` = `friend_new_count` + '1' WHERE `id` = '{$ank->id}' LIMIT 1");
-
+            $res = $db->prepare("INSERT INTO `friends` (`confirm`, `id_user`, `id_friend`) VALUES ('0', ?, ?), ('1', ?, ?)");
+            $res->execute(Array($ank->id, $user->id, $user->id, $ank->id));
+            $res = $db->prepare("UPDATE `users` SET `friend_new_count` = `friend_new_count` + '1' WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($ank->id));
             $doc->msg(__('Предложение дружбы успешно отправлено'));
         }
     }
 }
 
 if ($user->group && $ank->id && $user->id != $ank->id) {
-    $q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$user->id' AND `id_friend` = '$ank->id' LIMIT 1");
-    if (mysql_num_rows($q)) {
-        $friend = mysql_fetch_assoc($q);
+    $q = $db->prepare("SELECT * FROM `friends` WHERE `id_user` = ? AND `id_friend` = ? LIMIT 1");
+    $q->execute(Array($user->id, $ank->id));
+    if ($friend = $q->fetch()) {
         if ($friend ['confirm']) {
             // пользователь находится в друзьях
             if (isset($_GET ['friend']) && $_GET ['friend'] == 'delete') {
@@ -112,28 +119,29 @@ if ($user->group && $ank->id && $user->id != $ank->id) {
 if ($ank->is_ban) {
     $ban_listing = new listing();
 
-    $q = mysql_query("SELECT * FROM `ban` WHERE `id_user` = '$ank->id' AND `time_start` < '" . TIME . "' AND (`time_end` is NULL OR `time_end` > '" . TIME . "') ORDER BY `id` DESC");
-    while ($c = mysql_fetch_assoc($q)) {
-        $post = $ban_listing->post();
+    $q = $db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `time_start` < ? AND (`time_end` is NULL OR `time_end` > ?) ORDER BY `id` DESC");
+    $q->execute(Array($ank->id, TIME, TIME));
+    if ($arr = $q->fetchAll()) {
+        foreach ($arr AS $c) {
+            $post = $ban_listing->post();
+            $adm = new user($c ['id_adm']);
 
+            $post->title = ($adm->group <= $user->group ? '<a href="/profile.view.php?id=' . $adm->id . '">' . $adm->nick . '</a>: ' : '') . for_value($c ['code']);
 
-        $adm = new user($c ['id_adm']);
+            if ($c ['time_start'] && TIME < $c ['time_start']) {
+                $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . vremja($c ['time_start']) . "\n";
+            }
+            if ($c['time_end'] === NULL) {
+                $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]\n";
+            } elseif (TIME < $c['time_end']) {
+                $post->content[] = __('Осталось: %s', vremja($c['time_end'])) . "\n";
+            }
+            if ($c['link']) {
+                $post->content[] = __('Ссылка на нарушение: %s', $c['link']) . "\n";
+            }
 
-        $post->title = ($adm->group <= $user->group ? '<a href="/profile.view.php?id=' . $adm->id . '">' . $adm->nick . '</a>: ' : '') . for_value($c ['code']);
-
-        if ($c ['time_start'] && TIME < $c ['time_start']) {
-            $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . vremja($c ['time_start']) . "\n";
+            $post->content[] = __('Комментарий: %s', $c['comment']) . "\n";
         }
-        if ($c['time_end'] === NULL) {
-            $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]\n";
-        } elseif (TIME < $c['time_end']) {
-            $post->content[] = __('Осталось: %s', vremja($c['time_end'])) . "\n";
-        }
-        if ($c['link']) {
-            $post->content[] = __('Ссылка на нарушение: %s', $c['link']) . "\n";
-        }
-
-        $post->content[] = __('Комментарий: %s', $c['comment']) . "\n";
     }
 
     $ban_listing->display();
@@ -158,10 +166,11 @@ if ($ank->group > 1) {
 
     //echo "<b>$ank->group_name</b>";
 
-    $q = mysql_query("SELECT `id_adm` FROM `log_of_user_status` WHERE `id_user` = '$ank->id' ORDER BY `id` DESC LIMIT 1");
-    if (mysql_num_rows($q)) {
-        $adm = new user(mysql_result($q, 0));
-        $post->content =  __('Назначил' . ($adm->sex ? '' : 'а')) . ' ' . __($adm->group_name) . ' "' . $adm->nick . '"';
+    $q = $db->prepare("SELECT `id_adm` FROM `log_of_user_status` WHERE `id_user` = ? ORDER BY `id` DESC LIMIT 1");
+    $q->execute(Array($ank->id));
+    if ($row = $q->fetch()) {
+        $adm = new user($row['id_adm']);
+        $post->content = __('Назначил' . ($adm->sex ? '' : 'а')) . ' ' . __($adm->group_name) . ' "' . $adm->nick . '"';
     }
     //echo "<br />\n";
 } // VIP статус
@@ -344,7 +353,9 @@ if ($ank->wmid) {
 }
 
 if ($ank->is_friend($user) || $ank->vis_friends) {
-    $k_friends = mysql_result(mysql_query("SELECT COUNT(*) FROM `friends` WHERE `id_user` = '$ank->id' AND `confirm` = '1'"), 0);
+    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `friends` WHERE `id_user` = ? AND `confirm` = '1'");
+    $res->execute(Array($ank->id));
+    $k_friends = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
     $post = $listing->post();
     $post->title = __('Друзья');
@@ -403,14 +414,12 @@ $post->content = date('d-m-Y', $ank->reg_date);
 
 //echo __('Дата регистрации') . ': ' . date('d-m-Y', $ank->reg_date) . '<br />';
 
-$q = mysql_query("SELECT `id_user` FROM `invations` WHERE `id_invite` = '$ank->id' LIMIT 1");
-if (mysql_num_rows($q)) {
-    $inv = new user(mysql_result($q, 0, 'id_user'));
-
+$q = $db->prepare("SELECT `id_user` FROM `invations` WHERE `id_invite` = ? LIMIT 1");
+$q->execute(Array($ank->id));
+if ($row = $res->fetch()) {
+    $inv = new user($row['id_user']);
     $post = $listing->post();
     $post->title = output_text(__('По приглашению от %s', '[user]' . $inv->id . '[/user]'));
-
-
     // echo output_text(__('По приглашению от %s', '[user]' . $inv->id . '[/user]'));
 }
 

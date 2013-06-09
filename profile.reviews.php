@@ -22,10 +22,15 @@ if (!$user->is_writeable) {
 
 $add = 1;
 
-$q = mysql_query("SELECT COUNT(*) as `count`, MAX(`time`) as `time` FROM `reviews_users` WHERE `id_user` = '$user->id' AND `id_ank` = '$ank->id'");
-
-$count = mysql_result($q, 0, 'count');
-$time = mysql_result($q, 0, 'time');
+$q = $db->prepare("SELECT COUNT(*) as `count`, MAX(`time`) as `time` FROM `reviews_users` WHERE `id_user` = ? AND `id_ank` = ?");
+$q->execute(Array($user->id, $ank->id));
+if ($row = $q->fetch()) {
+    $count = $row['count'];
+    $time = $row['time'];
+} else {
+    $count = 0;
+    $time = 0;
+}
 // чем больше отзывов оставлено, тем меньше это влияет на рейтинг
 $add = 1 - min($count, 9) / 10;
 // оставлять отзыв можно не чаще одного раза в сутки
@@ -44,8 +49,10 @@ if ($user->group && $can_write && isset($_POST['review']) && $user->id != $ank->
     $message = text::input_text($_POST['review']);
 
     if ($message) {
-        mysql_query("UPDATE `users` SET `rating` = `rating` + '$add' WHERE `id` = '$ank->id' LIMIT 1");
-        mysql_query("INSERT INTO `reviews_users` (`id_user`, `id_ank`, `time`, `text`, `rating`) VALUES ('$user->id', '$ank->id', '" . TIME . "', '" . my_esc($message) . "', '$add')");
+        $res = $db->prepare("UPDATE `users` SET `rating` = `rating` + ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($add, $ank->id));
+        $res = $db->prepare("INSERT INTO `reviews_users` (`id_user`, `id_ank`, `time`, `text`, `rating`) VALUES (?, ?, ?, ?, ?)");
+        $res->execute(Array($user->id, $ank->id, TIME, $message, $add));
         header('Refresh: 1; url=?id=' . $ank->id);
         $doc->ret(__('Вернуться'), '?id=' . $ank->id);
         $doc->msg(__('Ваш отзыв успешно оставлен'));
@@ -59,21 +66,25 @@ if ($user->group && $can_write && isset($_POST['review']) && $user->id != $ank->
 }
 
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `reviews_users` WHERE `id_ank` = '$ank->id'"), 0); // количество сообщений
+$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `reviews_users` WHERE `id_ank` = ?");
+$res->execute(Array($ank->id));
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
 $pages->this_page(); // получаем текущую страницу
 
-$q = mysql_query("SELECT * FROM `reviews_users` WHERE `id_ank` = '$ank->id' ORDER BY `id` DESC LIMIT $pages->limit");
-
+$q = $db->prepare("SELECT * FROM `reviews_users` WHERE `id_ank` = ? ORDER BY `id` DESC LIMIT $pages->limit");
+$q->execute(Array($ank->id));
 $listing = new listing();
-while ($rev = mysql_fetch_assoc($q)) {
-    $ank2 = new user($rev['id_user']);
-    $post = $listing -> post();
-    $post -> title = $ank2->nick();
-    $post -> counter = '+' . $rev['rating'];
-    $post -> icon($ank2->icon());
-    $post -> content = output_text($rev['text']);    
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $rev) {
+        $ank2 = new user($rev['id_user']);
+        $post = $listing->post();
+        $post->title = $ank2->nick();
+        $post->counter = '+' . $rev['rating'];
+        $post->icon($ank2->icon());
+        $post->content = output_text($rev['text']);
+    }
 }
-$listing -> display(__('Отзывы отсутствуют'));
+$listing->display(__('Отзывы отсутствуют'));
 
 $pages->display('?id=' . $ank->id . '&amp;'); // вывод страниц
 

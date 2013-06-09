@@ -33,6 +33,7 @@ class user extends plugins {
      */
     protected function _usersFromCache($get_users_by_id) {
         static $cache = array(); // кэш пользователей
+        static $get_user_res;
         $get_users_by_id = array_unique((array) $get_users_by_id);
 
         $users_from_mysql = array(); // пользователи, которые будут запрашиваться из базы (нет в кэше)
@@ -46,10 +47,12 @@ class user extends plugins {
         }
 
         if ($users_from_mysql) {
-            $q = $this->db->prepare("SELECT * FROM `users` WHERE `id` IN (?)");
-            $q->execute(Array(implode(',', $users_from_mysql)));
+            if (!isset($get_user_res)) {
+                $get_user_res = $this->db->prepare("SELECT * FROM `users` WHERE `id` IN (?)");
+            }
+            $get_user_res->execute(Array(implode(',', $users_from_mysql)));
 
-            while ($user_data = $q->fetch()) {
+            while ($user_data = $get_user_res->fetch()) {
                 $id_user = $user_data['id'];
                 $users_return[$id_user] = $cache[$id_user] = $user_data;
             }
@@ -99,12 +102,14 @@ class user extends plugins {
      * @return boolean Забанен ли пользователь
      */
     protected function _is_ban() {
-        static $is_ban = array();
+        static $is_ban = array(), $is_ban_res;
 
         if (!isset($is_ban [$this->_data ['id']])) {
-            $res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `time_start` < ? AND (`time_end` is NULL OR `time_end` > ?)");
-            $res->execute(Array($this->_data['id'], TIME, TIME));
-            $is_ban [$this->_data ['id']] = $res->fetch();
+            if (!isset($is_ban_res)) {
+                $is_ban_res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `time_start` < ? AND (`time_end` is NULL OR `time_end` > ?)");
+            }
+            $is_ban_res->execute(Array($this->_data['id'], TIME, TIME));
+            $is_ban [$this->_data ['id']] = $is_ban_res->fetch();
         }
 
         return !empty($is_ban [$this->_data ['id']]);
@@ -116,12 +121,14 @@ class user extends plugins {
      * @return boolean Пользователь забанен с запретом навигации по сайту
      */
     protected function _is_ban_full() {
-        static $is_ban_full = array();
+        static $is_ban_full = array(), $is_ban_res;
 
         if (!isset($is_ban_full [$this->_data ['id']])) {
-            $res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `access_view` = '0' AND `time_start` < ? AND (`time_end` is NULL OR `time_end` > ?)");
-            $res->execute(Array($this->_data['id'], TIME, TIME));
-            $is_ban_full [$this->_data ['id']] = $res->fetch();
+            if (!isset($is_ban_res)) {
+                $is_ban_res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `access_view` = '0' AND `time_start` < ? AND (`time_end` is NULL OR `time_end` > ?)");
+            }
+            $is_ban_res->execute(Array($this->_data['id'], TIME, TIME));
+            $is_ban_full [$this->_data ['id']] = $is_ban_res->fetch();
         }
 
         return !empty($is_ban_full [$this->_data ['id']]);
@@ -134,11 +141,13 @@ class user extends plugins {
      * @return boolean Пользователь онлайн
      */
     protected function _is_online($id_user) {
-        static $online = false;
+        static $online = false, $is_online_res;
         if ($online === false) {
             $online = array();
-            $q = $this->db->query("SELECT `id_user` FROM `users_online`");
-            while ($on = $q->fetch()) {
+            if (!isset($is_online_res)) {
+                $is_online_res = $this->db->query("SELECT `id_user` FROM `users_online`");
+            }
+            while ($on = $is_online_res->fetch()) {
                 $online[$on ['id_user']] = true;
             }
         }

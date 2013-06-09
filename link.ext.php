@@ -8,7 +8,8 @@ if (isset($_GET['url'])) {
     if (!isset($_SESSION['adt'][$urlwithouthttp]['time_out']) || $_SESSION['adt'][$urlwithouthttp]['time_out'] < TIME - 600) {
         // переход по рекламе засчитывается один раз в 10 минут
         $_SESSION['adt'][$urlwithouthttp]['time_out'] = TIME;
-        mysql_query("UPDATE `advertising` SET `count_out_" . $dcms->browser_type . "` = `count_out_" . $dcms->browser_type . "` + 1 WHERE `url_link` = '" . my_esc($_GET['url']) . "'");
+        $res = $db->prepare("UPDATE `advertising` SET `count_out_" . $dcms->browser_type . "` = ? + 1 WHERE `url_link` = ?");
+        $res->execute(Array('count_out_' . $dcms->browser_type, $_GET['url']));
     }
     exit;
 } else {

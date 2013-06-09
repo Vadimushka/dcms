@@ -39,7 +39,8 @@ elseif (isset($search) && $search) {
 
 $posts = array();
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `users` $where"), 0);
+$res = $db->query("SELECT COUNT(*) AS cnt FROM `users` $where");
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
 $pages->this_page(); // получаем текущую страницу
 // меню сортировки
 $ord = array();
@@ -52,29 +53,31 @@ $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
-$q = mysql_query("SELECT `id` FROM `users` $where ORDER BY `$order` $sort LIMIT $pages->limit");
+$q = $db->query("SELECT `id` FROM `users` $where ORDER BY `$order` $sort LIMIT $pages->limit");
 
 
 $listing = new listing();
-while ($ank = mysql_fetch_assoc($q)) {
-    $post = $listing->post();
-    $p_user = new user($ank['id']);
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $ank) {
+        $post = $listing->post();
+        $p_user = new user($ank['id']);
 
-    $post->icon($p_user->icon());
-    $post->title = $p_user->nick();
-    $post->url = '/profile.view.php?id=' . $p_user->id;
+        $post->icon($p_user->icon());
+        $post->title = $p_user->nick();
+        $post->url = '/profile.view.php?id=' . $p_user->id;
 
 
-    $post->content = $order == 'id' ? __('ID пользователя') . ': ' . $p_user->id . "<br />\n" : '';
+        $post->content = $order == 'id' ? __('ID пользователя') . ': ' . $p_user->id . "<br />\n" : '';
 
-    if ($order == 'group')
-        $post->content .= __($p_user->group_name) . "<br />\n";
-    if ($order == 'balls')
-        $post->content .= __('Баллы') . ': ' . ((int) $p_user->balls) . "<br />\n";
-    if ($order == 'rating')
-        $post->content .= __('Рейтинг') . ': ' . $p_user->rating . "<br />\n";
-    $post->content .= __('Дата регистрации') . ': ' . date('d-m-Y', $p_user->reg_date) . "<br />\n";
-    $post->content .= __('Последний визит') . ': ' . vremja($p_user->last_visit) . '<br />';
+        if ($order == 'group')
+            $post->content .= __($p_user->group_name) . "<br />\n";
+        if ($order == 'balls')
+            $post->content .= __('Баллы') . ': ' . ((int) $p_user->balls) . "<br />\n";
+        if ($order == 'rating')
+            $post->content .= __('Рейтинг') . ': ' . $p_user->rating . "<br />\n";
+        $post->content .= __('Дата регистрации') . ': ' . date('d-m-Y', $p_user->reg_date) . "<br />\n";
+        $post->content .= __('Последний визит') . ': ' . vremja($p_user->last_visit) . '<br />';
+    }
 }
 
 $smarty = new design();

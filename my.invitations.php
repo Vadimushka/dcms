@@ -6,9 +6,10 @@ $doc->title = __('Пригласительные');
 
 if (isset($_GET['id'])) {
     $id_inv = (int) $_GET['id'];
-    $q = mysql_query("SELECT * FROM `invations` WHERE `id` = '$id_inv' AND `id_user` = '$user->id' AND `id_invite` IS NULL LIMIT 1");
+    $q = $db->prepare("SELECT * FROM `invations` WHERE `id` = ? AND `id_user` = ? AND `id_invite` IS NULL LIMIT 1");
+    $q->execute(Array($id_inv, $user->id));
 
-    if (!mysql_num_rows($q)) {
+    if (!$inv = $q->fetch()) {
         header('Refresh: 1; url=?');
         $design->err(__('Пригласительный не найден'));
         $design->ret(__('К пригласительным'), '?');
@@ -17,10 +18,10 @@ if (isset($_GET['id'])) {
         $design->foot(); // ноги
         exit;
     }
-    $inv = mysql_fetch_assoc($q);
 
     if (isset($_POST['delete']) && $inv['time_reg'] < TIME - 86400) {
-        mysql_query("DELETE FROM `invations` WHERE `id` = '$inv[id]' LIMIT 1");
+        $res = $db->prepare("DELETE FROM `invations` WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($inv['id']));
         header('Refresh: 1; url=?');
         $doc->msg(__('Пригласительный успешно удален'));
         $doc->ret(__('К пригласительным'), '?');
@@ -40,8 +41,8 @@ if (isset($_GET['id'])) {
             $t->assign('url', 'http://' . $_SERVER['HTTP_HOST'] . '/reg.php?invite=' . $inv['code']);
 
             if (mail::send($email, __('Приглашение'), $t->fetch('file:' . H . '/sys/templates/mail.invite.tpl'))) {
-                mysql_query("UPDATE `invations` SET `email` = '" . my_esc($email) . "', `time_reg` = '" . TIME . "', `code` = '$inv[code]' WHERE `id` = '$inv[id]' LIMIT 1");
-
+                $res = $db->prepare("UPDATE `invations` SET `email` = ?, `time_reg` = ?, `code` = ? WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($email, TIME, $inv['code'], $inv['id']));
                 header('Refresh: 1; url=?');
                 $doc->msg(__('Пригласительный успешно отправлен'));
                 $doc->ret(__('К пригласительным'), '?');
@@ -91,49 +92,55 @@ if (isset($_GET['id'])) {
 
 $k_inv = (int) ($user->balls / $dcms->balls_for_invite); // количество пригласительных
 $doc->msg(__("У Вас %s пригласительны" . misc::number($k_inv, 'й', 'x', 'х'), $k_inv), 'invations');
-$k = mysql_result(mysql_query("SELECT COUNT(*) FROM `invations` WHERE `id_user` = '$user->id'"), 0);
+$res_cnt_inv = $db->prepare("SELECT COUNT(*) AS cnt FROM `invations` WHERE `id_user` = ?");
+$res_cnt_inv->execute(Array($user->id));
+$k = ($row = $res_cnt_inv->fetch()) ? $row['cnt'] : 0;
 
 if ($k_inv > $k) {
     // пополняем список пригластельных
     $k_add = $k_inv - $k;
     $arr_ins = array();
-    for ($i = 0; $i < $k_add; $i++)
-        $arr_ins[] = "('$user->id')";
-    mysql_query("INSERT INTO `invations` (`id_user`) VALUES " . implode(',', $arr_ins));
+    $res = $db->prepare("INSERT INTO `invations` (`id_user`) VALUES (?);");
+    for ($i = 0; $i < $k_add; $i++) {
+        $res->execute(Array($user->id));
+    }
 }
 
 
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `invations` WHERE `id_user` = '$user->id'"), 0); // количество пригласительных
+$res_cnt_inv->execute(Array($user->id));
+$pages->posts = ($row = $res_cnt_inv->fetch()) ? $row['cnt'] : 0; // количество пригласительных
 $pages->this_page(); // получаем текущую страницу
 
-$q = mysql_query("SELECT * FROM `invations` WHERE `id_user` = '$user->id' ORDER BY (`id_invite` IS NULL) DESC, (`email` IS NULL) ASC, `id` ASC LIMIT $pages->limit");
-
+$q = $db->prepare("SELECT * FROM `invations` WHERE `id_user` = ? ORDER BY (`id_invite` IS NULL) DESC, (`email` IS NULL) ASC, `id` ASC LIMIT $pages->limit");
+$q->execute(Array($user->id));
 
 $listing = new listing();
-while ($inv = mysql_fetch_assoc($q)) {
-    $post = $listing->post();
-    $post->icon('invite');
-    if ($inv['id_invite']) {
-        $ank = new user($inv['id_invite']);
-        $post->time = vremja($inv['time_reg']);
-        $post->content = __('Использован');        
-        $post->title = $ank->nick();
-        $post->url = '/profile.view.php?id=' . $ank->id;
-    } elseif ($inv['email']) {
-        $post->url = '?id=' . $inv['id'];
-        $post->title = __('Пригласительный #%s', $inv['id']);
-        $post->content = __('Отправлен на email: %s', $inv['email']) . '<br />';
-        if (!$inv['code']) {
-            $post->content .= __('Активирован');
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $inv) {
+        $post = $listing->post();
+        $post->icon('invite');
+        if ($inv['id_invite']) {
+            $ank = new user($inv['id_invite']);
+            $post->time = vremja($inv['time_reg']);
+            $post->content = __('Использован');
+            $post->title = $ank->nick();
+            $post->url = '/profile.view.php?id=' . $ank->id;
+        } elseif ($inv['email']) {
+            $post->url = '?id=' . $inv['id'];
+            $post->title = __('Пригласительный #%s', $inv['id']);
+            $post->content = __('Отправлен на email: %s', $inv['email']) . '<br />';
+            if (!$inv['code']) {
+                $post->content .= __('Активирован');
+            }
+            if ($inv['time_reg'] < TIME - 86400) {
+                // 86400 секунд = 1 сутки - вчемя, через которое можно деактивировать неиспользованный пригласительный
+                $post->action('delete', "?id={$inv['id']}&amp;delete");
+            }
+        } else {
+            $post->title = "<a href='?id=$inv[id]'>" . __('Пригласительный #%s', $inv['id']) . "</a>";
+            $post->content = __('Не использован');
         }
-        if ($inv['time_reg'] < TIME - 86400) {
-            // 86400 секунд = 1 сутки - вчемя, через которое можно деактивировать неиспользованный пригласительный
-            $post->action('delete', "?id={$inv['id']}&amp;delete");
-        }
-    } else {
-        $post->title = "<a href='?id=$inv[id]'>" . __('Пригласительный #%s', $inv['id']) . "</a>";
-        $post->content = __('Не использован');
     }
 }
 $listing->display(__('Список пригласительных пуст'));
