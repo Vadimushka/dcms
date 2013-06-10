@@ -3,7 +3,7 @@
 include '../sys/inc/start.php';
 $mail = array();
 
-$ank = new user((int)@$_GET['id_user']);
+$ank = new user((int) @$_GET['id_user']);
 
 if ($user->group && $ank->group) {
 
@@ -18,22 +18,21 @@ if ($user->group && $ank->group) {
 
     if ($set_readed) {
         // отмечаем письма от этого человека как прочитанные
-        mysql_query("UPDATE `mail` SET `is_read` = '1' WHERE `id_user` = '{$user->id}' AND `id_sender` = '{$ank->id}'");
+        $res = $db->prepare("UPDATE `mail` SET `is_read` = '1' WHERE `id_user` = ? AND `id_sender` = ?");
+        $res->execute(Array($user->id, $ank->id));
     }
-    
-    $q = mysql_query("SELECT * FROM `mail` WHERE `time` > '$time_from'".($only_unreaded?' AND `is_read` = 0':'')." AND ((`id_user` = '{$user->id}' AND `id_sender` = '{$ank->id}') OR (`id_user` = '{$ank->id}' AND `id_sender` = '{$user->id}')) ORDER BY `id` DESC");
-        
-    while ($qmail = mysql_fetch_assoc($q)) {
+
+    $q = $db->prepare("SELECT * FROM `mail` WHERE `time` > ? " . ($only_unreaded ? ' AND `is_read` = 0' : '') . " AND ((`id_user` = ? AND `id_sender` = ?) OR (`id_user` = ? AND `id_sender` = ?)) ORDER BY `id` DESC");
+    $q->execute(Array($time_from, $user->id, $ank->id, $ank->id, $user->id));
+    while ($qmail = $q->fetch()) {
         $mail[] = array('id' => $qmail['id'],
             'id_sender' => $qmail['id_sender'],
             'id_user' => $qmail['id_user'],
             'mess' => output_text($qmail['mess']),
             'time' => $qmail['time'],
-            'is_read' => $qmail['is_read']   
+            'is_read' => $qmail['is_read']
         );
     }
-    
-    
 }
 
 header('Content-type: application/json');
