@@ -4,7 +4,9 @@ include_once '../sys/inc/start.php';
 $doc = new document();
 $doc->title = __('Мини чат');
 
-$pages = new pages(mysql_result(mysql_query("SELECT COUNT(*) FROM `chat_mini`"), 0));
+$res = $db->query("SELECT COUNT(*) AS cnt FROM `chat_mini`");
+$cnt = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$pages = new pages($cnt);
 $pages->this_page(); // получаем текущую страницу
 
 $can_write = true;
@@ -23,7 +25,8 @@ if ($can_write && $pages->this_page == 1) {
             $doc->err(__('Обнаружен мат: %s', $mat));
         } elseif ($message) {
             $user->balls++;
-            mysql_query("INSERT INTO `chat_mini` (`id_user`, `time`, `message`) VALUES ('$user->id', '" . TIME . "', '" . my_esc($message) . "')");
+            $res = $db->prepare("INSERT INTO `chat_mini` (`id_user`, `time`, `message`) VALUES (?, ?, ?)");
+            $res->execute(Array($user->id, TIME, $message));
             header('Refresh: 1; url=?' . passgen() . '&' . SID);
             $doc->ret(__('Вернуться'), '?' . passgen());
             $doc->msg(__('Сообщение успешно отправлено'));
@@ -37,10 +40,9 @@ if ($can_write && $pages->this_page == 1) {
         $message_form = '';
         if (isset($_GET ['message']) && is_numeric($_GET ['message'])) {
             $id_message = (int) $_GET ['message'];
-            $q = mysql_query("SELECT * FROM `chat_mini` WHERE `id` = '$id_message' LIMIT 1");
-            if (mysql_num_rows($q)) {
-                $message = mysql_fetch_assoc($q);
-
+            $q = $db->prepare("SELECT * FROM `chat_mini` WHERE `id` = ? LIMIT 1");
+            $q->execute(Array($id_message));
+            if ($message = $q->fetch()) {
                 $ank = new user($message['id_user']);
                 if (isset($_GET['reply'])) {
                     $message_form = '@' . $ank->login . ',';
@@ -67,16 +69,18 @@ if (!empty($form))
 
 
 
-$q = mysql_query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
-while ($message = mysql_fetch_assoc($q)) {
-    $ank = new user($message['id_user']);
-    $post = $listing->post();
-    $post->id = 'chat_post_' . $message['id'];
-    $post->url = 'actions.php?id=' . $message['id'];
-    $post->time = vremja($message['time']);
-    $post->title = $ank->nick();
-    $post->post = output_text($message['message']);
-    $post->icon($ank->icon());
+$q = $db->query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $message) {
+        $ank = new user($message['id_user']);
+        $post = $listing->post();
+        $post->id = 'chat_post_' . $message['id'];
+        $post->url = 'actions.php?id=' . $message['id'];
+        $post->time = vremja($message['time']);
+        $post->title = $ank->nick();
+        $post->post = output_text($message['message']);
+        $post->icon($ank->icon());
+    }
 }
 $listing->setAjaxUrl('ajax.php?page=' . $pages->this_page);
 $listing->display(__('Сообщения отсутствуют'));

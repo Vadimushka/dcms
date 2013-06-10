@@ -14,9 +14,10 @@ if (!isset($_GET ['id']) || !is_numeric($_GET ['id'])) {
 }
 $id_message = (int) $_GET ['id'];
 
-$q = mysql_query("SELECT * FROM `chat_mini` WHERE `id` = '$id_message' LIMIT 1");
+$q = $db->prepare("SELECT * FROM `chat_mini` WHERE `id` = ? LIMIT 1");
+$q->execute(Array($id_message));
 
-if (!mysql_num_rows($q)) {
+if (!$message = $q->fetch()) {
     if (isset($_GET ['return']))
         header('Refresh: 1; url=' . $_GET ['return']);
     else
@@ -24,9 +25,6 @@ if (!mysql_num_rows($q)) {
     $doc->err(__('Сообщение не найдено'));
     exit();
 }
-
-$message = mysql_fetch_assoc($q);
-
 
 
 

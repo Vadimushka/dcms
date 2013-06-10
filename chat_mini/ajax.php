@@ -15,15 +15,14 @@ if (isset($_POST['send'])) {
             $json['err'] = __('Обнаружен мат: %s', $mat);
         } elseif ($message) {
             $user->balls++;
-            mysql_query("INSERT INTO `chat_mini` (`id_user`, `time`, `message`) VALUES ('$user->id', '" . TIME . "', '" . my_esc($message) . "')");
+            $res = $db->prepare("INSERT INTO `chat_mini` (`id_user`, `time`, `message`) VALUES (?, ?, ?)");
+            $res->execute(Array($user->id, TIME, $message));
 
             $json['msg'] = __('Сообщение успешно отправлено');
-
         } else {
             $json['err'] = __('Сообщение пусто');
         }
-    }
-    else{
+    } else {
         $json['err'] = __('Неизвестная ошибка');
     }
     $json['form']['message'] = '';
@@ -34,34 +33,38 @@ if (isset($_POST['send'])) {
     $json['remove'] = $skip_ids;
     $json['add'] = array();
 
-    $pages = new pages(mysql_result(mysql_query("SELECT COUNT(*) FROM `chat_mini`"), 0));
+    $res = $db->query("SELECT COUNT(*) AS cnt FROM `chat_mini`");
+    $cnt = ($row = $res->fetch()) ? $row['cnt'] : 0;
+    $pages = new pages($cnt);
     $pages->this_page(); // получаем текущую страницу
 
-    $q = mysql_query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
+    $q = $db->query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
 
     $after_id = false;
-    while ($message = mysql_fetch_assoc($q)) {
-        $id_post = 'chat_post_' . $message['id'];
+    if ($arr = $q->fetchAll()) {
+        foreach ($arr AS $message) {
+            $id_post = 'chat_post_' . $message['id'];
 
-        if (in_array($id_post, $skip_ids)) {
-            $key = array_search($id_post, $json['remove']);
-            unset($json['remove'][$key]);
-        } else {
-            $ank = new user($message['id_user']);
-            $post = new listing_post();
-            $post->id = $id_post;
-            $post->url = 'actions.php?id=' . $message['id'];
-            $post->time = vremja($message['time']);
-            $post->title = $ank->nick();
-            $post->post = output_text($message['message']);
-            $post->icon($ank->icon());
+            if (in_array($id_post, $skip_ids)) {
+                $key = array_search($id_post, $json['remove']);
+                unset($json['remove'][$key]);
+            } else {
+                $ank = new user($message['id_user']);
+                $post = new listing_post();
+                $post->id = $id_post;
+                $post->url = 'actions.php?id=' . $message['id'];
+                $post->time = vremja($message['time']);
+                $post->title = $ank->nick();
+                $post->post = output_text($message['message']);
+                $post->icon($ank->icon());
 
-            $json['add'][] = array(
-                'after_id' => $after_id,
-                'html' => $post->fetch()
-            );
+                $json['add'][] = array(
+                    'after_id' => $after_id,
+                    'html' => $post->fetch()
+                );
+            }
+            $after_id = $id_post;
         }
-        $after_id = $id_post;
     }
     $json['remove'] = array_values($json['remove']);
 }
