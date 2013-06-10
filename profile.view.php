@@ -246,7 +246,7 @@ if ($ank->id) {
 if ($ank->icq_uin) {
     if ($ank->is_friend($user) || $ank->vis_icq) {
         $post = $listing->post();
-        $post->title = __('ICQ UIN');
+        $post->title = 'ICQ UIN';
         $post->content = $ank->icq_uin;
         $post->icon = 'http://wwp.icq.com/scripts/online.dll?icq=' . $ank->icq_uin . '&amp;img=27';
 
@@ -255,7 +255,7 @@ if ($ank->icq_uin) {
     } else {
 
         $post = $listing->post();
-        $post->title = __('ICQ UIN');
+        $post->title = 'ICQ UIN';
         $post->url = '/faq.php?info=hide&amp;return=' . URL;
         $post->content = __('Информация скрыта');
 
@@ -267,7 +267,7 @@ if ($ank->skype) {
     if ($ank->is_friend($user) || $ank->vis_skype) {
 
         $post = $listing->post();
-        $post->title = __('Skype');
+        $post->title = 'Skype';
         $post->content = $ank->skype;
         $post->icon = 'http://mystatus.skype.com/smallicon/' . $ank->skype;
         $post->url = 'skype:' . $ank->skype . '?chat';
@@ -277,7 +277,7 @@ if ($ank->skype) {
     } else {
 
         $post = $listing->post();
-        $post->title = __('Skype');
+        $post->title = 'Skype';
         $post->url = '/faq.php?info=hide&amp;return=' . URL;
         $post->content = __('Информация скрыта');
         //echo __('Skype') . ': <a href="/faq.php?info=hide&amp;return=' . URL . '">?</a><br />';
@@ -290,7 +290,7 @@ if ($ank->email) {
     if ($ank->is_friend($user) || $ank->vis_email) {
 
         $post = $listing->post();
-        $post->title = __('E-mail');
+        $post->title = 'E-mail';
         $post->content = $ank->email;
         if (preg_match("#\@(mail|bk|inbox|list)\.ru$#i", $ank->email))
             $post->icon = 'http://status.mail.ru/?' . $ank->email;
@@ -308,7 +308,7 @@ if ($ank->email) {
 
 
         $post = $listing->post();
-        $post->title = __('E-mail');
+        $post->title = 'E-mail';
         $post->url = '/faq.php?info=hide&amp;return=' . URL;
         $post->content = __('Информация скрыта');
 
@@ -335,7 +335,7 @@ if ($ank->reg_mail) {
 if ($ank->wmid) {
 
     $post = $listing->post();
-    $post->title = __('WMID');
+    $post->title = 'WMID';
     $post->content = $ank->wmid;
     $post->url = 'http://passport.webmoney.ru/asp/certview.asp?wmid=' . $ank->wmid;
     $post->image = 'http://stats.wmtransfer.com/Levels/pWMIDLevel.aspx?wmid=' . $ank->wmid . '&amp;w=35&amp;h=16';
