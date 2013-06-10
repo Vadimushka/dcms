@@ -91,7 +91,7 @@ if (isset($_POST ['save'])) {
 
     if (!empty($_POST ['email'])) {
         if (!is_valid::mail($_POST ['email'])) {
-            $doc->err(__('Указан не корректный E-mail'));
+            $doc->err(__('Указан не корректный %s', 'E-Mail'));
         } else {
             $ank->email = $_POST ['email'];
         }
@@ -100,14 +100,14 @@ if (isset($_POST ['save'])) {
         if (empty($_POST ['wmid']))
             $ank->wmid = '';
         elseif (!is_valid::wmid($_POST ['wmid'])) {
-            $doc->err(__('Указан не корректный идентификатор WebMoney'));
+            $doc->err(__('Указан не корректный %s', 'WMID'));
         } else {
             $ank->wmid = $_POST ['wmid'];
         }
     }
     if (!empty($_POST ['reg_mail'])) {
         if (!is_valid::mail($_POST ['reg_mail'])) {
-            $doc->err(__('Указан не корректный Primary E-mail'));
+            $doc->err(__('Указан не корректный %s', 'Primary E-mail'));
         } else {
             $ank->reg_mail = $_POST ['reg_mail'];
         }
@@ -188,13 +188,13 @@ $form->text('ank_g_r', false, $ank->ank_g_r, true, 4);
 
 $form->text('balls', __('Баллы'), $ank->balls);
 $form->text('icq', __('Номер ICQ'), $ank->icq_uin);
-$form->checkbox('vis_icq', __('Показывать ICQ в анкете'), $ank->vis_icq);
+$form->checkbox('vis_icq', __('Показывать %s', 'ICQ'), $ank->vis_icq);
 $form->text('skype', __('Skype логин'), $ank->skype);
-$form->checkbox('vis_skype', __('Показывать Skype в анкете'), $ank->vis_skype);
-$form->text('reg_mail', __('Primary E-mail'), $ank->reg_mail);
-$form->text('email', __('E-mail'), $ank->email);
-$form->checkbox('vis_email', __('Показывать Email в анкете'), $ank->vis_email);
-$form->text('wmid', __('WebMoney ID'), $ank->wmid);
+$form->checkbox('vis_skype', __('Показывать %s', 'Skype'), $ank->vis_skype);
+$form->text('reg_mail', 'Primary E-mail', $ank->reg_mail);
+$form->text('email', 'E-mail', $ank->email);
+$form->checkbox('vis_email', __('Показывать %s', 'E-Mail'), $ank->vis_email);
+$form->text('wmid', 'WebMoney ID', $ank->wmid);
 $form->checkbox('vis_friends', __('Отображать список друзей'), $ank->vis_friends);
 $form->button(__('Применить'), 'save');
 $form->display();

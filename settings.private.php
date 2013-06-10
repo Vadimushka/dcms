@@ -18,9 +18,9 @@ $form->assign('method', 'post');
 $form->assign('action', '?' . passgen());
 $elements = array();
 
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $user->vis_email, 'name' => 'email', 'text' => __('Показывать Email')));
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $user->vis_icq, 'name' => 'icq', 'text' => __('Показывать ICQ')));
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $user->vis_skype, 'name' => 'skype', 'text' => __('Показывать Skype')));
+$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $user->vis_email, 'name' => 'email', 'text' => __('Показывать %s', 'E-Mail')));
+$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $user->vis_icq, 'name' => 'icq', 'text' => __('Показывать %s', 'ICQ')));
+$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $user->vis_skype, 'name' => 'skype', 'text' => __('Показывать %s', 'Skype')));
 $elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'checked' => $user->vis_friends, 'name' => 'friends', 'text' => __('Список друзей')));
 $elements [] = array('type' => 'text', 'br' => 1, 'value' => '* ' . __('Ваши друзья будут видеть все ваши данные независимо от установленных параметров'));
 
