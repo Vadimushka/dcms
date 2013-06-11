@@ -20,22 +20,23 @@ if (isset($_GET['id'])) {
 
     switch (@$_GET['filter']) {
         case 'new':$filter = 'new';
-            $sql = " AND `time_start` > '" . TIME . "' AND (`time_end` > '" . TIME . "' OR `time_end` = '0')";
+            $sql = " AND `time_start` > ? AND (`time_end` > ? OR `time_end` = '0')";
             break;
         case 'old':$filter = 'old';
-            $sql = " AND (`time_start` < '" . TIME . "' OR `time_start` = '0') AND (`time_end` < '" . TIME . "' AND `time_end` != '0')";
+            $sql = " AND (`time_start` < ? OR `time_start` = '0') AND (`time_end` < ? AND `time_end` != '0')";
             break;
         case 'all':$filter = 'all';
             $sql = '';
             break;
         default:$filter = 'active';
-            $sql = " AND (`time_start` < '" . TIME . "' OR `time_start` = '0') AND (`time_end` > '" . TIME . "' OR `time_end` = '0')";
+            $sql = " AND (`time_start` < ? OR `time_start` = '0') AND (`time_end` > ? OR `time_end` = '0')";
             break;
     }
 
-
+    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `advertising` WHERE `space` = ? $sql");
+    $res->execute(Array($id_space, TIME, TIME));
     $pages = new pages;
-    $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `advertising` WHERE `space` = '$id_space'$sql"), 0);
+    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
     $pages->this_page(); // получаем текущую страницу
     // меню сортировки
     $ord = array();
@@ -49,8 +50,9 @@ if (isset($_GET['id'])) {
 
     $listing = new listing();
 
-    $q = mysql_query("SELECT * FROM `advertising` WHERE `space` = '$id_space'$sql ORDER BY `time_start` ASC LIMIT $pages->limit");
-    while ($adt = mysql_fetch_assoc($q)) {
+    $q = $db->prepare("SELECT * FROM `advertising` WHERE `space` = ? $sql ORDER BY `time_start` ASC LIMIT $pages->limit");
+    $q->execute(Array($id_space, TIME, TIME));
+    while ($adt = $q->fetch()) {
         $post = $listing->post();
         $post->url = 'adt.stat.php?id=' . $adt['id'];
         $post->title = for_value($adt['name'] ? $adt['name'] : 'Реклама #' . $adt['id']) . ($adt['url_img'] ? ' (' . __('баннер') . ')' : null);

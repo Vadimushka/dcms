@@ -51,7 +51,9 @@ $listing = new listing();
 foreach ($tables AS $name => $v) {
     $post = $listing->post();
     $post->title = $name;
-    $post->counter = @mysql_result(mysql_query("SELECT COUNT(*) FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = '$ank->id'"), 0);
+    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = ?");
+    $res->execute(Array($ank->id));
+    $post->counter = ($row = $res->fetch()) ? $row['cnt'] : 0;
     $post->hightlight = (bool) $post->counter;
 }
 $listing->display();

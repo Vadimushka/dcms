@@ -53,9 +53,11 @@ if (isset($_POST['change'])) {
     } else {
 
         foreach ($tables AS $d) {
-            mysql_query("UPDATE `" . my_esc($d['table']) . "` SET `" . my_esc($d['row']) . "` = '$id_new' WHERE `" . my_esc($d['row']) . "` = '$id_old'");
+            $res = $db->prepare("UPDATE `" . my_esc($d['table']) . "` SET `" . my_esc($d['row']) . "` = ? WHERE `" . my_esc($d['row']) . "` = ?");
+            $res->execute(Array($id_new, $id_old));
         }
-        mysql_query("UPDATE `users` SET `id` = '$id_new' WHERE `id` = '$id_old'");
+        $res = $db->prepare("UPDATE `users` SET `id` = ? WHERE `id` = ?");
+        $res->execute(Array($id_new, $id_old));
         $dcms->log('Пользователи', 'Изменение ID пользователя ' . $ank->login . ' с ' . $id_old . ' на ' . $id_new . ')');
 
         $doc->msg(__('Идентификатор пользователя успешно изменен'));
@@ -67,7 +69,7 @@ if (isset($_POST['change'])) {
 $form = new form("?id_ank=$ank->id&amp;" . passgen());
 $form->text('id_new', __('Новый ID'), $ank->id);
 $form->captcha();
-$form->bbcode('[notice] '.__('Изменение ID пользователя может повлечь ошибки в сторонних модулях.'));
+$form->bbcode('[notice] ' . __('Изменение ID пользователя может повлечь ошибки в сторонних модулях.'));
 $form->button(__('Применить'), 'change');
 $form->display();
 

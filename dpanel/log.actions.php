@@ -18,11 +18,14 @@ if (isset($_GET['id_user'])) {
     if (!empty($_GET['module'])) {
         $module = (string) $_GET['module'];
         // вывод списка действий по модулю
+        $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `action_list_administrators` $sql_where AND `module` = ?");
+        $res->execute(Array($module));
         $listing = new listing();
         $pages = new pages;
-        $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `action_list_administrators`$sql_where AND `module` = '" . my_esc($module) . "'"), 0); // количество
+        $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество
         $pages->this_page(); // получаем текущую страницу
-        $q = mysql_query("SELECT * FROM `action_list_administrators`$sql_where AND `module` = '" . my_esc($module) . "' ORDER BY `id` DESC LIMIT $pages->limit");
+        $q = $db->prepare("SELECT * FROM `action_list_administrators`$sql_where AND `module` = ? ORDER BY `id` DESC LIMIT $pages->limit");
+        $q->execute(Array($module));
         while ($action = mysql_fetch_assoc($q)) {
             $ank = new user($action['id_user']);
             $post = $listing->post();
@@ -43,10 +46,11 @@ if (isset($_GET['id_user'])) {
     $listing = new listing();
 
     $pages = new pages;
-    $pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`module`)) FROM `action_list_administrators`$sql_where"), 0); // количество модулей
+    $res = $db->query("SELECT COUNT(DISTINCT(`module`)) AS cnt FROM `action_list_administrators`$sql_where");
+    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество модулей
     $pages->this_page(); // получаем текущую страницу
-    $q = mysql_query("SELECT `module` FROM `action_list_administrators`$sql_where GROUP BY `module` LIMIT $pages->limit");
-    while ($module = mysql_fetch_assoc($q)) {
+    $q = $db->query("SELECT `module` FROM `action_list_administrators`$sql_where GROUP BY `module` LIMIT $pages->limit");
+    while ($module = $q->fetch()) {
         $post = $listing->post();
         $post->title = __($module['module']);
         $post->url = '?id_user=' . $id_user . '&amp;module=' . urlencode($module['module']);
@@ -62,19 +66,21 @@ if (isset($_GET['id_user'])) {
 
 $listing = new listing();
 $month_time = mktime(0, 0, 0, date('n'), 0); // начало текущего месяца
-$q = mysql_query("SELECT *, COUNT(`id`) AS `count` FROM `action_list_administrators` WHERE `time` > '$month_time' GROUP BY `id_user` ORDER BY `count` DESC");
-
+$q = $db->prepare("SELECT *, COUNT(`id`) AS `count` FROM `action_list_administrators` WHERE `time` > ? GROUP BY `id_user` ORDER BY `count` DESC");
+$q->execute($month_time);
 $post = $listing->post();
 $post->title = __('Все администраторы');
 $post->url = '?id_user=all';
 
-while ($ank_q = mysql_fetch_assoc($q)) {
-    $post = $listing->post();
-    $ank = new user($ank_q['id_user']);
-    $post->title = $ank->nick();
-    $post->counter = $ank_q['count'];
-    $post->url = '?id_user=' . $ank->id;
-    $post->icon($ank->icon());
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $ank_q) {
+        $post = $listing->post();
+        $ank = new user($ank_q['id_user']);
+        $post->title = $ank->nick();
+        $post->counter = $ank_q['count'];
+        $post->url = '?id_user=' . $ank->id;
+        $post->icon($ank->icon());
+    }
 }
 $listing->display(__('Нет администрации'));
 

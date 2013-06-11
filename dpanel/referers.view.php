@@ -7,25 +7,28 @@ $doc->title = __('Рефералы');
 if (isset($_GET['id_site'])) {
     $id = (string) $_GET['id_site'];
 
-    $q = mysql_query("SELECT * FROM `log_of_referers_sites` WHERE `id` = '$id' LIMIT 1");
+    $q = $db->prepare("SELECT * FROM `log_of_referers_sites` WHERE `id` = ? LIMIT 1");
+    $q->execute(Array($id));
 
-    if (!mysql_num_rows($q)) {
+    if (!$site = $q->fetch()) {
         header('Refresh: 1; url=?');
         $doc->ret('Вернуться', '?');
         $doc->err(__('Данные о сайте отсутствуют'));
         exit;
     }
 
-    $site = mysql_fetch_assoc($q);
 
     $doc->title = __('Рефералы с сайта "%s"', $site['domain']);
 
+    $res = $db->prepare("SELECT COUNT(DISTINCT `full_url`) AS cnt FROM `log_of_referers` WHERE `id_site` = ?");
+    $res->execute(Array($id));
     $listing = new listing();
     $pages = new pages;
-    $pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT `full_url`) FROM `log_of_referers` WHERE `id_site` = '$id'"), 0);
+    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
     $pages->this_page(); // получаем текущую страницу
-    $q = mysql_query("SELECT `full_url`, COUNT(*) AS `count`, MAX(`time`) AS `time` FROM `log_of_referers` WHERE `id_site` = '$id' GROUP BY `full_url` ORDER BY `time` DESC LIMIT $pages->limit");
-    while ($ref = mysql_fetch_assoc($q)) {
+    $q = $db->prepare("SELECT `full_url`, COUNT(*) AS `count`, MAX(`time`) AS `time` FROM `log_of_referers` WHERE `id_site` = ? GROUP BY `full_url` ORDER BY `time` DESC LIMIT $pages->limit");
+    $res->execute(Array($id));
+    while ($ref = $q->fetch()) {
         $post = $listing->post();
         $post->title = vremja($ref['time']);
         $post->content[] = $ref['full_url'];
@@ -54,8 +57,9 @@ switch (@$_GET['order']) {
         break;
 }
 
+$res = $db->query("SELECT COUNT(*) AS cnt FROM `log_of_referers_sites`");
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_referers_sites`"), 0);
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
 $pages->this_page(); // получаем текущую страницу
 //
 //
@@ -70,8 +74,8 @@ $or->display('design.order.tpl');
 
 $listing = new listing();
 
-$q = mysql_query("SELECT * FROM `log_of_referers_sites` ORDER BY $order LIMIT $pages->limit");
-while ($ref = mysql_fetch_assoc($q)) {
+$q = $db->query("SELECT * FROM `log_of_referers_sites` ORDER BY $order LIMIT $pages->limit");
+while ($ref = $q->fetch()) {
     $post = $listing->post();
     $post->title = output_text($ref['domain']);
     $post->url = '?id_site=' . $ref['id'];

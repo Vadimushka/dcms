@@ -35,7 +35,7 @@ if (!empty($_POST)) {
                 }else
                     $sql = $tab->getSQLQueryCreate();
 
-                if (mysql_query($sql)) {
+                if ($db->query($sql)) {
                     $doc->msg(__('Запрос на изменение таблицы "%s" успешно выполнен', $table));
                     $tables_exists = new tables();
                     if (in_array($table, $tables_exists->tables))

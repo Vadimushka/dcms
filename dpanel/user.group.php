@@ -40,7 +40,8 @@ if (isset($_POST['save']) && !empty($_POST['group'])) {
     else {
         $group_last = $ank->group;
         if ($group_last != $group_now) {
-            mysql_query("INSERT INTO `log_of_user_status` (`id_user`, `id_adm`, `time`, `type_last`, `type_now`) VALUES ('$ank->id', '$user->id', '" . TIME . "', '$group_last', '$group_now')");
+            $res = $db->prepare("INSERT INTO `log_of_user_status` (`id_user`, `id_adm`, `time`, `type_last`, `type_now`) VALUES (?, ?, ?, ?, ?)");
+            $res->execute(Array($ank->id, $user->id, TIME, $group_last, $group_now));
             $ank->group = $group_now;
 
             $dcms->log('Пользователи', 'Изменение группы пользователя [url=/profile.view.php?id=' . $ank->id . ']' . $ank->login . '[/url] с ' . groups::name($group_last) . ' на ' . groups::name($ank->group));

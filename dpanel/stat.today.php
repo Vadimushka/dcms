@@ -11,21 +11,22 @@ if (!$dcms->log_of_visits) {
     $doc->act(__('Управление службами'), 'sys.settings.daemons.php');
 }
 
-
+$arr = Array('wap', 'pda', 'itouch', 'web');
 $hits = array();
-$hits['wap'] = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = '" . DAY_TIME . "' AND `browser_type` = 'wap'"), 0);
-$hits['pda'] = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = '" . DAY_TIME . "' AND `browser_type` = 'pda'"), 0);
-$hits['itouch'] = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = '" . DAY_TIME . "' AND `browser_type` = 'itouch'"), 0);
-$hits['web'] = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = '" . DAY_TIME . "' AND `browser_type` = 'web'"), 0);
-
-
 $hosts = array();
-$hosts['wap'] = mysql_result(mysql_query("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = '" . DAY_TIME . "' AND `browser_type` = 'wap'"), 0);
-$hosts['pda'] = mysql_result(mysql_query("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = '" . DAY_TIME . "' AND `browser_type` = 'pda'"), 0);
-$hosts['itouch'] = mysql_result(mysql_query("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = '" . DAY_TIME . "' AND `browser_type` = 'itouch'"), 0);
-$hosts['web'] = mysql_result(mysql_query("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = '" . DAY_TIME . "' AND `browser_type` = 'web'"), 0);
+$res_hits = $db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
+$res_hosts = $db->prepare("SELECT COUNT(DISTINCT `iplong` , `id_browser`) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
+foreach ($arr AS $val) {
+    $res_hits->execute(Array(DAY_TIME, $val));
+    $hits[$val] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
+    $res_hosts->execute(Array(DAY_TIME, $val));
+    $hosts[$val] = ($row = $res_hosts->fetch()) ? $row['cnt'] : 0;
+}
 
-if (isset($log_of_visits) && mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` <> '" . DAY_TIME . "' LIMIT 1"), 0)) {
+$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_visits_today` WHERE `time` <> ? LIMIT 1");
+$res->execute(Array(DAY_TIME));
+$k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+if (isset($log_of_visits) && $k) {
     $log_of_visits->tally();
 }
 
