@@ -8,10 +8,12 @@ $doc->title = __('Изменение порядка категорий');
 if (isset($_GET['sortable'])) {
 
     $sort = explode(',', $_POST['sortable']);
-    $q = mysql_query("SELECT * FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC");
-    while ($category = mysql_fetch_assoc($q)) {
+    $q = $db->prepare("SELECT * FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
+    $q->execute(Array($user->group));
+    $res_up = $db->prepare("UPDATE `forum_categories` SET `position` = ? WHERE `id` = ?");
+    while ($category = $q->fetch()) {
         if (($position = array_search('cid' . $category['id'], $sort)) !== false) {
-            mysql_query("UPDATE `forum_categories` SET `position` = '$position' WHERE `id` = '{$category['id']}'");
+            $res_up->execute(Array($position, $category['id']));
         }
     }
 
@@ -23,8 +25,9 @@ if (isset($_GET['sortable'])) {
 
 if (!empty($_GET['id']) && !empty($_GET['act'])) {
     $sort = array();
-    $q = mysql_query("SELECT * FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC");
-    while ($category = mysql_fetch_assoc($q)) {
+    $q = $db->prepare("SELECT * FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
+    $q->execute(Array($user->group));
+    while ($category = $q->fetch()) {
         $sort[$category['id']] = $category['id'];
     }
 
@@ -48,10 +51,12 @@ if (!empty($_GET['id']) && !empty($_GET['act'])) {
 
 
 
-    $q = mysql_query("SELECT * FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC");
-    while ($category = mysql_fetch_assoc($q)) {
+    $q = $db->prepare("SELECT * FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
+    $q->execute(Array($user->group));
+    $res_up = $db->prepare("UPDATE `forum_categories` SET `position` = ? WHERE `id` = ?");
+    while ($category = $q->fetch()) {
         if (($position = array_search('cid' . $category['id'], $sort)) !== false) {
-            mysql_query("UPDATE `forum_categories` SET `position` = '$position' WHERE `id` = '{$category['id']}'");
+            $res_up->execute(Array($position, $category['id']));
         }
     }
 
@@ -65,8 +70,9 @@ if (!empty($_GET['id']) && !empty($_GET['act'])) {
 
 
 $listing = new listing();
-$q = mysql_query("SELECT * FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC");
-while ($category = mysql_fetch_assoc($q)) {
+$q = $db->prepare("SELECT * FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
+$q->execute(Array($user->group));
+while ($category = $q->fetch()) {
     $post = $listing->post();
     $post->id = 'cid' . $category['id'];
     //$post->url = "category.php?id=$category[id]";

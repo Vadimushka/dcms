@@ -11,15 +11,14 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_topic = (int) $_GET['id'];
 
-$q = mysql_query("SELECT * FROM `forum_topics` WHERE `id` = '$id_topic' AND `group_edit` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_topics` WHERE `id` = ? AND `group_edit` <= ?");
+$q->execute(Array($id_topic, $user->group));
+if (!$topic = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Раздел не доступен для редактирования'));
     exit;
 }
 
-$topic = mysql_fetch_assoc($q);
 
 $doc->title .= ' - ' . $topic['name'];
 
@@ -33,28 +32,31 @@ switch (@$_GET['show']) {
 if (isset($_POST['delete'])) {
     $deleted = 0;
 
+    $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ? LIMIT 1");
+    $res_del1 = $db->prepare("DELETE FROM `forum_themes` WHERE `id` = ? LIMIT 1");
+    $res_del2 = $db->prepare("DELETE
+FROM `forum_messages`, `forum_history`
+USING `forum_messages`
+LEFT JOIN `forum_history` ON `forum_history`.`id_message` = `forum_messages`.`id`
+WHERE `forum_messages`.`id_theme` = ?");
+    $res_del3 = $db->prepare("DELETE FROM `forum_vote` WHERE `id_theme` = ?");
+    $res_del4 = $db->prepare("DELETE FROM `forum_vote_votes` WHERE `id_theme` = ?");
+    $res_del5 = $db->prepare("DELETE FROM `forum_views` WHERE `id_theme` = ?");
     foreach ($_POST as $key => $value) {
         if ($value && preg_match('#^theme([0-9]+)$#ui', $key, $n)) {
             if (function_exists('set_time_limit'))
                 set_time_limit(30);
 
-            $q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$n[1]' AND `group_edit` <= '$user->group' LIMIT 1");
-
-            if (!@mysql_num_rows($q))
+            $q->execute(Array($n[1], $user->group));
+            if (!$theme = $q->fetch()) {
                 continue;
+            }
 
-            $theme = mysql_fetch_assoc($q);
-
-            mysql_query("DELETE FROM `forum_themes` WHERE `id` = '$theme[id]' LIMIT 1");
-            mysql_query("DELETE
-FROM `forum_messages`, `forum_history`
-USING `forum_messages`
-LEFT JOIN `forum_history` ON `forum_history`.`id_message` = `forum_messages`.`id`
-WHERE `forum_messages`.`id_theme` = '$theme[id]'");
-
-            mysql_query("DELETE FROM `forum_vote` WHERE `id_theme` = '$theme[id]'");
-            mysql_query("DELETE FROM `forum_vote_votes` WHERE `id_theme` = '$theme[id]'");
-            mysql_query("DELETE FROM `forum_views` WHERE `id_theme` = '$theme[id]'");
+            $res_del1->execute(Array($theme['id']));
+            $res_del2->execute(Array($theme['id']));
+            $res_del3->execute(Array($theme['id']));
+            $res_del4->execute(Array($theme['id']));
+            $res_del5->execute(Array($theme['id']));
 
             $dir = new files(FILES . '/.forum/' . $theme['id']);
             $dir->delete();
@@ -77,22 +79,28 @@ $or->display('design.order.tpl');
 
 $listing = new listing();
 if ($show == 'part') {
+    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_themes` WHERE `id_topic` = ? AND `group_show` <= ?");
+    $res->execute(Array($topic['id'], $user->group));
     $pages = new pages;
-    $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_themes` WHERE `id_topic` = '$topic[id]' AND `group_show` <= '$user->group'"), 0); // количество сообщений  теме
+    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений  теме
     $pages->this_page(); // получаем текущую страницу
-    $q = mysql_query("SELECT * FROM `forum_themes`  WHERE `id_topic` = '$topic[id]' AND `group_show` <= '$user->group' ORDER BY `time_last` DESC LIMIT $pages->limit");
-} else
-    $q = mysql_query("SELECT * FROM `forum_themes`  WHERE `id_topic` = '$topic[id]' AND `group_show` <= '$user->group' ORDER BY `time_last` DESC");
+    $q = $db->prepare("SELECT * FROM `forum_themes`  WHERE `id_topic` = ? AND `group_show` <= ? ORDER BY `time_last` DESC LIMIT $pages->limit");
+    $q->execute(Array($topic['id'], $user->group));
+} else {
+    $q = $db->prepare("SELECT * FROM `forum_themes`  WHERE `id_topic` = ? AND `group_show` <= ? ORDER BY `time_last` DESC");
+    $q->execute(Array($topic['id'], $user->group));
+}
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $theme) {
+        $ch = $listing->checkbox();
+        $ch->name = 'theme' . $theme['id'];
+        $ch->title = for_value($theme['name']);
 
-while ($theme = mysql_fetch_assoc($q)) {
-    $ch = $listing->checkbox();
-    $ch->name = 'theme' . $theme['id'];
-    $ch->title = for_value($theme['name']);
+        $autor = new user($theme['id_autor']);
+        $last_msg = new user($theme['id_last']);
 
-    $autor = new user($theme['id_autor']);
-    $last_msg = new user($theme['id_last']);
-
-    $ch->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . ' (' . vremja($theme['time_last']) . ')';
+        $ch->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . ' (' . vremja($theme['time_last']) . ')';
+    }
 }
 
 $form = new form('?id=' . $topic['id']);

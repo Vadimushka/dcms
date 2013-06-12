@@ -13,34 +13,32 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_category = (int) $_GET['id'];
 
-$q = mysql_query("SELECT * FROM `forum_categories` WHERE `id` = '$id_category' AND `group_edit` <= '$user->group'");
+$q = $db->prepare("SELECT * FROM `forum_categories` WHERE `id` = ? AND `group_edit` <= ?");
+$q->execute(Array($id_category, $user->group));
 
-if (!mysql_num_rows($q)) {
+if (!$category = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Категория не доступна для удаления'));
     $doc->ret(__('Форум'), './');
     exit;
 }
 
-$category = mysql_fetch_assoc($q);
 $doc->title = __('Удаление категории "%s"', $category['name']); // шапка страницы
 
 if (isset($_POST['delete'])) {
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
-        // блокируем таблицы
-        //   mysql_query("LOCK TABLES `forum_files` WRITE READ, `forum_categories` WRITE READ, `forum_topics` WRITE READ, `forum_themes` WRITE READ, `forum_messages` WRITE READ, `forum_history` WRITE READ, `forum_files` WRITE READ, `forum_vote` WRITE READ, `forum_vote_votes` WRITE READ");
-
-        $q = mysql_query("SELECT `id` FROM `forum_themes` WHERE `id_category` = '$category[id]'");
-        while ($theme = mysql_fetch_assoc($q)) {
+        $q = $db->prepare("SELECT `id` FROM `forum_themes` WHERE `id_category` = ?");
+        $q->execute(Array($category['id']));
+        while ($theme = $q->fetch()) {
             // удаление всех файлов темы
             $dir = new files(FILES . '/.forum/' . $theme['id']);
             $dir->delete();
             unset($dir);
         }
 
-        mysql_query("DELETE
+        $res = $db->prepare("DELETE
 FROM `forum_topics`, `forum_themes` , `forum_messages`, `forum_history`, `forum_files`, `forum_vote`, `forum_vote_votes`
 USING `forum_topics`
 LEFT JOIN `forum_themes` ON `forum_themes`.`id_topic` = `forum_topics`.`id`
@@ -50,9 +48,11 @@ LEFT JOIN `forum_files` ON `forum_files`.`id_topic` = `forum_topics`.`id`
 LEFT JOIN `forum_vote` ON `forum_vote`.`id_theme` = `forum_themes`.`id`
 LEFT JOIN `forum_vote_votes` ON `forum_vote_votes`.`id_theme` = `forum_themes`.`id`
 LEFT JOIN `forum_views` ON `forum_vote_votes`.`id_theme` = `forum_themes`.`id`
-WHERE `forum_topics`.`id_category` = '$category[id]'");
+WHERE `forum_topics`.`id_category` = ?");
+        $res->execute(Array($category['id']));
 
-        mysql_query("DELETE FROM `forum_categories` WHERE `id` = '$category[id]' LIMIT 1");
+        $res = $db->prepare("DELETE FROM `forum_categories` WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($category['id']));
         // оптимизация таблиц после удаления данных
         //   mysql_query("OPTIMIZE TABLE `forum_files`, `forum_categories`, `forum_topics`, `forum_themes`, `forum_messages`, `forum_history`, `forum_vote`, `forum_vote_votes`");
         // разблокируем таблицы

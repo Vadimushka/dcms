@@ -12,22 +12,21 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_theme = (int) $_GET['id'];
 
-$q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_edit` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
+$q->execute(Array($id_theme, $user->group));
+if (!$theme = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна для редактирования'));
     exit;
 }
-
-$theme = mysql_fetch_assoc($q);
 
 if (isset($_POST['save'])) {
 
     $t['top'] = (int) !empty($_POST['top']);
     if ($t['top'] != $theme['top']) {
         $theme['top'] = $t['top'];
-        mysql_query("UPDATE `forum_themes` SET `top` = '$theme[top]' WHERE `id` = '$theme[id]' LIMIT 1");
+        $res = $db->prepare("UPDATE `forum_themes` SET `top` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($theme['top'], $theme['id']));
         if ($theme['top'])
             $doc->msg(__('Тема успешно закреплена'));
         else
@@ -41,7 +40,8 @@ if (isset($_POST['save'])) {
             $theme_dir->setGroupShowRecurse($group_show); // данный параметр необходимо применять рекурсивно
 
             $theme['group_show'] = $group_show;
-            mysql_query("UPDATE `forum_themes` SET `group_show` = '$theme[group_show]' WHERE `id` = '$theme[id]' LIMIT 1");
+            $res = $db->prepare("UPDATE `forum_themes` SET `group_show` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($theme['group_show'], $theme['id']));
             $doc->msg(__('Читать тему теперь разрешено группе "%s" и выше', groups::name($group_show)));
         }
     }
@@ -53,7 +53,8 @@ if (isset($_POST['save'])) {
                 $doc->err(__('Для того, чтобы оставлять сообщения группе "%s" сначала необходимо дать права на чтение темы', groups::name($group_write)));
             else {
                 $theme['group_write'] = $group_write;
-                mysql_query("UPDATE `forum_themes` SET `group_write` = '$theme[group_write]' WHERE `id` = '$theme[id]' LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_themes` SET `group_write` = ? WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($theme['group_write'], $theme['id']));
                 $doc->msg(__('Оставлять сообщения в теме теперь разрешено группе "%s" и выше', groups::name($group_write)));
             }
         }
@@ -66,19 +67,20 @@ if (isset($_POST['save'])) {
                 $doc->err(__('Для изменения параметров темы группе "%s" сначала необходимо дать права на запись в тему', groups::name($group_edit)));
             else {
                 $theme['group_edit'] = $group_edit;
-                mysql_query("UPDATE `forum_themes` SET `group_edit` = '$theme[group_edit]' WHERE `id` = '$theme[id]' LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_themes` SET `group_edit` = ? WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($theme['group_edit'], $theme['id']));
                 $doc->msg(__('Изменять параметры темы теперь разрешено группе "%s" и выше', groups::name($group_edit)));
             }
         }
     }
     // после изменения параметров темы обновляем данные, сохраненные в базе
-    $q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_edit` <= '$user->group'");
-    if (!mysql_num_rows($q)) {
+    $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
+    $q->execute(Array($id_theme, $user->group));
+    if (!$theme = $q->fetch()) {
         header('Refresh: 1; url=./');
         $doc->err(__('Тема не доступна для редактирования'));
         exit;
     }
-    $theme = mysql_fetch_assoc($q);
 }
 
 $doc->title = __('Редактирование темы "%s"', $theme['name']); // шапка страницы

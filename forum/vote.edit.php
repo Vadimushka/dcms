@@ -14,9 +14,9 @@ if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
 }
 $id_theme = (int) $_GET['id_theme'];
 
-$q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_edit` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
+$q->execute(Array($id_theme, $user->group));
+if (!$theme = $q->fetch()) {
     if (isset($_GET['return']))
         header('Refresh: 1; url=' . $_GET['return']);
     else
@@ -25,7 +25,6 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$theme = mysql_fetch_assoc($q);
 
 if (empty($theme['id_vote'])) {
     if (isset($_GET['return']))
@@ -36,9 +35,10 @@ if (empty($theme['id_vote'])) {
     exit;
 }
 
-$q = mysql_query("SELECT * FROM `forum_vote` WHERE `id` = '$theme[id_vote]'");
+$q = $db->prepare("SELECT * FROM `forum_vote` WHERE `id` = ?");
+$q->execute(Array($theme['id_vote']));
 
-if (!mysql_num_rows($q)) {
+if (!$vote_a = $q->fetch()) {
     if (isset($_GET['return']))
         header('Refresh: 1; url=' . $_GET['return']);
     else
@@ -47,7 +47,6 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$vote_a = mysql_fetch_assoc($q);
 
 if (!empty($_POST['vote'])) {
     $vote = text::input_text($_POST['vote']);
@@ -76,23 +75,30 @@ if (!empty($_POST['vote'])) {
                 header('Refresh: 1; url=theme.php?id=' . $theme['id']);
 
             if (!empty($_POST['finish'])) {
-                mysql_query("UPDATE `forum_vote` SET `active` = '0' WHERE `id` = '$vote_a[id]' LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_vote` SET `active` = '0' WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($vote_a['id']));
                 $dcms->log('Форум', 'Закрытие голосования в теме [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
                 $doc->msg(__('Голосование окончено'));
             } elseif (!empty($_POST['clear'])) {
-                mysql_query("UPDATE `forum_vote` SET `active` = '1' WHERE `id` = '$vote_a[id]' LIMIT 1");
-                mysql_query("DELETE FROM `forum_vote_votes` WHERE `id_vote` = '$vote_a[id]'");
+                $res = $db->prepare("UPDATE `forum_vote` SET `active` = '1' WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($vote_a['id']));
+                $res = $db->prepare("DELETE FROM `forum_vote_votes` WHERE `id_vote` = ?");
+                $res->execute(Array($vote_a['id']));
                 $dcms->log('Форум', 'Обнуление голосования в теме [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
                 $doc->msg(__('Голосование начато заново'));
             } elseif (!empty($_POST['delete'])) {
-                mysql_query("DELETE FROM `forum_vote`  WHERE `id` = '$vote_a[id]' LIMIT 1");
-                mysql_query("DELETE FROM `forum_vote_votes` WHERE `id_vote` = '$vote_a[id]'");
-                mysql_query("UPDATE `forum_themes` SET `id_vote` = null WHERE `id` = '$theme[id]' LIMIT 1");
+                $res = $db->prepare("DELETE FROM `forum_vote`  WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($vote_a['id']));
+                $res = $db->prepare("DELETE FROM `forum_vote_votes` WHERE `id_vote` = ?");
+                $res->execute(Array($vote_a['id']));
+                $res = $db->prepare("UPDATE `forum_themes` SET `id_vote` = null WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($theme['id']));
                 $dcms->log('Форум', 'Удаление голосования в теме [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
                 $doc->msg(__('Голосование успешно удалено'));
             } else {
                 $dcms->log('Форум', 'Изменение параметров голосования в теме [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
-                mysql_query("UPDATE `forum_vote` SET " . implode(', ', $set) . ", `name` = '" . my_esc($vote) . "' WHERE `id` = '$vote_a[id]' LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_vote` SET " . implode(', ', $set) . ", `name` = ? WHERE `id` = ? LIMIT 1");
+                $res->execuete(Array($vote, $vote_a['id']));
                 $doc->msg(__('Параметры успешно изменены'));
             }
 

@@ -11,9 +11,10 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_message = (int) $_GET['id'];
 
-$q = mysql_query("SELECT * FROM `forum_messages` WHERE `id` = '$id_message'");
+$q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id` = ?");
+$q->execute(Array($id_message));
 
-if (!mysql_num_rows($q)) {
+if (!$message = $q->fetch()) {
     if (isset($_GET['return']))
         header('Refresh: 1; url=' . $_GET['return']);
     else
@@ -22,11 +23,11 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$message = mysql_fetch_assoc($q);
 
-$q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$message[id_theme]'");
+$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ?");
+$q->execute(Array($message['id_theme']));
 
-if (!mysql_num_rows($q)) {
+if (!$theme = $q->fetch()) {
     if (isset($_GET['return']))
         header('Refresh: 1; url=' . $_GET['return']);
     else
@@ -35,7 +36,6 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$theme = mysql_fetch_assoc($q);
 
 $autor = new user((int) $message['id_user']);
 

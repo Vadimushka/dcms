@@ -14,9 +14,9 @@ if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
 }
 $id_theme = (int) $_GET['id_theme'];
 
-$q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_edit` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
+$q->execute(Array($id_theme, $user->group));
+if (!$theme = $q->fetch()) {
     if (isset($_GET['return']))
         header('Refresh: 1; url=' . $_GET['return']);
     else
@@ -25,7 +25,6 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$theme = mysql_fetch_assoc($q);
 
 if (!empty($theme['id_vote'])) {
     if (isset($_GET['return']))
@@ -55,8 +54,9 @@ if (!empty($_POST['vote'])) {
         if (count($v) < 2)
             $doc->err(__('Должно быть не менее 2-х вариантов ответа'));
         else {
-            mysql_query("INSERT INTO `forum_vote` (`id_autor`, `id_theme`, `name`, " . implode(', ', $k) . ")
-VALUES ('$user->id', '$theme[id]', '$vote', " . implode(', ', $v) . ")");
+            $res = $db->prepare("INSERT INTO `forum_vote` (`id_autor`, `id_theme`, `name`, " . implode(', ', $k) . ")
+VALUES (?,?,?, " . implode(', ', $v) . ")");
+            $res->execute(Array($user->id, $theme['id'], $vote));
 
             if (!$id_vote = mysql_insert_id())
                 $doc->err(__('При создании голосования возникла ошибка'));
@@ -65,7 +65,8 @@ VALUES ('$user->id', '$theme[id]', '$vote', " . implode(', ', $v) . ")");
                     header('Refresh: 1; url=' . $_GET['return']);
                 else
                     header('Refresh: 1; url=theme.php?id=' . $theme['id']);
-                mysql_query("UPDATE `forum_themes` SET `id_vote` = '$id_vote' WHERE `id` = '$theme[id]' LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_themes` SET `id_vote` = ? WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($id_vote, $theme['id']));
                 $doc->msg('Голосование успешно создано');
 
                 $dcms->log('Форум', 'Создание голосования в теме [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');

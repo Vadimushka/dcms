@@ -11,24 +11,19 @@ if (!isset($_GET['id_message']) || !is_numeric($_GET['id_message'])) {
 }
 $id_message = (int) $_GET['id_message'];
 
-$q = mysql_query("SELECT * FROM `forum_messages` WHERE `id` = '$id_message' AND `group_show` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id` = ? AND `group_show` <= ?");
+$q->execute(Array($id_message, $user->group));
+if (!$message = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Сообщение не доступно'));
     exit;
 }
 
-$message = mysql_fetch_assoc($q);
 
+$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ?");
+$q->execute(Array($message['id_theme']));
 
-
-
-
-
-$q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$message[id_theme]'");
-
-if (!mysql_num_rows($q)) {
+if (!$theme = $q->fetch()) {
     if (isset($_GET['return'])) {
         header('Refresh: 1; url=' . $_GET['return']);
     } else {
@@ -38,7 +33,6 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$theme = mysql_fetch_assoc($q);
 
 if ($theme['group_show'] > $user->group) {
     $doc->err(__('Параметры темы не позволяют просматривать данное сообщение'));
@@ -51,8 +45,6 @@ if ($theme['group_show'] > $user->group) {
 $doc->title = $theme['name'];
 
 
-
-
 $can_write = true;
 if (!$user->is_writeable) {
     $doc->msg(__('Писать запрещено'), 'write_denied');
@@ -62,7 +54,7 @@ if (!$user->is_writeable) {
 
 
 
-$autor = new user((int)$message['id_user']);
+$autor = new user((int) $message['id_user']);
 
 
 if (!$autor->id) {
@@ -87,15 +79,16 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
     } elseif ($message_re && text::input_text($re) != $message_re) {
 
 
-        mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
- VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','$user->id','" . TIME . "','" . my_esc($message_re) . "','$theme[group_show]','$theme[group_edit]')");
-
-        $id_message = mysql_insert_id();
+        $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
+ VALUES (?,?,?,?,?,?,?,?)");
+        $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], $user->id, TIME, $message_re, $theme['group_show'], $theme['group_edit']));
+        $id_message = $db->lastInsertId();
 
         header('Refresh: 1; url=theme.php?id=' . $theme['id'] . '&page=end#message' . $id_message);
 
 
-        mysql_query("UPDATE `forum_themes` SET `time_last` = '" . TIME . "', `id_last` = '$user->id' WHERE `id` = '$theme[id]' LIMIT 1");
+        $res = $db->prepare("UPDATE `forum_themes` SET `time_last` = ?, `id_last` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array(TIME, $user->id, $theme['id']));
         $doc->msg(__('Ответ успешно отправлен'));
 
 
@@ -108,7 +101,9 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
                 }
                 $ank_in_message = new user($user_id_in_message);
                 if ($ank_in_message->notice_mention) {
-                    $count_posts_for_user = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$ank_in_message->group'"), 0);
+                    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
+                    $res->execute(Array($theme['id'], $ank_in_message->group));
+                    $count_posts_for_user = ($row = $res->fetch()) ? $row['cnt'] : 0;
                     $ank_in_message->mess("[user]{$user->id}[/user] упомянул" . ($user->sex ? '' : 'а') . " о Вас на форуме в [url=/forum/message.php?id_message={$id_message}]сообщении[/url] в теме [url=/forum/theme.php?id={$theme['id']}&postnum={$count_posts_for_user}#message{$id_message}]{$theme['name']}[/url]");
                 }
             }
@@ -116,7 +111,9 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
 
 
         if ($autor->notification_forum && $user->id != $autor->id) {
-            $count_posts_for_user = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$autor->group'"), 0);
+            $res = $db->prepare("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
+            $res->execute(Array($theme['id'], $autor->group));
+            $count_posts_for_user = ($row = $res->fetch()) ? $row['cnt'] : 0;
             $autor->mess("[user]{$user->id}[/user] ответил" . ($user->sex ? '' : 'а') . " Вам на форуме в [url=/forum/message.php?id_message={$id_message}]сообщении[/url] в теме [url=/forum/theme.php?id={$theme['id']}&postnum={$count_posts_for_user}#message{$id_message}]{$theme['name']}[/url]");
         }
 
@@ -132,21 +129,20 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
 if ($autor->id && $user->id) {
     $doc->title = __('Ответ для "%s"', $autor->login);
     //$can_write = false;
-}
-else{
+} else {
     $doc->title = __('Сообщение от "%s"', $autor->login);
 }
 
 
 
 $listing = new listing();
-$post = $listing -> post();
-$post -> title = $autor->nick();
-$post -> time = vremja($message['edit_time'] ? $message['edit_time'] : $message['time']);
-$post -> url = '/profile.view.php?id=' . $autor->id;
-$post -> icon($autor->icon());
-$post -> content = output_text($message['message']);
-$listing -> display();
+$post = $listing->post();
+$post->title = $autor->nick();
+$post->time = vremja($message['edit_time'] ? $message['edit_time'] : $message['time']);
+$post->url = '/profile.view.php?id=' . $autor->id;
+$post->icon($autor->icon());
+$post->content = output_text($message['message']);
+$listing->display();
 
 
 

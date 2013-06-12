@@ -39,26 +39,25 @@ $cache_id = 'forum.last.themes_all.period-' . $period;
 
 if (false === ($posts_all = cache::get($cache_id))) {
     $posts_all = array();
-    $q = mysql_query("SELECT `th`.* ,
+    $q = $db->prepare("SELECT `th`.* ,
             `tp`.`name` AS `topic_name`,
             `cat`.`name` AS `category_name`,
         `tp`.`group_write` AS `topic_group_write`,
             COUNT(DISTINCT `msg`.`id`) AS `count`,
-            (SELECT COUNT(*) FROM `forum_messages` AS `msg` WHERE `msg`.`id_theme` = `th`.`id` AND `msg`.`time` > '" . $q_time_start . "') AS `count_new`,
+            (SELECT COUNT(*) FROM `forum_messages` AS `msg` WHERE `msg`.`id_theme` = `th`.`id` AND `msg`.`time` > ?) AS `count_new`,
             (SELECT COUNT(`fv`.`id_user`) FROM `forum_views` AS `fv` WHERE `fv`.`id_theme` = `th`.`id`)  AS `views`,
             GREATEST(`th`.`group_show`, `tp`.`group_show`, `cat`.`group_show`) AS `group_show`
 FROM `forum_themes` AS `th`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
 LEFT JOIN `forum_messages` AS `msg` ON `msg`.`id_theme` = `th`.`id`
-WHERE `th`.`time_create` > '" . $q_time_start . "'
-AND `th`.`time_create` < '" . $q_time_end . "'
+WHERE `th`.`time_create` > ?
+AND `th`.`time_create` < ?
 GROUP BY `th`.`id`
 ORDER BY `th`.`id` DESC");
+    $q->execute(Array($q_time_start, $q_time_start, $q_time_end));
 
-    while ($theme = mysql_fetch_assoc($q)) {
-        $posts_all[] = $theme;
-    }
+    $posts_all = $q->fetchAll();
 
     cache::set($cache_id, $posts_all, $cache_time);
 }
@@ -82,11 +81,10 @@ if ($count_posts && $user->id) {
         $themes[] = $posts_for_view[$i]['id'];
     }
 
-    $q = mysql_query("SELECT `id_theme`, MAX(`time`) AS `time` FROM `forum_views`  WHERE `id_user` = '$user->id' AND (`id_theme` = '" . implode("' OR `id_theme` = '", $themes) . "') GROUP BY `id_theme`");
-    if (mysql_num_rows($q)) {
-        while ($view = mysql_fetch_assoc($q)) {
-            $views[$view['id_theme']] = $view['time'];
-        }
+    $q = $db->prepare("SELECT `id_theme`, MAX(`time`) AS `time` FROM `forum_views`  WHERE `id_user` = ? AND (`id_theme` = '" . implode("' OR `id_theme` = '", $themes) . "') GROUP BY `id_theme`");
+    $q->execute(Array($user->id));
+    while ($view = $q->fetch()) {
+        $views[$view['id_theme']] = $view['time'];
     }
 }
 

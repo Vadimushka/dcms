@@ -12,15 +12,14 @@ if (!isset($_GET ['id']) || !is_numeric($_GET ['id'])) {
 }
 $id_topic = (int) $_GET ['id'];
 
-$q = mysql_query("SELECT * FROM `forum_topics` WHERE `id` = '$id_topic' AND `group_edit` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_topics` WHERE `id` = ? AND `group_edit` <= ?");
+$q->execute(Array($id_topic, $user->group));
+if (!$topic = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Раздел не доступен для редактирования'));
     exit;
 }
 
-$topic = mysql_fetch_assoc($q);
 
 if (isset($_POST ['save'])) {
     if (isset($_POST ['name'])) {
@@ -30,7 +29,8 @@ if (isset($_POST ['save'])) {
         if ($name && $name != $topic ['name']) {
             $dcms->log('Форум', 'Изменение названия раздела "' . $topic ['name'] . '" на [url=/forum/topic.php?id=' . $topic ['id'] . ']"' . $name . '"[/url]');
             $topic ['name'] = $name;
-            mysql_query("UPDATE `forum_topics` SET `name` = '" . my_esc($topic ['name']) . "' WHERE `id` = '$topic[id]' LIMIT 1");
+            $res = $db->prepare("UPDATE `forum_topics` SET `name` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($topic ['name'], $topic['id']));
             $doc->msg(__('Название раздела успешно изменено'));
         }
     }
@@ -38,21 +38,24 @@ if (isset($_POST ['save'])) {
     if ($description != $topic ['description']) {
         $dcms->log('Форум', 'Изменение описания раздела [url=/forum/topic.php?id=' . $topic ['id'] . ']"' . $topic ['name'] . '"[/url]');
         $topic ['description'] = $description;
-        mysql_query("UPDATE `forum_topics` SET `description` = '" . my_esc($topic ['description']) . "' WHERE `id` = '$topic[id]' LIMIT 1");
+        $res = $db->prepare("UPDATE `forum_topics` SET `description` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($topic ['description'], $topic['id']));
         $doc->msg(__('Описание раздела успешно изменено'));
     }
 
     if (isset($_POST ['category'])) {
         $category = (int) $_POST ['category'];
-        $q = mysql_query("SELECT * FROM `forum_categories` WHERE `id` = '$category' AND `group_show` <= '$user->group' AND `group_write` <= '$user->group'");
-
-        if (mysql_num_rows($q) && $category != $topic ['id_category']) {
-            $category = mysql_fetch_assoc($q);
+        $q = $db->prepare("SELECT * FROM `forum_categories` WHERE `id` = ? AND `group_show` <= ? AND `group_write` <= ?");
+        $q->execute(Array($category, $user->group, $user->group));
+        if ($category != $topic ['id_category'] AND $category = $q->fetch()) {
             $topic ['id_category'] = $category ['id'];
             $dcms->log('Форум', 'Перемещение раздела [url=/forum/topic.php?id=' . $topic ['id'] . ']' . $topic ['name'] . '[/url] в категорию [url=/forum/category.php?id=' . $category ['id'] . ']' . $category ['name'] . '[/url]');
-            mysql_query("UPDATE `forum_topics` SET `id_category` = '$topic[id_category]' WHERE `id` = '$topic[id]' LIMIT 1");
-            mysql_query("UPDATE `forum_themes` SET `id_category` = '$topic[id_category]' WHERE `id_topic` = '$topic[id]'");
-            mysql_query("UPDATE `forum_messages` SET `id_category` = '$topic[id_category]' WHERE `id_topic` = '$topic[id]'");
+            $res = $db->prepare("UPDATE `forum_topics` SET `id_category` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($topic['id_category'], $topic['id']));
+            $res = $db->prepare("UPDATE `forum_themes` SET `id_category` = ? WHERE `id_topic` = ?");
+            $res->execute(Array($topic['id_category'], $topic['id']));
+            $res = $db->prepare("UPDATE `forum_messages` SET `id_category` = ? WHERE `id_topic` = ?");
+            $res->execute(Array($topic['id_category'], $topic['id']));
             $doc->msg(__('Раздел успешно перемещен'));
         }
     }
@@ -61,7 +64,8 @@ if (isset($_POST ['save'])) {
         $group_show = (int) $_POST ['group_show'];
         if (isset($groups [$group_show]) && $group_show != $topic ['group_show']) {
             $topic ['group_show'] = $group_show;
-            mysql_query("UPDATE `forum_topics` SET `group_show` = '$topic[group_show]' WHERE `id` = '$topic[id]' LIMIT 1");
+            $res = $db->prepare("UPDATE `forum_topics` SET `group_show` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($topic['group_show'], $topic['id']));
             $doc->msg(__('Читать раздел теперь разрешено группе %s и выше', groups::name($group_show)));
             $dcms->log('Форум', 'Изменение прав чтения раздела [url=/forum/topic.php?id=' . $topic ['id'] . ']' . $topic ['name'] . '[/url] для группы ' . groups::name($group_show));
         }
@@ -74,7 +78,8 @@ if (isset($_POST ['save'])) {
                 $doc->err('Для того, чтобы создавать темы группе "' . groups::name($group_write) . '" сначала необходимо дать права на просмотр раздела');
             else {
                 $topic ['group_write'] = $group_write;
-                mysql_query("UPDATE `forum_topics` SET `group_write` = '$topic[group_write]' WHERE `id` = '$topic[id]' LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_topics` SET `group_write` = ? WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($topic['group_write'], $topic['id']));
                 $doc->msg(__('Создавать темы в разделе теперь разрешено группе %s и выше', groups::name($group_write)));
                 $dcms->log('Форум', 'Изменение прав создания тем в разделе [url=/forum/topic.php?id=' . $topic ['id'] . ']' . $topic ['name'] . '[/url] для группы ' . groups::name($group_write));
             }
@@ -88,7 +93,8 @@ if (isset($_POST ['save'])) {
                 $doc->err('Для изменения параметров раздела группе "' . groups::name($group_edit) . '" сначала необходимо дать права на создание тем');
             else {
                 $topic ['group_edit'] = $group_edit;
-                mysql_query("UPDATE `forum_topics` SET `group_edit` = '$topic[group_edit]' WHERE `id` = '$topic[id]' LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_topics` SET `group_edit` = ? WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($topic['group_edit'], $topic['id']));
                 $doc->msg(__('Изменять параметры раздела теперь разрешено группе %s и выше', groups::name($group_edit)));
                 $dcms->log('Форум', 'Изменение прав редактирования раздела [url=/forum/topic.php?id=' . $topic ['id'] . ']' . $topic ['name'] . '[/url] для группы ' . groups::name($group_edit));
             }
@@ -98,7 +104,8 @@ if (isset($_POST ['save'])) {
     $topic_theme_create_with_wmid = (int) !empty($_POST ['theme_create_with_wmid']);
     if ($topic_theme_create_with_wmid != $topic ['theme_create_with_wmid']) {
         $topic ['theme_create_with_wmid'] = $topic_theme_create_with_wmid;
-        mysql_query("UPDATE `forum_topics` SET `theme_create_with_wmid` = '$topic[theme_create_with_wmid]' WHERE `id` = '$topic[id]' LIMIT 1");
+        $res = $db->prepare("UPDATE `forum_topics` SET `theme_create_with_wmid` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($topic['theme_create_with_wmid'], $topic['id']));
         if ($topic ['theme_create_with_wmid']) {
             $doc->msg(__('Создавать темы в данном разделе теперь смогут только пользователи с активированным WMID'));
         } else {
@@ -116,8 +123,9 @@ $form->text('name', __('Название'), $topic['name']);
 $form->textarea('description', __('Описание'), $topic['description']);
 
 $options = array();
-$q = mysql_query("SELECT `id`,`name` FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC");
-while ($category = mysql_fetch_assoc($q))
+$q = $db->prepare("SELECT `id`,`name` FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
+$q->execute(Array($user->group));
+while ($category = $q->fetch())
     $options [] = array($category ['id'], $category ['name'], $category ['id'] == $topic ['id_category']);
 $form->select('category', __('Категория'), $options);
 

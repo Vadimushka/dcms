@@ -11,26 +11,27 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_cat = (int) $_GET['id'];
 
-$q = mysql_query("SELECT * FROM `forum_categories` WHERE `id` = '$id_cat' AND `group_show` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_categories` WHERE `id` = ? AND `group_show` <= ?");
+$q->execute(Array($id_cat, $user->group));
+if (!$category = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Категория не доступна'));
     exit;
 }
 
-$category = mysql_fetch_assoc($q);
 
 $doc->title .= ' - ' . $category['name'];
 
+$res = $db->prepare("SELECT COUNT(*) FROM `forum_topics` WHERE `id_category` = ? AND `group_show` <= ?");
+$res->execute(Array($category['id'], $user->group));
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_topics` WHERE `id_category` = '$category[id]' AND `group_show` <= '$user->group'"), 0); // количество категорий форума
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество категорий форума
 $pages->this_page(); // получаем текущую страницу
 
-$q = mysql_query("SELECT * FROM `forum_topics` WHERE `id_category` = '$category[id]' AND `group_show` <= '$user->group' ORDER BY `time_last` DESC LIMIT $pages->limit");
-
+$q = $db->prepare("SELECT * FROM `forum_topics` WHERE `id_category` = ? AND `group_show` <= ? ORDER BY `time_last` DESC LIMIT $pages->limit");
+$q->execute(Array($category['id'], $user->group));
 $listing = new listing();
-while ($topics = mysql_fetch_assoc($q)) {
+while ($topics = $q->fetch()) {
     $post = $listing->post();
     $post->icon('forum.topic.png');
     $post->title = for_value($topics['name']);

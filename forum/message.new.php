@@ -14,9 +14,10 @@ if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
 }
 $id_theme = (int) $_GET['id_theme'];
 
-$q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_write` <= '$user->group' LIMIT 1");
+$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_write` <= ? LIMIT 1");
+$q->execute(Array($id_theme, $user->group));
 
-if (!mysql_num_rows($q)) {
+if (!$theme = $q->fetch()) {
     if (isset($_GET['return']))
         header('Refresh: 1; url=' . $_GET['return']);
     else
@@ -25,7 +26,6 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$theme = mysql_fetch_assoc($q);
 
 $doc->title = $theme['name'] . ' - ' . __('Новое собщение');
 
@@ -59,10 +59,9 @@ if ($can_write) {
             $af = TIME;
 
             $post_update = false;
-            $q = mysql_query("SELECT * FROM `forum_messages` WHERE `id_theme` = '$theme[id]' ORDER BY `id` DESC LIMIT 1");
-
-            if (mysql_num_rows($q)) {
-                $last_post = mysql_fetch_assoc($q);
+            $q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id_theme` = ? ORDER BY `id` DESC LIMIT 1");
+            $q->execute(Array($theme['id']));
+            if ($last_post = $q->fetch()) {
                 if ($last_post['id_user'] == $user->id && $last_post['time'] > TIME - 7200) {
                     $post_update = true;
                     $id_message = $last_post['id'];
@@ -71,13 +70,14 @@ if ($can_write) {
 
             if ($post_update && !isset($_POST['add_file'])) {
                 $message = $last_post['message'] . "\n\n[small]Через " . vremja(TIME - $theme['time_last'] + TIME) . ":[/small]\n" . $message;
-                mysql_query("UPDATE `forum_messages` SET `message` = '" . my_esc($message) . "' WHERE `id_theme` = '$theme[id]' AND `id_user` = '$user->id' ORDER BY `id` DESC LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_messages` SET `message` = ? WHERE `id_theme` = ? AND `id_user` = ? ORDER BY `id` DESC LIMIT 1");
+                $res->execute(Array($message, $theme['id'], $user->id));
             } else {
-                mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
- VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','$user->id','" . TIME . "','" . my_esc($message) . "','$theme[group_show]','$theme[group_edit]')");
+                $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
+ VALUES (?,?,?,?,?,?,?,?)");
+                $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], $user->id, TIME, $message, $theme['group_show'], $theme['group_edit']));
 
-
-                $id_message = mysql_insert_id();
+                $id_message = $db->lastInsertId();
             }
             if (isset($_POST['add_file'])) {
                 header('Refresh: 1; url=message.files.php?id=' . $id_message . '&return=' . urlencode('theme.php?id=' . $theme['id'] . '&page=end'));
@@ -103,7 +103,8 @@ if ($can_write) {
             }
 
             $doc->msg(__('Сообщение успешно отправлено'));
-            mysql_query("UPDATE `forum_themes` SET `time_last` = '" . TIME . "', `id_last` = '$user->id' WHERE `id` = '$theme[id]' LIMIT 1");
+            $res = $db->prepare("UPDATE `forum_themes` SET `time_last` = ?, `id_last` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array(TIME, $user->id, $theme['id']));
             // mysql_query("UPDATE `forum_topics` SET `time_last` = '".TIME."' WHERE `id` = '$theme[id_topic]' LIMIT 1");
             exit;
         } else {

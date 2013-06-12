@@ -10,20 +10,20 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit;
 }
 $id_theme = (int) $_GET['id'];
-$q = mysql_query("SELECT `forum_themes`.* ,
+$q = $db->prepare("SELECT `forum_themes`.* ,
         `forum_categories`.`name` AS `category_name` ,
         `forum_topics`.`name` AS `topic_name`,
         `forum_topics`.`group_write` AS `topic_group_write`
 FROM `forum_themes`
 LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_themes`.`id_category`
 LEFT JOIN `forum_topics` ON `forum_topics`.`id` = `forum_themes`.`id_topic`
-WHERE `forum_themes`.`id` = '$id_theme' AND `forum_themes`.`group_show` <= '$user->group' AND `forum_topics`.`group_show` <= '$user->group' AND `forum_categories`.`group_show` <= '$user->group'");
-if (!mysql_num_rows($q)) {
+WHERE `forum_themes`.`id` = ? AND `forum_themes`.`group_show` <= ? AND `forum_topics`.`group_show` <= ? AND `forum_categories`.`group_show` <= ?");
+$q->execute(Array($id_theme, $user->group, $user->group, $user->group));
+if (!$theme = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна'));
     exit;
 }
-$theme = mysql_fetch_assoc($q);
 
 
 $doc->ret(__('Действия'), 'theme.actions.php?id=' . $theme['id']);
@@ -44,17 +44,16 @@ if (!empty($_POST['open'])) {
         $doc->msg(__('Тема уже открыта для обсуждения'));
     } else {
         $theme['group_write'] = $group_write_open;
-        mysql_query("UPDATE `forum_themes` SET `group_write` = '$theme[group_write]' WHERE `id` = '$theme[id]' LIMIT 1");
-
+        $res = $db->prepare("UPDATE `forum_themes` SET `group_write` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($theme['group_write'], $theme['id']));
         $message = __('%s открыл' . ($user->sex ? '' : 'а') . ' тему для обсуждения', '[user]' . $user->id . '[/user]');
         if ($reason = text::input_text($_POST['reason'])) {
             $message .= "\n" . __('Причина: %s', $reason);
         }
         $dcms->log('Форум', 'Закрытие темы [url=/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]' . ($reason ? "\nПричина: $reason" : ''));
 
-        mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
- VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','0','" . TIME . "','" . my_esc($message) . "','$theme[group_show]','$theme[group_edit]')");
-
+        $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`) VALUES (?,?,?,'0',?,?,?,?)");
+        $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], TIME, $message, $theme['group_show'], $theme['group_edit']));
         $doc->msg(__('Тема успешно открыта для обсуждения'));
         exit;
     }
@@ -66,14 +65,15 @@ if (!empty($_POST['close'])) {
         $doc->msg(__('Тема уже закрыта для обсуждения'));
     } else {
         $theme['group_write'] = $group_write_close;
-        mysql_query("UPDATE `forum_themes` SET `group_write` = '$theme[group_write]' WHERE `id` = '$theme[id]' LIMIT 1");
+        $res = $db->prepare("UPDATE `forum_themes` SET `group_write` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($theme['group_write'], $theme['id']));
         $message = __('%s закрыл' . ($user->sex ? '' : 'а') . ' тему для обсуждения', '[user]' . $user->id . '[/user]');
         if ($reason = text::input_text($_POST['reason'])) {
             $message .= "\n" . __('Причина: %s', $reason);
         }
         $dcms->log('Форум', 'Открытие темы [url=/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]' . ($reason ? "\nПричина: $reason" : ''));
-        mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
- VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','0','" . TIME . "','" . my_esc($message) . "','$theme[group_show]','$theme[group_edit]')");
+        $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`) VALUES (?,?,?,'0',?,?,?,?)");
+        $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], TIME, $message, $theme['group_show'], $theme['group_edit']));
         $doc->msg(__('Тема успешно закрыта для обсуждения'));
         exit;
     }
@@ -86,6 +86,4 @@ if ($is_open)
 else
     $form->button(__('Открыть для обсуждения'), 'open');
 $form->display();
-
-
 ?>

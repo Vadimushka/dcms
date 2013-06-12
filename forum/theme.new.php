@@ -16,9 +16,9 @@ if (!isset($_GET ['id_topic']) || !is_numeric($_GET ['id_topic'])) {
 $id_topic = (int) $_GET ['id_topic'];
 
 
-$q = mysql_query("SELECT * FROM `forum_topics` WHERE `id` = '$id_topic' AND `group_write` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_topics` WHERE `id` = ? AND `group_write` <= ?");
+$q->execute(Array($id_topic, $user->group));
+if (!$topic = $q->fetch()) {
     if (isset($_GET ['return']))
         header('Refresh: 1; url=' . $_GET ['return']);
     else
@@ -27,7 +27,6 @@ if (!mysql_num_rows($q)) {
     exit();
 }
 
-$topic = mysql_fetch_assoc($q);
 
 // лимит на создание тем
 $timelimit = (empty($_SESSION ['antiflood'] ['newtheme']) || $_SESSION ['antiflood'] ['newtheme'] < TIME - 3600) ? true : false;
@@ -70,15 +69,17 @@ if ($can_write && isset($_POST ['message']) && isset($_POST ['name'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($message && $name) {
         $user->balls++;
-        mysql_query("UPDATE `forum_topics` SET `time_last` = '" . TIME . "' WHERE `id` = '$id_topic' LIMIT 1");
+        $res = $db->prepare("UPDATE `forum_topics` SET `time_last` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array(TIME, $id_topic));
+        $res = $db->prepare("INSERT INTO `forum_themes` (`id_category`, `id_topic`,  `name`, `id_autor`, `time_create`, `id_last`, `time_last`, `group_show`, `group_write`, `group_edit`) VALUES (?,?,?,?,?,?,?,?,?,?)");
+        $res->execute(Array($topic['id_category'], $topic['id'], $name, $user->id, TIME, $user->id, TIME, $topic['group_show'], $topic['group_write'], max($user->group, 2)));
+        $theme ['id'] = $db->lastInsertId();
+        $res = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($theme['id']));
+        $theme = $res->fetch();
 
-        mysql_query("INSERT INTO `forum_themes` (`id_category`, `id_topic`,  `name`, `id_autor`, `time_create`, `id_last`, `time_last`, `group_show`, `group_write`, `group_edit`)
- VALUES ('$topic[id_category]','$topic[id]','" . my_esc($name) . "', '$user->id', '" . TIME . "','$user->id','" . TIME . "','$topic[group_show]','$topic[group_write]','" . max($user->group, 2) . "')");
-
-        $theme ['id'] = mysql_insert_id();
-        $theme = mysql_fetch_assoc(mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$theme[id]' LIMIT 1"));
-        mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
- VALUES ('$theme[id_category]','$theme[id_topic]','$theme[id]','$user->id','" . TIME . "','" . my_esc($message) . "','$theme[group_show]','$theme[group_edit]')");
+        $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`) VALUES (?,?,?,?,?,?,?,?)");
+        $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], $user->id, TIME, $message, $theme['group_show'], $theme['group_edit']));
 
         $_SESSION ['antiflood'] ['newtheme'] = TIME;
         $doc->msg(__('Тема успешно создана'));
