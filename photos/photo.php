@@ -127,7 +127,8 @@ if ($can_write) {
             $doc->err(__('Обнаружен мат: %s', $mat));
         elseif ($message) {
             $user->balls++;
-            mysql_query("INSERT INTO `files_comments` (`id_file`, `id_user`, `time`, `text`) VALUES ('$photo->id','$user->id', '" . TIME . "', '" . my_esc($message) . "')");
+            $res = $db->prepare("INSERT INTO `files_comments` (`id_file`, `id_user`, `time`, `text`) VALUES (?,?,?,?)");
+            $res->execute(Array($photo->id, $user->id, TIME, $message));
             $doc->msg(__('Комментарий успешно оставлен'));
             $photo->comments++;
 
@@ -157,8 +158,12 @@ if ($can_write) {
 }
 if (!empty($_GET ['delete_comm']) && $user->group >= $photo->group_edit) {
     $delete_comm = (int) $_GET ['delete_comm'];
-    if (mysql_result(mysql_query("SELECT COUNT(*) FROM `files_comments` WHERE `id` = '$delete_comm' AND `id_file` = '$photo->id' LIMIT 1"), 0)) {
-        mysql_query("DELETE FROM `files_comments` WHERE `id` = '$delete_comm' LIMIT 1");
+    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id` = ? AND `id_file` = ? LIMIT 1");
+    $res->execute(Array($delete_comm, $photo->id));
+    $k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+    if ($k) {
+        $res = $db->prepare("DELETE FROM `files_comments` WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($delete_comm));
         $photo->comments--;
         $doc->msg(__('Комментарий успешно удален'));
     } else
@@ -168,23 +173,27 @@ if (!empty($_GET ['delete_comm']) && $user->group >= $photo->group_edit) {
 // комментарии
 
 $pages = new pages ();
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `files_comments` WHERE `id_file` = '$photo->id'"), 0); // количество сообщений
+$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id_file` = ?");
+$res->execute(Array($photo->id));
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
 $pages->this_page(); // получаем текущую страницу
-$q = mysql_query("SELECT * FROM `files_comments` WHERE `id_file` = '$photo->id' ORDER BY `id` DESC LIMIT $pages->limit");
-
+$q = $db->prepare("SELECT * FROM `files_comments` WHERE `id_file` = ? ORDER BY `id` DESC LIMIT $pages->limit");
+$q->execute(Array($photo->id));
 
 $listing = new listing();
-while ($comment = mysql_fetch_assoc($q)) {
-    $ank2 = new user($comment ['id_user']);
-    $post = $listing->post();
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $comment) {
+        $ank2 = new user($comment ['id_user']);
+        $post = $listing->post();
 
-    $post->title = $ank2->nick();
-    $post->time = vremja($comment ['time']);
-    $post->icon($ank2->icon());
-    $post->content = output_text($comment ['text']);
+        $post->title = $ank2->nick();
+        $post->time = vremja($comment ['time']);
+        $post->icon($ank2->icon());
+        $post->content = output_text($comment ['text']);
 
-    if ($user->group >= $photo->group_edit) {
-        $post->action('delete', '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;delete_comm=' . $comment ['id']);
+        if ($user->group >= $photo->group_edit) {
+            $post->action('delete', '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;delete_comm=' . $comment ['id']);
+        }
     }
 }
 $listing->display(__('Комментарии отсутствуют'));
