@@ -7,12 +7,11 @@ $doc->ret(__('К новостям'), './');
 
 $id = (int) @$_GET['id'];
 
-$q = mysql_query("SELECT * FROM `news` WHERE `id` = '$id' LIMIT 1");
-
-if (!mysql_num_rows($q))
+$q = $db->prepare("SELECT * FROM `news` WHERE `id` = ? LIMIT 1");
+$q->execute(Array($id));
+if (!$news = $q->fetch())
     $doc->access_denied(__('Новость не найдена или уже удалена'));
 
-$news = mysql_fetch_assoc($q);
 
 $ank = new user($news['id_user']);
 
@@ -23,8 +22,10 @@ if (isset($_POST['delete'])) {
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
-        mysql_query("DELETE FROM `news` WHERE `id` = '$id' LIMIT 1");
-        mysql_query("DELETE FROM `news_comments` WHERE `id_news` = '$id'");
+        $res = $db->prepare("DELETE FROM `news` WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($id));
+        $res = $db->prepare("DELETE FROM `news_comments` WHERE `id_news` = ?");
+        $res->execute(Array($id));
         $doc->msg(__('Новость успешно удалена'));
         header('Refresh: 1; url=./');
         exit;

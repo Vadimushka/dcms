@@ -7,12 +7,11 @@ $doc->ret(__('К новостям'), './');
 
 $id = (int) @$_GET['id'];
 
-$q = mysql_query("SELECT * FROM `news` WHERE `id` = '$id' LIMIT 1");
-
-if (!mysql_num_rows($q))
+$q = $db->prepare("SELECT * FROM `news` WHERE `id` = ? LIMIT 1");
+$q->execute(Array($id));
+if (!$news = $q->fetch())
     $doc->access_denied(__('Новость не найдена или уже удалена'));
 
-$news = mysql_fetch_assoc($q);
 
 $ank = new user($news['id_user']);
 
@@ -27,9 +26,9 @@ if (isset($_POST['send'])) {
     } else {
         $mailes = array();
 
-        $q = mysql_query("SELECT `reg_mail`, `email` FROM `users` ORDER BY `id`");
+        $q = $db->query("SELECT `reg_mail`, `email` FROM `users` ORDER BY `id`")->execute();
 
-        while ($um = mysql_fetch_assoc($q)) {
+        while ($um = $q->fetch()) {
             if ($um['reg_mail']) {
                 // по умолчанию отправляем только на регистрационные email`ы
                 $mailes[] = $um['reg_mail'];
@@ -45,7 +44,8 @@ if (isset($_POST['send'])) {
             $t->assign('content', output_text($news['text']));
             mail::send($mailes, $news['title'], $t->fetch('file:' . H . '/sys/templates/mail.news.tpl'));
             //mail::send($mailes, $news['title'], output_text($news['text']));
-            mysql_query("UPDATE `news` SET `sended` = '1' WHERE `id` = '$id' LIMIT 1");
+            $res = $db->prepare("UPDATE `news` SET `sended` = '1' WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($id));
             $doc->msg(__('Новость успешно отправлена'));
         } else {
             $doc->err(__('Нет получателей новости'));
@@ -59,8 +59,8 @@ $smarty = new design();
 $smarty->assign('method', 'post');
 $smarty->assign('action', '?id=' . $id . '&amp;' . passgen());
 $elements = array();
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'name' => 'sendToAnkMail', 'text' => __('Задействовать анкетный email').'*'));
-$elements [] = array('type' => 'text', 'br' => 1, 'value' => '* '.__('По-умолчанию рассылка производится только по регистрационным e-mail'));
+$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'name' => 'sendToAnkMail', 'text' => __('Задействовать анкетный email') . '*'));
+$elements [] = array('type' => 'text', 'br' => 1, 'value' => '* ' . __('По-умолчанию рассылка производится только по регистрационным e-mail'));
 $elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
 $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'send', 'value' => __('Разослать новость по Email'))); // кнопка
 $smarty->assign('el', $elements);

@@ -7,12 +7,12 @@ $doc->ret(__('К новостям'), './');
 
 $id = (int) @$_GET['id'];
 
-$q = mysql_query("SELECT * FROM `news` WHERE `id` = '$id' LIMIT 1");
+$q = $db->prepare("SELECT * FROM `news` WHERE `id` = ? LIMIT 1");
+$q->execute(Array($id));
 
-if (!mysql_num_rows($q))
+if (!$news = $q->fetch())
     $doc->access_denied(__('Новость не найдена или удалена'));
 
-$news = mysql_fetch_assoc($q);
 
 $ank = new user($news['id_user']);
 
@@ -35,8 +35,8 @@ if ($news_e['checked'] && isset($_POST['send'])) {
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))
         $doc->err(__('Ошибка при вводе чисел с картинки'));
     else {
-        mysql_query("UPDATE `news` SET `title` = '" . my_esc($news_e['title']) . "', `id_user` = '$user->id', `text` = '" . my_esc($news_e['text']) . "', `sended` = '0' WHERE `id` = '$id' LIMIT 1");
-
+        $res = $db->prepare("UPDATE `news` SET `title` = ?, `id_user` = ?, `text` = ?, `sended` = '0' WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($news_e['title'], $user->id, $news_e['text'], $id));
         $doc->msg(__('Новость успешно отредактирована'));
         $news_e = array();
         header('Refresh: 1; ./');
