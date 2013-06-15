@@ -10,9 +10,11 @@ $post->url = '/news/';
 $post->title = __('Все новости');
 
 if ($dcms->widget_items_count) {
+    $db = DB::me();
     $week = mktime(0, 0, 0, date('n'), -7);
-    $q = mysql_query("SELECT * FROM `news` WHERE `time` > '$week' ORDER BY `id` DESC LIMIT " . $dcms->widget_items_count);
-    while ($news = mysql_fetch_assoc($q)) {
+    $q = $db->prepare("SELECT * FROM `news` WHERE `time` > ? ORDER BY `id` DESC LIMIT " . $dcms->widget_items_count);
+    $q->execute(Array($week));
+    while ($news = $q->fetch()) {
         $post = $listing->post();
         $post->icon('news');
         $post->title = for_value($news['title']);
