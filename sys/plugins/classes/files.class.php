@@ -13,12 +13,14 @@ class files {
     public $user_sort = 'position';
     public $error; // последняя ошибка
     public $name;
+    private $db;
 
     /**
      * Работа с директорией загруц-центра
      * @param string $path_abs Абсолютный путь к папке загруз-центра
      */
     function __construct($path_abs) {
+        $this->db = DB::me();
         $path_abs = realpath($path_abs);
         $this->type = 'folder'; // тип содержимого для иконки (по-умолчанию: папка)
         $this->runame = convert::to_utf8(basename($path_abs)); // отображаемое название папки
@@ -172,8 +174,12 @@ class files {
     public function cacheClear() {
         // очистка кэша директории (а также проверка соответствия записей в базе реальным файлам)
         $path_rel_ru = convert::to_utf8($this->path_rel);
-        $q = mysql_query("SELECT * FROM `files_cache` WHERE `path_file_rel` LIKE '" . my_esc($path_rel_ru) . "/%'");
-        while ($files = @mysql_fetch_assoc($q)) {
+        $q = $this->db->prepare("SELECT * FROM `files_cache` WHERE `path_file_rel` LIKE ?");
+        $q->execute(Array($path_rel_ru . '/%'));
+        $res_del1 = $this->db->prepare("DELETE FROM `files_cache` WHERE `id` = ? LIMIT 1");
+        $res_del2 = $this->db->prepare("DELETE FROM `files_comments` WHERE `id_file` = ?");
+        $res_del3 = $this->db->prepare("DELETE FROM `files_rating` WHERE `id_file` = ?");
+        while ($files = $q->fetch()) {
             $abs_path = FILES . convert::of_utf8($files ['path_file_rel']);
             if (is_file($abs_path)) {
                 continue;
@@ -181,11 +187,11 @@ class files {
             }
             // НО!!! Если файла нет, то это лишняя запись в базе, которую необходимо "похерить"
             // удаление файла из кэша базы
-            mysql_query("DELETE FROM `files_cache` WHERE `id` = '" . intval($files ['id']) . "' LIMIT 1");
+            $res_del1->execute(Array($files ['id']));
             // удаление комментов к файлу
-            mysql_query("DELETE FROM `files_comments` WHERE `id_file` = '" . intval($files ['id']) . "'");
+            $res_del2->execute(Array($files ['id']));
             // удаление рейтингов файла
-            mysql_query("DELETE FROM `files_rating` WHERE `id_file` = '" . intval($files ['id']) . "'");
+            $res_del3->execute(Array($files ['id']));
         }
         // а так же очистка кэша содержимого папки
         cache::set('files.' . $this->path_rel, false, 1);
@@ -268,12 +274,12 @@ class files {
      * @return \files_file
      */
     public function getNewFiles() {
-        $time = NEW_TIME;
         global $user;
         $content = array('dirs' => array(), 'files' => array());
         $path_rel_ru = convert::to_utf8($this->path_rel);
-        $q = mysql_query("SELECT * FROM `files_cache` WHERE `group_show` <= '" . intval($user->group) . "' AND `path_file_rel` LIKE '" . my_esc($path_rel_ru) . "/%' AND `path_file_rel` NOT LIKE '" . my_esc($path_rel_ru) . "/.%' AND `time_add` > '$time' ORDER BY `time_add` DESC");
-        while ($files = mysql_fetch_assoc($q)) {
+        $q = $this->db->prepare("SELECT * FROM `files_cache` WHERE `group_show` <= ? AND `path_file_rel` LIKE ? AND `path_file_rel` NOT LIKE ? AND `time_add` > ? ORDER BY `time_add` DESC");
+        $q->execute(Array($user->group, $path_rel_ru . '/%', $path_rel_ru . '/.%', NEW_TIME));
+        while ($files = $q->fetch()) {
             $abs_path = FILES . convert::of_utf8($files['path_file_rel']);
             $pathinfo = pathinfo($abs_path);
             $file = new files_file($pathinfo ['dirname'], $pathinfo ['basename']);
@@ -298,8 +304,9 @@ class files {
         global $user;
         $content = array('dirs' => array(), 'files' => array());
         $path_rel_ru = convert::to_utf8($this->path_rel);
-        $q = mysql_query("SELECT * FROM `files_cache` WHERE `group_show` <= '" . intval($user->group) . "' AND `path_file_rel` LIKE '" . my_esc($path_rel_ru) . "/%' AND `path_file_rel` NOT LIKE '" . my_esc($path_rel_ru) . "/.%' AND `runame` LIKE '%" . my_esc($search) . "%'");
-        while ($files = mysql_fetch_assoc($q)) {
+        $q = $this->db->prepare("SELECT * FROM `files_cache` WHERE `group_show` <= ? AND `path_file_rel` LIKE ? AND `path_file_rel` NOT LIKE ? AND `runame` LIKE ?");
+        $q->execute(Array($user->group, $path_rel_ru . '/%', $path_rel_ru . '/.%', '%' . $search . '%'));
+        while ($files = $q->fetch()) {
             $abs_path = FILES . convert::of_utf8($files ['path_file_rel']);
             $pathinfo = pathinfo($abs_path);
             $file = new files_file($pathinfo ['dirname'], $pathinfo ['basename']);
@@ -334,7 +341,9 @@ class files {
         }
 
         $path_rel_ru = convert::to_utf8($this->path_rel);
-        $count = mysql_result(mysql_query("SELECT COUNT(*) FROM `files_cache` WHERE `group_show` <= '$group' AND `time_add` > '$time' AND `path_file_rel` LIKE '" . my_esc($path_rel_ru) . "/%' AND `path_file_rel` NOT LIKE '" . my_esc($path_rel_ru) . "/.%'"), 0);
+        $res = $this->db->prepare("SELECT COUNT(*) AS cnt FROM `files_cache` WHERE `group_show` <= ? AND `time_add` > ? AND `path_file_rel` LIKE ? AND `path_file_rel` NOT LIKE ?");
+        $res->execute(Array($group, $time, $path_rel_ru . '/%', $path_rel_ru . '/.%'));
+        $count = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
         cache_counters::set('files.' . $this->path_rel . '.' . (int) $is_new . '.' . $group, $count, 600);
         return $count;
@@ -632,7 +641,8 @@ class files {
         $this->_setPathes($new_path_abs);
         $path_rel_ru_new = convert::to_utf8($this->path_rel);
         // не забываем и в базе изменить путь вложенных файлов
-        mysql_query("UPDATE `files_cache` SET `path_file_rel` = REPLACE(`path_file_rel`, '" . my_esc($path_rel_ru_old) . "', '" . my_esc($path_rel_ru_new) . "') WHERE `path_file_rel` LIKE '" . my_esc($path_rel_ru_old) . "/%'");
+        $res = $this->db->prepare("UPDATE `files_cache` SET `path_file_rel` = REPLACE(`path_file_rel`, ?, ?) WHERE `path_file_rel` LIKE ?");
+        $res->execute(Array($path_rel_ru_old, $path_rel_ru_new, $path_rel_ru_old . '/%'));
         $np = pathinfo($new_path_abs);
         $to_dir = new files($np ['dirname']);
         $to_dir->cacheClear();
@@ -667,7 +677,8 @@ class files {
             $this->_setPathes(FILES . $path_new);
             $path_rel_ru_new = convert::to_utf8($this->path_rel);
             // не забываем и в базе изменить путь вложенных файлов
-            mysql_query("UPDATE `files_cache` SET `path_file_rel` = REPLACE(`path_file_rel`, '" . my_esc($path_rel_ru_old) . "', '" . my_esc($path_rel_ru_new) . "') WHERE `path_file_rel` LIKE '" . my_esc($path_rel_ru_old) . "/%'");
+            $res = $this->db->prepare("UPDATE `files_cache` SET `path_file_rel` = REPLACE(`path_file_rel`, ?, ?) WHERE `path_file_rel` LIKE ?");
+            $res->execute(Array($path_rel_ru_old, $path_rel_ru_new, $path_rel_ru_old . '/%'));
         }
         $np = pathinfo($this->path_abs);
         $to_dir = new files($np ['dirname']);
