@@ -35,13 +35,15 @@ if ($ank->group >= $user->group) {
 if (isset($_POST['save']) && !empty($_POST['login']) && $_POST['login'] != $ank->login) {
     $login = (string) $_POST['login'];
 
-    if (!is_valid::nick($login))
+    $res = $db->prepare("SELECT COUNT(*) FROM `users` WHERE `login` = ?");
+    $res->execute(Array($login));
+    if (!is_valid::nick($login)) {
         $doc->err(__('Не корректный Ник'));
-    elseif ($login != my_esc($login))
+    } elseif ($login != my_esc($login)) {
         $doc->msg(__('В нике содержатся запрещенные символы'));
-    elseif (mysql_result(mysql_query("SELECT COUNT(*) FROM `users` WHERE `login` = '" . my_esc($login) . "'"), 0))
+    } elseif ($res->fetchColumn()) {
         $doc->err(__('Пользователь с таким ником уже зарегистрирован'));
-    else {
+    } else {
         $dcms->log('Пользователи', 'Изменение ника пользователя ' . $ank->login . ' на [url=/profile.view.php?id=' . $ank->id . ']' . $login . '[/url]');
 
         $ank->login = $login;

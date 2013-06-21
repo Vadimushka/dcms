@@ -77,15 +77,17 @@ if (isset($_POST ['ban'])) {
             break;
     }
 
-    if (!$time_1)
+    $res = $db->prepare("SELECT COUNT(*) FROM `ban` WHERE `id_user` = ? AND `link` = ? AND `code` = ?");
+    $res->execute(Array($ank->id, $link, $code));
+    if (!$time_1) {
         $doc->err(__('Не корректное время бана'));
-    elseif (!isset($codes->menu_arr [$code]))
+    } elseif (!isset($codes->menu_arr [$code])) {
         $doc->err(__('Не выбрано нарушение'));
-    elseif (!$comm)
+    } elseif (!$comm) {
         $doc->err(__('Необходимо прокомментировать бан'));
-    elseif ($link && mysql_result(mysql_query("SELECT COUNT(*) FROM `ban` WHERE `id_user` = '$ank->id' AND `link` = '" . my_esc($link) . "' AND `code` = '" . my_esc($code) . "'"), 0))
+    } elseif ($link && $res->fetchColumn()) {
         $doc->err(__('Нельзя банить пользователя несколько раз за одно и то же нарушение'));
-    else {
+    } else {
         // делаем все жалобы обработанными
         $res = $db->prepare("UPDATE `complaints` SET `processed` = '1' WHERE `id_ank` = ? AND `link` = ? AND `code` = ?");
         $res->execute(Array($ank->id, $link, $code));

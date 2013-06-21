@@ -40,6 +40,8 @@ $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
 if (isset($_POST['change'])) {
     $id_new = (int) @$_POST['id_new'];
     $id_old = $ank->id;
+    $res = $db->prepare("SELECT COUNT(*) FROM `users` WHERE `id` = ?");
+    $res->execute(Array($id_new));
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($id_new < 0) {
@@ -48,7 +50,7 @@ if (isset($_POST['change'])) {
         $doc->err(__('Нет изменений'));
     } elseif ($id_new == 0) {
         $doc->err(__('Идентификатор 0 зарезервирован'));
-    } elseif (mysql_result(mysql_query("SELECT COUNT(*) FROM `users` WHERE `id` = '$id_new'"), 0)) {
+    } elseif ($res->fetchColumn()) {
         $doc->err(__('Идентификатор занят другим пользователем'));
     } else {
 

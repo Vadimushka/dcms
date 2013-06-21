@@ -58,7 +58,7 @@ if (!empty($_POST['vote'])) {
 VALUES (?,?,?, " . implode(', ', $v) . ")");
             $res->execute(Array($user->id, $theme['id'], $vote));
 
-            if (!$id_vote = mysql_insert_id())
+            if (!$id_vote = $db->lastInsertId())
                 $doc->err(__('При создании голосования возникла ошибка'));
             else {
                 if (isset($_GET['return']))

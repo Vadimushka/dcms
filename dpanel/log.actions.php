@@ -26,12 +26,14 @@ if (isset($_GET['id_user'])) {
         $pages->this_page(); // получаем текущую страницу
         $q = $db->prepare("SELECT * FROM `action_list_administrators`$sql_where AND `module` = ? ORDER BY `id` DESC LIMIT $pages->limit");
         $q->execute(Array($module));
-        while ($action = mysql_fetch_assoc($q)) {
-            $ank = new user($action['id_user']);
-            $post = $listing->post();
-            $post->title = $ank->nick();
-            $post->time = vremja($action['time']);
-            $post->content = output_text($action['description']);
+        if ($arr = $q->fetchAll()) {
+            foreach ($arr AS $action) {
+                $ank = new user($action['id_user']);
+                $post = $listing->post();
+                $post->title = $ank->nick();
+                $post->time = vremja($action['time']);
+                $post->content = output_text($action['description']);
+            }
         }
         $listing->display(__('Действия отсутствуют'));
 

@@ -96,7 +96,9 @@ if ($can_write) {
                     }
                     $ank_in_message = new user($user_id_in_message);
                     if ($ank_in_message->notice_mention) {
-                        $count_posts_for_user = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$ank_in_message->group'"), 0);
+                        $res = $db->prepare("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
+                        $res->execute(Array($theme['id'], $ank_in_message->group));
+                        $count_posts_for_user = $res->fetchColumn();
                         $ank_in_message->mess("[user]{$user->id}[/user] упомянул" . ($user->sex ? '' : 'а') . " о Вас на форуме в [url=/forum/message.php?id_message={$id_message}]сообщении[/url] в теме [url=/forum/theme.php?id={$theme['id']}&postnum={$count_posts_for_user}#message{$id_message}]{$theme['name']}[/url]");
                     }
                 }

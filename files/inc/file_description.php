@@ -334,7 +334,7 @@ if ($can_write && isset($_POST['send']) && isset($_POST['message']) && $user->gr
         $res->execute(Array($file->id, $user->id, TIME, $message));
         $doc->msg(__('Комментарий успешно оставлен'));
 
-        $id_message = mysql_insert_id();
+        $id_message = $db->lastInsertId();
         if ($users_in_message) {
             for ($i = 0; $i < count($users_in_message) && $i < 20; $i++) {
                 $user_id_in_message = $users_in_message[$i];
