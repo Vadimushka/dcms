@@ -12,10 +12,12 @@ abstract class misc {
     static function user_delete($id) {
         $id = (int) $id;
         $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
+        $res = DB::me()->prepare("DELETE FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = ?");
         foreach ($tables AS $v) {
-            mysql_query("DELETE FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = '$id'");
+            $res->execute(Array($id));
         }
-        mysql_query("DELETE FROM `users` WHERE `id` = '$id' LIMIT 1");
+        $res = DB::me()->prepare("DELETE FROM `users` WHERE `id` = ?");
+        $res->execute(Array($id));
     }
 
     /**

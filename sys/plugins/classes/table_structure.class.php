@@ -8,12 +8,14 @@ class table_structure {
 
     protected $_structure = array(); // поля и индексы таблицы
     protected $_properties = array();
+    protected $db;
 
     /**
      * загрузка структуры из INI файла
      * @param string $path Путь к файлу со структурой таблицы
      */
     function __construct($path = false) {
+        $this->db = DB::me();
         if ($path)
             $this->loadFromIniFile($path);
     }
@@ -49,8 +51,8 @@ class table_structure {
         $this->clear();
         $table = mysql_real_escape_string($table);
         // получение полей таблицы
-        $q = mysql_query("SHOW FULL COLUMNS FROM `$table`");
-        while ($result = mysql_fetch_assoc($q)) {
+        $q = $this->db->query("SHOW FULL COLUMNS FROM `$table`");
+        while ($result = $q->fetch()) {
             $structure = array();
             $structure['type'] = $result['Type'];
             if ($result['Default'] == '' && $result['Null'] == 'YES')
@@ -66,8 +68,8 @@ class table_structure {
             $this->_structure['`' . $result['Field'] . '`'] = $structure;
         }
         // получение ключей таблицы
-        $q = mysql_query("SHOW KEYS FROM `$table`");
-        while ($result = mysql_fetch_assoc($q)) {
+        $q = $this->db->query("SHOW KEYS FROM `$table`");
+        while ($result = $q->fetch()) {
             $structure = array();
             if ($result['Key_name'] == 'PRIMARY')
                 $structure['type'] = 'PRIMARY KEY';
@@ -84,8 +86,8 @@ class table_structure {
                 $this->_structure[$structure['type']]['fields'] = "`" . my_esc($result['Column_name']) . "`";
         }
         // получение свойств таблицы
-        $q = mysql_query("SHOW TABLE STATUS LIKE '$table'");
-        $properties = mysql_fetch_assoc($q);
+        $q = $this->db->query("SHOW TABLE STATUS LIKE '$table'");
+        $properties = $q->fetch();
         $this->_properties['name'] = $properties['Name'];
         $this->_properties['engine'] = 'ENGINE=' . $properties['Engine'];
         $this->_properties['auto_increment'] = 'AUTO_INCREMENT=' . $properties['Auto_increment'];
@@ -248,4 +250,5 @@ class table_structure {
 
         return $sql;
     }
+
 }

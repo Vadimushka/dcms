@@ -19,12 +19,9 @@ abstract class mail {
         cache_events::set('mail.send_is_process', true, 5);
 
         $limit = $all ? '' : ' LIMIT 10';
-        $q = mysql_query("SELECT * FROM `mail_queue`" . $limit);
-        if (!mysql_num_rows($q)) {
-            return false;
-        }
-
-        while ($queue = mysql_fetch_assoc($q)) {
+        $q = DB::me()->query("SELECT * FROM `mail_queue` " . $limit);
+        $res = DB::me()->prepare("DELETE FROM `mail_queue` WHERE `id` = ? LIMIT 1");
+        while ($queue = $q->fetch()) {
             if (function_exists('set_time_limit')) {
                 @set_time_limit(30);
             }
@@ -32,7 +29,7 @@ abstract class mail {
             // другие запросы не должны мешать отправке текущих сообщений
             cache_events::set('mail.send_is_process', true, 30);
             if (mail::send($queue ['to'], $queue ['title'], $queue ['content'])) {
-                mysql_query("DELETE FROM `mail_queue` WHERE `id` = '{$queue['id']}' LIMIT 1");
+                $res->execute(Array($queue['id']));
             }
         }
         // разрешаем другим запросам отправлять сообщения
@@ -64,8 +61,9 @@ abstract class mail {
         if (function_exists('set_time_limit')) {
             set_time_limit(min(600, max(30, count($toi) / 2)));
         }
+        $res = DB::me()->prepare("INSERT INTO `mail_queue` (`to`, `title`, `content`) VALUES (?, ?, ?)");
         foreach ($toi as $to) {
-            mysql_query("INSERT INTO `mail_queue` (`to`, `title`, `content`) VALUES ('" . my_esc($to) . "', '" . my_esc($title) . "', '" . my_esc($content) . "')");
+            $res->execute(Array($to, $title, $content));
         }
 
 

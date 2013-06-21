@@ -27,7 +27,9 @@ function user_is_friend($user, $args) {
     if ($user->id && $user->id === $ank->id) {
         return true;
     }
-    return mysql_result(mysql_query("SELECT COUNT(*) FROM `friends` WHERE `id_user` = '{$user->id}' AND `id_friend` = '{$ank->id}' AND `confirm` = '1' LIMIT 1"), 0);
+    $res = DB::me()->prepare("SELECT COUNT(*) AS cnt FROM `friends` WHERE `id_user` = ? AND `id_friend` = ? AND `confirm` = '1' LIMIT 1");
+    $res->execute(Array($user->id, $ank->id));
+    return ($row = $res->fetch()) ? $row['cnt'] : false;
 }
 
 ?>

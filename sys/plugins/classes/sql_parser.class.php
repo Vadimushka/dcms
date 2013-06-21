@@ -18,7 +18,7 @@ abstract class sql_parser {
             if (function_exists('set_time_limit'))
                 set_time_limit(600);
             // подсчитываем только успешно выполненные запросы
-            if (mysql_query($sql))
+            if (DB::me()->query($sql))
                 $count++;
         }
         return $count;
