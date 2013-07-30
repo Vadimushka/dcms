@@ -6,20 +6,24 @@ if (!empty($_FILES['file'])) {
     if ($_FILES['file']['error'])
         $doc->err(__('Ошибка при загрузке'));
     elseif (!$_FILES['file']['size'])
-        $doc->err(__('Содержимое файла пусто'));
-    else {
+        $doc->err(__('Содержимое файла пусто')); else {
         $info = pathinfo($_FILES['file']['name']);
 
         switch (strtolower($info['extension'])) {
-            case 'jpg':$img_screen = @imagecreatefromjpeg($_FILES['file']['tmp_name']);
+            case 'jpg':
+                $img_screen = @imagecreatefromjpeg($_FILES['file']['tmp_name']);
                 break;
-            case 'jpeg':$img_screen = @imagecreatefromjpeg($_FILES['file']['tmp_name']);
+            case 'jpeg':
+                $img_screen = @imagecreatefromjpeg($_FILES['file']['tmp_name']);
                 break;
-            case 'gif':$img_screen = @imagecreatefromgif($_FILES['file']['tmp_name']);
+            case 'gif':
+                $img_screen = @imagecreatefromgif($_FILES['file']['tmp_name']);
                 break;
-            case 'png':$img_screen = @imagecreatefrompng($_FILES['file']['tmp_name']);
+            case 'png':
+                $img_screen = @imagecreatefrompng($_FILES['file']['tmp_name']);
                 break;
-            default: $doc->err(__('Расширение файла не опознано'));
+            default:
+                $doc->err(__('Расширение файла не опознано'));
                 break;
         }
 
@@ -30,7 +34,7 @@ if (!empty($_FILES['file'])) {
 
                 $doc->msg(__('Скриншот успешно добавлен'));
                 exit;
-            }else
+            } else
                 $doc->err(__('Ошибка при добавлении скриншота'));
         }
     }
@@ -43,12 +47,11 @@ if (isset($_GET['delete'])) {
 
         $doc->msg(__('Скриншот успешно удален'));
         exit;
-    }else
+    } else
         $doc->err(__('Ошибка при удалении скриншота'));
 }
 
 $screens_count = $file->getScreensCount();
-
 
 $listing = new listing();
 for ($i = 0; $i < $screens_count; $i++) {
@@ -59,6 +62,11 @@ for ($i = 0; $i < $screens_count; $i++) {
 }
 $listing->display(__('Скриншоты отсутствуют'));
 
+$form = new form('?order=' . $order . '&amp;act=edit_screens&amp;' . passgen());
+$form->file(__('Скриншот'), 'file');
+$form->button(__('Добавить'));
+$form->display();
+/*
 $smarty = new design();
 $smarty->assign('method', 'post');
 $smarty->assign('files', 1);
@@ -68,7 +76,6 @@ $elements[] = array('type' => 'file', 'title' => __('Скриншот'), 'br' =>
 $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Добавить'))); // кнопка
 $smarty->assign('el', $elements);
 $smarty->display('input.form.tpl');
-
+*/
 $doc->ret(__('К описанию'), '?order=' . $order);
 exit;
-?>

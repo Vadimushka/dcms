@@ -72,4 +72,3 @@ if (($ver = $update->is_updateble()) !== false) {
 }
 
 $doc->ret(__('Админка'), '/dpanel/');
-?>

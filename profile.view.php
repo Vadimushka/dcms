@@ -1,15 +1,19 @@
 <?php
+/**
+ * Анкета пользователя.
+ * В данном файле используются регионы (region).
+ * Для корректной работы с ними рекомендую использовать PhpStorm
+ */
 
 include_once 'sys/inc/start.php';
-$doc = new document (); // инициализация документа для браузера
+$doc = new document ();
 $doc->title = __('Анкета');
 
 if (isset($_GET ['id'])) {
-    $ank = new user((int) $_GET ['id']);
+    $ank = new user((int)$_GET ['id']);
 } else {
     $ank = $user;
 }
-
 if (!$ank->group)
     $doc->access_denied(__('Нет данных'));
 
@@ -21,6 +25,7 @@ else
 $doc->description = __('Анкета "%s"', $ank->login);
 $doc->keywords [] = $ank->login;
 
+//region Предложение дружбы
 if ($user->group && $ank->id && $user->id != $ank->id && isset($_GET ['friend'])) {
     // обработка действий с "другом"
     $q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$user->id' AND `id_friend` = '$ank->id' LIMIT 1");
@@ -108,7 +113,8 @@ if ($user->group && $ank->id && $user->id != $ank->id) {
         $doc->act(__('Добавить в друзья'), "?id={$ank->id}&amp;friend=add");
     }
 }
-
+//endregion
+//region Бан
 if ($ank->is_ban) {
     $ban_listing = new listing();
 
@@ -118,7 +124,6 @@ if ($ank->is_ban) {
 
 
         $adm = new user($c ['id_adm']);
-
         $post->title = ($adm->group <= $user->group ? '<a href="/profile.view.php?id=' . $adm->id . '">' . $adm->nick . '</a>: ' : '') . for_value($c ['code']);
 
         if ($c ['time_start'] && TIME < $c ['time_start']) {
@@ -138,52 +143,41 @@ if ($ank->is_ban) {
 
     $ban_listing->display();
 }
-
-
+//endregion
+//region Профиль пользователя
 $listing = new listing();
-
-// Аватар 
+//region Аватар
 if ($path = $ank->getAvatar($doc->img_max_width())) {
     echo "<img class='DCMS_photo' src='" . $path . "' alt='" . __('Аватар %s', $ank->login) . "' /><br />\n";
 }
-
-
-
-// статус
+//endregion
+//region статус
 if ($ank->group > 1) {
     $post = $listing->post();
     $post->title = $ank->group_name;
     $post->hightlight = true;
     $post->icon($ank->icon());
 
-    //echo "<b>$ank->group_name</b>";
-
     $q = mysql_query("SELECT `id_adm` FROM `log_of_user_status` WHERE `id_user` = '$ank->id' ORDER BY `id` DESC LIMIT 1");
     if (mysql_num_rows($q)) {
         $adm = new user(mysql_result($q, 0));
-        $post->content =  __('Назначил' . ($adm->sex ? '' : 'а')) . ' ' . __($adm->group_name) . ' "' . $adm->nick . '"';
+        $post->content = __('Назначил' . ($adm->sex ? '' : 'а')) . ' ' . __($adm->group_name) . ' "' . $adm->nick . '"';
     }
-    //echo "<br />\n";
-} // VIP статус
-elseif ($ank->is_vip) {
+} elseif ($ank->is_vip) {
     $post = $listing->post();
     $post->title = 'VIP';
     $post->url = '/faq.php?info=vip&amp;return=' . URL;
     $post->icon('vip');
-
-    // echo '<img src="/sys/images/icons/vip.png" alt="VIP" /> <br />';
 }
-
-// реальное имя
+//endregion
+//region Имя
 if ($ank->realname) {
     $post = $listing->post();
     $post->title = __('Имя');
     $post->content = $ank->realname;
-
-
-    //echo __('Имя') . ": {$ank->realname}<br />\n";
 }
-// дата рождения и возраст
+//endregion
+//region Дата рождения
 if ($ank->ank_d_r && $ank->ank_m_r && $ank->ank_g_r) {
     $post = $listing->post();
     $post->title = __('Дата рождения');
@@ -192,20 +186,14 @@ if ($ank->ank_d_r && $ank->ank_m_r && $ank->ank_g_r) {
     $post = $listing->post();
     $post->title = __('Возраст');
     $post->content = misc::get_age($ank->ank_g_r, $ank->ank_m_r, $ank->ank_d_r, true);
-
-
-    //echo __('Дата рождения') . ': ' . $ank->ank_d_r . ' ' . rus_mes($ank->ank_m_r) . ' ' . $ank->ank_g_r . "<br />\n";
-    //echo __('Возраст') . ': ' . misc::get_age($ank->ank_g_r, $ank->ank_m_r, $ank->ank_d_r, true) . "<br />\n";
 } elseif ($ank->ank_d_r && $ank->ank_m_r) {
 
     $post = $listing->post();
     $post->title = __('День рождения');
     $post->content = $ank->ank_d_r . ' ' . rus_mes($ank->ank_m_r);
-
-    //echo __('День рождения') . ': ' . $ank->ank_d_r . ' ' . rus_mes($ank->ank_m_r) . "<br />\n";
 }
-
-
+//endregion
+//region фотографии
 if ($ank->id) {
 
 // папка фотоальбомов пользователей
@@ -235,34 +223,26 @@ if ($ank->id) {
         $post->url = '/photos/albums.php?id=' . $ank->id;
         if ($photos_count ['new'])
             $post->counter = '+' . $photos_count ['new'];
-
-
-        // echo '<img src="/sys/images/icons/photos.png" alt="" /><a href="/photos/albums.php?id=' . $ank->id . '">' . __('Фотографии') . '</a> (' . $photos_count ['all'] . ')' . ($photos_count ['new'] ? ' +' . $photos_count ['new'] : null) . '<br />';
     }
 }
-
-
-// аська
+//endregion
+//region аська
 if ($ank->icq_uin) {
     if ($ank->is_friend($user) || $ank->vis_icq) {
         $post = $listing->post();
         $post->title = 'ICQ UIN';
         $post->content = $ank->icq_uin;
         $post->icon = 'http://wwp.icq.com/scripts/online.dll?icq=' . $ank->icq_uin . '&amp;img=27';
-
-
-        // echo "<img src='http://wwp.icq.com/scripts/online.dll?icq={$ank->icq_uin}&amp;img=27' alt='" . __('ICQ UIN') . "' /> {$ank->icq_uin}<br />";
     } else {
 
         $post = $listing->post();
         $post->title = 'ICQ UIN';
         $post->url = '/faq.php?info=hide&amp;return=' . URL;
         $post->content = __('Информация скрыта');
-
-        // echo __('ICQ UIN') . ': <a href="/faq.php?info=hide&amp;return=' . URL . '">?</a><br />';
     }
 }
-// аська
+//endregion
+//region Skype
 if ($ank->skype) {
     if ($ank->is_friend($user) || $ank->vis_skype) {
 
@@ -271,19 +251,16 @@ if ($ank->skype) {
         $post->content = $ank->skype;
         $post->icon = 'http://mystatus.skype.com/smallicon/' . $ank->skype;
         $post->url = 'skype:' . $ank->skype . '?chat';
-
-
-        //echo "<img src=\"http://mystatus.skype.com/smallicon/{$ank->skype}\" width=\"16\" height=\"16\" alt=\"" . __("Мой статус") . "\" /> <a href=\"skype:{$ank->skype}?chat\">{$ank->skype}</a><br />";
     } else {
 
         $post = $listing->post();
         $post->title = 'Skype';
         $post->url = '/faq.php?info=hide&amp;return=' . URL;
         $post->content = __('Информация скрыта');
-        //echo __('Skype') . ': <a href="/faq.php?info=hide&amp;return=' . URL . '">?</a><br />';
     }
 }
-// мыло
+//endregion
+//region E-mail
 if ($ank->email) {
     $doc->keywords [] = $ank->email;
 
@@ -296,26 +273,15 @@ if ($ank->email) {
             $post->icon = 'http://status.mail.ru/?' . $ank->email;
         $post->url = 'mailto:' . $ank->email;
 
-
-        /*
-          if (preg_match("#\@(mail|bk|inbox|list)\.ru$#i", $ank->email)) {
-          echo "<img src='http://status.mail.ru/?{$ank->email}' width='13' height='13' alt='' /> <a href='mailto:{$ank->email}'>{$ank->email}</a><br />";
-          } else {
-          echo __("E-mail") . ": <a href='mailto:{$ank->email}'>{$ank->email}</a><br />";
-          }
-         */
     } else {
-
-
         $post = $listing->post();
         $post->title = 'E-mail';
         $post->url = '/faq.php?info=hide&amp;return=' . URL;
         $post->content = __('Информация скрыта');
-
-        //echo __('E-mail') . ': <a href="/faq.php?info=hide&amp;return=' . URL . '">?</a><br />';
     }
 }
-// Регистрационный email
+//endregion
+//region Регистрационнац E-mail
 if ($ank->reg_mail) {
     if ($user->group > $ank->group) {
 
@@ -326,97 +292,77 @@ if ($ank->reg_mail) {
         if (preg_match("#\@(mail|bk|inbox|list)\.ru$#i", $ank->reg_mail))
             $post->icon = 'http://status.mail.ru/?' . $ank->reg_mail;
         $post->url = 'mailto:' . $ank->reg_mail;
-
-
-        //echo __("Регистрационный E-mail") . ": <a href='mailto:{$ank->reg_mail}'>{$ank->reg_mail}</a><br />";
     }
 }
-
+//endregion
+//region Webmoney
 if ($ank->wmid) {
-
     $post = $listing->post();
     $post->title = 'WMID';
     $post->content = $ank->wmid;
     $post->url = 'http://passport.webmoney.ru/asp/certview.asp?wmid=' . $ank->wmid;
     $post->image = 'http://stats.wmtransfer.com/Levels/pWMIDLevel.aspx?wmid=' . $ank->wmid . '&amp;w=35&amp;h=16';
-
-    //echo __("WMID") . ": <a" . ($dcms->browser_type == 'web' ? " target='_blank'" : null) . " href='http://passport.webmoney.ru/asp/certview.asp?wmid=$ank->wmid'>$ank->wmid</a> BL:<img src=\"http://stats.wmtransfer.com/Levels/pWMIDLevel.aspx?wmid=$ank->wmid&amp;w=35&amp;h=16\" width=\"35\" height=\"16\" alt=\"BL\" /><br />";
 }
-
+//endregion
+//region Друзья
 if ($ank->is_friend($user) || $ank->vis_friends) {
     $k_friends = mysql_result(mysql_query("SELECT COUNT(*) FROM `friends` WHERE `id_user` = '$ank->id' AND `confirm` = '1'"), 0);
-
     $post = $listing->post();
     $post->title = __('Друзья');
     $post->url = $ank->id == $user->id ? "/my.friends.php" : "/profile.friends.php?id={$ank->id}";
     $post->counter = $k_friends;
 
-
-    //echo "<a href='" . ($ank->id == $user->id ? "/my.friends.php" : "/profile.friends.php?id={$ank->id}") . "'>" . __('Друзья') . ": " . $k_friends . '</a><br />';
 } else {
-
     $post = $listing->post();
     $post->title = __('Друзья');
     $post->url = '/faq.php?info=hide&amp;return=' . URL;
     $post->content = __('Информация скрыта');
-
-    //echo __('Друзья') . ': <a href="/faq.php?info=hide&amp;return=' . URL . '">?</a><br />';
 }
-
+//endregion
+//region Рейтинг
 $post = $listing->post();
 $post->title = __('Рейтинг');
 $post->url = '/profile.reviews.php?id=' . $ank->id;
 $post->counter = $ank->rating;
-
-
-//echo "<a href='/profile.reviews.php?id={$ank->id}'>" . __('Рейтинг') . ": " . $ank->rating . '</a><br />';
-
+//endregion
+//region Баллы
 $post = $listing->post();
 $post->title = __('Баллы');
 $post->counter = $ank->balls;
-
-//echo __("Баллы") . ": {$ank->balls}<br />";
-
+//endregion
+//region О себе
 if ($ank->description) {
     $post = $listing->post();
     $post->title = __('О себе');
     $post->content[] = $ank->description;
-//echo __('О себе') . ': ' . output_text($ank->description) . "<br />";
 }
-
-
+//endregion
+//region Последний визит
 $post = $listing->post();
 $post->title = __('Последний визит');
 $post->content = vremja($ank->last_visit);
-
-//echo __('Последний визит') . ': ' . vremja($ank->last_visit) . '<br />';
-
+//endregion
+//region Всего переходов
 $post = $listing->post();
 $post->title = __('Всего переходов');
 $post->content = $ank->conversions;
-
-//echo __("Всего переходов") . ": {$ank->conversions}<br />";
-
+//endregion
+//region Дата регистрации
 $post = $listing->post();
 $post->title = __('Дата регистрации');
 $post->content = date('d-m-Y', $ank->reg_date);
-
-//echo __('Дата регистрации') . ': ' . date('d-m-Y', $ank->reg_date) . '<br />';
-
+//endregion
+//region По приглашению от...
 $q = mysql_query("SELECT `id_user` FROM `invations` WHERE `id_invite` = '$ank->id' LIMIT 1");
 if (mysql_num_rows($q)) {
     $inv = new user(mysql_result($q, 0, 'id_user'));
 
     $post = $listing->post();
     $post->title = output_text(__('По приглашению от %s', '[user]' . $inv->id . '[/user]'));
-
-
-    // echo output_text(__('По приглашению от %s', '[user]' . $inv->id . '[/user]'));
 }
-
-
+//endregion
 $listing->display();
-
+//endregion
 
 if ($user->group && $ank->id != $user->id) {
     $doc->act(__('Написать сообщение'), "my.mail.php?id={$ank->id}");
@@ -425,6 +371,6 @@ if ($user->group && $ank->id != $user->id) {
         $doc->act(__('Доступные действия'), "/dpanel/user.actions.php?id={$ank->id}");
     }
 }
+
 if ($user->group)
     $doc->ret(__('Личное меню'), '/menu.user.php');
-?>
