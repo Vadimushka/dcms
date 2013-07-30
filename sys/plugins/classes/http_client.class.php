@@ -109,7 +109,7 @@ class http_client {
                 return false;
             } else {
                 stream_set_timeout($this->_sock, $this->timeout);
-                misc::log($scheme . $purl['host'] . ($this->_http_proxy ? ' (Прокси-сервер)' : '') . ' - Успешно подлючились', 'http_client');
+                misc::log($scheme . $purl['host'] . ($this->_http_proxy ? ' (Прокси-сервер)' : '') . ' - Успешно подключились', 'http_client');
 
                 return true;
             }
