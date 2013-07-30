@@ -1,10 +1,13 @@
 <?php
 
 /**
- * Своя реализация curl
+ * Своя реализация работы по HTTP протоколу (аналог cUrl)
+ * Умеет отправлять GET, POST, COOKIE, FILES
+ * Также можно задать Referer, User-Agent
+ * Можно работать через прокси (HTTP, SOCKS4, SOCKS5)
  */
-class http_client {
-
+class http_client
+{
     public $ua = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.83 Safari/535.11';
     public $timeout = 20; // таймаут запроса (сек)
     public $referer = '';
@@ -16,7 +19,7 @@ class http_client {
     protected $_post = array(); // массив с POST
     protected $_cookie = array(); // массив с COOKIE
     protected $_files = array(); //
-    protected $_sock = false;
+    protected $_sock = null;
     protected $_http_proxy = false; // HTTP прокси
     protected $_socks_proxy = false; // SOCKS прокси
     protected $_boundary = false; // разделитель для отправляемых данных
@@ -26,7 +29,8 @@ class http_client {
     /**
      * @param string $url
      */
-    function __construct($url) {
+    function __construct($url)
+    {
         $this->_url = $url;
         $this->dataReset();
     }
@@ -34,11 +38,12 @@ class http_client {
     /**
      * Сброс всех данных для запроса
      */
-    public function dataReset() {
+    public function dataReset()
+    {
         $this->_boundary = passgen();
         $this->_post = array();
         $this->_cookie = array();
-        $this->_sock = false;
+        $this->_sock = null;
         $this->errn = '';
         $this->errs = '';
     }
@@ -47,7 +52,8 @@ class http_client {
      * Подключение к сокету хоста или прокси сервера
      * @return boolean
      */
-    protected function _connect() {
+    protected function _connect()
+    {
 
         if ($this->_http_proxy) {
             $purl = @parse_url($this->_http_proxy);
@@ -75,12 +81,9 @@ class http_client {
                     misc::log($spurl['host'] . ' (Прокси-сервер) - Не удалось подключиться', 'http_client');
                 } else {
 
-
                     $packet = "\x05\x01\x00";
                     fwrite($this->_sock, $packet, strlen($packet));
                     $response = fread($this->_sock, 3);
-
-
 
                     fwrite($this->_sock, "\x05\x01\x00\x03" . chr(strlen($purl['host'])) . $purl['host'] . pack("n", $port));
 
@@ -102,8 +105,6 @@ class http_client {
                 }
             }
 
-
-
             if (!$this->_sock = @fsockopen($scheme . $purl['host'], $port, $this->errn, $this->errs, $this->timeout)) {
                 misc::log($scheme . $purl['host'] . ($this->_http_proxy ? ' (Прокси-сервер)' : '') . ' - Не удалось подключиться', 'http_client');
                 return false;
@@ -119,7 +120,8 @@ class http_client {
     /**
      * Закрытие подключения
      */
-    protected function _disconnect() {
+    protected function _disconnect()
+    {
         fclose($this->_sock);
         misc::log('Сокет закрыт', 'http_client');
     }
@@ -129,7 +131,8 @@ class http_client {
      * @param string $proxy Адрес прокси
      * @param boolean $socks используется socks
      */
-    public function set_proxy($proxy, $socks = true) {
+    public function set_proxy($proxy, $socks = true)
+    {
         if ($proxy === false) {
             $this->_http_proxy = false;
             $this->_socks_proxy = false;
@@ -143,10 +146,11 @@ class http_client {
 
     /**
      * Установка POST переменной
-     * @param string $name Имя 
+     * @param string $name Имя
      * @param string $value Значение
      */
-    public function set_post($name, $value = '') {
+    public function set_post($name, $value = '')
+    {
         $this->_post[$name] = $value;
     }
 
@@ -155,7 +159,8 @@ class http_client {
      * @param string $name Имя
      * @param string $value Значение
      */
-    public function set_cookie($name, $value = null) {
+    public function set_cookie($name, $value = null)
+    {
         $this->_cookie[] = urlencode($name) . '=' . urlencode($value);
     }
 
@@ -163,10 +168,11 @@ class http_client {
      * Прикрепление файла для отправки
      * @param string $name Имя поля, в котором будет передаваться файл
      * @param string $path Путь к файлу на сервере
-     * @param string $filename Имя файла
+     * @param boolean $filename Имя файла
      * @return boolean
      */
-    public function set_file($name, $path, $filename = false) {
+    public function set_file($name, $path, $filename = false)
+    {
 
         if (!$content = @file_get_contents($path)) {
             return false;
@@ -187,7 +193,8 @@ class http_client {
      * @param int $max_size максимальный размер принимаемых данных
      * @return boolean
      */
-    public function save_content($file_path, $max_size = 0) {
+    public function save_content($file_path, $max_size = 0)
+    {
         misc::log('Запрос на сохранение файла (' . $this->_url . ')', 'http_client');
 
 
@@ -240,14 +247,15 @@ class http_client {
 
         fclose($fo);
         $this->_disconnect();
-        return (bool) $size;
+        return (bool)$size;
     }
 
     /**
      * Получение имени файла из ответа
      * @return string
      */
-    public function getFileName() {
+    public function getFileName()
+    {
         $headers = $this->get_headers();
         if ($headers) {
             if (preg_match('/filename=(.+?);/', $headers, $m)) {
@@ -263,7 +271,8 @@ class http_client {
      * Получение заголовков ответа
      * @return string
      */
-    public function getHeaders() {
+    public function getHeaders()
+    {
         return $this->get_headers();
     }
 
@@ -272,7 +281,8 @@ class http_client {
      * @param boolean $with_headers включать заголовки
      * @return string
      */
-    public function getContent($with_headers = false) {
+    public function getContent($with_headers = false)
+    {
         return $this->get_content($with_headers);
     }
 
@@ -281,17 +291,15 @@ class http_client {
      * @param boolean $with_headers включать заголовки
      * @return string
      */
-    public function get_content($with_headers = false) {
+    public function get_content($with_headers = false)
+    {
         misc::log('Запрос на получение контента (' . $this->_url . ')', 'http_client');
         if (!$this->_connect()) {
             misc::log('Соединение разорвано', 'http_client');
             return false;
         }
-
-
         $output_headers = $this->getOutputHeaders();
         fputs($this->_sock, $output_headers, strlen($output_headers));
-
 
         $headers = '';
         while (!feof($this->_sock)) {
@@ -313,10 +321,7 @@ class http_client {
                 $content .= $data;
             }
         }
-
-
         misc::log('Контент успешно получен (' . misc::size_data(strlen($content)) . ')', 'http_client');
-
         $this->_disconnect();
         return $content;
     }
@@ -325,13 +330,13 @@ class http_client {
      * Получение заголовков ответа
      * @return string
      */
-    public function get_headers() {
+    public function get_headers()
+    {
         misc::log('Запрос на получение заголовков (' . $this->_url . ')', 'http_client');
         if (!$this->_connect()) {
             misc::log('Соединение разорвано', 'http_client');
             return false;
         }
-
 
         $output_headers = $this->getOutputHeaders();
         fputs($this->_sock, $output_headers, strlen($output_headers));
@@ -352,7 +357,8 @@ class http_client {
      * формирование данных для multipart/form-data
      * @return string
      */
-    protected function _multipart() {
+    protected function _multipart()
+    {
         $data = array();
 
         if ($this->_post) {
@@ -374,49 +380,36 @@ class http_client {
      * Получение заголовков запроса
      * @return string
      */
-    function getOutputHeaders() {
+    function getOutputHeaders()
+    {
         $headers = array();
         $purl = @parse_url($this->_url);
         $scheme = empty($purl['scheme']) ? 'http' : $purl['scheme'];
         $host = empty($purl['host']) ? '' : $purl['host'];
 
-        if ($this->_http_proxy) {
+        if ($this->_http_proxy)
             $path = $scheme . '://' . $host . (empty($purl['path']) ? '/' : $purl['path']);
-        } else {
+        else
             $path = empty($purl['path']) ? '/' : $purl['path'];
-        }
 
         $query = empty($purl['query']) ? '' : '?' . $purl['query'];
         $headers[] = ($this->_post ? 'POST' : 'GET') . ' ' . $path . $query . ' HTTP/1.0';
-
         $headers[] = 'Host: ' . $host;
 
-
-        if ($this->accept) {
+        if ($this->accept)
             $headers[] = 'Accept: ' . $this->accept;
-        }
-        if ($this->accept_charset) {
+        if ($this->accept_charset)
             $headers[] = 'Accept-Charset: ' . $this->accept_charset;
-        }
-        if ($this->accept_encoding) {
+        if ($this->accept_encoding)
             $headers[] = 'Accept-Encoding: ' . $this->accept_encoding;
-        }
-        if ($this->accept_language) {
+        if ($this->accept_language)
             $headers[] = 'Accept-Language: ' . $this->accept_language;
-        }
-
-
-        if ($this->referer) {
+        if ($this->referer)
             $headers[] = 'Referer: ' . $this->referer;
-        }
-
-        if ($this->_cookie) {
+        if ($this->_cookie)
             $headers[] = 'Cookie: ' . implode(';', $this->_cookie);
-        }
-
-        if ($this->ua) {
+        if ($this->ua)
             $headers[] = 'User-Agent: ' . $this->ua;
-        }
 
         if ($this->_files || $this->_post) {
             $post_data = $this->_multipart();
@@ -424,23 +417,16 @@ class http_client {
             $headers[] = 'Content-Length: ' . strlen($post_data);
         }
 
-        if (isset($purl['user']) && isset($purl['pass'])) {
+        if (isset($purl['user']) && isset($purl['pass']))
             $headers[] = 'Authorization: Basic ' . base64_encode($purl['user'] . ':' . $purl['pass']);
-        }
-
 
         $headers[] = 'Connection: Close';
 
-
         $header = implode("\r\n", $headers) . "\r\n\r\n";
 
-        if (!empty($post_data)) {
+        if (!empty($post_data))
             $header .= $post_data;
-        }
 
         return $header;
     }
-
 }
-
-?>
