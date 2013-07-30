@@ -27,7 +27,7 @@ DCMS.Ajax = function(settings) {
 
     var xhr = getXmlHttp();
     xhr.open(settings.post ? "POST" : 'GET', url.join('?'), true);
-    xhr.setRequestHeader("X_REQUESTED_WITH", "XMLHttpRequest");
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     if (settings.post){
         xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     }
