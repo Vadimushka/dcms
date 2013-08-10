@@ -26,7 +26,7 @@ class document extends design {
 
     /**
      * Сообщение об ошибке в верху страницы 
-     * @param type $err
+     * @param string $err
      */
     function err($err) {
         $this->err[] = array('text' => text::filter($err, 1));

@@ -272,8 +272,8 @@ class files_file {
 
     /**
      * Получение скриншота определенного размера (путь в браузере)
-     * @param type $img_max_width
-     * @param type $num
+     * @param int $img_max_width
+     * @param int $num
      * @return string|boolean
      */
     public function getScreen($img_max_width, $num = 0) {

@@ -21,8 +21,8 @@ abstract class groups {
     static function name($group) {
         $ini = self::load_ini();
         if (isset($ini[$group]['name']))
-            return $ini[$group]['name'];
-        return 'Ошибка группы';
+            return __($ini[$group]['name']);
+        return __('Ошибка группы');
     }
 
     /**

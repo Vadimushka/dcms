@@ -159,8 +159,8 @@ function textareaModify(){
         var node_bb_php = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_php+'">PHP</span>', '', node_bbcode);
         Event.add(node_bb_php, 'click', onTextareaBBcodeClickPHP);
         
-        var node_bb_gradient = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_gradient+'"><font color="#BC009A">G</font><font color="#A4118A">R</font><font color="#8D237B">A</font><font color="#75356C">D</font><font color="#5E475D">I</font><font color="#46584E">E</font><font color="#2F6A3F">N</font><font color="#177C30">T</font></span>', '', node_bbcode);
-        Event.add(node_bb_gradient, 'click', onTextareaBBcodeClickGRADIENT);
+        //var node_bb_gradient = DCMS.Dom.createFromHtml('<span title="'+LANG.bbcode_gradient+'"><font color="#BC009A">G</font><font color="#A4118A">R</font><font color="#8D237B">A</font><font color="#75356C">D</font><font color="#5E475D">I</font><font color="#46584E">E</font><font color="#2F6A3F">N</font><font color="#177C30">T</font></span>', '', node_bbcode);
+        //Event.add(node_bb_gradient, 'click', onTextareaBBcodeClickGRADIENT);
         
         
         
