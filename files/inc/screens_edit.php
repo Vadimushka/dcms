@@ -63,19 +63,8 @@ for ($i = 0; $i < $screens_count; $i++) {
 $listing->display(__('Скриншоты отсутствуют'));
 
 $form = new form('?order=' . $order . '&amp;act=edit_screens&amp;' . passgen());
-$form->file(__('Скриншот'), 'file');
+$form->file('file', __('Скриншот'));
 $form->button(__('Добавить'));
 $form->display();
-/*
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('files', 1);
-$smarty->assign('action', '?order=' . $order . '&amp;act=edit_screens&amp;' . passgen());
-$elements = array();
-$elements[] = array('type' => 'file', 'title' => __('Скриншот'), 'br' => 1, 'info' => array('name' => 'file'));
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Добавить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
-*/
 $doc->ret(__('К описанию'), '?order=' . $order);
 exit;
