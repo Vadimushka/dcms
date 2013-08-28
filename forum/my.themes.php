@@ -1,16 +1,18 @@
 <?php
 
 include_once '../sys/inc/start.php';
-$doc = new document(1);
-$doc->title = __('Мои темы');
-
+$doc = new document(1); // инициализация документа для браузера
+$ank = (empty($_GET['id']))? $user : new user((int) $_GET['id']);
+if(!$ank->group)
+    $doc->access_denied(__('Нет данных'));
+$doc->title = ($ank->id == $user->id)? __('Мои темы') : __('Темы пользователя "%s"', $ank->login);
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`msg`.`id_theme`))
 FROM `forum_messages` AS `msg`
 LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`id_autor` = '{$user->id}'
+WHERE `th`.`id_autor` = '{$ank->id}'
 AND `th`.`group_show` <= '{$user->group}'
 AND `tp`.`group_show` <= '{$user->group}'
 AND `cat`.`group_show` <= '{$user->group}'
@@ -27,7 +29,7 @@ FROM `forum_messages` AS `msg`
 LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`id_autor` = '{$user->id}'
+WHERE `th`.`id_autor` = '{$ank->id}'
 AND `th`.`group_show` <= '{$user->group}'
 AND `tp`.`group_show` <= '{$user->group}'
 AND `cat`.`group_show` <= '{$user->group}'
@@ -53,8 +55,8 @@ while ($themes = mysql_fetch_assoc($q)) {
     
 }
 
-$listing -> display(__('Созданных Вами тем не найдено'));
+$listing -> display(($ank->id == $user->id)? __('Созданных Вами тем не найдено') : __('%s еще не создавал' . ($ank->sex ? '' : 'а') . ' тем на форуме', $ank->login));
 
-$pages->display('?'); // вывод страниц
+$pages->display("?id=$ank->id&amp;"); // вывод страниц
 $doc->ret(__('Форум'), './');
 ?>
