@@ -19,7 +19,7 @@ class log_of_visits {
 
     // подведение итогов посещений по дням
     function tally() {
-        $res = $this->db->query("LOCK TABLES `log_of_visits_today` WRITE READ, `log_of_visits_for_days` WRITE READ");
+     //   $res = $this->db->query("LOCK TABLES `log_of_visits_today` WRITE READ, `log_of_visits_for_days` WRITE READ");
         // запрашиваем дни, которые есть в базе исключая текущий
         $q = $this->db->prepare("SELECT DISTINCT `time`  FROM `log_of_visits_today` WHERE `time` <> ?");
         $q->execute(Array(DAY_TIME));

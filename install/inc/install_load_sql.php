@@ -15,7 +15,7 @@ class install_load_sql {
             if ($table {
                     0} == '~')
                 continue;
-            mysql_query("ALTER TABLE `" . my_esc($table) . "` RENAME `" . $_SESSION['rename_prefix'] . my_esc($table) . "`");
+            DB::me()->query("ALTER TABLE `$table` RENAME `" . $_SESSION['rename_prefix'] ."$table`");
         }
     }
 
@@ -34,15 +34,15 @@ class install_load_sql {
         foreach ($files_ini as $file) {
             $tab = new table_structure($file);
             $sql = $tab->getSQLQueryCreate();
-            // echo '<pre>'.output_text($sql).';</pre><br />';
-            if (!@mysql_query($sql))
+             //echo '<pre>'.output_text($sql).';</pre><br />';
+            if (!DB::me()->query($sql))
                 $return = false;
         }
         // exit;
         foreach ($files_sql as $file) {
             $sqls = sql_parser::getQueriesFromFile($file);
             foreach ($sqls as $sql) {
-                if (!@mysql_query($sql))
+                if (!DB::me()->query($sql))
                     $return = false;
             }
         }

@@ -55,11 +55,11 @@ class install_reg_admin {
                             $this->settings['salt'] = passgen();
                         // делаем всех админов простыми пользователями
                         if (!empty($_POST['clear_adm']))
-                            mysql_query("UPDATE `users` SET `group` = '1'");
+                            DB::me()->query("UPDATE `users` SET `group` = '1'");
 
                         $sex = (int) !empty($_POST['sex']);
                         $this->pass2 = $this->pass1 = $_POST['password'];
-                        mysql_query("INSERT INTO `users` (`reg_date`, `group`, `login`, `password`, `sex`) values('" . TIME . "', '6', '" . my_esc($this->login) . "', '" . crypt::hash($this->pass1, $this->settings['salt']) . "', '$sex')");
+                        DB::me()->query("INSERT INTO `users` (`reg_date`, `group`, `login`, `password`, `sex`) values('" . TIME . "', '6', '" . my_esc($this->login) . "', '" . crypt::hash($this->pass1, $this->settings['salt']) . "', '$sex')");
                         $return = true;
                     }
                 }else {
