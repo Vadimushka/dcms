@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="/sys/themes/theme_light.css" type="text/css" />
         <link rel="stylesheet" href="<?= $path ?>/style.css" type="text/css" />
         <meta http-equiv="content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="generator" content="DCMS <?=$dcms->version?>" />
         <? if ($description) { ?><meta name="description" content="<?= $description ?>" /><? } ?>
         <? if ($keywords) { ?><meta name="keywords" content="<?= $keywords ?>" /><? } ?>
         <style>

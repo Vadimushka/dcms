@@ -3,7 +3,8 @@
 /**
  * Класс для формирования HTML документа.
  */
-class document extends design {
+class document extends design
+{
 
     public $title = 'Заголовок';
     public $description = '';
@@ -14,7 +15,8 @@ class document extends design {
     protected $actions = array();
     protected $returns = array();
 
-    function __construct($group = 0) {
+    function __construct($group = 0)
+    {
         parent::__construct();
         global $user, $dcms;
         $this->title = $dcms->title;
@@ -25,10 +27,11 @@ class document extends design {
     }
 
     /**
-     * Сообщение об ошибке в верху страницы 
+     * Сообщение об ошибке в верху страницы
      * @param string $err
      */
-    function err($err) {
+    function err($err)
+    {
         $this->err[] = array('text' => text::filter($err, 1));
     }
 
@@ -36,7 +39,8 @@ class document extends design {
      * Сообщение в верху страницы
      * @param string $msg
      */
-    function msg($msg) {
+    function msg($msg)
+    {
         $this->msg[] = array('text' => text::filter($msg, 1));
     }
 
@@ -45,7 +49,8 @@ class document extends design {
      * @param string $name отображаемое название
      * @param string $link URL ссылки
      */
-    function ret($name, $link) {
+    function ret($name, $link)
+    {
         $this->returns[] = array($name, $link);
     }
 
@@ -54,11 +59,13 @@ class document extends design {
      * @param string $name отображаемое название
      * @param string $link URL ссылки
      */
-    function act($name, $link) {
+    function act($name, $link)
+    {
         $this->actions[] = array($name, $link);
     }
 
-    function access_denied($err) {
+    function access_denied($err)
+    {
         if (isset($_GET['return'])) {
             header('Refresh: 2; url=' . $_GET['return']);
         }
@@ -71,7 +78,8 @@ class document extends design {
      * Формирование HTML документа и отправка данных браузеру
      * @global dcms $dcms
      */
-    private function output() {
+    private function output()
+    {
         global $dcms;
         if ($this->outputed) {
             // повторная отправка html кода вызовет нарушение синтаксиса документа, да и вообще нам этого нафиг не надо
@@ -80,7 +88,6 @@ class document extends design {
         $this->outputed = true;
         header('Cache-Control: no-store, no-cache, must-revalidate', true);
         header('Expires: ' . date('r'), true);
-
 
 
         // для осла (IE) как обычно отдельное условие
@@ -94,8 +101,8 @@ class document extends design {
         header('Content-Type: ' . $content_type . '; charset=utf-8', true);
 
         $this->assign('adt', new adt()); // реклама
-        $this->assign('description', $this->description, 1); // описание страницы (meta)
-        $this->assign('keywords', implode(', ', $this->keywords), 1); // ключевые слова (meta)
+        $this->assign('description', $this->description ? $this->description : $this->title, 1); // описание страницы (meta)
+        $this->assign('keywords', $this->keywords ? implode(', ', $this->keywords) : $this->title, 1); // ключевые слова (meta)
         $this->assign('actions', $this->actions); // ссылки к действию
         $this->assign('returns', $this->returns); // ссылки для возврата
         $this->assign('err', $this->err); // сообщения об ошибке
@@ -118,7 +125,8 @@ class document extends design {
      * Очистка вывода
      * Тема оформления применяться не будет
      */
-    function clean() {
+    function clean()
+    {
         $this->outputed = true;
         @ob_clean();
     }
@@ -126,7 +134,8 @@ class document extends design {
     /**
      * То что срабатывает при exit
      */
-    function __destruct() {
+    function __destruct()
+    {
         $this->output();
     }
 
