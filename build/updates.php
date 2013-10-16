@@ -23,7 +23,7 @@ function createUpdate($from, $to) {
     }
 
     foreach ($hashes_from as $file => $hash) {
-        if (!isset($hashes_from[$file])) {
+        if (!isset($hashes_to[$file])) {
             // если в новой сборке отсутствует файл, который был в старой версии, то заносим в список на удаление
             $to_delete[$file] = $hash;
         }
