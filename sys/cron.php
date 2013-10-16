@@ -37,7 +37,7 @@ if ($cron_time && $cron_time > TIME - 10) {
     if ($dcms->update_auto && $dcms->update_auto_time && !cache_events::get('system.update.auto')) {
         cache_events::set('system.update.auto', true, $dcms->update_auto_time);
         include H . '/sys/inc/update.php';
-
+        $mess = '';
         $update = new update();
         if (version_compare($update->version, $dcms->version, '>')) {
 
@@ -49,15 +49,20 @@ if ($cron_time && $cron_time > TIME - 10) {
                     // при установке новой версии возникла ошибка
                     $mess = __('При обновлении DCMS (с %s по %s) произошла ошибка', $dcms->version, $update->version);
                 }
-            } else {
+            } else if ($dcms->update_auto_notified != $update->version) {
                 $mess = __('Вышла новая версия DCMS: %s. [url=/dpanel/sys.update.php]Обновить[/url]', $update->version);
+                $dcms->update_auto_notified = $update->version;
+                $dcms->save_settings();
             }
 
-            $admins = groups::getAdmins();
-            foreach ($admins AS $admin) {
-                $admin->mess($mess);
+            if ($mess) {
+                $admins = groups::getAdmins();
+                foreach ($admins AS $admin) {
+                    $admin->mess($mess);
+                }
             }
         }
+        unset($mess, $update, $admins, $admin);
     }
     misc::log('Модуль обновления системы отработал', 'cron');
 
