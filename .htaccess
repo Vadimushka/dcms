@@ -36,5 +36,5 @@ ErrorDocument 502 /error.php?err=502
     RewriteEngine on
     RewriteBase /
     RewriteCond %{SCRIPT_FILENAME} !-f
-    RewriteRule ([^/]+) pages/$1 [L,QSA]
+    RewriteRule ^([^/]+)$ pages/$1 [L,QSA]
 </IfModule>
