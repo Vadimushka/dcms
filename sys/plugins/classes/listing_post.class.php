@@ -101,5 +101,3 @@ class listing_post extends ui {
     }
 
 }
-
-?>

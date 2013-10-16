@@ -2,6 +2,17 @@
 
 /**
  * Пользователь
+ * @property mixed id
+ * @property mixed recovery_password
+ * @property mixed group
+ * @property mixed password
+ * @property mixed login
+ * @property mixed vis_friends
+ * @property mixed group_name
+ * @property mixed balls
+ * @property mixed rating
+ * @property mixed reg_date
+ * @property mixed last_visit
  */
 class user extends plugins {
 

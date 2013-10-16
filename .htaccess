@@ -31,3 +31,10 @@ ErrorDocument 403 /error.php?err=403
 ErrorDocument 404 /error.php?err=404
 ErrorDocument 500 /error.php?err=500
 ErrorDocument 502 /error.php?err=502
+
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteBase /
+    RewriteCond %{SCRIPT_FILENAME} !-f
+    RewriteRule ([^/]+) pages/$1 [L,QSA]
+</IfModule>

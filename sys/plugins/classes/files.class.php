@@ -135,7 +135,7 @@ class files {
 
     /**
      * Добавление локальных(или выгруженных) файлов в папку
-     * @param type $files
+     * @param array $files
      * @return \files_file
      */
     public function filesAdd($files) {

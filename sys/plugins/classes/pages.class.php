@@ -2,6 +2,7 @@
 
 /**
  * Формирование списка страниц для постраничной навигации.
+ * @property int limit
  */
 class pages {
 
@@ -79,7 +80,7 @@ class pages {
 
     /**
      * Вывод списка страниц
-     * @param type $link ссылка, к которой будет добавлено page={num}
+     * @param string $link ссылка, к которой будет добавлено page={num}
      */
     function display($link) {
         if ($this->pages > 1) {
