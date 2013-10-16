@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Базовый класс системы. Объек хранится в глобальной переменной $dcms
+ * Базовый класс системы. Объект хранится в глобальной переменной $dcms
  */
 class dcms {
 
@@ -173,6 +173,7 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
 
     /**
      * Сохранение настроек
+     * @param \document|boolean $doc
      * @return boolean
      */
     public function save_settings($doc = false) {

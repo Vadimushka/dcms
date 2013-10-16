@@ -35,8 +35,8 @@ abstract class groups {
 
     /**
      * Возвращает массив пользователей (с указанной группы или администратора)
-     * @param int $group группа
-     * @return \user
+     * @param int|boolean $group группа
+     * @return Array<\user>
      */
     static function getAdmins($group = false) {
         $users = array();

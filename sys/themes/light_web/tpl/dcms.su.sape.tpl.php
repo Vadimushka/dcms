@@ -11,6 +11,6 @@ if (preg_match('/(^|\.)dcms\.su\.?$/', $_SERVER['HTTP_HOST'])) {
         'force_show_code' => true,
         'charset' => 'UTF-8'
     ));
-    echo $sape->return_links();
+    echo $sape->return_block_links();
     echo "<!--check code-->";
 }
