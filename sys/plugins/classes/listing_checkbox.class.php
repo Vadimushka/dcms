@@ -63,5 +63,3 @@ class listing_checkbox extends ui {
     }
 
 }
-
-?>

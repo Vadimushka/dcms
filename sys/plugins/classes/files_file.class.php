@@ -526,5 +526,3 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
     }
 
 }
-
-?>

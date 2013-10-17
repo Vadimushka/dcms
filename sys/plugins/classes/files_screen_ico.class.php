@@ -40,5 +40,3 @@ class files_screen_ico {
     }
 
 }
-
-?>

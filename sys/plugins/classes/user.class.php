@@ -2,17 +2,17 @@
 
 /**
  * Пользователь
- * @property mixed id
- * @property mixed recovery_password
- * @property mixed group
- * @property mixed password
- * @property mixed login
- * @property mixed vis_friends
- * @property mixed group_name
- * @property mixed balls
- * @property mixed rating
- * @property mixed reg_date
- * @property mixed last_visit
+ * @property int id Уникальный идентификатор пользователя
+ * @property int group Идентификатор группы пользователя
+ * @property string recovery_password ключ для восстановления пароля
+ * @property string password хэш пароля
+ * @property string login логин
+ * @property boolean vis_friends флаг отображения списка друзей
+ * @property string group_name название группы пользователя
+ * @property int balls кол-во баллов
+ * @property float rating рейтинг
+ * @property int reg_date дата регистрация (TIMESTAMP)
+ * @property int last_visit последнее посещенеие (TIMESTAMP)
  */
 class user extends plugins {
 

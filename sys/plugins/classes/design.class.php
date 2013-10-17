@@ -65,5 +65,3 @@ class design extends native_templating {
     }
 
 }
-
-?>

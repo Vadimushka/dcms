@@ -711,5 +711,3 @@ abstract class is_valid {
     }
 
 }
-
-?>

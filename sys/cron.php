@@ -132,7 +132,7 @@ if ($cron_time && $cron_time > TIME - 10) {
         $sended = false;
         $month = mktime(0, 0, 0, date('n'), -30);
         $users = groups::getAdmins();
-        /** @var $user \user */
+        /** @var $ank \user */
         foreach ($users AS $ank) {
             if ($ank->reg_date < $month) {
                 $ank->mess($bb->getText());

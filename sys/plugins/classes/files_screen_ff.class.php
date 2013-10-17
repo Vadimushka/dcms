@@ -36,5 +36,3 @@ class files_screen_ff {
     }
 
 }
-
-?>

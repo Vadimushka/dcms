@@ -268,5 +268,3 @@ abstract class filesystem {
     }
 
 }
-
-?>

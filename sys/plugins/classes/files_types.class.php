@@ -114,5 +114,3 @@ abstract class files_types {
     }
 
 }
-
-?>

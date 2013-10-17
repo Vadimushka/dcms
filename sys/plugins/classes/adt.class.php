@@ -60,5 +60,3 @@ class adt extends menu {
     }
 
 }
-
-?>
