@@ -110,7 +110,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
             unset($_SESSION[SESSION_ID_USER]);
             unset($_SESSION[SESSION_PASSWORD_USER]);
         }
-    } elseif (!empty($_COOKIE [COOKIE_ID_USER]) && !empty($_COOKIE [COOKIE_USER_PASSWORD]) && $_SERVER ['SCRIPT_NAME'] !== '/login.php' && $_SERVER ['SCRIPT_NAME'] !== '/captcha.php') {
+    } elseif (!empty($_COOKIE [COOKIE_ID_USER]) && !empty($_COOKIE [COOKIE_USER_PASSWORD]) && $_SERVER ['SCRIPT_NAME'] !== '/pages/login.php' && $_SERVER ['SCRIPT_NAME'] !== '/pages/captcha.php') {
         // авторизация по COOKIE (получение сессии, по которой пользователь авторизуется)
         header('Location: /login.php?cookie&return=' . URL);
         exit;
@@ -176,7 +176,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
     /**
      * при полном бане никуда кроме страницы бана нельзя
      */
-    if ($user->is_ban_full && $_SERVER['SCRIPT_NAME'] != '/ban.php') {
+    if ($user->is_ban_full && $_SERVER['SCRIPT_NAME'] != '/pages/ban.php') {
         header('Location: /ban.php?' . SID);
         exit;
     }
