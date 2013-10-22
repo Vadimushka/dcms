@@ -201,7 +201,7 @@ function output_text($text) {
  * @param boolean $v Использование родительного падежа
  * @return string
  */
-function rus_mes($mes, $v = 1) {
+function rus_mes($mes, $v = true) {
     return misc::rus_mes($mes, $v);
 }
 

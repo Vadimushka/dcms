@@ -32,5 +32,3 @@ function user_icon($user) {
     // гость
     return 'guest';
 }
-
-?>

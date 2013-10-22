@@ -57,6 +57,7 @@ if ($cron_time && $cron_time > TIME - 10) {
 
             if ($mess) {
                 $admins = groups::getAdmins();
+                /** @var $admin \user */
                 foreach ($admins AS $admin) {
                     $admin->mess($mess);
                 }

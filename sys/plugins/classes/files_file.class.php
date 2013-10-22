@@ -63,8 +63,8 @@ class files_file {
 
     /**
      * переименование файла
-     * @param type $runame
-     * @param type $name
+     * @param string $runame
+     * @param string|bool $name
      * @return boolean
      */
     public function rename($runame, $name = false) {
@@ -94,8 +94,8 @@ class files_file {
 
     /**
      * Перемещение файла
-     * @global type $user
-     * @param type $path_dir_abs
+     * @global \user $user
+     * @param string $path_dir_abs
      * @return boolean
      */
     public function moveTo($path_dir_abs) {
@@ -192,8 +192,8 @@ class files_file {
 
     /**
      * проверяем, можно ли голосовать
-     * @global type $user
-     * @param type $set
+     * @global \user $user
+     * @param bool|int $set
      * @return int
      */
     public function rating_my($set = false) {
@@ -375,7 +375,8 @@ class files_file {
 
     /**
      * Ссылка на уменьшенное изображение
-     * @param type $size макс. ширина в пикселях
+     * @param int $size макс. ширина в пикселях
+     * @param int $num
      * @return string
      */
     public function image($size = 48, $num = 0) {

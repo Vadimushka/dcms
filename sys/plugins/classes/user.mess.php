@@ -7,7 +7,8 @@
  * @param array $args
  * @return boolean
  */
-function user_mess($user, $args) {
+function user_mess($user, $args)
+{
     if (!$user->id) {
         return false;
     }
@@ -19,5 +20,3 @@ function user_mess($user, $args) {
 VALUES ('" . $user->id . "', '$id_user', '" . TIME . "', '" . my_esc($msg) . "' )");
     return true;
 }
-
-?>

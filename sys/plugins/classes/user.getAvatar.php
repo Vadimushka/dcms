@@ -18,5 +18,3 @@ function user_getAvatar($user, $args) {
         return $avatar->getScreen($max_width, 0);
     }
 }
-
-?>

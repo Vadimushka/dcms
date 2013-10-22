@@ -2,6 +2,8 @@
 
 /**
  * Работа с директориями загруз-центра
+ * @property string path_abs Абсолютный путь
+ * @property string path_rel Относительный путь
  */
 class files {
 
@@ -193,8 +195,8 @@ class files {
 
     /**
      * Создает папку в данной папке
-     * @param type $runame
-     * @param type $name
+     * @param string $runame
+     * @param string|bool $name
      * @return boolean|\files
      */
     public function mkdir($runame, $name = false) {
@@ -265,7 +267,7 @@ class files {
     /**
      * Возвращает массив новых файлов
      * @global \user $user
-     * @return \files_file
+     * @return \files_file[][]
      */
     public function getNewFiles() {
         $time = NEW_TIME;
@@ -292,7 +294,7 @@ class files {
      * Поиск файлов в данной папке и во всех вложенных папках
      * @global \user $user
      * @param string $search часть имени файла
-     * @return \files_file
+     * @return \files_file[][]
      */
     protected function _search($search) {
         global $user;
@@ -678,8 +680,8 @@ class files {
 
     /**
      * Список всех вложенных папок (рекурсивно)
-     * @param string $exclude Абсолютный путь, который будет исключен из перебора
-     * @return array \files
+     * @param string|bool $exclude Абсолютный путь, который будет исключен из перебора
+     * @return \files[]
      */
     public function getPathesRecurse($exclude = false) {
         // получение всех объектов папок (рекурсивно)

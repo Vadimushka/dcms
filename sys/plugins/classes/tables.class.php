@@ -3,7 +3,8 @@
 /**
  * Работа с таблицами в базе
  */
-class tables {
+class tables
+{
     public $tables = array();
 
     function __construct()
@@ -13,7 +14,7 @@ class tables {
             $this->tables[] = $table[0];
         }
     }
-    
+
     /**
      * получение sql запроса на создание таблицы
      * @param string $table Имя таблицы
@@ -29,10 +30,10 @@ class tables {
         }
         return $sql . $row[1];
     }
-    
+
     /**
      * Получение дампа таблицы для вставки
-     * @param name $table Имя таблицы
+     * @param string $table Имя таблицы
      * @param int $c_ins Максимальное кол-во строк в одном INSERT`е
      * @return string
      */
@@ -46,9 +47,9 @@ class tables {
             $sql .= "/* Данные таблицы `$table` */\r\n";
             $table_keys = @implode("`, `", @array_keys(mysql_fetch_assoc(mysql_query("SELECT * FROM `" . my_esc($table) . "` LIMIT 1"))));
             while ($start < $num_row_all) {
-                $res = mysql_query("SELECT * FROM `$table` LIMIT $start, $c_ins");
+                $res = mysql_query("SELECT * FROM `$table` LIMIT " . $start . ", " . $c_ins);
 
-                if ($num_row_all > $c_ins)$sql .= "/* блок записей $start - " . ($start + $c_ins) . " */\r\n";
+                if ($num_row_all > $c_ins) $sql .= "/* блок записей $start - " . ($start + $c_ins) . " */\r\n";
 
                 $sql .= "INSERT INTO `" . my_esc($table) . "` (`$table_keys`) VALUES \r\n";
                 $num_row = mysql_num_rows($res);
@@ -56,12 +57,12 @@ class tables {
                 while (($row = @mysql_fetch_assoc($res))) {
                     $values = @array_values($row);
 
-                    foreach($values as $k => $v) {
+                    foreach ($values as $k => $v) {
                         $values[$k] = "'" . preg_replace("#(\n|\r)+#", '\n', my_esc($v)) . "'";
                     }
                     $values_string = @implode(', ', $values);
                     $counter++;
-                    $sql .= "($values_string)" . ($counter == $num_row?";\r\n":", \r\n");
+                    $sql .= "($values_string)" . ($counter == $num_row ? ";\r\n" : ", \r\n");
                 }
                 $start = $start + $c_ins;
             }
@@ -69,7 +70,7 @@ class tables {
 
         return $sql;
     }
-    
+
     /**
      * Сохранение запроса на создание таблицы в файл
      * @param string $path путь к сохраняемому файлу
@@ -81,7 +82,7 @@ class tables {
     {
         return @file_put_contents($path, $this->get_create($table, $ai));
     }
-    
+
     /**
      * Сохранение дампа таблицы в файл
      * @param string $path путь к сохраняемому файлу

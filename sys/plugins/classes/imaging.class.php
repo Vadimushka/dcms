@@ -7,9 +7,9 @@ abstract class imaging {
 
     /**
      * Создание уменьшенной копии изображения
-     * @param gd2 $img
+     * @param resource $img
      * @param int $max_width максимальная ширина изображения
-     * @return gd2
+     * @return resource
      */
     public static function to_screen($img, $max_width = 200) {
         $x = imagesx($img);
@@ -29,7 +29,7 @@ abstract class imaging {
 
     /**
      * Накладывает копирайт на изображение
-     * @param type $img
+     * @param resource $img
      * @return boolean
      */
     public static function add_copyright(&$img) {
@@ -48,8 +48,8 @@ abstract class imaging {
 
     /**
      * Добавляет иконку типа файла на изображение скриншота
-     * @param type $img
-     * @param type $path
+     * @param resource $img
+     * @param string $path
      * @return boolean
      */
     public static function add_icon(&$img, $path) {

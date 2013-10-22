@@ -81,7 +81,7 @@ abstract class cache {
 
     /**
      * Получение данных из кэша
-     * @param type $key
+     * @param string $key
      * @return boolean
      */
     static public function get($key) {
@@ -102,9 +102,9 @@ abstract class cache {
 
     /**
      * Запись данных в кэш
-     * @param type $key
-     * @param type $data
-     * @param type $ttl
+     * @param string $key
+     * @param mixed $data
+     * @param int|bool $ttl
      * @return boolean
      */
     static public function set($key, $data, $ttl = false) {
@@ -113,8 +113,8 @@ abstract class cache {
 
     /**
      * Получение пути к файлу по ключу
-     * @param type $key
-     * @return type
+     * @param string $key
+     * @return string
      */
     static protected function _path($key) {
         return TEMP . '/cache.' . urlencode($key) . '.ser';
@@ -167,7 +167,7 @@ abstract class cacher {
 
     /**
      * Удаление устаревших данных
-     * @param type $cache
+     * @param array $cache
      */
     protected static function _clear(&$cache) {
         // удаление устаревших данных

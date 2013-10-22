@@ -28,5 +28,3 @@ class install_load_preinstall {
         return $this->is_loaded;
     }
 }
-
-?>

@@ -20,7 +20,7 @@ class download {
     }
 
     /**
-     * Существует ли agqk на сервере
+     * Существует ли файл на сервере
      * @return bool
      */
     function exists() {

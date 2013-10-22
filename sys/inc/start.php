@@ -32,7 +32,7 @@ if (isset($_GET['check_domain_work'])) {
 }
 
 /**
- * переадресация на поддомен, соответствующий типу браузера   
+ * переадресация на поддомен, соответствующий типу браузера
  */
 if ($dcms->subdomain_theme_redirect && empty($subdomain_theme_redirect_disable)) {
     if ($_SERVER['HTTP_HOST'] === $dcms->subdomain_main) {
@@ -144,7 +144,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
                 mysql_query("UPDATE `users_online` SET `conversions` = `conversions` + '1' , `time_last` = '" . TIME . "', `id_browser` = '$dcms->browser_id', `ip_long` = '$dcms->ip_long', `request` = '" . my_esc($_SERVER ['REQUEST_URI']) . "' WHERE `id_user` = '$user->id' LIMIT 1");
             } else {
                 mysql_query("INSERT INTO `users_online` (`id_user`, `time_last`, `time_login`, `request`, `id_browser`, `ip_long`) VALUES ('$user->id', '" . TIME . "', '" . TIME . "', '" . my_esc($_SERVER ['REQUEST_URI']) . "', '$dcms->browser_id', '$dcms->ip_long')");
-                $user->count_visit++; // счетчик посещений
+                $user->count_visit++;
             }
         }
     } else {

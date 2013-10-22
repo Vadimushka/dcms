@@ -15,5 +15,3 @@ function user_nick($user, $args) {
 
     return '<span class="' . ($user->online ? 'DCMS_nick_on' : 'DCMS_nick_off') . '">' . $user->login . '</span>';
 }
-
-?>

@@ -41,10 +41,10 @@ abstract class misc {
 
     /**
      * перемещение ключа $key массива $array на $step шагов
-     * @param type $array
-     * @param type $key
-     * @param type $step
-     * @return type
+     * @param array $array
+     * @param string $key
+     * @param int $step
+     * @return array
      */
     static function array_key_move(&$array, $key, $step = 1) {
         return arraypos::move($array, $key, $step);
@@ -175,8 +175,8 @@ abstract class misc {
                 return $hour . ' час' . self::number($hour, '', 'а', 'ов') . ($min ? (', ' . $min . ' минут' . self::number($min, 'а', 'ы', '') . ($sec ? ' и ' . $sec . ' секунд' . self::number($sec, 'а', 'ы', '') : '')) : '');
             }
             if ($min) {
-                
-            }return $min . ' минут' . self::number($min, 'а', 'ы', '') . ($sec ? ' и ' . $sec . ' секунд' . self::number($sec, 'а', 'ы', '') : '');
+                return $min . ' минут' . self::number($min, 'а', 'ы', '') . ($sec ? ' и ' . $sec . ' секунд' . self::number($sec, 'а', 'ы', '') : '');
+            }
             return $sec . ' секунд' . self::number($sec, 'а', 'ы', '');
         } else {
             global $user;

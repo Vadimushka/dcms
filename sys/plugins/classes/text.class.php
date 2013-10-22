@@ -7,9 +7,9 @@ abstract class text {
 
     /**
      * Фильтрация текста
-     * @param type $str
-     * @param type $type
-     * @return type
+     * @param string $str
+     * @param int $type
+     * @return string
      */
     static function filter($str, $type = 1) {
         switch ($type) {
@@ -23,7 +23,7 @@ abstract class text {
 
     /**
      * Получение корректного ICQ UIN
-     * @param type $icq
+     * @param string|int $icq
      * @return string|null
      */
     static function icq_uin($icq) {
@@ -37,9 +37,9 @@ abstract class text {
     /**
      * Фильтрация текста с ограничением длины в зависимости от типа браузера.
      * Обрабатывается BBCODE
-     * @global type $dcms
-     * @param type $text
-     * @return type
+     * @global \dcms $dcms
+     * @param string $text
+     * @return string
      */
     static function for_opis($text) {
         global $dcms;
@@ -178,8 +178,8 @@ abstract class text {
 
     /**
      * Callback для замены ника пользователя в тексте сообщения
-     * @param type $value
-     * @return type
+     * @param string $value
+     * @return string
      */
     static function nick($value) {
         if (!@mysql_ping()) {
@@ -196,8 +196,8 @@ abstract class text {
 
     /**
      * Обработка текста
-     * @param type $str
-     * @return type
+     * @param string $str
+     * @return string
      */
     static function for_value($str) {
 

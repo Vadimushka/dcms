@@ -2,6 +2,17 @@
 
 /**
  * Базовый класс системы. Объект хранится в глобальной переменной $dcms
+ * @property bool debug Включен режим разработчика
+ * @property integer ip_long IP пользователя в после ip2long
+ * @property string browser_name Название браузера пользователя
+ * @property string salt Соль для хэша пароля пользователя. Генерируется при установке движка.
+ * @property \log_of_visits log_of_visits
+ * @property \log_of_referers log_of_referers
+ * @property string mysql_base Название базы данных
+ * @property string mysql_host Сервер базы данных
+ * @property string mysql_user Имя пользователя базы
+ * @property string mysql_pass Пароль пользователя базы
+ * @property string language Системный языковой пакет
  */
 class dcms {
 

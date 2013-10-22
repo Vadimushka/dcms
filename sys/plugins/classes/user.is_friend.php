@@ -17,17 +17,11 @@ function user_is_friend($user, $args) {
     if (!is_object($ank)) {
         $ank = $user;
     }
-
-
     if (!$ank->id) {
         return false;
     }
-
-
     if ($user->id && $user->id === $ank->id) {
         return true;
     }
     return mysql_result(mysql_query("SELECT COUNT(*) FROM `friends` WHERE `id_user` = '{$user->id}' AND `id_friend` = '{$ank->id}' AND `confirm` = '1' LIMIT 1"), 0);
 }
-
-?>

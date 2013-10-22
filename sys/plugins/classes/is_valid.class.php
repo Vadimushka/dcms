@@ -101,8 +101,8 @@ abstract class is_valid {
      * @staticvar array $re_trans
      * @staticvar array $trans
      * @param string $s
-     * @param type $delta
-     * @param type $continue
+     * @param int $delta
+     * @param string $continue
      * @return string|boolean
      */
     static function mat($s, $delta = 3, $continue = "\xe2\x80\xa6") {
