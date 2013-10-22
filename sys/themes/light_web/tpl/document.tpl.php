@@ -98,7 +98,6 @@ $class_fix = $dcms->ie_ver ? 'ie ie' . $dcms->ie_ver : '';
                                     src="<?= $path ?>/img/nighthosting.png" alt="NightHosting"></a>
                             <?= $this->section($adt->top, '{0}') ?>
                         </div>
-                        <? $this->display('dcms.su.sape.tpl') ?>
                     </div>
                 <? } ?>
                 <?
