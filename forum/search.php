@@ -4,13 +4,13 @@ include_once '../sys/inc/start.php';
 $doc = new document();
 
 // результаты
-$searched = &$_SESSION['search']['result'];
+$searched = & $_SESSION['search']['result'];
 // маркеры (выделение найденых слов)
-$searched_mark = &$_SESSION['search']['mark'];
+$searched_mark = & $_SESSION['search']['mark'];
 // запрос
-$search_query = &$_SESSION['search']['query'];
+$search_query = & $_SESSION['search']['query'];
 // запрос (массив для mysql)
-$search_query_sql = &$_SESSION['search']['query_sql'];
+$search_query_sql = & $_SESSION['search']['query_sql'];
 $doc->title = __('Поиск');
 
 if ($dcms->forum_search_reg && !$user->group) {
@@ -61,7 +61,6 @@ GROUP BY `forum_themes`.`id`");
 $listing = new listing();
 $pages = new pages;
 $pages->posts = count($searched);
-$pages->this_page(); // получаем текущую страницу
 // конец цикла
 $end = min($pages->items_per_page * $pages->this_page, $pages->posts);
 $start = $pages->my_start();
@@ -82,7 +81,6 @@ for ($i = $start; $i < $end; $i++) {
     }
 }
 
-
 $listing->display($search_query ? __('Результаты по запросу "%s" отсутствуют', $search_query) : false);
 
 $pages->display('?cache&amp;'); // вывод страниц
@@ -95,4 +93,3 @@ $form->button(__('Поиск'));
 $form->display();
 
 $doc->ret(__('Форум'), './');
-?>

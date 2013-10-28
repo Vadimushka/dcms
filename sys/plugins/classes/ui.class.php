@@ -19,7 +19,7 @@ class ui {
     /**
      * Возвращает уникальный идентификатор класса на странице
      * @staticvar array $id
-     * @return type
+     * @return string
      */
     protected function _getNewId() {
         static $id = array();
@@ -29,7 +29,7 @@ class ui {
 
     /**
      * Устанавливает путь к файлу для запроса AJAX`ом
-     * @param type $url
+     * @param string $url
      */
     public function setAjaxUrl($url) {
         $this->_data['ajax_url'] = $url;

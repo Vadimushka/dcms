@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора раздера'));
     exit;
 }
-$id_topic = (int) $_GET['id'];
+$id_topic = (int)$_GET['id'];
 
 $q = mysql_query("SELECT * FROM `forum_topics` WHERE `id` = '$id_topic' AND `group_edit` <= '$user->group'");
 
@@ -24,9 +24,11 @@ $topic = mysql_fetch_assoc($q);
 $doc->title .= ' - ' . $topic['name'];
 
 switch (@$_GET['show']) {
-    case 'all':$show = 'all';
+    case 'all':
+        $show = 'all';
         break;
-    default:$show = 'part';
+    default:
+        $show = 'part';
         break;
 }
 
@@ -79,8 +81,7 @@ $listing = new listing();
 if ($show == 'part') {
     $pages = new pages;
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_themes` WHERE `id_topic` = '$topic[id]' AND `group_show` <= '$user->group'"), 0); // количество сообщений  теме
-    $pages->this_page(); // получаем текущую страницу
-    $q = mysql_query("SELECT * FROM `forum_themes`  WHERE `id_topic` = '$topic[id]' AND `group_show` <= '$user->group' ORDER BY `time_last` DESC LIMIT $pages->limit");
+    $q = mysql_query("SELECT * FROM `forum_themes`  WHERE `id_topic` = '$topic[id]' AND `group_show` <= '$user->group' ORDER BY `time_last` DESC LIMIT " . $pages->limit);
 } else
     $q = mysql_query("SELECT * FROM `forum_themes`  WHERE `id_topic` = '$topic[id]' AND `group_show` <= '$user->group' ORDER BY `time_last` DESC");
 
@@ -106,4 +107,3 @@ if ($show == 'part')
 $doc->ret(__('В раздел'), 'topic.php?id=' . $topic['id']);
 $doc->ret(__('В категорию'), 'category.php?id=' . $topic['id_category']);
 $doc->ret(__('Форум'), './');
-?>

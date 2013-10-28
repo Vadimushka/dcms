@@ -12,7 +12,7 @@ if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id_theme'];
+$id_theme = (int)$_GET['id_theme'];
 
 $q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_write` <= '$user->group' LIMIT 1");
 
@@ -38,12 +38,12 @@ if (!$user->is_writeable) {
 if ($can_write) {
 
     if (isset($_POST['message'])) {
-        $message = (string) $_POST['message'];
+        $message = (string)$_POST['message'];
         $users_in_message = text::nickSearch($message);
         $message = text::input_text($message);
 
 
-        $af = &$_SESSION['antiflood']['forummessage'][$id_theme][$message]; // защита от дублирования сообщений в теме
+        $af = & $_SESSION['antiflood']['forummessage'][$id_theme][$message]; // защита от дублирования сообщений в теме
 
         if ($dcms->censure && $mat = is_valid::mat($message)) {
             $doc->err(__('Обнаружен мат: %', $mat));
@@ -125,4 +125,3 @@ if (isset($_GET['return']))
     $doc->ret(__('В тему'), for_value($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
-?>

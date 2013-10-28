@@ -23,9 +23,8 @@ if (!empty($_GET ['order']) && isset($order_keys [$_GET ['order']])) {
 }
 
 if ($screens = $dir->getScreens()) {
-    
-}
 
+}
 
 
 $search = false;
@@ -50,8 +49,8 @@ if ($search) {
 
 $content = $dir->getList($order, $search);
 
-$dirs = &$content ['dirs'];
-$files = &$content ['files'];
+$dirs = & $content ['dirs'];
+$files = & $content ['files'];
 
 
 if ($description = $dir->description) {
@@ -68,7 +67,6 @@ $listing = new listing();
 
 $pages = new pages ();
 $pages->posts = count($files);
-$pages->this_page();
 // меню сортировки
 $ord = array();
 $order_keys = $dir->getKeys();
@@ -95,7 +93,6 @@ if ($pages->this_page == 1) {
         $description .= $dirs [$i]->description;
 
 
-
         $post->title = for_value($dirs [$i]->runame);
 
         $count_new = $dirs [$i]->count(true);
@@ -116,7 +113,7 @@ $start = $pages->my_start();
 $end = $pages->end();
 
 $show_key = strtok($order, ':');
-$time_new = mktime(- 24);
+$time_new = mktime(-24);
 for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
     switch ($show_key) {
         case 'comments' :
@@ -183,7 +180,6 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
 }
 
 
-
 if (empty($_GET ['act'])) {
     $listing->display(__('Папка пуста'));
     $pages->display('?order=' . $order . '&amp;' . (!empty($search) ? 'search=' . urlencode($search) . '&amp;' : '')); // вывод страниц
@@ -200,4 +196,3 @@ for ($i = 0; $i < count($return); $i++) {
 if ($access_write || $access_edit)
     include H . '/files/inc/dir_form.php';
 exit;
-?>

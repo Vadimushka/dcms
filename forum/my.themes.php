@@ -2,10 +2,10 @@
 
 include_once '../sys/inc/start.php';
 $doc = new document(1); // инициализация документа для браузера
-$ank = (empty($_GET['id']))? $user : new user((int) $_GET['id']);
-if(!$ank->group)
+$ank = (empty($_GET['id'])) ? $user : new user((int)$_GET['id']);
+if (!$ank->group)
     $doc->access_denied(__('Нет данных'));
-$doc->title = ($ank->id == $user->id)? __('Мои темы') : __('Темы пользователя "%s"', $ank->login);
+$doc->title = ($ank->id == $user->id) ? __('Мои темы') : __('Темы пользователя "%s"', $ank->login);
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`msg`.`id_theme`))
 FROM `forum_messages` AS `msg`
@@ -17,7 +17,6 @@ AND `th`.`group_show` <= '{$user->group}'
 AND `tp`.`group_show` <= '{$user->group}'
 AND `cat`.`group_show` <= '{$user->group}'
 AND `msg`.`group_show` <= '{$user->group}'"), 0); // количество категорий форума
-$pages->this_page(); // получаем текущую страницу
 
 $q = mysql_query("SELECT `th`.* ,
         `tp`.`name` AS `topic_name`,
@@ -35,15 +34,14 @@ AND `tp`.`group_show` <= '{$user->group}'
 AND `cat`.`group_show` <= '{$user->group}'
 AND `msg`.`group_show` <= '{$user->group}'
 GROUP BY `msg`.`id_theme`
-ORDER BY MAX(`msg`.`time`) DESC LIMIT $pages->limit");
-
+ORDER BY MAX(`msg`.`time`) DESC LIMIT " . $pages->limit);
 
 $listing = new listing();
 while ($themes = mysql_fetch_assoc($q)) {
-    $is_open = (int) ($themes['group_write'] <= $themes['topic_group_write']);
+    $is_open = (int)($themes['group_write'] <= $themes['topic_group_write']);
     $post = $listing->post();
     $post->icon("forum.theme.{$themes['top']}.$is_open.png");
-    $post-> time = vremja($themes['time_last']);
+    $post->time = vremja($themes['time_last']);
     $post->title = for_value($themes['name']);
     $post->counter = $themes['count'];
     $post->url = 'theme.php?id=' . $themes['id'] . '&amp;page=end';
@@ -52,11 +50,9 @@ while ($themes = mysql_fetch_assoc($q)) {
     $post->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . '<br />';
     $post->content .= "(<a href='category.php?id=$themes[id_category]'>" . for_value($themes['category_name']) . "</a> &gt; <a href='topic.php?id=$themes[id_topic]'>" . for_value($themes['topic_name']) . "</a>)<br />";
     $post->bottom = __('Просмотров: %s', $themes['views']);
-    
 }
 
-$listing -> display(($ank->id == $user->id)? __('Созданных Вами тем не найдено') : __('%s еще не создавал' . ($ank->sex ? '' : 'а') . ' тем на форуме', $ank->login));
+$listing->display(($ank->id == $user->id) ? __('Созданных Вами тем не найдено') : __('%s еще не создавал' . ($ank->sex ? '' : 'а') . ' тем на форуме', $ank->login));
 
 $pages->display("?id=$ank->id&amp;"); // вывод страниц
 $doc->ret(__('Форум'), './');
-?>

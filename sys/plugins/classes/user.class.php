@@ -20,6 +20,8 @@
  * @property bool is_ban_full Пользователь забанен без возможности просматривать сайт
  * @property int conversions Кол-во переходов по сайту
  * @property int count_visit Счетчик посещений сайта (авторизаций по cookie, post)
+ * @property int is_writeable Флаг, означающий что пользователю разрешено оставлять сообщения на сайте
+ * @property mixed nick ник пользователя
  * @method string nick() Возвращает ник пользователя в теге span с классом, отражающим присутствие пользователя
  * @method bool mess(string $message) mess(string $message, int $userId)
  * @method string icon() Возвращает название иконки пользователя (в зависимости от статуса, пола и бана)

@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id'];
+$id_theme = (int)$_GET['id'];
 $q = mysql_query("SELECT `forum_themes`.* , `forum_categories`.`name` AS `category_name` , `forum_topics`.`name` AS `topic_name`
 FROM `forum_themes`
 LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_themes`.`id_category`
@@ -46,4 +46,3 @@ $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);
 $doc->ret(empty($theme['topic_name']) ? __('В раздел') : $theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);
 $doc->ret(empty($theme['category_name']) ? __('В категорию') : $theme['category_name'], 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
-?>

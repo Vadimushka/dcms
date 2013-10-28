@@ -30,9 +30,9 @@ if (!empty($_GET['id']) && !empty($_GET['act'])) {
 
     switch ($_GET['act']) {
         case 'up':
-            if (misc::array_key_move($sort, $_GET['id'], - 1)) {
+            if (misc::array_key_move($sort, $_GET['id'], -1)) {
                 $doc->msg(__('Категория успешно перемещена вверх'));
-            }else
+            } else
                 $doc->err(__('Категория уже находится вверху'));
             break;
 
@@ -40,13 +40,11 @@ if (!empty($_GET['id']) && !empty($_GET['act'])) {
             if (misc::array_key_move($sort, $_GET['id'], 1)) {
 
                 $doc->msg(__('Категория успешно перемещена вниз'));
-            }else
+            } else
                 $doc->err(__('Категория уже находится внизу'));
 
             break;
     }
-
-
 
     $q = mysql_query("SELECT * FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC");
     while ($category = mysql_fetch_assoc($q)) {
@@ -55,21 +53,16 @@ if (!empty($_GET['id']) && !empty($_GET['act'])) {
         }
     }
 
-
     $doc->ret('Вернуться', '?' . passgen());
     header('Refresh: 1; url=?' . passgen());
     exit;
 }
-
-
-
 
 $listing = new listing();
 $q = mysql_query("SELECT * FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC");
 while ($category = mysql_fetch_assoc($q)) {
     $post = $listing->post();
     $post->id = 'cid' . $category['id'];
-    //$post->url = "category.php?id=$category[id]";
     $post->title = for_value($category['name']);
     $post->icon('forum.category');
     $post->post = text::for_opis($category['description']);
@@ -81,4 +74,3 @@ $listing->sortable = '?sortable';
 $listing->display(__('Доступных Вам категорий нет'));
 
 $doc->ret(__('Форум'), 'index.php');
-?>

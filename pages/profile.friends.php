@@ -31,9 +31,8 @@ $posts = array();
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `friends` WHERE `id_user` = '$ank->id' AND `confirm` = '1'"), 0); // количество друзей
-$pages->this_page(); // получаем текущую страницу
 
-$q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$ank->id' AND `confirm` = '1' ORDER BY `time` DESC LIMIT". $pages->limit);
+$q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$ank->id' AND `confirm` = '1' ORDER BY `time` DESC LIMIT ". $pages->limit);
 
 $listing = new listing();
 while ($friend = mysql_fetch_assoc($q)) {

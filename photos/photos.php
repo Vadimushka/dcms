@@ -5,9 +5,8 @@ $doc = new document ();
 $doc->title = __('Фотоальбомы');
 
 
-
 if (!empty($_GET ['id'])) {
-    $ank = new user((int) $_GET ['id']);
+    $ank = new user((int)$_GET ['id']);
 } else {
     $ank = $user;
 }
@@ -41,7 +40,7 @@ if (empty($_GET ['album']) || !$albums_dir->is_dir($_GET ['album'])) {
     exit();
 }
 
-$album_name = (string) $_GET ['album'];
+$album_name = (string)$_GET ['album'];
 $album = new files($albums_path . '/' . $album_name);
 $doc->title = $album->runame;
 
@@ -169,8 +168,6 @@ $listing->display(__('Фотографии отсутствуют'));
 $pages->display('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;'); // вывод страниц
 
 
-
-
 if ($ank->id == $user->id) {
     $doc->act(__('Выгрузить фото'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=photo_add');
     $doc->act(__('Параметры'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=prop');
@@ -178,4 +175,3 @@ if ($ank->id == $user->id) {
 }
 
 $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
-?>

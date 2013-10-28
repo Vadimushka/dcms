@@ -25,9 +25,8 @@ $doc->title .= ' - ' . $category['name'];
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_topics` WHERE `id_category` = '$category[id]' AND `group_show` <= '$user->group'"), 0); // количество категорий форума
-$pages->this_page(); // получаем текущую страницу
 
-$q = mysql_query("SELECT * FROM `forum_topics` WHERE `id_category` = '$category[id]' AND `group_show` <= '$user->group' ORDER BY `time_last` DESC LIMIT $pages->limit");
+$q = mysql_query("SELECT * FROM `forum_topics` WHERE `id_category` = '$category[id]' AND `group_show` <= '$user->group' ORDER BY `time_last` DESC LIMIT ".$pages->limit);
 
 $listing = new listing();
 while ($topics = mysql_fetch_assoc($q)) {
@@ -48,4 +47,3 @@ if ($category['group_write'] <= $user->group) {
 if ($category['group_edit'] <= $user->group) {
     $doc->act(__('Параметры категории'), 'category.edit.php?id=' . $category['id'] . "&amp;return=" . URL);
 }
-?>

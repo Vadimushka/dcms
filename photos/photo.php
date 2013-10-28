@@ -165,13 +165,9 @@ if (!empty($_GET ['delete_comm']) && $user->group >= $photo->group_edit) {
         $doc->err(__('Комментарий уже удален'));
 }
 
-// комментарии
-
 $pages = new pages ();
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `files_comments` WHERE `id_file` = '$photo->id'"), 0); // количество сообщений
-$pages->this_page(); // получаем текущую страницу
-$q = mysql_query("SELECT * FROM `files_comments` WHERE `id_file` = '$photo->id' ORDER BY `id` DESC LIMIT $pages->limit");
-
+$q = mysql_query("SELECT * FROM `files_comments` WHERE `id_file` = '$photo->id' ORDER BY `id` DESC LIMIT ".$pages->limit);
 
 $listing = new listing();
 while ($comment = mysql_fetch_assoc($q)) {
@@ -194,5 +190,3 @@ $pages->display('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&
 
 $doc->ret(__('Альбом %s', $album->runame), 'photos.php?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
 $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
-?>
-

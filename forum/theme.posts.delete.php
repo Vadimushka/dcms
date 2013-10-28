@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id'];
+$id_theme = (int)$_GET['id'];
 
 $q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_edit` <= '$user->group'");
 
@@ -24,9 +24,11 @@ $theme = mysql_fetch_assoc($q);
 $doc->title .= ' - ' . $theme['name'];
 
 switch (@$_GET['show']) {
-    case 'all':$show = 'all';
+    case 'all':
+        $show = 'all';
         break;
-    default:$show = 'part';
+    default:
+        $show = 'part';
         break;
 }
 
@@ -74,22 +76,19 @@ $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
-
-
 $listing = new listing();
 
 if ($show == 'part') {
     $pages = new pages;
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group'"), 0); // количество сообщений  теме
-    $pages->this_page(); // получаем текущую страницу
-    $q = mysql_query("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group' ORDER BY `id` ASC LIMIT $pages->limit");
+    $q = mysql_query("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group' ORDER BY `id` ASC LIMIT " . $pages->limit);
 } else
     $q = mysql_query("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group' ORDER BY `id` ASC");
 
 while ($messages = mysql_fetch_assoc($q)) {
     $ch = $listing->checkbox();
 
-    $ank = new user((int) $messages['id_user']);
+    $ank = new user((int)$messages['id_user']);
 
     $ch->title = $ank->nick;
     $ch->time = vremja($messages['time']);
@@ -99,11 +98,11 @@ while ($messages = mysql_fetch_assoc($q)) {
 
 $form = new form('?id=' . $theme['id']);
 $form->html($listing->fetch(__('Сообщения отсутствуют')));
-$form->button(__('Удалить'),'delete',  false);
-$form->button(__('Скрыть'),'hide',  false);
+$form->button(__('Удалить'), 'delete', false);
+$form->button(__('Скрыть'), 'hide', false);
 $form->display();
 
-if ($show == 'part') 
+if ($show == 'part')
     $pages->display('?id=' . $theme['id'] . '&amp;show=part&amp;');
 
 $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id'] . ($show == 'part' ? '&amp;page=' . $pages->this_page : ''));
@@ -111,4 +110,3 @@ $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id'] .
 $doc->ret(__('В раздел'), 'topic.php?id=' . $theme['id_topic']);
 $doc->ret(__('В категорию'), 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
-?>

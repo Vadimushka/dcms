@@ -31,7 +31,6 @@ $doc->title .= ' - ' . $topic['name'];
 $posts = array();
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_themes` WHERE `id_topic` = '$topic[id]' AND `group_show` <= '$user->group'"), 0); // количество категорий форума
-$pages->this_page(); // получаем текущую страницу
 
 $q = mysql_query("SELECT `forum_themes`.* ,
         COUNT(`forum_messages`.`id`) AS `count`,
@@ -41,7 +40,7 @@ LEFT JOIN `forum_messages` ON `forum_messages`.`id_theme` = `forum_themes`.`id`
 
  WHERE `forum_themes`.`id_topic` = '$topic[id]' AND `forum_themes`.`group_show` <= '$user->group' AND `forum_messages`.`group_show` <= '$user->group'
  GROUP BY `forum_themes`.`id`
- ORDER BY `forum_themes`.`top`, `forum_themes`.`time_last` DESC LIMIT $pages->limit");
+ ORDER BY `forum_themes`.`top`, `forum_themes`.`time_last` DESC LIMIT ".$pages->limit);
 
 $listing = new listing();
 
@@ -79,4 +78,3 @@ if ($topic['group_edit'] <= $user->group) {
 
 $doc->ret($topic['category_name'], 'category.php?id=' . $topic['id_category']);
 $doc->ret(__('Форум'), './');
-?>

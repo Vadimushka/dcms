@@ -1,12 +1,12 @@
 <?php
 
 defined('DCMS') or die;
-global $user;
-
 
 $dir = new files(FILES . '/.obmen');
 $content = $dir->getNewFiles();
-$files = &$content['files'];
+$files = & $content['files'];
+
+/** @var $files \files_file[] */
 $new_files = count($files);
 
 $listing = new listing();
@@ -37,6 +37,4 @@ if ($new_files > $dcms->widget_items_count) {
     $post->title = __('Все новые файлы');
 }
 
-
 $listing->display();
-?>

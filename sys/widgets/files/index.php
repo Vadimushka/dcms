@@ -40,4 +40,3 @@ if ($new_files > $dcms->widget_items_count) {
 }
 
 $listing->display();
-?>

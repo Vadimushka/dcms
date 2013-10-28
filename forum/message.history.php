@@ -45,7 +45,7 @@ if ($message['edit_id_user']) {
     $post->bottom .= text::output_text(' ([user]' . $message['edit_id_user'] . '[/user])');
 }
 
-$q = mysql_query("SELECT * FROM `forum_history` WHERE `id_message` = '$message[id]' ORDER BY `id` DESC LIMIT $pages->limit");
+$q = mysql_query("SELECT * FROM `forum_history` WHERE `id_message` = '$message[id]' ORDER BY `id` DESC LIMIT ".$pages->limit);
 
 while ($messages = mysql_fetch_assoc($q)) {
     $post = $listing->post();
@@ -68,4 +68,3 @@ if (isset($_GET['return']))
     $doc->ret(__('В тему'), for_value($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
-?>

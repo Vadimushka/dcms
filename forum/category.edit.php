@@ -129,4 +129,3 @@ else
     $doc->ret(__('В категорию'), 'category.php?id=' . $category['id']);
 
 $doc->ret(__('Форум'), './');
-?>

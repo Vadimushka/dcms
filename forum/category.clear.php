@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора категории'));
     exit;
 }
-$id_category = (int) $_GET['id'];
+$id_category = (int)$_GET['id'];
 
 $q = mysql_query("SELECT * FROM `forum_categories` WHERE `id` = '$id_category' AND `group_edit` <= '$user->group'");
 
@@ -44,8 +44,8 @@ $count['themes_old2'] = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_th
 if (!$count['themes_old'] + $count['themes_old2'])
     $form->bbcode(__('[b]' . 'Категория не требует очистки' . '[/b]'));
 
-$form->checkbox('themes_old', __('Не активные более года: %d ' . misc::number($count['themes_old'], 'тема', 'темы', 'тем'), $count['themes_old']), (bool) $count['themes_old']);
-$form->checkbox('themes_old2', __('Закрыто более 3-х месяцев: %d ' . misc::number($count['themes_old2'], 'тема', 'темы', 'тем'), $count['themes_old2']), (bool) $count['themes_old2']);
+$form->checkbox('themes_old', __('Не активные более года: %d ' . misc::number($count['themes_old'], 'тема', 'темы', 'тем'), $count['themes_old']), (bool)$count['themes_old']);
+$form->checkbox('themes_old2', __('Закрыто более 3-х месяцев: %d ' . misc::number($count['themes_old2'], 'тема', 'темы', 'тем'), $count['themes_old2']), (bool)$count['themes_old2']);
 $form->captcha();
 $form->bbcode('* ' . __('Данные будут безвозвратно удалены'));
 $form->button(__('Чистить'), 'clear');
@@ -54,4 +54,3 @@ $form->display();
 $doc->act(__('Параметры категории'), 'category.edit.php?id=' . $category['id']);
 $doc->ret(__('В категорию'), 'category.php?id=' . $category['id']);
 $doc->ret(__('Форум'), './');
-?>

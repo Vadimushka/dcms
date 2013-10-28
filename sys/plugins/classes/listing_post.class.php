@@ -2,6 +2,7 @@
 
 /**
  * UI. Пост в списке постов
+ * @property mixed post
  */
 class listing_post extends ui {
 
@@ -72,8 +73,8 @@ class listing_post extends ui {
 
     /**
      * Замена старых названий свойств
-     * @param type $name
-     * @return type
+     * @param string $name
+     * @return string
      */
     protected function _replace_old_properties($name) {
         if (isset($this->_old_props[$name])) {

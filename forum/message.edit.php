@@ -13,7 +13,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit;
 }
 
-$id_message = (int) $_GET['id'];
+$id_message = (int)$_GET['id'];
 $q = mysql_query("SELECT * FROM `forum_messages` WHERE `id` = '$id_message'");
 
 if (!mysql_num_rows($q)) {
@@ -26,7 +26,7 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 $message = mysql_fetch_assoc($q);
-$autor = new user((int) $message['id_user']);
+$autor = new user((int)$message['id_user']);
 
 $access_edit = false;
 $edit_time = $message['time'] - TIME + 600;
@@ -116,4 +116,3 @@ if (isset($_GET['return']))
     $doc->ret(__('В тему'), for_value($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
-?>

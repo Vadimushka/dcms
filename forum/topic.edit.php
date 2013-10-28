@@ -152,4 +152,3 @@ else
 
 $doc->ret(__('В категорию'), 'category.php?id=' . $topic ['id_category']);
 $doc->ret(__('Форум'), './');
-?>

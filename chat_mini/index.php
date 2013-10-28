@@ -5,9 +5,9 @@ $doc = new document();
 $doc->title = __('Мини чат');
 
 $pages = new pages(mysql_result(mysql_query("SELECT COUNT(*) FROM `chat_mini`"), 0));
-$pages->this_page(); // получаем текущую страницу
 
 $can_write = true;
+/** @var $user \user */
 if (!$user->is_writeable) {
     $doc->msg(__('Писать запрещено'), 'write_denied');
     $can_write = false;
@@ -65,9 +65,7 @@ $listing = new listing();
 if (!empty($form))
     $listing->setForm($form);
 
-
-
-$q = mysql_query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
+$q = mysql_query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT ".$pages->limit);
 while ($message = mysql_fetch_assoc($q)) {
     $ank = new user($message['id_user']);
     $post = $listing->post();
@@ -84,4 +82,3 @@ $pages->display('?'); // вывод страниц
 
 if ($user->group >= 3)
     $doc->act(__('Удаление сообщений'), 'message.delete_all.php');
-?>

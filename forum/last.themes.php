@@ -36,7 +36,6 @@ switch (@$_GET['period']) {
 $cache_id = 'forum.last.themes_all.period-' . $period;
 
 
-
 if (false === ($posts_all = cache::get($cache_id))) {
     $posts_all = array();
     $q = mysql_query("SELECT `th`.* ,
@@ -64,7 +63,6 @@ ORDER BY `th`.`id` DESC");
 }
 
 
-
 $count = count($posts_all);
 $posts_for_view = array();
 for ($i = 0; $i < $count; $i++) {
@@ -90,22 +88,9 @@ if ($count_posts && $user->id) {
     }
 }
 
-
-
-
-
-
-
-
-$pages = new pages;
-$pages->posts = $count_posts;
-$pages->this_page();
+$pages = new pages($count_posts);
 $start = $pages->my_start();
 $end = $pages->end();
-
-
-
-
 
 $ord = array();
 $ord[] = array("?period=default&amp;page={$pages->this_page}", $dcms->new_time_as_date ? __('Сегодня') : __('За сутки'), $period == 'default');
@@ -115,10 +100,9 @@ $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
-
-
-
 $listing = new listing();
+
+echo "<!-- $start, $end-->";
 
 for ($z = $start; $z < $end && $z < $pages->posts; $z++) {
     $post = $listing->post();
@@ -132,7 +116,7 @@ for ($z = $start; $z < $end && $z < $pages->posts; $z++) {
     }
 
 
-    $is_open = (int) ($themes['group_write'] <= $themes['topic_group_write']);
+    $is_open = (int)($themes['group_write'] <= $themes['topic_group_write']);
 
     $post->icon("forum.theme.{$themes['top']}.$is_open.png");
     $post->time = vremja($themes['time_last']);
@@ -151,6 +135,4 @@ $listing->display(__('Сегодня небыло создано ни одной
 $pages->display('?period=' . $period . '&amp;'); // вывод страниц
 
 
-
 $doc->ret(__('Форум'), './');
-?>

@@ -2,6 +2,7 @@
 
 /**
  * Реклама
+ * TODO: надо бы все тут переделать к херам
  */
 class adt extends menu {
 
@@ -19,7 +20,7 @@ class adt extends menu {
 
     /**
      * Возвращает название рекламной площадки по id, если таковая существует
-     * @param type $id
+     * @param string $id
      * @return mixed(string||boolean)
      */
     function getNameById($id) {

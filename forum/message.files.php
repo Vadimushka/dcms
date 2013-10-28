@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора сообщения'));
     exit;
 }
-$id_message = (int) $_GET['id'];
+$id_message = (int)$_GET['id'];
 
 $q = mysql_query("SELECT * FROM `forum_messages` WHERE `id` = '$id_message'");
 
@@ -37,7 +37,7 @@ if (!mysql_num_rows($q)) {
 
 $theme = mysql_fetch_assoc($q);
 
-$autor = new user((int) $message['id_user']);
+$autor = new user((int)$message['id_user']);
 
 $access_edit = false;
 $edit_time = $message['time'] - TIME + 600;
@@ -106,7 +106,7 @@ if (!empty($_FILES['file'])) {
         }
     }
 } elseif (!empty($_GET['delete'])) {
-    
+
 }
 
 $doc->title = __('Файлы к сообщению от "%s"', $autor->login);
@@ -136,4 +136,3 @@ $smarty->assign('el', $elements);
 $smarty->display('input.form.tpl');
 
 $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
-?>

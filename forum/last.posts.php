@@ -93,13 +93,9 @@ if ($count_posts && $user->id) {
 
 
 
-$pages = new pages;
-$pages->posts = $count_posts;
-$pages->this_page();
+$pages = new pages($count_posts);
 $start = $pages->my_start();
 $end = $pages->end();
-
-
 
 $ord = array();
 $ord[] = array("?period=default&amp;page={$pages->this_page}", $dcms->new_time_as_date ? __('Сегодня') : __('За сутки'), $period == 'default');
@@ -140,10 +136,5 @@ for ($z = $start; $z < $end && $z < $pages->posts; $z++) {
 }
 
 $listing->display(__('Сообщений не найдено'));
-
-
-$pages->display('?period=' . $period . '&amp;'); // вывод страниц
-
-
+$pages->display('?period=' . $period . '&amp;');
 $doc->ret(__('Форум'), './');
-?>

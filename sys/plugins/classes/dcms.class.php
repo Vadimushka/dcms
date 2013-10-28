@@ -13,6 +13,9 @@
  * @property string mysql_user Имя пользователя базы
  * @property string mysql_pass Пароль пользователя базы
  * @property string language Системный языковой пакет
+ * @property int widget_items_count Кол-во отображаемых пунктов в виджете
+ * @property bool new_time_as_date
+ * @property string browser_type Тип браузера
  */
 class dcms {
 

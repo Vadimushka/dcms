@@ -2,8 +2,28 @@
 
 /**
  * Работа с файлом загруз-центра
+ * @property int id Идентификатор файла в базе
+ * @property string name Имя файла на сервере
+ * @property string runame Локализованное имя файла
+ * @property int group_show индекс группы пользователя, которому разрешено видеть файл
+ * @property string path_dir_abs Абсолютный путь к папке
+ * @property string path_file_abs Абсолютный путь к файлу
+ * @property string path_dir_rel Относительный путь к папке
+ * @property string path_file_rel относительный путь к файлу
+ * @property float rating рейтинг файла
+ * @property int rating_count кол-во голосов
+ * @property int properties_auto_comlete флаг: Свойства автоматически получены
+ * @property int screens_auto_comlete флаг: Скриншоты автоматически получены
+ * @property string description Описание файла
+ * @property int size Размер файла в байтах
+ * @property int time_add Дата добавления файла (TIMESTAMP)
+ * @property int time_create Дата создания файла (TIMESTAMP)
+ * @property int comments Кол-во комментариев
+ * @property int group_edit Индекс группы пользователя, которой разрешено изменять параметры файла
+ * @property int id_user Идентификатор пользователя, добавившего файл
  */
-class files_file {
+class files_file
+{
 
     protected $_data = array(); // информация о файле
     protected $_screens = array(); // скриншоты (имена файлов)
@@ -16,7 +36,8 @@ class files_file {
      * @param string $path_dir_abs
      * @param string $filename
      */
-    function __construct($path_dir_abs, $filename) {
+    function __construct($path_dir_abs, $filename)
+    {
         $this->ratings = array(
             -2 => __('Ужасный файл'),
             -1 => __('Плохой файл'),
@@ -36,8 +57,8 @@ class files_file {
         $this->_data['comments'] = 0; // кол-во комментариев
         if ($cfg_ini = ini::read($path_dir_abs . '/.' . $filename . '.ini', true)) {
             // загружаем конфиг
-            $this->_data = array_merge($this->_data, (array) @$cfg_ini['CONFIG']);
-            $this->_screens = array_merge($this->_screens, (array) @$cfg_ini['SCREENS']);
+            $this->_data = array_merge($this->_data, (array)@$cfg_ini['CONFIG']);
+            $this->_screens = array_merge($this->_screens, (array)@$cfg_ini['SCREENS']);
         } else {
             $dir = new files($path_dir_abs);
             $this->_data['group_show'] = $dir->group_show; // группа, которой доступен файл
@@ -67,11 +88,12 @@ class files_file {
      * @param string|bool $name
      * @return boolean
      */
-    public function rename($runame, $name = false) {
-        if ($this->name {0} == '.')
+    public function rename($runame, $name = false)
+    {
+        if ($this->name{0} == '.')
             return false;
 
-        if ($name && $name {0} == '.')
+        if ($name && $name{0} == '.')
             return false;
 
         if ($name && file_exists($this->path_dir_abs . '/' . $name))
@@ -98,7 +120,8 @@ class files_file {
      * @param string $path_dir_abs
      * @return boolean
      */
-    public function moveTo($path_dir_abs) {
+    public function moveTo($path_dir_abs)
+    {
         global $user;
 
         $dir = new files($path_dir_abs);
@@ -119,13 +142,15 @@ class files_file {
             $this->path_dir_abs = $dir->path_abs;
             return true;
         }
+        return false;
     }
 
     /**
      * Список доступных ключей (для сортировки)
      * @return array
      */
-    public function getKeys() {
+    public function getKeys()
+    {
         $keys = array();
         if (!empty($this->_data['time_create']))
             $keys['time_create:desc'] = __('Время создания');
@@ -169,7 +194,8 @@ class files_file {
      * Удаление данного файла и всей дополнительной информации к нему.
      * @return boolean
      */
-    public function delete() {
+    public function delete()
+    {
         if (!file_exists($this->path_file_abs) || @unlink($this->path_file_abs)) {
             // удаляем скрины
             if ($this->_screens) {
@@ -188,6 +214,7 @@ class files_file {
             $this->__destruct();
             return true;
         }
+        return false;
     }
 
     /**
@@ -196,7 +223,8 @@ class files_file {
      * @param bool|int $set
      * @return int
      */
-    public function rating_my($set = false) {
+    public function rating_my($set = false)
+    {
         global $user;
         $q = mysql_query("SELECT `rating` FROM `files_rating` WHERE `id_file` = '{$this->id}' AND `id_user` = '{$user->id}'");
         if (mysql_num_rows($q)) {
@@ -208,11 +236,11 @@ class files_file {
         if ($set !== false && isset($this->ratings[$set])) {
             if ($set && $my_rating) {
                 // Изменяем запись
-                $my_rating = (int) $set;
+                $my_rating = (int)$set;
                 mysql_query("UPDATE `files_rating` SET `rating` = '$my_rating', `time` = '" . TIME . "' WHERE `id_file` = '{$this->id}' AND `id_user` = '{$user->id}' LIMIT 1");
             } elseif ($set) {
                 // Вносим запись
-                $my_rating = (int) $set;
+                $my_rating = (int)$set;
                 mysql_query("INSERT INTO `files_rating` (`id_file`, `id_user`, `time`, `rating`) VALUES ('{$this->id}', '{$user->id}', '" . TIME . "', '$my_rating')");
             } elseif ($my_rating) {
                 // Удаляем запись
@@ -229,7 +257,8 @@ class files_file {
     /**
      * Обновление рейтинга
      */
-    public function rating_update() {
+    public function rating_update()
+    {
         $q = mysql_query("SELECT AVG(`rating`) AS `rating`, COUNT(`id_user`) AS `rating_count` FROM `files_rating` WHERE `id_file` = '{$this->_data['id']}'");
         $data = mysql_fetch_assoc($q);
         $this->rating = $data['rating'];
@@ -240,9 +269,10 @@ class files_file {
      * Извлечение дополнительных сведений о файле
      * @return boolean
      */
-    protected function _getPropertiesAuto() {
+    protected function _getPropertiesAuto()
+    {
         if ($this->properties_auto_comlete)
-            return false;
+            return;
         if ($desc = files_types::getPropertiesType($this->path_file_abs)) {
             if (@function_exists('set_time_limit')) {
                 @set_time_limit(30);
@@ -250,7 +280,7 @@ class files_file {
             $propert = "files_properties_$desc";
             $prop_obj = new $propert($this->path_file_abs);
             if ($prop = $prop_obj->getProperties()) {
-                $this->_data = array_merge((array) $prop, $this->_data);
+                $this->_data = array_merge((array)$prop, $this->_data);
             }
         }
         $this->properties_auto_comlete = 1;
@@ -258,9 +288,10 @@ class files_file {
 
     /**
      * Кол-во скриншотов
-     * @return type
+     * @return int
      */
-    public function getScreensCount() {
+    public function getScreensCount()
+    {
         $this->_createScreensAuto();
         return count($this->_screens);
     }
@@ -271,7 +302,8 @@ class files_file {
      * @param int $num
      * @return string|boolean
      */
-    public function getScreen($img_max_width, $num = 0) {
+    public function getScreen($img_max_width, $num = 0)
+    {
         $this->_createScreensAuto();
         if (!empty($this->_screens[$num])) {
             $screen_path_rel = '/sys/tmp/public.' . md5($this->path_file_rel) . '.num' . $num . '.width' . $img_max_width . '.jpg';
@@ -288,14 +320,16 @@ class files_file {
             if (imagejpeg($img_screen, H . $screen_path_rel, 85))
                 return $screen_path_rel;
         }
+        return false;
     }
 
     /**
      * Добавление скриншота
-     * @param type $img
+     * @param resource $img
      * @return boolean
      */
-    public function screenAdd($img) {
+    public function screenAdd($img)
+    {
         sort($this->_screens);
         $key = count($this->_screens);
         $scr = '.' . $this->name . '.' . $key . '.jpg';
@@ -308,16 +342,17 @@ class files_file {
 
     /**
      * Удаление скриншота
-     * @param type $num
+     * @param int $num
      * @return boolean
      */
-    public function screenDelete($num) {
+    public function screenDelete($num)
+    {
         if (empty($this->_screens[$num]))
             return false;
 
         if (@unlink($this->path_dir_abs . '/' . $this->_screens[$num]) || !file_exists($this->path_dir_abs . '/' . $this->_screens[$num])) {
             // удаление уменьшенных копий скриншотов
-            $screen_path_tmp = (array) glob(H . '/sys/tmp/public.' . md5($this->path_file_rel) . '.num' . $num . '.width*.jpg');
+            $screen_path_tmp = (array)glob(H . '/sys/tmp/public.' . md5($this->path_file_rel) . '.num' . $num . '.width*.jpg');
             foreach ($screen_path_tmp as $path_to_delete) {
                 @unlink($path_to_delete);
             }
@@ -327,12 +362,14 @@ class files_file {
             $this->_need_save = true;
             return true;
         }
+        return false;
     }
 
     /**
      * Удаление скриншотов и установка отметки, что автоматически скриншоты еще не генерировались
      */
-    public function screensReset() {
+    public function screensReset()
+    {
         $count = $this->getScreensCount();
         for ($i = 0; $i < $count; $i++) {
             $this->screenDelete($i);
@@ -344,9 +381,10 @@ class files_file {
      * Автоматическое создание скриншотов
      * @return boolean
      */
-    protected function _createScreensAuto() {
+    protected function _createScreensAuto()
+    {
         if ($this->screens_auto_comlete)
-            return false;
+            return;
         if ($screen = files_types::getScreenType($this->path_file_abs)) {
             $screener = "files_screen_$screen";
             $scr_obj = new $screener($this->path_file_abs);
@@ -355,7 +393,7 @@ class files_file {
                 @set_time_limit(30);
             }
             if ($imgs = $scr_obj->getScreen()) {
-                $imgs = (array) $imgs;
+                $imgs = (array)$imgs;
 
                 foreach ($imgs as $img) {
                     $this->screenAdd($img);
@@ -369,7 +407,8 @@ class files_file {
      * Название иконки по типу файла
      * @return string
      */
-    public function icon() {
+    public function icon()
+    {
         return files_types::getIconType($this->path_file_abs);
     }
 
@@ -379,7 +418,8 @@ class files_file {
      * @param int $num
      * @return string
      */
-    public function image($size = 48, $num = 0) {
+    public function image($size = 48, $num = 0)
+    {
         if ($screen = $this->getScreen($size, $num)) {
             return $screen;
         }
@@ -388,9 +428,10 @@ class files_file {
 
     /**
      * Установка путей
-     * @param type $path_dir_abs
+     * @param string $path_dir_abs
      */
-    protected function _setPathes($path_dir_abs) {
+    protected function _setPathes($path_dir_abs)
+    {
         // полный путь к папке
         $this->path_dir_abs = filesystem::unixpath($path_dir_abs);
         // полный путь к файлу
@@ -405,7 +446,8 @@ class files_file {
      * Заносим сведения о файле в базу
      * @return boolean
      */
-    protected function _baseAdd() {
+    protected function _baseAdd()
+    {
         if ($this->id)
             return false;
         if ($this->name{0} == '.')
@@ -413,13 +455,14 @@ class files_file {
 
         mysql_query("INSERT INTO `files_cache` (`path_file_rel`, `time_add`, `group_show`, `runame`)
 VALUES ('" . my_esc(convert::to_utf8($this->path_file_rel)) . "', '" . intval($this->time_add) . "', '" . intval($this->group_show) . "', '" . my_esc($this->runame) . "')");
-        return (bool) $this->id = mysql_insert_id();
+        return (bool)$this->id = mysql_insert_id();
     }
 
     /**
      * обновляем сведения о файле в базе данных
      */
-    protected function _baseUpdate() {
+    protected function _baseUpdate()
+    {
         mysql_query("UPDATE `files_cache`
 SET `path_file_rel` = '" . my_esc(convert::to_utf8($this->path_file_rel)) . "',
 `time_add` = '" . intval($this->time_add) . "',
@@ -432,7 +475,8 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
      * Удаляем сведения о файле из базы данных
      * @return boolean
      */
-    protected function _baseDelete() {
+    protected function _baseDelete()
+    {
         // удаление файла из кэша базы
         mysql_query("DELETE FROM `files_cache` WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
         // удаление комментов к файлу
@@ -446,7 +490,8 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
      * Возвращение поти в файлу для ссылки
      * @return string
      */
-    public function getPath() {
+    public function getPath()
+    {
         $path_rel = preg_split('#/+#', $this->path_dir_rel);
         foreach ($path_rel as $key => $value) {
             $path_rel[$key] = urlencode($value);
@@ -458,7 +503,8 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
      * размер файла в байтах
      * @return integer
      */
-    protected function _getSize() {
+    protected function _getSize()
+    {
         $size = @filesize($this->path_file_abs);
         return $this->size = $size;
     }
@@ -467,28 +513,36 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
      * Дата и время создания файла в формате UNIXTIMESTAMP
      * @return integer
      */
-    protected function _getTimeCreate() {
+    protected function _getTimeCreate()
+    {
         $time = @filemtime($this->path_file_abs);
         return $this->time_create = $time;
     }
 
-    function __get($n) {
+    function __get($n)
+    {
         global $dcms;
         switch ($n) {
-            case 'rating_name':return $this->ratings[round($this->rating)];
-            case 'description_small': return empty($this->_data[$n]) ? text::substr($this->description, $dcms->browser_type == 'web' ? 512 : 256) : $this->_data[$n];
-            case 'time_create': return isset($this->_data[$n]) ? $this->_data[$n] : $this->_getTimeCreate();
-            case 'size': return isset($this->_data[$n]) ? $this->_data[$n] : $this->_getSize();
-            default: return isset($this->_data[$n]) ? $this->_data[$n] : false;
+            case 'rating_name':
+                return $this->ratings[(int)round($this->rating)];
+            case 'description_small':
+                return empty($this->_data[$n]) ? text::substr($this->description, $dcms->browser_type == 'web' ? 512 : 256) : $this->_data[$n];
+            case 'time_create':
+                return isset($this->_data[$n]) ? $this->_data[$n] : $this->_getTimeCreate();
+            case 'size':
+                return isset($this->_data[$n]) ? $this->_data[$n] : $this->_getSize();
+            default:
+                return isset($this->_data[$n]) ? $this->_data[$n] : false;
         }
     }
 
-    function __set($n, $v) {
+    function __set($n, $v)
+    {
         if (!is_scalar($n) || !is_scalar($v))
-            return false;
+            return;
 
         if (array_key_exists($n, $this->_data) && $this->_data[$n] == $v)
-            return false;
+            return;
 
         if ($n == 'path_dir_abs') {
             $dir_old = new files($this->path_dir_abs);
@@ -514,13 +568,15 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
     /**
      * Сохранение информации о файле
      */
-    public function save_data() {
+    public function save_data()
+    {
         if ($this->name{0} !== '.') {
             ini::save($this->path_dir_abs . '/.' . $this->name . '.ini', array('CONFIG' => $this->_data, 'SCREENS' => $this->_screens), true);
         }
     }
 
-    function __destruct() {
+    function __destruct()
+    {
         if ($this->_need_save) {
             $this->save_data();
         }

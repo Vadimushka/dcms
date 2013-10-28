@@ -66,4 +66,3 @@ $form->display();
 $doc->act(__('Параметры раздела'), 'topic.edit.php?id=' . $topic['id']);
 $doc->ret(__('В раздел'), 'topic.php?id=' . $topic['id']);
 $doc->ret(__('Форум'), './');
-?>

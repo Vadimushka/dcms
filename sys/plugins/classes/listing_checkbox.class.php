@@ -2,6 +2,10 @@
 
 /**
  * UI. Пост с чекбоксом в списке
+ * @property string title
+ * @property string time
+ * @property string name атрибут name
+ * @property string content
  */
 class listing_checkbox extends ui {
 

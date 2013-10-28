@@ -60,5 +60,3 @@ if ($new_themes)
     $post->counter = '+' . $new_themes;
 
 $listing->display();
-
-?>

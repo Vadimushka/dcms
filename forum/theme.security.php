@@ -10,7 +10,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id'];
+$id_theme = (int)$_GET['id'];
 
 $q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_edit` <= '$user->group'");
 
@@ -24,7 +24,7 @@ $theme = mysql_fetch_assoc($q);
 
 if (isset($_POST['save'])) {
 
-    $t['top'] = (int) !empty($_POST['top']);
+    $t['top'] = (int)!empty($_POST['top']);
     if ($t['top'] != $theme['top']) {
         $theme['top'] = $t['top'];
         mysql_query("UPDATE `forum_themes` SET `top` = '$theme[top]' WHERE `id` = '$theme[id]' LIMIT 1");
@@ -35,7 +35,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['group_show'])) { // просмотр
-        $group_show = (int) $_POST['group_show'];
+        $group_show = (int)$_POST['group_show'];
         if (isset($groups[$group_show]) && $group_show != $theme['group_show']) {
             $theme_dir = new files(FILES . '/.forum/' . $theme['id']);
             $theme_dir->setGroupShowRecurse($group_show); // данный параметр необходимо применять рекурсивно
@@ -47,7 +47,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['group_write'])) { // запись
-        $group_write = (int) $_POST['group_write'];
+        $group_write = (int)$_POST['group_write'];
         if (isset($groups[$group_write]) && $group_write != $theme['group_write']) {
             if ($theme['group_show'] > $group_write)
                 $doc->err(__('Для того, чтобы оставлять сообщения группе "%s" сначала необходимо дать права на чтение темы', groups::name($group_write)));
@@ -60,7 +60,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['group_edit'])) { // редактирование
-        $group_edit = (int) $_POST['group_edit'];
+        $group_edit = (int)$_POST['group_edit'];
         if (isset($groups[$group_edit]) && $group_edit != $theme['group_edit']) {
             if ($theme['group_write'] > $group_edit)
                 $doc->err(__('Для изменения параметров темы группе "%s" сначала необходимо дать права на запись в тему', groups::name($group_edit)));
@@ -93,7 +93,7 @@ $form->select('group_show', __('Чтение темы'), $options);
 
 $options = array();
 foreach ($groups as $type => $value) {
-    if ($type < 1)// гостям писать в тему уж точно запрещено        
+    if ($type < 1) // гостям писать в тему уж точно запрещено
         continue;
     $options[] = array($type, $value['name'], $type == $theme['group_write']);
 }
@@ -116,4 +116,3 @@ $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);
 $doc->ret(empty($theme['topic_name']) ? __('В раздел') : $theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);
 $doc->ret(empty($theme['category_name']) ? __('В категорию') : $theme['category_name'], 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
-?>

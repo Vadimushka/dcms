@@ -749,6 +749,8 @@ class files {
     function __destruct() {
         if ($this->_need_save) {
             $this->time_last = TIME; // время последних действий
+            if ($this->path_rel === $this->path_abs) /// !! пишет куда попало
+                return;
             ini::save($this->path_abs . '/' . $this->_config_file_name, array('CONFIG' => $this->_data, 'SCREENS' => $this->_screens, 'ADDKEYS' => $this->_keys), true);
         }
     }

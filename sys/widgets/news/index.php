@@ -23,4 +23,3 @@ if ($dcms->widget_items_count) {
 }
 
 $listing->display();
-?>

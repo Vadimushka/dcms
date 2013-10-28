@@ -65,4 +65,3 @@ if (isset($_GET['return']))
     $doc->ret(__('В категорию'), for_value($_GET['return']));
 else
     $doc->ret(__('В категорию'), 'category.php?id=' . $category['id']);
-?>

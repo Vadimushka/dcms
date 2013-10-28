@@ -9,7 +9,7 @@ if (!isset($_GET['id_message']) || !is_numeric($_GET['id_message'])) {
     $doc->err(__('Ошибка выбора сообщения'));
     exit;
 }
-$id_message = (int) $_GET['id_message'];
+$id_message = (int)$_GET['id_message'];
 
 $q = mysql_query("SELECT * FROM `forum_messages` WHERE `id` = '$id_message' AND `group_show` <= '$user->group'");
 
@@ -20,11 +20,6 @@ if (!mysql_num_rows($q)) {
 }
 
 $message = mysql_fetch_assoc($q);
-
-
-
-
-
 
 $q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$message[id_theme]'");
 
@@ -46,21 +41,13 @@ if ($theme['group_show'] > $user->group) {
     exit;
 }
 
-
-
 $doc->title = $theme['name'];
-
-
-
 
 $can_write = true;
 if (!$user->is_writeable) {
     $doc->msg(__('Писать запрещено'), 'write_denied');
     $can_write = false;
 }
-
-
-
 
 $autor = new user((int)$message['id_user']);
 
@@ -76,7 +63,7 @@ if (isset($_GET['quote'])) {
 }
 
 if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->group) {
-    $message = (string) $_POST['message'];
+    $message = (string)$_POST['message'];
     $users_in_message = text::nickSearch($message);
     $message_re = text::input_text($message);
 
@@ -114,12 +101,10 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
             }
         }
 
-
         if ($autor->notification_forum && $user->id != $autor->id) {
             $count_posts_for_user = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$autor->group'"), 0);
             $autor->mess("[user]{$user->id}[/user] ответил" . ($user->sex ? '' : 'а') . " Вам на форуме в [url=/forum/message.php?id_message={$id_message}]сообщении[/url] в теме [url=/forum/theme.php?id={$theme['id']}&postnum={$count_posts_for_user}#message{$id_message}]{$theme['name']}[/url]");
         }
-
 
         $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id'] . '&amp;page=end#message' . $id_message);
         exit;
@@ -128,27 +113,21 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
     }
 }
 
-
 if ($autor->id && $user->id) {
     $doc->title = __('Ответ для "%s"', $autor->login);
     //$can_write = false;
-}
-else{
+} else {
     $doc->title = __('Сообщение от "%s"', $autor->login);
 }
 
-
-
 $listing = new listing();
-$post = $listing -> post();
-$post -> title = $autor->nick();
-$post -> time = vremja($message['edit_time'] ? $message['edit_time'] : $message['time']);
-$post -> url = '/profile.view.php?id=' . $autor->id;
-$post -> icon($autor->icon());
-$post -> content = output_text($message['message']);
-$listing -> display();
-
-
+$post = $listing->post();
+$post->title = $autor->nick();
+$post->time = vremja($message['edit_time'] ? $message['edit_time'] : $message['time']);
+$post->url = '/profile.view.php?id=' . $autor->id;
+$post->icon($autor->icon());
+$post->content = output_text($message['message']);
+$listing->display();
 
 if (!isset($_GET['files'])) {
     if ($can_write && $theme['group_write'] <= $user->group) {
@@ -166,4 +145,3 @@ if (!isset($_GET['files'])) {
 }
 
 $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
-?>

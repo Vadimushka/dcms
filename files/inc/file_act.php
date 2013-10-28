@@ -114,4 +114,3 @@ if (isset($_POST ['edit_path']) && !empty($_POST ['path_rel_new'])) {
         $doc->err(__('Ошибка при выборе нового каталога'));
     }
 }
-?>

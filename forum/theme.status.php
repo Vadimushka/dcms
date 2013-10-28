@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id'];
+$id_theme = (int)$_GET['id'];
 $q = mysql_query("SELECT `forum_themes`.* ,
         `forum_categories`.`name` AS `category_name` ,
         `forum_topics`.`name` AS `topic_name`,
@@ -86,6 +86,3 @@ if ($is_open)
 else
     $form->button(__('Открыть для обсуждения'), 'open');
 $form->display();
-
-
-?>

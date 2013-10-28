@@ -175,4 +175,3 @@ if ($user->group >= 2 || $theme['group_edit'] <= $user->group) {
 $doc->ret($theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);
 $doc->ret($theme['category_name'], 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
-?>
