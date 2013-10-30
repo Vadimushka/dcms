@@ -5,24 +5,35 @@ $doc = new document();
 $doc->title = __('Пользователи');
 
 switch (@$_GET['order']) {
-    case 'group':$order = 'group';
+    case 'donate_rub':
+        $order = 'donate_rub';
+        $sort = 'DESC';
+        $where = "WHERE `donate_rub` > '0'";
+        $doc->title = __('Пожертвования');
+        break;
+    case 'group':
+        $order = 'group';
         $sort = 'DESC';
         $where = "WHERE `group` >= '2'";
         $doc->title = __('Администрация');
         break;
-    case 'login':$order = 'login';
+    case 'login':
+        $order = 'login';
         $sort = 'ASC';
         $where = '';
         break;
-    case 'balls':$order = 'balls';
+    case 'balls':
+        $order = 'balls';
         $sort = 'DESC';
         $where = '';
         break;
-    case 'rating':$order = 'rating';
+    case 'rating':
+        $order = 'rating';
         $sort = 'DESC';
         $where = '';
         break;
-    default:$order = 'id';
+    default:
+        $order = 'id';
         $sort = 'DESC';
         $where = '';
         break;
@@ -40,7 +51,6 @@ elseif (isset($search) && $search) {
 $posts = array();
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `users` $where"), 0);
-$pages->this_page(); // получаем текущую страницу
 // меню сортировки
 $ord = array();
 $ord[] = array("?order=id&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('ID пользователя'), $order == 'id');
@@ -48,46 +58,57 @@ $ord[] = array("?order=login&amp;page={$pages->this_page}" . (isset($search) ? '
 $ord[] = array("?order=rating&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('Рейтинг'), $order == 'rating');
 $ord[] = array("?order=balls&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('Баллы'), $order == 'balls');
 $ord[] = array("?order=group&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('Статус'), $order == 'group');
+$ord[] = array("?order=donate_rub&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('Пожертвования'), $order == 'donate_rub');
 $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
-$q = mysql_query("SELECT `id` FROM `users` $where ORDER BY `$order` ".$sort." LIMIT ". $pages->limit);
-
+$q = mysql_query("SELECT `id` FROM `users` $where ORDER BY `$order` " . $sort . " LIMIT " . $pages->limit);
 
 $listing = new listing();
+if ($order == 'donate_rub') {
+    $post = $listing->post();
+    $post->url = '/faq.php?info=donate';
+    $post->title = __('Как сюда попасть');
+    $post->hightlight = true;
+    $post->icon('donate');
+}
+
 while ($ank = mysql_fetch_assoc($q)) {
     $post = $listing->post();
     $p_user = new user($ank['id']);
-
     $post->icon($p_user->icon());
     $post->title = $p_user->nick();
     $post->url = '/profile.view.php?id=' . $p_user->id;
 
+    switch ($order) {
+        case 'id':
+            $post->content[] = '[b]' . __('ID пользователя') . ': ' . $p_user->id . '[/b]';
+            break;
+        case 'group':
+            $post->content[] = '[b]' . __($p_user->group_name) . '[/b]';
+            break;
+        case 'rating':
+            $post->content[] = '[b]' . __('Рейтинг') . ': ' . $p_user->rating . '[/b]';
+            break;
+        case 'balls':
+            $post->content[] = '[b]' . __('Баллы') . ': ' . ((int)$p_user->balls) . '[/b]';
+            break;
+        case 'donate_rub':
+            $post->content[] = '[b]' . __('Сумма пожертвований: %s руб.', $p_user->donate_rub) . '[/b]';
+            break;
+    }
 
-    $post->content = $order == 'id' ? __('ID пользователя') . ': ' . $p_user->id . "<br />\n" : '';
-
-    if ($order == 'group')
-        $post->content .= __($p_user->group_name) . "<br />\n";
-    if ($order == 'balls')
-        $post->content .= __('Баллы') . ': ' . ((int) $p_user->balls) . "<br />\n";
-    if ($order == 'rating')
-        $post->content .= __('Рейтинг') . ': ' . $p_user->rating . "<br />\n";
-    $post->content .= __('Дата регистрации') . ': ' . date('d-m-Y', $p_user->reg_date) . "<br />\n";
-    $post->content .= __('Последний визит') . ': ' . vremja($p_user->last_visit) . '<br />';
+    $post->content[] = '[small]' . __('Дата регистрации') . ': ' . date('d-m-Y', $p_user->reg_date) . '[/small]';
+    $post->content[] = '[small]' . __('Последний визит') . ': ' . vremja($p_user->last_visit) . '[/small]';
 }
 
-$smarty = new design();
-$smarty->assign('method', 'get');
-$smarty->assign('action', '?');
-$elements = array();
-$elements[] = array('type' => 'hidden', 'info' => array('name' => 'order', 'value' => $order));
-$elements[] = array('type' => 'input_text', 'title' => __('Ник или его часть'), 'br' => 0, 'info' => array('name' => 'search', 'value' => @$search));
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Поиск'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form('?', false);
+$form->hidden('order', $order);
+$form->text('search', __('Ник или его часть'), @$search, false);
+$form->button(__('Поиск'));
+$form->display();
 
-
-$listing->display(__('Нет пользователей'));
+$listing->display($order == 'donate_rub' ? __('Нет пользователей, пожертвовавших денег на проект') : __('Нет пользователей'));
 
 $pages->display("?order=$order&amp;" . (isset($search) ? 'search=' . urlencode($search) . '&amp;' : '')); // вывод страниц

@@ -16,6 +16,7 @@
  * @property int widget_items_count Кол-во отображаемых пунктов в виджете
  * @property bool new_time_as_date
  * @property string browser_type Тип браузера
+ * @property bool donate_message флаг, указывающий на то, что сообщение о пожертвовании отправлено
  */
 class dcms {
 

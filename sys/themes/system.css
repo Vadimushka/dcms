@@ -37,6 +37,14 @@ td {
     
 }
 
+.DCMS_nick_donate{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url("/sys/images/icons/donate.png");
+    margin-left: 3px;
+}
+
 .DCMS_quote{
     border: 1px solid #ccc;
     font-size: 90%;
