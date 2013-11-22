@@ -9,11 +9,11 @@ include_once '../sys/inc/start.php';
 $doc = new document ();
 $doc->title = __('Анкета');
 
-if (isset($_GET ['id'])) {
+if (isset($_GET ['id']))
     $ank = new user((int)$_GET ['id']);
-} else {
+else
     $ank = $user;
-}
+
 if (!$ank->group)
     $doc->access_denied(__('Нет данных'));
 
@@ -31,7 +31,7 @@ if ($user->group && $ank->id && $user->id != $ank->id && isset($_GET ['friend'])
     $q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$user->id' AND `id_friend` = '$ank->id' LIMIT 1");
     if (mysql_num_rows($q)) {
         $friend = mysql_fetch_assoc($q);
-        if ($friend ['confirm']) {
+        if ($friend['confirm']) {
             // если Вы уже являетель другом
             if (isset($_POST ['delete'])) {
                 // удаляем пользователя из друзей
@@ -74,14 +74,10 @@ if ($user->group && $ank->id && $user->id != $ank->id) {
         if ($friend ['confirm']) {
             // пользователь находится в друзьях
             if (isset($_GET ['friend']) && $_GET ['friend'] == 'delete') {
-                $form = new design ();
-                $form->assign('method', 'post');
-                $form->assign('action', "?id={$ank->id}&amp;friend&amp;" . passgen());
-                $elements = array();
-                $elements [] = array('type' => 'text', 'br' => 1, 'value' => output_text(__('Действительно хотите удалить пользователя "%s" из друзей?', $ank->login))); // правила
-                $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Да, удалить'))); // кнопка
-                $form->assign('el', $elements);
-                $form->display('input.form.tpl');
+                $form = new form("?id={$ank->id}&amp;friend&amp;" . passgen());
+                $form->html(output_text(__('Действительно хотите удалить пользователя "%s" из друзей?', $ank->login)));
+                $form->button(__('Да, удалить'), 'delete');
+                $form->display();
             }
 
             if (!$ank->is_friend($user))
@@ -89,31 +85,24 @@ if ($user->group && $ank->id && $user->id != $ank->id) {
             $doc->act(__('Удалить из друзей'), "?id={$ank->id}&amp;friend=delete");
         } else {
             // пользователь не в друзьях
-            $form = new design ();
-            $form->assign('method', 'post');
-            $form->assign('action', "?id={$ank->id}&amp;friend&amp;" . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'text', 'br' => 1, 'value' => output_text(__('Пользователь "%s" предлагает Вам дружбу', $ank->login))); // правила
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'ok', 'value' => __('Принимаю'))); // кнопка
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'no', 'value' => __('Не принимаю'))); // кнопка
-            $form->assign('el', $elements);
-            $form->display('input.form.tpl');
+            $form = new form("?id={$ank->id}&amp;friend&amp;" . passgen());
+            $form->html(output_text(__('Пользователь "%s" предлагает Вам дружбу', $ank->login)));
+            $form->button(__('Принимаю'), 'ok', false);
+            $form->button(__('Не принимаю'), 'no', false);
+            $form->display();
         }
     } else {
         if (isset($_GET ['friend']) && $_GET ['friend'] == 'add') {
-            $form = new design ();
-            $form->assign('method', 'post');
-            $form->assign('action', "?id={$ank->id}&amp;friend&amp;" . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'text', 'br' => 1, 'value' => output_text(__('Предложить пользователю "%s" дружбу?', $ank->login))); // правила
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'add', 'value' => __('Предложить'))); // кнопка
-            $form->assign('el', $elements);
-            $form->display('input.form.tpl');
+            $form = new form("?id={$ank->id}&amp;friend&amp;" . passgen());
+            $form->html(output_text(__('Предложить пользователю "%s" дружбу?', $ank->login)));
+            $form->button(__('Предложить'), 'add', false);
+            $form->display();
         }
         $doc->act(__('Добавить в друзья'), "?id={$ank->id}&amp;friend=add");
     }
 }
 //endregion
+
 //region Бан
 if ($ank->is_ban) {
     $ban_listing = new listing();
@@ -144,6 +133,7 @@ if ($ank->is_ban) {
     $ban_listing->display();
 }
 //endregion
+
 //region Профиль пользователя
 $listing = new listing();
 //region Аватар
@@ -151,6 +141,7 @@ if ($path = $ank->getAvatar($doc->img_max_width())) {
     echo "<img class='DCMS_photo' src='" . $path . "' alt='" . __('Аватар %s', $ank->login) . "' /><br />\n";
 }
 //endregion
+
 //region статус
 if ($ank->group > 1) {
     $post = $listing->post();
@@ -171,6 +162,7 @@ if ($ank->group > 1) {
 }
 //endregion
 
+//region Пожертвования
 if ($ank->donate_rub) {
     $post = $listing->post();
     $post->hightlight = true;
@@ -179,6 +171,7 @@ if ($ank->donate_rub) {
     $post->content = __('%s руб.', $ank->donate_rub);
     $post->url = '/users.php?order=donate_rub';
 }
+//endregion
 
 //region Имя
 if ($ank->realname) {
@@ -187,6 +180,7 @@ if ($ank->realname) {
     $post->content = $ank->realname;
 }
 //endregion
+
 //region Дата рождения
 if ($ank->ank_d_r && $ank->ank_m_r && $ank->ank_g_r) {
     $post = $listing->post();
@@ -203,6 +197,7 @@ if ($ank->ank_d_r && $ank->ank_m_r && $ank->ank_g_r) {
     $post->content = $ank->ank_d_r . ' ' . rus_mes($ank->ank_m_r);
 }
 //endregion
+
 //region фотографии
 if ($ank->id) {
 
@@ -236,6 +231,7 @@ if ($ank->id) {
     }
 }
 //endregion
+
 //region аська
 if ($ank->icq_uin) {
     if ($ank->is_friend($user) || $ank->vis_icq) {
@@ -252,6 +248,7 @@ if ($ank->icq_uin) {
     }
 }
 //endregion
+
 //region Skype
 if ($ank->skype) {
     if ($ank->is_friend($user) || $ank->vis_skype) {
@@ -270,12 +267,10 @@ if ($ank->skype) {
     }
 }
 //endregion
+
 //region E-mail
 if ($ank->email) {
-    $doc->keywords [] = $ank->email;
-
     if ($ank->is_friend($user) || $ank->vis_email) {
-
         $post = $listing->post();
         $post->title = 'E-mail';
         $post->content = $ank->email;
@@ -291,11 +286,10 @@ if ($ank->email) {
     }
 }
 //endregion
+
 //region Регистрационнац E-mail
 if ($ank->reg_mail) {
     if ($user->group > $ank->group) {
-
-
         $post = $listing->post();
         $post->title = __('Регистрационный E-mail');
         $post->content = $ank->reg_mail;
@@ -305,6 +299,7 @@ if ($ank->reg_mail) {
     }
 }
 //endregion
+
 //region Webmoney
 if ($ank->wmid) {
     $post = $listing->post();
@@ -314,6 +309,7 @@ if ($ank->wmid) {
     $post->image = 'http://stats.wmtransfer.com/Levels/pWMIDLevel.aspx?wmid=' . $ank->wmid . '&amp;w=35&amp;h=16';
 }
 //endregion
+
 //region Друзья
 if ($ank->is_friend($user) || $ank->vis_friends) {
     $k_friends = mysql_result(mysql_query("SELECT COUNT(*) FROM `friends` WHERE `id_user` = '$ank->id' AND `confirm` = '1'"), 0);
@@ -329,17 +325,20 @@ if ($ank->is_friend($user) || $ank->vis_friends) {
     $post->content = __('Информация скрыта');
 }
 //endregion
+
 //region Рейтинг
 $post = $listing->post();
 $post->title = __('Рейтинг');
 $post->url = '/profile.reviews.php?id=' . $ank->id;
 $post->counter = $ank->rating;
 //endregion
+
 //region Баллы
 $post = $listing->post();
 $post->title = __('Баллы');
 $post->counter = $ank->balls;
 //endregion
+
 //region О себе
 if ($ank->description) {
     $post = $listing->post();
@@ -347,21 +346,25 @@ if ($ank->description) {
     $post->content[] = $ank->description;
 }
 //endregion
+
 //region Последний визит
 $post = $listing->post();
 $post->title = __('Последний визит');
 $post->content = vremja($ank->last_visit);
 //endregion
+
 //region Всего переходов
 $post = $listing->post();
 $post->title = __('Всего переходов');
 $post->content = $ank->conversions;
 //endregion
+
 //region Дата регистрации
 $post = $listing->post();
 $post->title = __('Дата регистрации');
 $post->content = date('d-m-Y', $ank->reg_date);
 //endregion
+
 //region По приглашению от...
 $q = mysql_query("SELECT `id_user` FROM `invations` WHERE `id_invite` = '$ank->id' LIMIT 1");
 if (mysql_num_rows($q)) {
@@ -376,7 +379,6 @@ $listing->display();
 
 if ($user->group && $ank->id != $user->id) {
     $doc->act(__('Написать сообщение'), "my.mail.php?id={$ank->id}");
-
     if ($user->group > $ank->group) {
         $doc->act(__('Доступные действия'), "/dpanel/user.actions.php?id={$ank->id}");
     }

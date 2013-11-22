@@ -40,7 +40,6 @@ $doc->keywords[] = $theme['category_name'];
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group'"), 0); // количество сообщений  теме
-$pages->this_page(); // получаем текущую страницу
 
 if ($theme['id_vote']) {
     $q = mysql_query("SELECT * FROM `forum_vote` WHERE `id` = '$theme[id_vote]' AND `group_view` <= '$user->group'");
@@ -102,7 +101,7 @@ foreach ($messages AS $message) {
         $post->action('quote', "message.php?id_message=$message[id]&amp;quote"); // цитирование
     }
 
-    if ($user->group >= $message['group_edit']) {
+    if ($user->group > $ank->group || $user->group == groups::max()) {
         if ($theme['group_show'] <= 1) {
             if ($message['group_show'] <= 1) {
                 $post->action('hide', "message.edit.php?id=$message[id]&amp;return=" . URL . "&amp;act=hide&amp;" . passgen()); // скрытие
@@ -151,7 +150,7 @@ foreach ($messages AS $message) {
             $file = $listing_files->post();
             $file->title = for_value($files[$i]->runame);
             $file->url = "/files" . $files[$i]->getPath() . ".htm?order=time_add:asc";
-            $file->content = output_text($files[$i]->properties);
+            $file->content[] = $files[$i]->properties;
             $file->icon($files[$i]->icon());
             $file->image = $files[$i]->image();
         }

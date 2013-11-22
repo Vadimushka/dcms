@@ -31,7 +31,7 @@ $autor = new user((int)$message['id_user']);
 $access_edit = false;
 $edit_time = $message['time'] - TIME + 600;
 
-if ($user->group >= $message['group_edit'])
+if ($user->group > $autor->group || $user->group == groups::max())
     $access_edit = true;
 elseif ($user->id == $autor->id && $edit_time > 0) {
     $access_edit = true;

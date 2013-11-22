@@ -16,7 +16,7 @@ WHERE `th`.`id_autor` = '{$ank->id}'
 AND `th`.`group_show` <= '{$user->group}'
 AND `tp`.`group_show` <= '{$user->group}'
 AND `cat`.`group_show` <= '{$user->group}'
-AND `msg`.`group_show` <= '{$user->group}'"), 0); // количество категорий форума
+AND `msg`.`group_show` <= '{$user->group}'"), 0);
 
 $q = mysql_query("SELECT `th`.* ,
         `tp`.`name` AS `topic_name`,

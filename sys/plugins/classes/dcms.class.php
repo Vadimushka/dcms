@@ -17,6 +17,8 @@
  * @property bool new_time_as_date
  * @property string browser_type Тип браузера
  * @property bool donate_message флаг, указывающий на то, что сообщение о пожертвовании отправлено
+ * @property bool censure Проверка на мат
+ * @property mixed forum_files_upload_size
  */
 class dcms {
 

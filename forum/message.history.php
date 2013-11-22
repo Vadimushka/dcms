@@ -8,7 +8,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора сообщения'));
     exit;
 }
-$id_theme = (int) $_GET['id'];
+$id_theme = (int)$_GET['id'];
 
 $q = mysql_query("SELECT * FROM `forum_messages` WHERE `id` = '$id_theme' AND `group_show` <= '$user->group'");
 
@@ -28,9 +28,6 @@ if ($message['id_user'] != $user->id && $ank2->group >= $user->group) {
 $listing = new listing();
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_history` WHERE `id_message` = '$message[id]'"), 0); // количество сообщений  теме
-$pages->this_page(); // получаем текущую страницу
-
-
 
 $ank = new user($message['id_user']);
 
@@ -45,14 +42,14 @@ if ($message['edit_id_user']) {
     $post->bottom .= text::output_text(' ([user]' . $message['edit_id_user'] . '[/user])');
 }
 
-$q = mysql_query("SELECT * FROM `forum_history` WHERE `id_message` = '$message[id]' ORDER BY `id` DESC LIMIT ".$pages->limit);
+$q = mysql_query("SELECT * FROM `forum_history` WHERE `id_message` = '$message[id]' ORDER BY `id` DESC LIMIT " . $pages->limit);
 
 while ($messages = mysql_fetch_assoc($q)) {
     $post = $listing->post();
     $ank = new user($message['id_user']);
     $post->title = $ank->nick();
     $post->icon($ank->icon());
-    $post->content = text::output_text($messages['message']);
+    $post->content[] = $messages['message'];
     $post->time = vremja($messages['time']);
 
     if ($message['id_user'] != $messages['id_user']) {
@@ -60,7 +57,6 @@ while ($messages = mysql_fetch_assoc($q)) {
     }
 }
 $listing->display(__('Сообщения отсутствуют'));
-
 
 $pages->display('?id=' . $message['id'] . '&amp;' . (isset($_GET['return']) ? 'return=' . urlencode($_GET['return']) . '&amp;' : null)); // вывод страниц
 
