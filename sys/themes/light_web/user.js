@@ -128,68 +128,73 @@ function onTextareaBBcodeClickSPOILER(event) {
     DCMS.Dom.inputInsert(textarea, '[spoiler title="' + LANG.bbcode_spoiler + '"]', '[/spoiler]');
 }
 
+function onTextareaBBcodeClickSmiles(event){
+    var domSmiles = this.parentNode.parentNode.querySelector(".bbcode_smiles");
+    DCMS.Dom.setStyle(domSmiles, 'display', DCMS.Dom.getComputedValue(domSmiles, 'display') == 'none' ? 'block' : 'none');
+}
+
 function onTextareaBBcodeClickок(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*ок*', '');
 }
 
 function onTextareaBBcodeClicknono(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*нет*', '');
 }
 
 function onTextareaBBcodeClickbeee(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*обида*', '');
 }
 
 function onTextareaBBcodeClickmosking(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*mosking*', ' ');
 }
 
 function onTextareaBBcodeClickrtfm(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*rtfm*', ' ');
 }
 
 function onTextareaBBcodeClickbye(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*улыбка*', ' ');
 }
 
 function onTextareaBBcodeClickcrazy(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*скучно*', ' ');
 }
 
 function onTextareaBBcodeClickdirol(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*coffee*', ' ');
 }
 
 function onTextareaBBcodeClickfacepalm(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*facepalm*', ' ');
 }
 
 function onTextareaBBcodeClicklol(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*подзатыльник*', ' ');
 }
 
 function onTextareaBBcodeClickdrinks(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*пиво*', ' ');
 }
 
 function onTextareaBBcodeClickdntknw(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*незнаю*', ' ');
 }
 
 function onTextareaBBcodeClickhelp(event) {
-    var textarea = this.parentNode.parentNode.lastChild;
+    var textarea = this.parentNode.parentNode.parentNode.lastChild;
     DCMS.Dom.inputInsert(textarea, '*help*', ' ');
 }
 
@@ -231,48 +236,49 @@ function textareaModify() {
         var node_bb_hide = DCMS.Dom.createFromHtml('<span title="' + LANG.bbcode_hide + '">HIDE</span>', '', node_bbcode);
         Event.add(node_bb_hide, 'click', onTextareaBBcodeClickHIDE);
 
+        var node_bb_smiles = DCMS.Dom.createFromHtml('<span title="' + LANG.smiles + '">' + LANG.smiles + '</span>', '', node_bbcode);
+        Event.add(node_bb_smiles, 'click', onTextareaBBcodeClickSmiles);
 
-        var node_bbcode = DCMS.Dom.create('div', 'textarea_bbcode', node_txt_wrapper, textarea);
+        var smiles_node = DCMS.Dom.create('div', 'bbcode_smiles', node_bbcode);
 
-
-        var node_bb_ок = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/ok.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_ок = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/ok.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_ок, 'click', onTextareaBBcodeClickок);
 
-        var node_bb_nono = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/nono.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_nono = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/nono.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_nono, 'click', onTextareaBBcodeClicknono);
 
-        var node_bb_beee = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/beee.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_beee = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/beee.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_beee, 'click', onTextareaBBcodeClickbeee);
 
-        var node_bb_mosking = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/mosking.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_mosking = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/mosking.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_mosking, 'click', onTextareaBBcodeClickmosking);
 
-        var node_bb_rtfm = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/rtfm.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_rtfm = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/rtfm.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_rtfm, 'click', onTextareaBBcodeClickrtfm);
 
 
-        var node_bb_bye = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/smile.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_bye = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/smile.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_bye, 'click', onTextareaBBcodeClickbye);
 
-        var node_bb_crazy = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/boredom.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_crazy = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/boredom.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_crazy, 'click', onTextareaBBcodeClickcrazy);
 
-        var node_bb_dirol = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/coffee.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_dirol = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/coffee.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_dirol, 'click', onTextareaBBcodeClickdirol);
 
-        var node_bb_facepalm = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/facepalm.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_facepalm = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/facepalm.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_facepalm, 'click', onTextareaBBcodeClickfacepalm);
 
-        var node_bb_lol = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/punish.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_lol = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/punish.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_lol, 'click', onTextareaBBcodeClicklol);
 
-        var node_bb_drinks = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/drinks.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_drinks = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/drinks.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_drinks, 'click', onTextareaBBcodeClickdrinks);
 
-        var node_bb_dntknw = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/dntknw.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_dntknw = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/dntknw.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_dntknw, 'click', onTextareaBBcodeClickdntknw);
 
-        var node_bb_help = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/help.gif" alt="" title="" />', '', node_bbcode);
+        var node_bb_help = DCMS.Dom.createFromHtml('<img class="bbcode_smile" src="/sys/images/smiles/help.gif" alt="" title="" />', '', smiles_node);
         Event.add(node_bb_help, 'click', onTextareaBBcodeClickhelp);
     }
 }

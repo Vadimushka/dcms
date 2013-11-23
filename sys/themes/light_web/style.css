@@ -233,6 +233,10 @@ html, body, #main{
     border-color: #A8A8A8;
 }
 
+.bbcode_smiles{
+    display: none;
+}
+
 .bbcode_smile{
     display: inline-block;
     vertical-align: bottom;
