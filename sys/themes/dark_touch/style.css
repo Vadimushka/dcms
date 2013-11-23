@@ -409,6 +409,9 @@ a.post:hover{
     font-weight: bold;
 }
 
+.DCMS_youtube iframe{
+    height: 240px;
+}
 
 /* Голосования */
 div.votes {

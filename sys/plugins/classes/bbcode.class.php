@@ -3,7 +3,8 @@
 /**
  * Обработчик BBCODE
  */
-class bbcode {
+class bbcode
+{
     /*
       Описания тегов. Каждое описание - масив свойств:
       'handler'  - название функции - обработчика тегов.
@@ -118,6 +119,15 @@ class bbcode {
             'permission_top_level' => true,
             'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'vremja', 'no', 'php', 'hide', 'spoiler', 'color', 'red', 'green', 'blue', 'yellow', 'localimg', 'gradient')
         ),
+        'youtube' => array(
+            'handler' => 'youtube_2html',
+            'is_close' => false,
+            'lbr' => 0,
+            'rbr' => 0,
+            'ends' => array(),
+            'permission_top_level' => true,
+            'children' => array()
+        ),
         'localimg' => array(
             'handler' => 'img_2html',
             'is_close' => false,
@@ -221,7 +231,8 @@ class bbcode {
     var $mnemonics = array();
     var $syntax = array();
 
-    function get_array_of_tokens($code) {
+    function get_array_of_tokens($code)
+    {
         $length = strlen($code);
         $tokens = array();
         $token_key = -1;
@@ -296,32 +307,33 @@ class bbcode {
         return $tokens;
     }
 
-    function __construct($code) {
+    function __construct($code)
+    {
 
         $finite_automaton = array(
             // Предыдущие |   Состояния для текущих событий (лексем)   |
             //  состояния |  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |
             0 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
-            , 1 => array(2, 3, 3, 3, 3, 4, 3, 3, 5)
-            , 2 => array(2, 3, 3, 3, 3, 4, 3, 3, 5)
-            , 3 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
-            , 4 => array(2, 6, 3, 3, 3, 3, 3, 3, 7)
-            , 5 => array(2, 6, 3, 3, 8, 9, 10, 3, 3)
-            , 6 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
-            , 7 => array(2, 6, 3, 3, 3, 3, 3, 3, 3)
-            , 8 => array(13, 13, 11, 12, 13, 13, 14, 13, 13)
-            , 9 => array(2, 6, 3, 3, 3, 3, 3, 3, 3)
-            , 10 => array(2, 6, 3, 3, 8, 9, 3, 15, 15)
-            , 11 => array(16, 16, 17, 16, 16, 16, 16, 16, 16)
-            , 12 => array(18, 18, 18, 17, 18, 18, 18, 18, 18)
-            , 13 => array(19, 6, 19, 19, 19, 19, 17, 19, 19)
-            , 14 => array(2, 3, 11, 12, 13, 13, 3, 13, 13)
-            , 15 => array(2, 6, 3, 3, 8, 9, 10, 3, 3)
-            , 16 => array(16, 16, 17, 16, 16, 16, 16, 16, 16)
-            , 17 => array(2, 6, 3, 3, 3, 9, 20, 15, 15)
-            , 18 => array(18, 18, 18, 17, 18, 18, 18, 18, 18)
-            , 19 => array(19, 6, 19, 19, 19, 19, 20, 19, 19)
-            , 20 => array(2, 6, 3, 3, 3, 9, 3, 15, 15)
+        , 1 => array(2, 3, 3, 3, 3, 4, 3, 3, 5)
+        , 2 => array(2, 3, 3, 3, 3, 4, 3, 3, 5)
+        , 3 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
+        , 4 => array(2, 6, 3, 3, 3, 3, 3, 3, 7)
+        , 5 => array(2, 6, 3, 3, 8, 9, 10, 3, 3)
+        , 6 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
+        , 7 => array(2, 6, 3, 3, 3, 3, 3, 3, 3)
+        , 8 => array(13, 13, 11, 12, 13, 13, 14, 13, 13)
+        , 9 => array(2, 6, 3, 3, 3, 3, 3, 3, 3)
+        , 10 => array(2, 6, 3, 3, 8, 9, 3, 15, 15)
+        , 11 => array(16, 16, 17, 16, 16, 16, 16, 16, 16)
+        , 12 => array(18, 18, 18, 17, 18, 18, 18, 18, 18)
+        , 13 => array(19, 6, 19, 19, 19, 19, 17, 19, 19)
+        , 14 => array(2, 3, 11, 12, 13, 13, 3, 13, 13)
+        , 15 => array(2, 6, 3, 3, 8, 9, 10, 3, 3)
+        , 16 => array(16, 16, 17, 16, 16, 16, 16, 16, 16)
+        , 17 => array(2, 6, 3, 3, 3, 9, 20, 15, 15)
+        , 18 => array(18, 18, 18, 17, 18, 18, 18, 18, 18)
+        , 19 => array(19, 6, 19, 19, 19, 19, 20, 19, 19)
+        , 20 => array(2, 6, 3, 3, 3, 9, 3, 15, 15)
         );
         // Получаем массив лексем:
         $array_of_tokens = $this->get_array_of_tokens($code);
@@ -488,7 +500,8 @@ class bbcode {
     }
 
     // Функция возвращает нормализует и возвращает дерево элементов
-    function get_tree_of_elems() {
+    function get_tree_of_elems()
+    {
         /* Первый этап нормализации: превращаем $this -> syntax в правильную
           скобочную структуру */
         $structure = array();
@@ -638,7 +651,7 @@ class bbcode {
                     $info = $this->info_about_tags[$val['name']];
                     $children = $is_open ? $this->info_about_tags[current($open_tags)]['children'] : array();
                     $not_normal = !$level && !$info['permission_top_level']
-                            || $is_open && !in_array($val['name'], $children);
+                        || $is_open && !in_array($val['name'], $children);
                     if ($not_normal) {
                         $type = (-1 < $normal_key) ? $normalized[$normal_key]['type'] : false;
                         if ('text' == $type) {
@@ -661,7 +674,7 @@ class bbcode {
                     $info = $this->info_about_tags[$val['name']];
                     $children = $is_open ? $this->info_about_tags[current($open_tags)]['children'] : array();
                     $not_normal = !$level && !$info['permission_top_level']
-                            || $is_open && !in_array($val['name'], $children);
+                        || $is_open && !in_array($val['name'], $children);
                     if ($not_normal) {
                         $not_tags[$val['level']] = $val['name'];
                         $type = (-1 < $normal_key) ? $normalized[$normal_key]['type'] : false;
@@ -683,7 +696,7 @@ class bbcode {
                     break;
                 case 'close':
                     $not_normal = isset($not_tags[$val['level']])
-                            && $not_tags[$val['level']] = $val['name'];
+                        && $not_tags[$val['level']] = $val['name'];
                     if ($not_normal) {
                         unset($not_tags[$val['level']]);
                         $type = (-1 < $normal_key) ? $normalized[$normal_key]['type'] : false;
@@ -769,7 +782,8 @@ class bbcode {
       "автоматические ссылки".
      */
 
-    function insert_smiles($text) {
+    function insert_smiles($text)
+    {
 
 
         $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
@@ -785,7 +799,8 @@ class bbcode {
     }
 
     // Функция конвертит дерево элементов BBCode в HTML и возвращает результат
-    function get_html($tree_of_elems = false) {
+    function get_html($tree_of_elems = false)
+    {
         if (!is_array($tree_of_elems)) {
             $tree_of_elems = $this->get_tree_of_elems();
         }
@@ -818,57 +833,75 @@ class bbcode {
         return $result;
     }
 
-    function nobb_2html($elem) {
+    function nobb_2html($elem)
+    {
         return $this->get_html($elem['val']);
     }
 
-    function u_2html($elem) {
+    function youtube_2html($elem)
+    {
+        return '<div class="DCMS_youtube"><iframe src="http://www.youtube.com/embed/' . $this->get_html($elem['val']) . '" frameborder="0"></iframe></div>';
+    }
+
+
+    function u_2html($elem)
+    {
         return '<span style="text-decoration:underline">' . $this->get_html($elem['val']) . '</span>';
     }
 
-    function i_2html($elem) {
+    function i_2html($elem)
+    {
         return '<span style="font-style:italic">' . $this->get_html($elem['val']) . '</span>';
     }
 
-    function b_2html($elem) {
+    function b_2html($elem)
+    {
         return '<span style="font-weight:bolder">' . $this->get_html($elem['val']) . '</span>';
     }
 
-    function no_2html($elem) {
+    function no_2html($elem)
+    {
         return '<span style="text-decoration:line-through">' . $this->get_html($elem['val']) . '</span>';
     }
 
-    function mark_2html($elem) {
+    function mark_2html($elem)
+    {
         return '<span class="mark">' . $this->get_html($elem['val']) . '</span>';
     }
 
-    function big_2html($elem) {
+    function big_2html($elem)
+    {
         return '<span style="font-size:larger">' . $this->get_html($elem['val']) . '</span>';
     }
 
-    function small_2html($elem) {
+    function small_2html($elem)
+    {
         return '<span style="font-size:smaller">' . $this->get_html($elem['val']) . '</span>';
     }
 
-    function vremja_2html($elem) {
+    function vremja_2html($elem)
+    {
         return vremja($elem['val'][0]['str']);
         //return '<span style="font-size:smaller">' . $this->get_html($elem['val']) . '</span>';
     }
 
-    function user_2html($elem) {
+    function user_2html($elem)
+    {
 
         //return '<pre>'.print_r($elem,1).'</pre>';
 
-        $ank = new user((int) $elem['val'][0]['str']);
+        $ank = new user((int)$elem['val'][0]['str']);
         return '<a href="/profile.view.php?id=' . $ank->id . '">' . $ank->nick() . '</a>';
     }
 
-    function smile_2html($elem) {
+    function smile_2html($elem)
+    {
         return smiles::bbcode($elem['val'][0]['str']);
         // return $arr[0];
     }
 
-    function spoiler_2html($elem) {
+    function spoiler_2html($elem)
+    {
         //return '<pre>'.print_r($elem,1).'</pre>';
 
         if (!empty($elem['attrib']['title'])) {
@@ -885,7 +918,8 @@ class bbcode {
         // return $arr[0];
     }
 
-    function url_2html($elem) {
+    function url_2html($elem)
+    {
 
         if (empty($elem['attrib']['url']) || empty($elem['val'][0]['str'])) {
             return false;
@@ -908,9 +942,6 @@ class bbcode {
 
         if (preg_match('#://#', $aturl)) {
             // внешняя ссылка
-
-
-
             $url = 'http://' . $_SERVER ['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($aturl);
             $new_window = @$dcms->browser_type == 'web' ? ' target="_blank"' : '';
             if ($parse_url = @parse_url($aturl)) {
@@ -926,7 +957,6 @@ class bbcode {
                 }
             }
 
-
             return '<a' . $new_window . ' href="' . $url . '">' . for_value($text) . '</a>';
         } else {
             // внутренняя 
@@ -935,17 +965,18 @@ class bbcode {
         }
     }
 
-    function quote_2html($elem) {
+    function quote_2html($elem)
+    {
         if (!empty($elem['attrib']['quote'])) {
             if (preg_match('#^([0-9]+):([0-9]+):(.+)$#ui', $elem['attrib']['quote'], $log)) {
-                $time = (int) $log [1];
-                $ank = new user((int) $log[2]);
+                $time = (int)$log [1];
+                $ank = new user((int)$log[2]);
             } else {
                 return '<div class="DCMS_quote">' . $this->get_html($elem['val']) . '</div>';
             }
         } elseif (!empty($elem['attrib']['time']) && !empty($elem['attrib']['id_user'])) {
-            $time = (int) $elem['attrib']['time'];
-            $ank = new user((int) $elem['attrib']['id_user']);
+            $time = (int)$elem['attrib']['time'];
+            $ank = new user((int)$elem['attrib']['id_user']);
         } else {
             return '<div class="DCMS_quote">' . $this->get_html($elem['val']) . '</div>';
         }
@@ -959,7 +990,8 @@ class bbcode {
         return '<div class="DCMS_quote">' . $title . $this->get_html($elem['val']) . '</div>';
     }
 
-    function img_2html($elem) {
+    function img_2html($elem)
+    {
         static $design = false;
         if ($design === false)
             $design = new design ();
@@ -983,7 +1015,8 @@ class bbcode {
         }
     }
 
-    function php_2html($elem) {
+    function php_2html($elem)
+    {
         $code = "<?php\n" . trim(preg_replace('#^\<\?(php)?|\?\>$#i', '', @$elem['val'][0]['str'])) . "\n?>";
         $code = highlight_string($code, true);
         $code = preg_replace('#<code>(.*?)</code>#si', '<div class="DCMS_phpcode">\\1</div>', $code);
@@ -991,7 +1024,8 @@ class bbcode {
         return $code;
     }
 
-    function color_2html($elem) {
+    function color_2html($elem)
+    {
 
         // название тега является цветом (так как сама по себе данная функция вызваться не может, дополнительную проверку делать не будем.)
         if ($elem['name'] !== 'color') {
@@ -1012,7 +1046,8 @@ class bbcode {
         return '[color="' . for_value($elem['attrib']['color']) . '"]' . $this->get_html($elem['val']) . '[/color]';
     }
 
-    function gradient_2html($elem) {
+    function gradient_2html($elem)
+    {
 
         if (empty($elem['val'][0]['str'])) {
             return false;

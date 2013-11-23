@@ -259,6 +259,10 @@ table.links {
     font-weight: bold;
 }
 
+.DCMS_youtube iframe{
+    height: 240px;
+}
+
 
 /* Голосования */
 div.vote {
