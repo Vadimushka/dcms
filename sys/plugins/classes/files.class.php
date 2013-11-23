@@ -291,6 +291,28 @@ class files {
     }
 
     /**
+     * Возвращает список файлов по id пользователя,
+     * сортирует по дате добавления файла
+     * @param $id_user
+     * @return \files_file[][]
+     */
+    public function getFilesByUserId($id_user) {
+        global $user;
+        $content = array('dirs' => array(), 'files' => array());
+        $path_rel_ru = convert::to_utf8($this->path_rel);
+        $q = mysql_query("SELECT * FROM `files_cache` WHERE `group_show` <= '" . intval($user->group) . "' AND `path_file_rel` LIKE '" . my_esc($path_rel_ru) . "/%' AND `path_file_rel` NOT LIKE '" . my_esc($path_rel_ru) . "/.%' ORDER BY `time_add` DESC");
+        while ($files = mysql_fetch_assoc($q)) {
+            $abs_path = FILES . convert::of_utf8($files['path_file_rel']);
+            $pathinfo = pathinfo($abs_path);
+            $file = new files_file($pathinfo ['dirname'], $pathinfo ['basename']);
+            if (!is_file($abs_path) || $file->id_user != $id_user)
+                continue;
+            $content ['files'] [] = $file;
+        }
+        return $content;
+    }
+
+    /**
      * Поиск файлов в данной папке и во всех вложенных папках
      * @global \user $user
      * @param string $search часть имени файла

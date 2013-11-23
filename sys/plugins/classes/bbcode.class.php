@@ -113,8 +113,8 @@ class bbcode
         'spoiler' => array(
             'handler' => 'spoiler_2html',
             'is_close' => false,
-            'lbr' => 0,
-            'rbr' => 0,
+            'lbr' => 1,
+            'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
             'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'vremja', 'no', 'php', 'hide', 'spoiler', 'color', 'red', 'green', 'blue', 'yellow', 'localimg', 'gradient')
@@ -122,8 +122,8 @@ class bbcode
         'youtube' => array(
             'handler' => 'youtube_2html',
             'is_close' => false,
-            'lbr' => 0,
-            'rbr' => 0,
+            'lbr' => 1,
+            'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
             'children' => array()
@@ -131,8 +131,8 @@ class bbcode
         'localimg' => array(
             'handler' => 'img_2html',
             'is_close' => false,
-            'lbr' => 0,
-            'rbr' => 0,
+            'lbr' => 1,
+            'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
             'children' => array()
@@ -149,7 +149,7 @@ class bbcode
         'php' => array(
             'handler' => 'php_2html',
             'is_close' => false,
-            'lbr' => 0,
+            'lbr' => 1,
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
@@ -158,8 +158,8 @@ class bbcode
         'quote' => array(
             'handler' => 'quote_2html',
             'is_close' => false,
-            'lbr' => 0,
-            'rbr' => 0,
+            'lbr' => 1,
+            'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
             'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'vremja', 'no', 'php', 'gradient', 'localimg', 'spoiler')
@@ -1019,7 +1019,7 @@ class bbcode
     {
         $code = "<?php\n" . trim(preg_replace('#^\<\?(php)?|\?\>$#i', '', @$elem['val'][0]['str'])) . "\n?>";
         $code = highlight_string($code, true);
-        $code = preg_replace('#<code>(.*?)</code>#si', '<div class="DCMS_phpcode">\\1</div>', $code);
+        $code = preg_replace('#<code>(.*?)</code>#si', '<div contenteditable="true" disabled="disabled" onclick="return false;" class="DCMS_phpcode">\\1</div>', $code);
         $code = preg_replace("#[\n\r\t]+#", '', $code);
         return $code;
     }
