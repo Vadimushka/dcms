@@ -4,8 +4,11 @@
  * Работа с директориями загруз-центра
  * @property string path_abs Абсолютный путь
  * @property string path_rel Относительный путь
+ * @property string meta_description
+ * @property string meta_keywords
  */
-class files {
+class files
+{
 
     protected $_config_file_name = '.!config.dir.ini'; // название конфиг-файла
     protected $_data = array(); // параметры директории
@@ -17,11 +20,14 @@ class files {
     public $name;
 
     /**
-     * Работа с директорией загруц-центра
+     * Работа с директорией загруз-центра
      * @param string $path_abs Абсолютный путь к папке загруз-центра
      */
-    function __construct($path_abs) {
+    function __construct($path_abs)
+    {
         $path_abs = realpath($path_abs);
+
+        // это все идет через __set в $_data
         $this->type = 'folder'; // тип содержимого для иконки (по-умолчанию: папка)
         $this->runame = convert::to_utf8(basename($path_abs)); // отображаемое название папки
         $this->group_show = 2; // группа пользователей, которой разрешен просмотр папки
@@ -32,15 +38,18 @@ class files {
         $this->description = ''; // описание папки
         $this->time_last = 0; // время последних действий
         $this->sort_default = 'runame::asc'; // сортировка по-умолчанию
+        $this->meta_description = '';
+        $this->meta_keywords = '';
 
         if ($cfg_ini = ini::read($path_abs . '/' . $this->_config_file_name, true)) {
             // загружаем конфиг
-            $this->_data = array_merge($this->_data, (array) @$cfg_ini ['CONFIG']);
-            $this->_screens = array_merge($this->_screens, (array) @$cfg_ini ['SCREENS']);
-            $this->_keys = array_merge($this->_keys, (array) @$cfg_ini ['ADDKEYS']);
+            $this->_data = array_merge($this->_data, (array)@$cfg_ini['CONFIG']);
+            $this->_screens = array_merge($this->_screens, (array)@$cfg_ini['SCREENS']);
+            $this->_keys = array_merge($this->_keys, (array)@$cfg_ini['ADDKEYS']);
         } else {
             $this->time_create = TIME; // время создания
         }
+
         // настоящее имя папки
         $this->name = basename($path_abs);
         // получение путей на основе абсолютного пути
@@ -52,7 +61,8 @@ class files {
      * @param string $url
      * @return boolean|\files_file
      */
-    public function fileImport($url) {
+    public function fileImport($url)
+    {
         if (function_exists('set_time_limit')) {
             set_time_limit(30);
         }
@@ -140,10 +150,11 @@ class files {
      * @param array $files
      * @return \files_file
      */
-    public function filesAdd($files) {
+    public function filesAdd($files)
+    {
         // добавление файлов в папку
         $ok = array();
-        $files = (array) $files;
+        $files = (array)$files;
         foreach ($files as $path => $runame) {
             $name = text::for_filename($runame);
 
@@ -171,7 +182,8 @@ class files {
     /**
      * Очистка кэша листинга директории
      */
-    public function cacheClear() {
+    public function cacheClear()
+    {
         // очистка кэша директории (а также проверка соответствия записей в базе реальным файлам)
         $path_rel_ru = convert::to_utf8($this->path_rel);
         $q = mysql_query("SELECT * FROM `files_cache` WHERE `path_file_rel` LIKE '" . my_esc($path_rel_ru) . "/%'");
@@ -199,7 +211,8 @@ class files {
      * @param string|bool $name
      * @return boolean|\files
      */
-    public function mkdir($runame, $name = false) {
+    public function mkdir($runame, $name = false)
+    {
         // создание папки
         if ($name)
             $name = text::for_filename($name);
@@ -224,17 +237,18 @@ class files {
      * Удаление текущей папки со всем содержимым
      * @return boolean
      */
-    public function delete() {
+    public function delete()
+    {
         // удаление папки со всем содержимым
         // если папки не существует, то и удалять ее не можем.
         if (!is_dir($this->path_abs))
             return false;
         // папки и файлы с точкой являются системными и их случайное удаление крайне нежелательно
-        if ($this->name {0} === '.')
+        if ($this->name{0} === '.')
             return false;
         $od = opendir($this->path_abs);
         while ($rd = readdir($od)) {
-            if ($rd {0} == '.')
+            if ($rd{0} == '.')
                 continue;
 
             if (is_dir($this->path_abs . '/' . $rd)) {
@@ -269,7 +283,8 @@ class files {
      * @global \user $user
      * @return \files_file[][]
      */
-    public function getNewFiles() {
+    public function getNewFiles()
+    {
         $time = NEW_TIME;
         global $user;
         $content = array('dirs' => array(), 'files' => array());
@@ -296,7 +311,8 @@ class files {
      * @param $id_user
      * @return \files_file[][]
      */
-    public function getFilesByUserId($id_user) {
+    public function getFilesByUserId($id_user)
+    {
         global $user;
         $content = array('dirs' => array(), 'files' => array());
         $path_rel_ru = convert::to_utf8($this->path_rel);
@@ -318,7 +334,8 @@ class files {
      * @param string $search часть имени файла
      * @return \files_file[][]
      */
-    protected function _search($search) {
+    protected function _search($search)
+    {
         global $user;
         $content = array('dirs' => array(), 'files' => array());
         $path_rel_ru = convert::to_utf8($this->path_rel);
@@ -344,7 +361,8 @@ class files {
      * @param boolean $is_new считать только новые файлы
      * @return int
      */
-    public function count($is_new = false) {
+    public function count($is_new = false)
+    {
         if ($is_new) {
             $time = NEW_TIME;
         } else {
@@ -352,15 +370,15 @@ class files {
         }
 
         global $user;
-        $group = (int) $user->group;
-        if ($count = cache_counters::get('files.' . $this->path_rel . '.' . (int) $is_new . '.' . $group)) {
+        $group = (int)$user->group;
+        if ($count = cache_counters::get('files.' . $this->path_rel . '.' . (int)$is_new . '.' . $group)) {
             return $count;
         }
 
         $path_rel_ru = convert::to_utf8($this->path_rel);
         $count = mysql_result(mysql_query("SELECT COUNT(*) FROM `files_cache` WHERE `group_show` <= '$group' AND `time_add` > '$time' AND `path_file_rel` LIKE '" . my_esc($path_rel_ru) . "/%' AND `path_file_rel` NOT LIKE '" . my_esc($path_rel_ru) . "/.%'"), 0);
 
-        cache_counters::set('files.' . $this->path_rel . '.' . (int) $is_new . '.' . $group, $count, 600);
+        cache_counters::set('files.' . $this->path_rel . '.' . (int)$is_new . '.' . $group, $count, 600);
         return $count;
     }
 
@@ -368,7 +386,8 @@ class files {
      * Возможные ключи для сортировки файлов в данной папке
      * @return array
      */
-    public function getKeys() {
+    public function getKeys()
+    {
         // получение возможных ключей для сортировки папки
         $keys = array();
         $keys ['runame:asc'] = __('Название');
@@ -382,7 +401,8 @@ class files {
      * Содержимое данной директории
      * @return \files_file
      */
-    protected function _getListFull() {
+    protected function _getListFull()
+    {
 
         if ($content = cache::get('files.' . $this->path_rel)) {
             return $content;
@@ -391,7 +411,7 @@ class files {
         $content = array('dirs' => array(), 'files' => array());
         $od = opendir($this->path_abs);
         while ($rd = readdir($od)) {
-            if ($rd {0} == '.')
+            if ($rd{0} == '.')
                 continue; // все файлы и папки начинающиеся с точки пропускаем
             if (is_dir($this->path_abs . '/' . $rd)) {
                 $content ['dirs'] [] = new files($this->path_abs . '/' . $rd);
@@ -414,7 +434,8 @@ class files {
      * @param type $f2
      * @return type
      */
-    function _sort_cmp_dir($f1, $f2) {
+    function _sort_cmp_dir($f1, $f2)
+    {
         if ($f1->position == $f2->position) {
             return strcmp($f1->runame, $f2->runame);
         }
@@ -427,12 +448,13 @@ class files {
      * @param type $f2
      * @return int
      */
-    protected function _sort_cmp_files($f1, $f2) {
+    protected function _sort_cmp_files($f1, $f2)
+    {
         $sn = $this->user_sort;
         if ($f1->$sn == $f2->$sn) {
             return 0;
         }
-        return ($f1->$sn < $f2->$sn) ? - 1 : 1;
+        return ($f1->$sn < $f2->$sn) ? -1 : 1;
     }
 
     /**
@@ -441,13 +463,14 @@ class files {
      * @param type $sort
      * @return type
      */
-    protected function _listSort($list, $sort) {
+    protected function _listSort($list, $sort)
+    {
         usort($list ['dirs'], array($this, '_sort_cmp_dir'));
 
         if (!$sort) {
             $sort = $this->sort_default;
         }
-        @list ($this->user_sort, $order ) = @explode(':', $sort);
+        @list ($this->user_sort, $order) = @explode(':', $sort);
         usort($list ['files'], array($this, '_sort_cmp_files'));
         if ($order == 'desc') {
             $list ['files'] = array_reverse($list ['files']);
@@ -462,7 +485,8 @@ class files {
      * @param type $list
      * @return type
      */
-    protected function _listFilter($list) {
+    protected function _listFilter($list)
+    {
         global $user;
         $list2 = array();
         $c = count($list);
@@ -478,7 +502,8 @@ class files {
      * @param string $name Имя подпапки
      * @return boolean
      */
-    public function is_dir($name) {
+    public function is_dir($name)
+    {
         $list = $this->getList();
 
         foreach ($list ['dirs'] as $dir) {
@@ -494,7 +519,8 @@ class files {
      * @param string $name Имя файла
      * @return boolean
      */
-    public function is_file($name) {
+    public function is_file($name)
+    {
         $list = $this->getList();
 
         foreach ($list ['files'] as $file) {
@@ -507,11 +533,12 @@ class files {
 
     /**
      * Возвращает содержимое директории
-     * @param string $sort Ключ сортировки (список ключей можно получить методом getKeys)
-     * @param string $search Фильтр по имени файла
+     * @param bool|string $sort Ключ сортировки (список ключей можно получить методом getKeys)
+     * @param bool|string $search Фильтр по имени файла
      * @return array
      */
-    public function getList($sort = false, $search = false) {
+    public function getList($sort = false, $search = false)
+    {
         if ($search) {
             $list = $this->_search($search); // получение списка файлов по запросу
         } else {
@@ -528,7 +555,8 @@ class files {
      * Путь директории на русском языке
      * @return string
      */
-    public function getPathRu() {
+    public function getPathRu()
+    {
         $return = array();
         $all_path = array();
         if ($this->path_rel) {
@@ -560,7 +588,8 @@ class files {
      * Получение пути к папке для ссылки
      * @return type
      */
-    public function getPath() {
+    public function getPath()
+    {
         $path_rel = preg_split('#/+#', $this->path_rel);
         foreach ($path_rel as $key => $value) {
             $path_rel [$key] = urlencode($value);
@@ -572,7 +601,8 @@ class files {
      * Список скриншотов (относительные пути)
      * @return array
      */
-    public function getScreens() {
+    public function getScreens()
+    {
         // получение скриншотов папки
         $screens = array();
         foreach ($this->_screens as $key => $value) {
@@ -588,7 +618,8 @@ class files {
      * @param int $k максимальное кол-во путей
      * @return array [path, runame]
      */
-    public function ret($k = 5) {
+    public function ret($k = 5)
+    {
         // вывод массива путей для возврата
         global $user;
         $return = array();
@@ -628,7 +659,8 @@ class files {
      * Иконка папки
      * @return string
      */
-    public function icon() {
+    public function icon()
+    {
         return $this->type;
     }
 
@@ -637,7 +669,8 @@ class files {
      * @param string $new_path_abs абсолютный путь к папке в загруз-центре
      * @return boolean
      */
-    public function move($new_path_abs) {
+    public function move($new_path_abs)
+    {
         // перемещение папки
         $new_path_abs = filesystem::unixpath($new_path_abs);
         // если новое расположение выходит за рамки Папки загрузок
@@ -663,7 +696,8 @@ class files {
         return true;
     }
 
-    protected function _setPathes($path_dir_abs) {
+    protected function _setPathes($path_dir_abs)
+    {
         // установка путей
         // полный путь к папке
         $this->path_abs = filesystem::unixpath($path_dir_abs);
@@ -677,9 +711,10 @@ class files {
      * @param string $realname Реально имя папки на сервере
      * @return boolean
      */
-    public function rename($runame, $realname) {
+    public function rename($runame, $realname)
+    {
         // переименование папки
-        if ($this->path_rel && $this->name {0} !== '.') {
+        if ($this->path_rel && $this->name{0} !== '.') {
             $path_new = preg_replace('#[^\/\\\]+$#u', $realname, $this->path_rel);
 
             if (!@rename($this->path_abs, FILES . $path_new))
@@ -705,7 +740,8 @@ class files {
      * @param string|bool $exclude Абсолютный путь, который будет исключен из перебора
      * @return \files[]
      */
-    public function getPathesRecurse($exclude = false) {
+    public function getPathesRecurse($exclude = false)
+    {
         // получение всех объектов папок (рекурсивно)
         $dirs = array();
         $od = opendir($this->path_abs);
@@ -736,10 +772,11 @@ class files {
      * данный параметр будет рекурсивно применен ко всем вложенным объектам
      * @param int $group_show
      */
-    public function setGroupShowRecurse($group_show) {
+    public function setGroupShowRecurse($group_show)
+    {
         $od = @opendir($this->path_abs);
         while ($rd = @readdir($od)) {
-            if ($rd {0} == '.')
+            if ($rd{0} == '.')
                 continue;
             if (is_dir($this->path_abs . '/' . $rd)) {
                 if (function_exists('set_time_limit'))
@@ -756,19 +793,22 @@ class files {
         $this->group_show = $group_show;
     }
 
-    function __get($n) {
+    function __get($n)
+    {
         if (array_key_exists($n, $this->_data))
             return $this->_data [$n];
         else
             return false;
     }
 
-    function __set($n, $v) {
+    function __set($n, $v)
+    {
         $this->_data [$n] = $v;
         $this->_need_save = true;
     }
 
-    function __destruct() {
+    function __destruct()
+    {
         if ($this->_need_save) {
             $this->time_last = TIME; // время последних действий
             if ($this->path_rel === $this->path_abs) /// !! пишет куда попало

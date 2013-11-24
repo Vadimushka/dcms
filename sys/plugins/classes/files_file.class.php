@@ -55,6 +55,9 @@ class files_file
         $this->_data['rating'] = 0; // рейтинг файла
         $this->_data['rating_count'] = 0; // кол-во проголосовавших
         $this->_data['comments'] = 0; // кол-во комментариев
+        $this->_data['meta_description'] = '';
+        $this->_data['meta_keywords'] = '';
+
         if ($cfg_ini = ini::read($path_dir_abs . '/.' . $filename . '.ini', true)) {
             // загружаем конфиг
             $this->_data = array_merge($this->_data, (array)@$cfg_ini['CONFIG']);

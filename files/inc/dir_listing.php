@@ -1,5 +1,5 @@
 <?php
-
+// TODO: избавиться от Smarty
 defined('DCMS') or die();
 $dir = new files($abs_path);
 
@@ -11,6 +11,8 @@ $access_write = $dir->group_write <= $user->group || ($dir->id_user && $user->id
 $access_edit = $dir->group_edit <= $user->group;
 
 $doc->title = $dir->runame;
+$doc->description = $dir->meta_description;
+$doc->keywords = $dir->meta_keywords ? explode(',', $dir->meta_keywords) : '';
 
 if ($access_write || $access_edit)
     include H . '/files/inc/dir_act.php';
@@ -25,7 +27,6 @@ if (!empty($_GET ['order']) && isset($order_keys [$_GET ['order']])) {
 if ($screens = $dir->getScreens()) {
 
 }
-
 
 $search = false;
 if (!empty($_GET ['search']))
