@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id'];
+$id_theme = (int)$_GET['id'];
 $q = mysql_query("SELECT `forum_themes`.* , `forum_categories`.`name` AS `category_name` , `forum_topics`.`name` AS `topic_name`
 FROM `forum_themes`
 LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_themes`.`id_category`
@@ -33,7 +33,8 @@ if ($user->group) {
 
 $doc->title .= ' - ' . $theme['name'];
 
-$doc->description = $theme['name'];
+$doc->description = __('Форум') . ' - ' . $theme['name'];
+$doc->keywords[] = __('Форум');
 $doc->keywords[] = $theme['name'];
 $doc->keywords[] = $theme['topic_name'];
 $doc->keywords[] = $theme['category_name'];
@@ -51,7 +52,7 @@ if ($theme['id_vote']) {
         $vote_accept = !@mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_vote_votes` WHERE `id_vote` = '$theme[id_vote]' AND `id_user` = '$user->id'"), 0);
         if (!$vote['active'])
             $vote_accept = false;
-        $q = mysql_query("SELECT `vote`, COUNT(*) as `count` FROM `forum_vote_votes` WHERE `id_vote` = '$theme[id_vote]' GROUP BY `vote`");
+        $q = mysql_query("SELECT `vote`, COUNT(*) AS `count` FROM `forum_vote_votes` WHERE `id_vote` = '$theme[id_vote]' GROUP BY `vote`");
         $countets = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0);
         while ($r = mysql_fetch_assoc($q)) {
             $countets[$r['vote']] = $r['count'];
@@ -64,7 +65,7 @@ if ($theme['id_vote']) {
         }
 
         if (!empty($_GET['vote']) && $user->group >= $vote['group_vote'] && $vote_accept) {
-            $vote_add = (int) $_GET['vote'];
+            $vote_add = (int)$_GET['vote'];
             if ($vote['v' . $vote_add]) {
                 mysql_query("INSERT INTO `forum_vote_votes` (`id_vote`, `id_theme`, `id_user`, `vote`) VALUES ('$vote[id]','$theme[id]', '$user->id', '$vote_add')");
                 $doc->msg(__('Ваш голос успешно засчитан'));
@@ -94,7 +95,7 @@ foreach ($messages AS $message) {
     $post = $listing->post();
 
 
-    $ank = new user((int) $message['id_user']);
+    $ank = new user((int)$message['id_user']);
 
 
     if ($user->group) {
@@ -119,10 +120,10 @@ foreach ($messages AS $message) {
 
     if ($ank->group <= $user->group && $user->id != $ank->id) {
         if ($user->group >= 2)
-        // бан
+            // бан
             $post->action('complaint', "/dpanel/user.ban.php?id_ank=$message[id_user]&amp;return=" . URL . "&amp;link=" . urlencode("/forum/message.php?id_message=$message[id]"));
         else
-        // жалоба на сообщение
+            // жалоба на сообщение
             $post->action('complaint', "/complaint.php?id=$message[id_user]&amp;return=" . URL . "&amp;link=" . urlencode("/forum/message.php?id_message=$message[id]"));
     }
 
@@ -144,7 +145,7 @@ foreach ($messages AS $message) {
         $listing_files = new listing();
         $dir = new files($post_dir_path);
         $content = $dir->getList('time_add:asc');
-        $files = &$content['files'];
+        $files = & $content['files'];
         $count = count($files);
         for ($i = 0; $i < $count; $i++) {
             $file = $listing_files->post();

@@ -784,14 +784,9 @@ class bbcode
 
     function insert_smiles($text)
     {
-
-
         $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-
-
         $text = nl2br($text);
         //$text = str_replace('  ', '&nbsp;&nbsp;', $text);
-
         foreach ($this->mnemonics as $mnemonic => $value) {
             $text = str_replace($mnemonic, $value, $text);
         }
@@ -1097,5 +1092,3 @@ class bbcode
     }
 
 }
-
-?>

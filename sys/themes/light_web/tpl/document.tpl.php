@@ -9,11 +9,13 @@
     <script charset="utf-8" src="/sys/javascript/dcms.js" type="text/javascript"></script>
     <script charset="utf-8" src="<?= $path ?>/user.js" type="text/javascript"></script>
     <meta http-equiv="Сontent-Type" content="application/xhtml+xml; charset=utf-8"/>
-    <meta name="generator" content="DCMS <?=$dcms->version?>" />
+    <meta name="generator" content="DCMS <?= $dcms->version ?>"/>
     <? if ($description) { ?>
-        <meta name="description" content="<?= $description ?>" /><? } ?>
+        <meta name="description" content="<?= $description ?>" />
+    <? } ?>
     <? if ($keywords) { ?>
-        <meta name="keywords" content="<?= $keywords ?>" /><? } ?>
+        <meta name="keywords" content="<?= $keywords ?>" />
+    <? } ?>
     <style>
         .hide {
             display: none !important;
