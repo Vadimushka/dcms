@@ -71,10 +71,13 @@ while ($message = mysql_fetch_assoc($q)) {
     $post = $listing->post();
     $post->id = 'chat_post_' . $message['id'];
     $post->url = 'actions.php?id=' . $message['id'];
-    $post->time = vremja($message['time']);
+    $post->time = misc::when($message['time']);
     $post->title = $ank->nick();
-    $post->post = output_text($message['message']);
+    $post->post = text::toOutput($message['message']);
     $post->icon($ank->icon());
+
+    if (!$doc->last_modified)
+        $doc->last_modified = $message['time'];
 }
 $listing->setAjaxUrl('ajax.php?page=' . $pages->this_page);
 $listing->display(__('Сообщения отсутствуют'));

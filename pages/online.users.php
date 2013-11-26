@@ -25,12 +25,12 @@ while ($ank = mysql_fetch_assoc($q)) {
 
 
     if ($user->id === $p_user->id || $user->group > $p_user->group) {
-        $post->content .= __('Браузер') . ': ' . for_value($ank['browser']) . "<br />\n";
+        $post->content .= __('Браузер') . ': ' . text::toValue($ank['browser']) . "<br />\n";
         $post->content .= __('IP-адрес') . ': ' . long2ip($ank['ip_long']) . "<br />\n";
     }
 
     $post->content .= __('Переходов') . ': ' . $ank['conversions'] . "<br />";
-    $post->content .= __('Последний визит') . ': ' . vremja($p_user->last_visit) . '<br />';
+    $post->content .= __('Последний визит') . ': ' . misc::when($p_user->last_visit) . '<br />';
 }
 
 $listing->display(__('Нет пользователей'));

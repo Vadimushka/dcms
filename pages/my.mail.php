@@ -91,9 +91,9 @@ LIMIT " . $pages->limit);
         $post->title = $ank2->nick();
         $post->url = '/profile.view.php?id=' . $ank2->id;
         $post->icon($ank2->icon());
-        $post->content = output_text($mail ['mess']);
+        $post->content = text::toOutput($mail ['mess']);
         $post->hightlight = !$mail ['is_read'];
-        $post->time = vremja($mail ['time']);
+        $post->time = misc::when($mail ['time']);
     }
     $listing->display(__('Переписка отсутствует'));
 

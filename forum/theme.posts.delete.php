@@ -91,7 +91,7 @@ while ($messages = mysql_fetch_assoc($q)) {
     $ank = new user((int)$messages['id_user']);
 
     $ch->title = $ank->nick;
-    $ch->time = vremja($messages['time']);
+    $ch->time = misc::when($messages['time']);
     $ch->name = 'post' . $messages['id'];
     $ch->content = text::for_opis($messages['message']);
 }

@@ -123,10 +123,10 @@ if ($autor->id && $user->id) {
 $listing = new listing();
 $post = $listing->post();
 $post->title = $autor->nick();
-$post->time = vremja($message['edit_time'] ? $message['edit_time'] : $message['time']);
+$post->time = misc::when($message['edit_time'] ? $message['edit_time'] : $message['time']);
 $post->url = '/profile.view.php?id=' . $autor->id;
 $post->icon($autor->icon());
-$post->content = output_text($message['message']);
+$post->content = text::toOutput($message['message']);
 $listing->display();
 
 if (!isset($_GET['files'])) {

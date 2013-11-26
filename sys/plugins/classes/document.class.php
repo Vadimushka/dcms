@@ -9,6 +9,7 @@ class document extends design
     public $title = 'Заголовок';
     public $description = '';
     public $keywords = array();
+    public $last_modified = null;
     protected $err = array();
     protected $msg = array();
     protected $outputed = false;
@@ -88,7 +89,8 @@ class document extends design
         $this->outputed = true;
         header('Cache-Control: no-store, no-cache, must-revalidate', true);
         header('Expires: ' . date('r'), true);
-
+        if ($this->last_modified)
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s", (int)$this->last_modified) . " GMT", true);
 
         // для осла (IE) как обычно отдельное условие
         if ($dcms->browser == 'Microsoft Internet Explorer') {

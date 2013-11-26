@@ -149,7 +149,7 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
     $post = $listing->post();
     $post->image = $files [$i]->image();
     $post->url = "photo.php?id=$ank->id&amp;album=" . urlencode($album->name) . "&amp;photo=" . urlencode($files [$i]->name);
-    $post->title = for_value($files [$i]->runame);
+    $post->title = text::toValue($files [$i]->runame);
 
 
     if ($comments = $files [$i]->comments) {
@@ -161,7 +161,7 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
         $post->content .= $properties . "\n";
     }
 
-    $post->content = output_text($post->content);
+    $post->content = text::toOutput($post->content);
 }
 
 $listing->display(__('Фотографии отсутствуют'));

@@ -32,14 +32,14 @@ $doc->msg(__('Сообщение успешно удалено'));
 
 $ank = new user($message ['id_user']);
 
-$dcms->log('Мини чат', "Удаление сообщения от [url=/profile.view.php?id={$ank->id}]{$ank->login}[/url] ([vremja]$message[time][/vremja]):\n" . $message ['message']);
+$dcms->log('Мини чат', "Удаление сообщения от [url=/profile.view.php?id={$ank->id}]{$ank->login}[/url] ([when]$message[time][/when]):\n" . $message ['message']);
 
 if (isset($_GET ['return']))
     header('Refresh: 1; url=' . $_GET ['return']);
 else
     header('Refresh: 1; url=./?' . SID);
 if (isset($_GET ['return']))
-    $doc->ret(__('Вернуться'), for_value($_GET ['return']));
+    $doc->ret(__('Вернуться'), text::toValue($_GET ['return']));
 else
     $doc->ret(__('Вернуться'), './');
 ?>

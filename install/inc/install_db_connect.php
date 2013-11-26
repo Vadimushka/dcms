@@ -30,12 +30,12 @@ class install_db_connect {
     function form()
     {
         echo "<div style='background-color:" . ($this->err_connect?'#FFADB0':'#ADFFB0') . "'>";
-        echo __('Сервер MySQL').":<br /><input type='text' name='mysql_host' value='" . for_value($this->settings['mysql_host']) . "' /><br />";
-        echo __('Пользователь').":<br /><input type='text' name='mysql_user' value='" . for_value($this->settings['mysql_user']) . "' /><br />";
-        echo __('Пароль').":<br /><input type='text' name='mysql_pass' value='" . for_value($this->settings['mysql_pass']) . "' />";
+        echo __('Сервер MySQL').":<br /><input type='text' name='mysql_host' value='" . text::toValue($this->settings['mysql_host']) . "' /><br />";
+        echo __('Пользователь').":<br /><input type='text' name='mysql_user' value='" . text::toValue($this->settings['mysql_user']) . "' /><br />";
+        echo __('Пароль').":<br /><input type='text' name='mysql_pass' value='" . text::toValue($this->settings['mysql_pass']) . "' />";
         echo "</div>";
         echo "<div style='background-color:" . ($this->err_db?'#FFADB0':'#ADFFB0') . "'>";
-        echo __('База данных').":<br /><input type='text' name='mysql_base' value='" . for_value($this->settings['mysql_base']) . "' />";
+        echo __('База данных').":<br /><input type='text' name='mysql_base' value='" . text::toValue($this->settings['mysql_base']) . "' />";
         echo "</div>";
         return $this->is_connected;
     }

@@ -25,7 +25,7 @@
             case 'input_text':
                 echo '<input class="gradient_grey invert border padding radius" type="text"' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
-                ($element['info']['value'] ? ' value="' . text::for_value($element['info']['value']) . '"' : '') .
+                ($element['info']['value'] ? ' value="' . text::toValue($element['info']['value']) . '"' : '') .
                 ($element['info']['maxlength'] ? ' maxlength="' . intval($element['info']['maxlength']) . '"' : '') .
                 ($element['info']['size'] ? ' size="' . intval($element['info']['size']) . '"' : '') .
                 ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
@@ -34,13 +34,13 @@
             case 'hidden':
                 echo '<input type="hidden"' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
-                ($element['info']['value'] ? ' value="' . text::for_value($element['info']['value']) . '"' : '') .
+                ($element['info']['value'] ? ' value="' . text::toValue($element['info']['value']) . '"' : '') .
                 ' />';
                 break;
             case 'password':
                 echo '<input class="gradient_grey invert border padding radius" type="password"' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
-                ($element['info']['value'] ? ' value="' . text::for_value($element['info']['value']) . '"' : '') .
+                ($element['info']['value'] ? ' value="' . text::toValue($element['info']['value']) . '"' : '') .
                 ($element['info']['maxlength'] ? ' maxlength="' . intval($element['info']['maxlength']) . '"' : '') .
                 ($element['info']['size'] ? ' size="' . intval($element['info']['size']) . '"' : '') .
                 ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
@@ -51,13 +51,13 @@
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                 ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                 '>' .
-                ($element['info']['value'] ? text::for_value($element['info']['value']) : '') .
+                ($element['info']['value'] ? text::toValue($element['info']['value']) : '') .
                 '</textarea>';
                 break;
             case 'checkbox':
                 echo '<label><input type="checkbox"' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
-                ($element['info']['value'] ? ' value="' . text::for_value($element['info']['value']) . '"' : '') .
+                ($element['info']['value'] ? ' value="' . text::toValue($element['info']['value']) . '"' : '') .
                 ($element['info']['checked'] ? ' checked="checked"' : '') .
                 ' />' .
                 ($element['info']['text'] ? ' ' . $element['info']['text'] : '') .
@@ -66,7 +66,7 @@
             case 'submit':
                 echo '<input class="gradient_blue border radius padding radius" type="submit"' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
-                ($element['info']['value'] ? ' value="' . text::for_value($element['info']['value']) . '"' : '') .
+                ($element['info']['value'] ? ' value="' . text::toValue($element['info']['value']) . '"' : '') .
                 ' />';
                 break;
             case 'file':

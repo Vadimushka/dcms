@@ -71,7 +71,7 @@ while ($rev = mysql_fetch_assoc($q)) {
     $post->title = $ank2->nick();
     $post->counter = '+' . $rev['rating'];
     $post->icon($ank2->icon());
-    $post->content = output_text($rev['text']);
+    $post->content = text::toOutput($rev['text']);
 }
 $listing->display(__('Отзывы отсутствуют'));
 

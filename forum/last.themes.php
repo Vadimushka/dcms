@@ -4,10 +4,8 @@ include_once '../sys/inc/start.php';
 $doc = new document();
 $doc->title = __('Новые темы сегодня');
 
-
 $today = mktime(0, 0, 0);
 $week = mktime(0, 0, 0, date('n'), -7);
-
 
 switch (@$_GET['period']) {
     case 'week':
@@ -32,9 +30,7 @@ switch (@$_GET['period']) {
         break;
 }
 
-
 $cache_id = 'forum.last.themes_all.period-' . $period;
-
 
 if (false === ($posts_all = cache::get($cache_id))) {
     $posts_all = array();
@@ -62,7 +58,6 @@ ORDER BY `th`.`id` DESC");
     cache::set($cache_id, $posts_all, $cache_time);
 }
 
-
 $count = count($posts_all);
 $posts_for_view = array();
 for ($i = 0; $i < $count; $i++) {
@@ -71,7 +66,6 @@ for ($i = 0; $i < $count; $i++) {
     }
     $posts_for_view[] = $posts_all[$i];
 }
-
 
 $views = array();
 $count_posts = count($posts_for_view);
@@ -102,8 +96,6 @@ $or->display('design.order.tpl');
 
 $listing = new listing();
 
-echo "<!-- $start, $end-->";
-
 for ($z = $start; $z < $end && $z < $pages->posts; $z++) {
     $post = $listing->post();
     $themes = $posts_for_view[$z];
@@ -115,24 +107,25 @@ for ($z = $start; $z < $end && $z < $pages->posts; $z++) {
         }
     }
 
-
     $is_open = (int)($themes['group_write'] <= $themes['topic_group_write']);
 
     $post->icon("forum.theme.{$themes['top']}.$is_open.png");
-    $post->time = vremja($themes['time_last']);
-    $post->title = for_value($themes['name']);
+    $post->time = misc::when($themes['time_last']);
+    $post->title = text::toValue($themes['name']);
     $post->counter = '+' . $themes['count_new'];
     $post->url = 'theme.php?id=' . $themes['id'] . '&amp;page=end';
     $autor = new user($themes['id_autor']);
     $last_msg = new user($themes['id_last']);
     $post->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . '<br />';
-    $post->content .= "(<a href='category.php?id=$themes[id_category]'>" . for_value($themes['category_name']) . "</a> &gt; <a href='topic.php?id=$themes[id_topic]'>" . for_value($themes['topic_name']) . "</a>)<br />";
+    $post->content .= "(<a href='category.php?id=$themes[id_category]'>" . text::toValue($themes['category_name']) . "</a> &gt; <a href='topic.php?id=$themes[id_topic]'>" . text::toValue($themes['topic_name']) . "</a>)<br />";
     $post->bottom = __('Просмотров: %s', $themes['views']);
+
+    if (!$doc->last_modified)
+        $doc->last_modified = $themes['time_last'];
 }
 
 $listing->display(__('Сегодня небыло создано ни одной темы'));
 
-$pages->display('?period=' . $period . '&amp;'); // вывод страниц
-
+$pages->display('?period=' . $period . '&amp;');
 
 $doc->ret(__('Форум'), './');

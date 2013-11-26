@@ -25,5 +25,5 @@ $bb->display();
 
 
 if (isset($_GET['return'])) {
-    $doc->ret(__('Вернуться'), for_value($_GET['return']));
+    $doc->ret(__('Вернуться'), text::toValue($_GET['return']));
 }

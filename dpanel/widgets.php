@@ -125,11 +125,11 @@ foreach ($widgets_conf as $name => $show) {
 
     $post2 = array();
     if ($autor = $widget->autor) {
-        $post2[] = __('Автор: %s', for_value($autor));
+        $post2[] = __('Автор: %s', text::toValue($autor));
     }
 
     if ($version = $widget->version) {
-        $post2[] = __('Версия: %s', for_value($version));
+        $post2[] = __('Версия: %s', text::toValue($version));
     }
     $post->content = implode("<br />\n", $post2);
 
@@ -153,4 +153,3 @@ foreach ($widgets_conf as $name => $show) {
 
 $listing->sortable = '?sortable';
 $listing->display(__('Виджеты отсутствуют'));
-?>

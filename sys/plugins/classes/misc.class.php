@@ -119,7 +119,7 @@ abstract class misc
      * @param int $filesize размер в байтах
      * @return string размер в (KB, MB...)
      */
-    static function size_data($filesize = 0)
+    static function getDataCapacity($filesize = 0)
     {
         $filesize_ed = __('байт');
         if ($filesize >= 1024) {
@@ -153,7 +153,7 @@ abstract class misc
      * @param boolean $adaptive Адаптивное представлени (вместо полной даты использовать "сегодня", "вчера")
      * @return string
      */
-    static function vremja($time = null, $adaptive = true)
+    static function when($time = null, $adaptive = true)
     {
         if ($time > TIME) {
             $time -= TIME;
@@ -233,7 +233,7 @@ abstract class misc
      * @param int $v вариант написания
      * @return string
      */
-    static function rus_mes($num, $v = 1)
+    static function getLocaleMonth($num, $v = 1)
     {
         switch ($num) {
             case 1:

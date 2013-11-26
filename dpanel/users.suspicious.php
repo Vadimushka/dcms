@@ -43,7 +43,7 @@ if (isset($_GET['id'])) {
     $post->icon($ank->icon());
     $post2 = __('E-mail: %s', $ank->reg_mail) . "\n";
     $post2 .= __('Фраза: %s', $sus['text']);
-    $post->content = output_text($post2);
+    $post->content = text::toOutput($post2);
 
 
 
@@ -93,7 +93,7 @@ while ($sus = mysql_fetch_assoc($q)) {
     $post2 = __('E-mail: %s', $ank->reg_mail) . "\n";
     $post2 .= __('Фраза: %s', $sus['text']);
 
-    $post->content = output_text($post2);
+    $post->content = text::toOutput($post2);
 }
 
 $listing->display(__('Нет подозрительных пользователей'));

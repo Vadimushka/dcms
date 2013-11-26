@@ -5,7 +5,7 @@ $doc = new document(1);
 $doc->title = __('Бан');
 
 if (isset($_GET['return'])) {
-    $doc->ret(__('Вернуться'), for_value($_GET['return']));
+    $doc->ret(__('Вернуться'), text::toValue($_GET['return']));
 }
 
 if (!$user->is_ban) {
@@ -25,17 +25,17 @@ while ($c = mysql_fetch_assoc($q)) {
     $post = $listing->post();
 
     $post->title = $adm->nick();
-    $post->time = vremja($c['time_start']);
+    $post->time = misc::when($c['time_start']);
     $post->icon($adm->icon());
 
-    $post->content = __('Нарушение: %s', for_value($c['code'])) . "\n";
+    $post->content = __('Нарушение: %s', text::toValue($c['code'])) . "\n";
     if ($c ['time_start'] && TIME < $c ['time_start']) {
-        $post->content .= '[b]' . __('Начало действия') . ':[/b]' . vremja($c ['time_start']) . "\n";
+        $post->content .= '[b]' . __('Начало действия') . ':[/b]' . misc::when($c ['time_start']) . "\n";
     }
     if ($c['time_end'] === NULL) {
         $post->content .= '[b]' . __('Пожизненная блокировка') . "[/b]\n";
     } elseif (TIME < $c['time_end']) {
-        $post->content .= __('Осталось: %s', vremja($c['time_end'])) . "\n";
+        $post->content .= __('Осталось: %s', misc::when($c['time_end'])) . "\n";
     }
     if ($c['link']) {
         $post->content .= __('Ссылка на нарушение: %s', $c['link']) . "\n";
@@ -43,7 +43,7 @@ while ($c = mysql_fetch_assoc($q)) {
 
     $post->content .= __('Комментарий: %s', $c['comment']) . "\n";
 
-    $post->content = output_text($post->content);
+    $post->content = text::toOutput($post->content);
 
     $post->hightlight = (TIME < $c['time_end'] && TIME >= $c['time_start']);
 }

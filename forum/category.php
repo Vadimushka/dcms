@@ -32,7 +32,7 @@ $listing = new listing();
 while ($topics = mysql_fetch_assoc($q)) {
     $post = $listing->post();
     $post->icon('forum.topic.png');
-    $post->title = for_value($topics['name']);
+    $post->title = text::toValue($topics['name']);
     $post->content = text::for_opis($topics['description']);
     $post->url = "topic.php?id={$topics['id']}";
 }

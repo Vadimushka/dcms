@@ -55,7 +55,7 @@ switch (@$_GET['act']) {
             if ($dir2->path_rel == $dir->path_rel) {
                 $options [] = array($dir2->path_rel, $dir2->getPathRu(), true);
             } else {
-                $options [] = array($dir2->getPath(), for_value($dir2->getPathRu() . ' <- ' . $file->runame));
+                $options [] = array($dir2->getPath(), text::toValue($dir2->getPathRu() . ' <- ' . $file->runame));
             }
         }
 
@@ -72,7 +72,7 @@ switch (@$_GET['act']) {
             if ($dir2->path_rel == $dir->path_rel) {
                 $options [] = array($dir2->path_rel, $dir2->getPathRu(), true);
             } else {
-                $options [] = array($dir2->getPath(), for_value($dir2->getPathRu() . ' <- ' . $file->runame));
+                $options [] = array($dir2->getPath(), text::toValue($dir2->getPathRu() . ' <- ' . $file->runame));
             }
         }
 

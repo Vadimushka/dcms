@@ -104,7 +104,7 @@ if ($photo->id_user && $photo->id_user == $user->id) {
 }
 
 if ($screen = $photo->getScreen($doc->img_max_width(), 0)) {
-    echo "<img class='DCMS_photo' src='" . $screen . "' alt='" . __('Фото') . " " . for_value($photo->runame) . "' /><br />\n";
+    echo "<img class='DCMS_photo' src='" . $screen . "' alt='" . __('Фото') . " " . text::toValue($photo->runame) . "' /><br />\n";
 }
 
 $can_write = true;
@@ -175,9 +175,9 @@ while ($comment = mysql_fetch_assoc($q)) {
     $post = $listing->post();
 
     $post->title = $ank2->nick();
-    $post->time = vremja($comment ['time']);
+    $post->time = misc::when($comment ['time']);
     $post->icon($ank2->icon());
-    $post->content = output_text($comment ['text']);
+    $post->content = text::toOutput($comment ['text']);
 
     if ($user->group >= $photo->group_edit) {
         $post->action('delete', '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;delete_comm=' . $comment ['id']);

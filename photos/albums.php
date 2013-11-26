@@ -84,7 +84,7 @@ $listing = new listing();
 for ($i = 0; $i < count($dirs); $i++) {
     $post = $listing->post();
     $post->icon($dirs [$i]->icon());
-    $post->title = for_value($dirs [$i]->runame);
+    $post->title = text::toValue($dirs [$i]->runame);
     $post->url = "photos.php?id={$ank->id}&amp;album=" . urlencode($dirs [$i]->name);
 }
 $listing->display(__('Фотоальбомы отсутствуют'));

@@ -35,7 +35,6 @@ if (isset($_POST['send'])) {
     $json['add'] = array();
 
     $pages = new pages(mysql_result(mysql_query("SELECT COUNT(*) FROM `chat_mini`"), 0));
-    $pages->this_page(); // получаем текущую страницу
 
     $q = mysql_query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
 
@@ -51,9 +50,9 @@ if (isset($_POST['send'])) {
             $post = new listing_post();
             $post->id = $id_post;
             $post->url = 'actions.php?id=' . $message['id'];
-            $post->time = vremja($message['time']);
+            $post->time = misc::when($message['time']);
             $post->title = $ank->nick();
-            $post->post = output_text($message['message']);
+            $post->post = text::toOutput($message['message']);
             $post->icon($ank->icon());
 
             $json['add'][] = array(
@@ -68,4 +67,3 @@ if (isset($_POST['send'])) {
 
 header('Content-type: application/json; charset=utf-8', true);
 echo json_encode($json);
-?>

@@ -113,15 +113,15 @@ if ($ank->is_ban) {
 
 
         $adm = new user($c ['id_adm']);
-        $post->title = ($adm->group <= $user->group ? '<a href="/profile.view.php?id=' . $adm->id . '">' . $adm->nick . '</a>: ' : '') . for_value($c ['code']);
+        $post->title = ($adm->group <= $user->group ? '<a href="/profile.view.php?id=' . $adm->id . '">' . $adm->nick . '</a>: ' : '') . text::toValue($c ['code']);
 
         if ($c ['time_start'] && TIME < $c ['time_start']) {
-            $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . vremja($c ['time_start']) . "\n";
+            $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . misc::when($c ['time_start']) . "\n";
         }
         if ($c['time_end'] === NULL) {
             $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]\n";
         } elseif (TIME < $c['time_end']) {
-            $post->content[] = __('Осталось: %s', vremja($c['time_end'])) . "\n";
+            $post->content[] = __('Осталось: %s', misc::when($c['time_end'])) . "\n";
         }
         if ($c['link']) {
             $post->content[] = __('Ссылка на нарушение: %s', $c['link']) . "\n";
@@ -185,7 +185,7 @@ if ($ank->realname) {
 if ($ank->ank_d_r && $ank->ank_m_r && $ank->ank_g_r) {
     $post = $listing->post();
     $post->title = __('Дата рождения');
-    $post->content = $ank->ank_d_r . ' ' . rus_mes($ank->ank_m_r) . ' ' . $ank->ank_g_r;
+    $post->content = $ank->ank_d_r . ' ' . misc::getLocaleMonth($ank->ank_m_r) . ' ' . $ank->ank_g_r;
 
     $post = $listing->post();
     $post->title = __('Возраст');
@@ -194,7 +194,7 @@ if ($ank->ank_d_r && $ank->ank_m_r && $ank->ank_g_r) {
 
     $post = $listing->post();
     $post->title = __('День рождения');
-    $post->content = $ank->ank_d_r . ' ' . rus_mes($ank->ank_m_r);
+    $post->content = $ank->ank_d_r . ' ' . misc::getLocaleMonth($ank->ank_m_r);
 }
 //endregion
 
@@ -350,7 +350,7 @@ if ($ank->description) {
 //region Последний визит
 $post = $listing->post();
 $post->title = __('Последний визит');
-$post->content = vremja($ank->last_visit);
+$post->content = misc::when($ank->last_visit);
 //endregion
 
 //region Всего переходов
@@ -371,7 +371,7 @@ if (mysql_num_rows($q)) {
     $inv = new user(mysql_result($q, 0, 'id_user'));
 
     $post = $listing->post();
-    $post->title = output_text(__('По приглашению от %s', '[user]' . $inv->id . '[/user]'));
+    $post->title = text::toOutput(__('По приглашению от %s', '[user]' . $inv->id . '[/user]'));
 }
 //endregion
 $listing->display();

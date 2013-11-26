@@ -33,14 +33,15 @@ if ($user->group) {
 
 $doc->title .= ' - ' . $theme['name'];
 
-$doc->description = __('Форум') . ' - ' . $theme['name'];
 $doc->keywords[] = __('Форум');
 $doc->keywords[] = $theme['name'];
 $doc->keywords[] = $theme['topic_name'];
 $doc->keywords[] = $theme['category_name'];
 
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group'"), 0); // количество сообщений  теме
+$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group'"), 0);
+
+$doc->description = __('Форум') . ' - ' . $theme['name'] . ' - '. __('Страница %s из %s', $pages->this_page, $pages->pages);
 
 if ($theme['id_vote']) {
     $q = mysql_query("SELECT * FROM `forum_vote` WHERE `id` = '$theme[id_vote]' AND `group_view` <= '$user->group'");
@@ -93,10 +94,7 @@ new user($users_preload); // предзагрузка данных пользо�
 $listing = new listing();
 foreach ($messages AS $message) {
     $post = $listing->post();
-
-
     $ank = new user((int)$message['id_user']);
-
 
     if ($user->group) {
         $post->action('quote', "message.php?id_message=$message[id]&amp;quote"); // цитирование
@@ -130,14 +128,14 @@ foreach ($messages AS $message) {
     $post->title = $ank->nick();
     $post->icon($ank->icon());
 
-    $post->time = vremja($message['time']);
+    $doc->last_modified = $message['time'];
+    $post->time = misc::when($message['time']);
     $post->url = 'message.php?id_message=' . $message['id'];
     $post->content = text::for_opis($message['message']);
 
-
     if ($message['edit_id_user'] && ($ank->group < $user->group || $ank->id == $user->id)) {
         $ank_edit = new user($message['edit_id_user']);
-        $post->bottom .= ' <a href="message.history.php?id=' . $message['id'] . '&amp;return=' . URL . '">' . __('Изменено') . '(' . $message['edit_count'] . ')</a> ' . $ank_edit->login . ' (' . vremja($message['edit_time']) . ')<br />';
+        $post->bottom .= ' <a href="message.history.php?id=' . $message['id'] . '&amp;return=' . URL . '">' . __('Изменено') . '(' . $message['edit_count'] . ')</a> ' . $ank_edit->login . ' (' . misc::when($message['edit_time']) . ')<br />';
     }
 
     $post_dir_path = H . '/sys/files/.forum/' . $theme['id'] . '/' . $message['id'];
@@ -149,7 +147,7 @@ foreach ($messages AS $message) {
         $count = count($files);
         for ($i = 0; $i < $count; $i++) {
             $file = $listing_files->post();
-            $file->title = for_value($files[$i]->runame);
+            $file->title = text::toValue($files[$i]->runame);
             $file->url = "/files" . $files[$i]->getPath() . ".htm?order=time_add:asc";
             $file->content[] = $files[$i]->properties;
             $file->icon($files[$i]->icon());
@@ -160,7 +158,6 @@ foreach ($messages AS $message) {
 }
 
 $listing->display(__('Сообщения отсутствуют'));
-
 
 $pages->display('theme.php?id=' . $theme['id'] . '&amp;'); // вывод страниц
 

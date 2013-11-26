@@ -27,8 +27,8 @@ if (isset($_GET['id_user'])) {
             $ank = new user($action['id_user']);
             $post = $listing->post();
             $post->title = $ank->nick();
-            $post->time = vremja($action['time']);
-            $post->content = output_text($action['description']);
+            $post->time = misc::when($action['time']);
+            $post->content = text::toOutput($action['description']);
         }
         $listing->display(__('Действия отсутствуют'));
 

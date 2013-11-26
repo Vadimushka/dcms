@@ -10,7 +10,7 @@ $can_write = true;
 if (!$user->is_writeable) {
     $doc->msg(__('Вы не можете оставить жалобу'), 'write_denied');
     if (!empty($_GET['return'])) {
-        $doc->ret(__('Вернуться'), for_value($_GET['return']));
+        $doc->ret(__('Вернуться'), text::toValue($_GET['return']));
     }
     exit;
 }
@@ -66,7 +66,7 @@ VALUES ('" . TIME . "', '$user->id', '$ank->id', '" . my_esc($link) . "', '" . m
 
 
         if (!empty($_GET['return'])) {
-            $doc->ret(__('Вернуться'), for_value($_GET['return']));
+            $doc->ret(__('Вернуться'), text::toValue($_GET['return']));
         }
 
         exit;
@@ -77,7 +77,7 @@ $link = !empty($_GET['link']) ? $_GET['link'] : (!empty($_POST['link']) ? $_POST
 
 $smarty = new design();
 $smarty->assign('method', 'post');
-$smarty->assign('action', '?' . passgen() . '&amp;id=' . $ank->id . (!empty($_GET['return']) ? '&amp;return=' . for_value($_GET['return']) : null));
+$smarty->assign('action', '?' . passgen() . '&amp;id=' . $ank->id . (!empty($_GET['return']) ? '&amp;return=' . text::toValue($_GET['return']) : null));
 $elements = array();
 $elements[] = array('type' => 'input_text', 'title' => __('Ссылка'), 'br' => 1, 'info' => array('name' => 'link', 'value' => $link));
 
@@ -89,5 +89,5 @@ $smarty->assign('el', $elements);
 $smarty->display('input.form.tpl');
 
 if (!empty($_GET['return'])) {
-    $doc->ret(__('Вернуться'), for_value($_GET['return']));
+    $doc->ret(__('Вернуться'), text::toValue($_GET['return']));
 }

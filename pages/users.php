@@ -100,7 +100,7 @@ while ($ank = mysql_fetch_assoc($q)) {
     }
 
     $post->content[] = '[small]' . __('Дата регистрации') . ': ' . date('d-m-Y', $p_user->reg_date) . '[/small]';
-    $post->content[] = '[small]' . __('Последний визит') . ': ' . vremja($p_user->last_visit) . '[/small]';
+    $post->content[] = '[small]' . __('Последний визит') . ': ' . misc::when($p_user->last_visit) . '[/small]';
 }
 
 $form = new form('?', false);

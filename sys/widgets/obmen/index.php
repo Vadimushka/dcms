@@ -22,8 +22,8 @@ if ($new_files)
 for ($i = 0; $i < $new_files && $i < $dcms->widget_items_count; $i++) {
     $ank = new user($files[$i]->id_user);
     $post = $listing->post();
-    $post->title = for_value($files[$i]->runame);
-    $post->time = vremja($files[$i]->time_add);
+    $post->title = text::toValue($files[$i]->runame);
+    $post->time = misc::when($files[$i]->time_add);
     $post->url = "/files" . $files[$i]->getPath() . ".htm";
     $post->image = $files[$i]->image();
     $post->icon($files[$i]->icon());

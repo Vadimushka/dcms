@@ -57,7 +57,7 @@ if (isset($_GET['id'])) {
 
     if ($inv['email']) {
         echo __('Пригласительный отправлен на email: %s', $inv['email']) . "<br />";
-        echo __("Отправлен: %s", vremja($inv['time_reg'])) . "<br />";
+        echo __("Отправлен: %s", misc::when($inv['time_reg'])) . "<br />";
 
         if ($inv['time_reg'] < TIME - 86400) {
             if (isset($_GET['delete'])) {
@@ -107,7 +107,7 @@ while ($inv = mysql_fetch_assoc($q)) {
     $post->icon('invite');
     if ($inv['id_invite']) {
         $ank = new user($inv['id_invite']);
-        $post->time = vremja($inv['time_reg']);
+        $post->time = misc::when($inv['time_reg']);
         $post->content = __('Использован');
         $post->title = $ank->nick();
         $post->url = '/profile.view.php?id=' . $ank->id;

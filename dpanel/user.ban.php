@@ -45,7 +45,7 @@ if (!$code && !isset($_GET ['skip'])) {
     $form->display();
 
     if (isset($_GET ['return'])) {
-        $doc->ret(__('Вернуться'), for_value($_GET ['return']));
+        $doc->ret(__('Вернуться'), text::toValue($_GET ['return']));
     }
     $doc->ret(__('В анкету'), '/profile.view.php?id=' . $ank->id);
     $doc->ret(__('Админка'), './');
@@ -93,12 +93,12 @@ if (isset($_POST ['ban'])) {
 VALUES ('$ank->id', '$user->id', '" . my_esc($link) . "', '" . my_esc($code) . "', '" . my_esc($comm) . "', '" . TIME . "', $time_ban_end, '$access_view') ");
         mysql_query("UPDATE `users` SET `is_ban` = '1' WHERE `id` = '$ank->id'");
 
-        $dcms->log('Пользователи', 'Бан пользователя [user]' . $ank->id . '[/user] на' . ($time_ban_end == 'NULL' ? 'всегда' : (' ' . vremja($time_ban_end) )) . "\nПричина: $comm");
+        $dcms->log('Пользователи', 'Бан пользователя [user]' . $ank->id . '[/user] на' . ($time_ban_end == 'NULL' ? 'всегда' : (' ' . misc::when($time_ban_end) )) . "\nПричина: $comm");
 
         if ($time_ban_end == 'NULL') {
             $doc->msg(__('Пользователь успешно забанен навсегда'));
         } else {
-            $doc->msg(__('Пользователь успешно забанен на %s', vremja($time_ban_end)));
+            $doc->msg(__('Пользователь успешно забанен на %s', misc::when($time_ban_end)));
         }
     }
 }
@@ -130,16 +130,16 @@ while ($c = mysql_fetch_assoc($q)) {
     $adm = new user($c ['id_adm']);
     $post->action('delete', '?id_ank=' . $ank->id . '&amp;ban_delete=' . $c['id'] . '&amp;skip');
     $post->title = $adm->nick();
-    $post->time = vremja($c ['time_start']);
-    $post->content[] = __('Нарушение: %s', for_value($c['code']));
+    $post->time = misc::when($c ['time_start']);
+    $post->content[] = __('Нарушение: %s', text::toValue($c['code']));
 
     if ($c ['time_start'] && TIME < $c ['time_start'])
-        $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . vremja($c ['time_start']);
+        $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . misc::when($c ['time_start']);
 
     if ($c['time_end'] === NULL)
         $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]";
     elseif (TIME < $c['time_end'])
-        $post->content[] = __('Осталось: %s', vremja($c['time_end']));
+        $post->content[] = __('Осталось: %s', misc::when($c['time_end']));
 
     if ($c['link'])
         $post->content[] = __('Ссылка на нарушение: %s', $c['link']);
@@ -184,7 +184,7 @@ $form->display();
 
 
 if (isset($_GET ['return'])) {
-    $doc->ret(__('Вернуться'), for_value($_GET ['return']));
+    $doc->ret(__('Вернуться'), text::toValue($_GET ['return']));
 }
 
 $doc->ret(__('В анкету'), '/profile.view.php?id=' . $ank->id);

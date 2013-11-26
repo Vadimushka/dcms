@@ -26,7 +26,7 @@ if ($user->group && $ank->group) {
             'id' => (int)$qmail['id'],
             'id_sender' => (int)$qmail['id_sender'],
             //'id_user' => (int)$qmail['id_user'],
-            'mess' => output_text($qmail['mess']),
+            'mess' => text::toOutput($qmail['mess']),
             'time' => (int)$qmail['time'],
             'is_read' => (bool)$qmail['is_read']
         );

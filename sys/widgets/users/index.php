@@ -22,7 +22,7 @@ if ($dcms->widget_items_count) {
         $post->icon($p_user->icon());
         $post->title = $p_user->nick();
         $post->url = '/profile.view.php?id=' . $p_user->id;
-        $post->time = vremja($p_user->reg_date);
+        $post->time = misc::when($p_user->reg_date);
     }
 }
 

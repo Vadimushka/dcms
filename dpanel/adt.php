@@ -53,7 +53,7 @@ if (isset($_GET['id'])) {
     while ($adt = mysql_fetch_assoc($q)) {
         $post = $listing->post();
         $post->url = 'adt.stat.php?id=' . $adt['id'];
-        $post->title = for_value($adt['name'] ? $adt['name'] : 'Реклама #' . $adt['id']) . ($adt['url_img'] ? ' (' . __('баннер') . ')' : null);
+        $post->title = text::toValue($adt['name'] ? $adt['name'] : 'Реклама #' . $adt['id']) . ($adt['url_img'] ? ' (' . __('баннер') . ')' : null);
         $post->icon('adt');
         $post->action('edit', "adt.edit.php?id={$adt['id']}");
         $post->action('delete', "adt.edit.php?id={$adt['id']}&amp;delete");
@@ -69,24 +69,24 @@ if (isset($_GET['id'])) {
         }
 
         if ($adt['time_start'] > TIME) {
-            $post->content[] = __("Начало показа: %s", vremja($adt['time_start']));
+            $post->content[] = __("Начало показа: %s", misc::when($adt['time_start']));
         }
 
         if (!$adt['time_end']) {
             $post->content[] = __('Бесконечный показ');
         } elseif ($adt['time_end'] > TIME) {
-            $post->content[] = __("Конец показа: %s", vremja($adt['time_end']));
+            $post->content[] = __("Конец показа: %s", misc::when($adt['time_end']));
         } else {
-            $post->content[] = __("Показ истек: %s", vremja($adt['time_end']));
+            $post->content[] = __("Показ истек: %s", misc::when($adt['time_end']));
         }
 
         if ($adt['bold']) {
             $post->content[] = "[b]" . __('Выделение жирным шрифтом') . "[/b]";
         }
 
-        $post->content[] = __('Адрес ссылки: %s', for_value($adt['url_link']));
+        $post->content[] = __('Адрес ссылки: %s', text::toValue($adt['url_link']));
         if ($adt['url_img']) {
-            $post->content[] = __('Адрес изображения: %s', for_value($adt['url_img']));
+            $post->content[] = __('Адрес изображения: %s', text::toValue($adt['url_img']));
         }
 
         if ($adt['page_main'] && $adt['page_other']) {

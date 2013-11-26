@@ -70,7 +70,7 @@ if ($can_write) {
             }
 
             if ($post_update && !isset($_POST['add_file'])) {
-                $message = $last_post['message'] . "\n\n[small]Через " . vremja(TIME - $theme['time_last'] + TIME) . ":[/small]\n" . $message;
+                $message = $last_post['message'] . "\n\n[small]Через " . misc::when(TIME - $theme['time_last'] + TIME) . ":[/small]\n" . $message;
                 mysql_query("UPDATE `forum_messages` SET `message` = '" . my_esc($message) . "' WHERE `id_theme` = '$theme[id]' AND `id_user` = '$user->id' ORDER BY `id` DESC LIMIT 1");
             } else {
                 mysql_query("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
@@ -122,6 +122,6 @@ if ($can_write) {
 
 
 if (isset($_GET['return']))
-    $doc->ret(__('В тему'), for_value($_GET['return']));
+    $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);

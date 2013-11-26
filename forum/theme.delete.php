@@ -59,7 +59,7 @@ $form->button(__('Удалить'), 'delete');
 $form->display();
 
 if (isset($_GET['return']))
-    $doc->ret(__('В тему'), for_value($_GET['return']));
+    $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
 

@@ -15,7 +15,7 @@ if (!dpanel::is_access() && (empty($_POST['captcha_session']) || empty($_POST['c
 
     if (!empty($_GET['return'])) {
         header('Refresh: 1; url=' . $_GET['return']);
-        $doc->ret(__('Вернуться'), for_value($_GET['return']));
+        $doc->ret(__('Вернуться'), text::toValue($_GET['return']));
     } else {
         header('Refresh: 1; url=./?' . SID);
         $doc->ret(__('В админку'), '/dpanel/');

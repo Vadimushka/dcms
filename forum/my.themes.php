@@ -41,14 +41,14 @@ while ($themes = mysql_fetch_assoc($q)) {
     $is_open = (int)($themes['group_write'] <= $themes['topic_group_write']);
     $post = $listing->post();
     $post->icon("forum.theme.{$themes['top']}.$is_open.png");
-    $post->time = vremja($themes['time_last']);
-    $post->title = for_value($themes['name']);
+    $post->time = misc::when($themes['time_last']);
+    $post->title = text::toValue($themes['name']);
     $post->counter = $themes['count'];
     $post->url = 'theme.php?id=' . $themes['id'] . '&amp;page=end';
     $autor = new user($themes['id_autor']);
     $last_msg = new user($themes['id_last']);
     $post->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . '<br />';
-    $post->content .= "(<a href='category.php?id=$themes[id_category]'>" . for_value($themes['category_name']) . "</a> &gt; <a href='topic.php?id=$themes[id_topic]'>" . for_value($themes['topic_name']) . "</a>)<br />";
+    $post->content .= "(<a href='category.php?id=$themes[id_category]'>" . text::toValue($themes['category_name']) . "</a> &gt; <a href='topic.php?id=$themes[id_topic]'>" . text::toValue($themes['topic_name']) . "</a>)<br />";
     $post->bottom = __('Просмотров: %s', $themes['views']);
 }
 

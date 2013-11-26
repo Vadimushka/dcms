@@ -25,8 +25,8 @@ while ($log = mysql_fetch_assoc($q)) {
     $post = $listing->post();
     $post->title = $log['method'] . ': ' . __($log['status'] ? 'Удачно' : 'Не удачно');
     $post->hightlight = !$log['status'];
-    $post->content = output_text($log['browser'] . "\n" . long2ip($log['iplong']));
-    $post->time = vremja($log['time']);
+    $post->content = text::toOutput($log['browser'] . "\n" . long2ip($log['iplong']));
+    $post->time = misc::when($log['time']);
 }
 $listing->display(__('Журнал пуст'));
 

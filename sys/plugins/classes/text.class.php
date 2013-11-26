@@ -13,9 +13,9 @@ abstract class text {
      */
     static function filter($str, $type = 1) {
         switch ($type) {
-            case 1: return self::for_value($str);
+            case 1: return self::toValue($str);
                 break;
-            case 2: return self::output_text($str);
+            case 2: return self::toOutput($str);
                 break;
             default:return $str;
         }
@@ -44,7 +44,7 @@ abstract class text {
     static function for_opis($text) {
         global $dcms;
         $text = self::substr($text, $dcms->browser_type == 'web' ? 100000 : 4096);
-        $text = self::output_text($text);
+        $text = self::toOutput($text);
         return $text;
     }
 
@@ -110,7 +110,7 @@ abstract class text {
      * @param string $str
      * @return string
      */
-    static function output_text($str) {
+    static function toOutput($str) {
 
         //
         // преобразование смайлов в BBcode
@@ -202,7 +202,7 @@ abstract class text {
      * @param string $str
      * @return string
      */
-    static function for_value($str) {
+    static function toValue($str) {
 
         // обработка старых цитат с числом в теге
         $str = preg_replace('#\[(/?)quote_([0-9]+)(\]|\=)#ui', '[\1quote\3', $str);

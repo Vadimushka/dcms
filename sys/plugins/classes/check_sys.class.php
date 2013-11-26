@@ -108,7 +108,7 @@ class check_sys {
         if (ini_get('arg_separator.output') == '&amp;') {
             $this->oks[] = 'arg_separator.output: &amp;amp;: OK';
         } else {
-            $this->notice[] = 'arg_separator.output: ' . output_text(ini_get('arg_separator.output')) . ' ' . __('Возможно появление xml ошибок');
+            $this->notice[] = 'arg_separator.output: ' . text::toOutput(ini_get('arg_separator.output')) . ' ' . __('Возможно появление xml ошибок');
         }
     }
 

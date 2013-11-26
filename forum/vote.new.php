@@ -71,7 +71,7 @@ VALUES ('$user->id', '$theme[id]', '$vote', " . implode(', ', $v) . ")");
                 $dcms->log('Форум', 'Создание голосования в теме [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
 
                 if (isset($_GET['return']))
-                    $doc->ret(__('В тему'), for_value($_GET['return']));
+                    $doc->ret(__('В тему'), text::toValue($_GET['return']));
                 else
                     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
                 exit;
@@ -88,6 +88,6 @@ $form->button(__('Создать голосование'));
 $form->display();
 
 if (isset($_GET['return']))
-    $doc->ret(__('В тему'), for_value($_GET['return']));
+    $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);

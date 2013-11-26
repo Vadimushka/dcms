@@ -118,7 +118,7 @@ foreach ($content['files'] AS $file) {
     $post = $listing->post();
     $post->icon($file->icon());
     $post->image = $file->image();
-    $post->title = for_value($file->runame);
+    $post->title = text::toValue($file->runame);
     $post->url = "/files{$dir->path_rel}/" . urlencode($file->name) . ".htm";
     $post->content[] = $file->properties;
 }
@@ -130,7 +130,7 @@ $smarty->assign('files', 1);
 $smarty->assign('action', "/forum/message.files.php?id=$message[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
 $elements = array();
 $elements[] = array('type' => 'file', 'title' => 'Файл', 'br' => 1, 'info' => array('name' => 'file'));
-$elements[] = array('type' => 'text', 'br' => 1, 'value' => '* ' . __('Файлы, размер которых превышает %s, загружены не будут', size_data($dcms->forum_files_upload_size))); // кнопка
+$elements[] = array('type' => 'text', 'br' => 1, 'value' => '* ' . __('Файлы, размер которых превышает %s, загружены не будут', misc::getDataCapacity($dcms->forum_files_upload_size))); // кнопка
 $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Прикрепить'))); // кнопка
 $smarty->assign('el', $elements);
 $smarty->display('input.form.tpl');

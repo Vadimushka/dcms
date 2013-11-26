@@ -71,7 +71,7 @@ if (isset($_POST['send'])) {
                 $t = new design();
                 $t->assign('title', 'Новости');
                 $t->assign('site', $dcms->sitename);
-                $t->assign('content', output_text($news['text']));
+                $t->assign('content', text::toOutput($news['text']));
                 $t->assign('email', $mailes_to_send[$i]);
                 $t->assign('unsubscribe', 'http://' . $_SERVER['HTTP_HOST'] . '/unsubscribe.php?code=' . $unsubscribe_code);
                 $contents[] = $t->fetch('file:' . H . '/sys/templates/mail.news.tpl');

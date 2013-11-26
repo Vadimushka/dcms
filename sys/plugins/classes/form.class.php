@@ -52,7 +52,7 @@ class form extends ui
      */
     function bbcode($bbcode, $br = true)
     {
-        $this->html(text::output_text($bbcode), $br);
+        $this->html(text::toOutput($bbcode), $br);
     }
 
     /**
@@ -69,10 +69,10 @@ class form extends ui
             'type' => 'checkbox',
             'br' => (bool)$br,
             'info' => array(
-                'name' => text::for_value($name),
+                'name' => text::toValue($name),
                 'checked' => (bool)$checked,
-                'value' => text::for_value($value),
-                'text' => text::for_value($title)
+                'value' => text::toValue($value),
+                'text' => text::toValue($title)
             )
         );
     }
@@ -88,10 +88,10 @@ class form extends ui
     {
         $this->_data['el'][] = array(
             'type' => 'select',
-            'title' => text::for_value($title),
+            'title' => text::toValue($title),
             'br' => (bool)$br,
             'info' => array(
-                'name' => text::for_value($name),
+                'name' => text::toValue($name),
                 'options' => (array)$options
             )
         );
@@ -204,11 +204,11 @@ class form extends ui
             $type = 'input_text'; // так уж изначально было задумано. Избавляться будем постепенно
 
         $input['type'] = $type;
-        $input['title'] = text::output_text($title);
+        $input['title'] = text::toOutput($title);
         $input['br'] = (bool)$br;
 
         $info = array();
-        $info['name'] = text::for_value($name);
+        $info['name'] = text::toValue($name);
         $info['value'] = $value;
 
         $info['disabled'] = (bool)$disabled;

@@ -16,7 +16,7 @@ foreach ($smiles_gl as $path) {
 $listing = new listing();
 foreach ($smiles_a as $name => $path) {
     $post = $listing->post();
-    $post->title = for_value($name);
+    $post->title = text::toValue($name);
     $post->image = '/sys/images/smiles/' . $name . '.gif';
     $post->content = __('Варианты') . ': *' . implode('*, *', array_keys($smiles, $name)) . '*';
 }
@@ -24,4 +24,4 @@ foreach ($smiles_a as $name => $path) {
 $listing->display(__('Смайлы отсутствуют'));
 
 if (!empty($_GET['return']))
-    $doc->ret(__('Вернуться'), for_value($_GET['return']));
+    $doc->ret(__('Вернуться'), text::toValue($_GET['return']));

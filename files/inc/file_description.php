@@ -177,7 +177,7 @@ if (empty($_GET['act'])) {
     if (($video_bitrate = (int)$file->video_bitrate) && ($video_bitrate_mode = $file->video_bitrate_mode)) {
         $post = $listing->post();
         $post->title = __('Видео битрейт');
-        $post->content[] = size_data($video_bitrate) . "/s (" . $video_bitrate_mode . ")";
+        $post->content[] = misc::getDataCapacity($video_bitrate) . "/s (" . $video_bitrate_mode . ")";
     }
 
     if ($video_codec = $file->video_codec) {
@@ -195,7 +195,7 @@ if (empty($_GET['act'])) {
     if (($audio_bitrate = (int)$file->audio_bitrate) && ($audio_bitrate_mode = $file->audio_bitrate_mode)) {
         $post = $listing->post();
         $post->title = __('Аудио битрейт');
-        $post->content[] = size_data($audio_bitrate) . "/s (" . $audio_bitrate_mode . ")";
+        $post->content[] = misc::getDataCapacity($audio_bitrate) . "/s (" . $audio_bitrate_mode . ")";
     }
 
     if ($audio_codec = $file->audio_codec) {
@@ -211,7 +211,7 @@ if (empty($_GET['act'])) {
         $post->title = __('Файл добавил');
         $post->content = $ank->nick;
         $post->url = '/profile.view.php?id=' . $ank->id;
-        $post->time = vremja($file->time_add);
+        $post->time = misc::when($file->time_add);
     }
 
     $post = $listing->post();
@@ -220,7 +220,7 @@ if (empty($_GET['act'])) {
 
     $post = $listing->post();
     $post->title = __('Размер файла');
-    $post->content[] = size_data($file->size);
+    $post->content[] = misc::getDataCapacity($file->size);
 
     $post = $listing->post();
     $post->title = __('Общая оценка');
@@ -344,8 +344,8 @@ if (empty($_GET['act'])) {
         $post = $listing->post();
         $post->url = '/profile.view.php?id=' . $ank->id;
         $post->title = $ank->nick();
-        $post->time = vremja($comment['time']);
-        $post->post = output_text($comment['text']);
+        $post->time = misc::when($comment['time']);
+        $post->post = text::toOutput($comment['text']);
         $post->icon($ank->icon());
 
         if ($user->group >= $file->group_edit) {
@@ -373,14 +373,14 @@ if ($count > 1) {
 
         if ($fileindex >= 1) {
             $last_index = $fileindex - 1;
-            $select[] = array('./' . urlencode($files[$last_index]->name) . '.htm?order=' . $order, for_value($files[$last_index]->runame));
+            $select[] = array('./' . urlencode($files[$last_index]->name) . '.htm?order=' . $order, text::toValue($files[$last_index]->runame));
         }
 
-        $select[] = array('?order=' . $order, for_value($file->runame), true);
+        $select[] = array('?order=' . $order, text::toValue($file->runame), true);
 
         if ($fileindex < $count - 1) {
             $next_index = $fileindex + 1;
-            $select[] = array('./' . urlencode($files[$next_index]->name) . '.htm?order=' . $order, for_value($files[$next_index]->runame));
+            $select[] = array('./' . urlencode($files[$next_index]->name) . '.htm?order=' . $order, text::toValue($files[$next_index]->runame));
         }
 
         $show = new design();

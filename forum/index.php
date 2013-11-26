@@ -89,7 +89,7 @@ $q = mysql_query("SELECT * FROM `forum_categories` WHERE `group_show` <= '$user-
 while ($category = mysql_fetch_assoc($q)) {
     $post = $listing->post();
     $post->url = "category.php?id=$category[id]";
-    $post->title = for_value($category['name']);
+    $post->title = text::toValue($category['name']);
     $post->icon('forum.category');
     $post->post = text::for_opis($category['description']);
 }

@@ -240,7 +240,7 @@ class http_client
 
         $size = filesize($file_path);
         if ($size) {
-            misc::log('Файл успешно получен и сохранен ' . misc::size_data($size), 'http_client');
+            misc::log('Файл успешно получен и сохранен ' . misc::getDataCapacity($size), 'http_client');
         } else {
             misc::log('Получен файл с нулевым размером', 'http_client');
         }
@@ -321,7 +321,7 @@ class http_client
                 $content .= $data;
             }
         }
-        misc::log('Контент успешно получен (' . misc::size_data(strlen($content)) . ')', 'http_client');
+        misc::log('Контент успешно получен (' . misc::getDataCapacity(strlen($content)) . ')', 'http_client');
         $this->_disconnect();
         return $content;
     }

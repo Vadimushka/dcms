@@ -69,8 +69,8 @@ for ($i = $start; $i < $end; $i++) {
 
 
     $theme = $searched[$i];
-    $title = preg_replace($searched_mark, '\1<span class="DCMS_mark">\2</span>\3', for_value($theme['name']));
-    $post->content = output_text(preg_replace($searched_mark, '\1[mark]\2[/mark]\3', $theme['message']));
+    $title = preg_replace($searched_mark, '\1<span class="DCMS_mark">\2</span>\3', text::toValue($theme['name']));
+    $post->content = text::toOutput(preg_replace($searched_mark, '\1[mark]\2[/mark]\3', $theme['message']));
 
     $post->title = $title;
     $post->url = 'theme.php?id=' . $theme['id'];

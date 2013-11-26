@@ -152,7 +152,7 @@ if (!empty($_GET['from'])) {
 
                 $post = $listing->post();
                 $post->url = '?from=' . urlencode($from) . '&amp;to=' . urlencode($build) . '&amp;info';
-                $post->title = for_value($from . ' > ' . $build);
+                $post->title = text::toValue($from . ' > ' . $build);
                 $post->icon('cms');
 
                 if ($is_beta)
@@ -185,7 +185,7 @@ if (!empty($_GET['from'])) {
 
             $post = $listing->post();
             $post->url = '?from=' . urlencode($from) . '&amp;to_version=' . $version;
-            $post->title = for_value($from . ' > ' . $version);
+            $post->title = text::toValue($from . ' > ' . $version);
             $post->icon('cms');
 
             if ($is_beta)
@@ -251,4 +251,3 @@ foreach ($versions AS $version) {
 }
 
 $listing->display('Не найдено ни одной версии');
-?>

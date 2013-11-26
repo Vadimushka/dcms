@@ -118,10 +118,10 @@ if ($user->group) {
 }
 
 if (isset($_GET['return'])) {
-    $doc->ret('Вернуться', for_value($return));
+    $doc->ret('Вернуться', text::toValue($return));
 }
 
-$form = new form('?' . passgen() . '&amp;return=' . for_value($return));
+$form = new form('?' . passgen() . '&amp;return=' . text::toValue($return));
 $form->input('login', __('Логин'));
 $form->password('password', __('Пароль') . ' [' . '[url=/pass.php]' . __('забыли') . '[/url]]');
 $form->checkbox('save_to_cookie', __('Запомнить меня'));

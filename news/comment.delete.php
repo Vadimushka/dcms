@@ -35,7 +35,7 @@ if (isset($_GET['return']))
 else
     header('Refresh: 1; url=./');
 if (isset($_GET['return']))
-    $doc->ret(__('Вернуться'), for_value($_GET['return']));
+    $doc->ret(__('Вернуться'), text::toValue($_GET['return']));
 else
     $doc->ret(__('Вернуться'), './');
 ?>

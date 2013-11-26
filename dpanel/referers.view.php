@@ -27,7 +27,7 @@ if (isset($_GET['id_site'])) {
     $q = mysql_query("SELECT `full_url`, COUNT(*) AS `count`, MAX(`time`) AS `time` FROM `log_of_referers` WHERE `id_site` = '$id' GROUP BY `full_url` ORDER BY `time` DESC LIMIT $pages->limit");
     while ($ref = mysql_fetch_assoc($q)) {
         $post = $listing->post();
-        $post->title = vremja($ref['time']);
+        $post->title = misc::when($ref['time']);
         $post->content[] = $ref['full_url'];
         $post->counter = $ref['count'];
     }
@@ -73,9 +73,9 @@ $listing = new listing();
 $q = mysql_query("SELECT * FROM `log_of_referers_sites` ORDER BY $order LIMIT $pages->limit");
 while ($ref = mysql_fetch_assoc($q)) {
     $post = $listing->post();
-    $post->title = output_text($ref['domain']);
+    $post->title = text::toOutput($ref['domain']);
     $post->url = '?id_site=' . $ref['id'];
-    $post->time = vremja($ref['time']);
+    $post->time = misc::when($ref['time']);
     $post->counter = $ref['count'];
 }
 

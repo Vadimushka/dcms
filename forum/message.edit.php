@@ -58,7 +58,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'hide') {
     mysql_query("UPDATE `forum_messages` SET `group_show` = '2' WHERE `id` = '$message[id]' LIMIT 1");
     $doc->msg(__('Сообщение успешно скрыто'));
     if (isset($_GET['return']))
-        $doc->ret(__('В тему'), for_value($_GET['return']));
+        $doc->ret(__('В тему'), text::toValue($_GET['return']));
     else
         $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
     exit;
@@ -72,7 +72,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'show') {
     mysql_query("UPDATE `forum_messages` SET `group_show` = '0' WHERE `id` = '$message[id]' LIMIT 1");
     $doc->msg(__('Сообщение будет отображаться'));
     if (isset($_GET['return']))
-        $doc->ret('В тему', for_value($_GET['return']));
+        $doc->ret('В тему', text::toValue($_GET['return']));
     else
         $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
     exit;
@@ -96,7 +96,7 @@ if (isset($_POST['message'])) {
         $doc->msg(__('Сообщение успешно изменено'));
 
         if (isset($_GET['return']))
-            $doc->ret('В тему', for_value($_GET['return']));
+            $doc->ret('В тему', text::toValue($_GET['return']));
         else
             $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
         exit;
@@ -113,6 +113,6 @@ $form->display();
 $doc->act(__('Вложения'), 'message.files.php?id=' . $message['id'] . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
 
 if (isset($_GET['return']))
-    $doc->ret(__('В тему'), for_value($_GET['return']));
+    $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);

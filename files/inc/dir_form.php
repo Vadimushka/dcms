@@ -89,7 +89,7 @@ if ($access_edit) {
                 if ($dir2->path_rel == $dir->path_rel) {
                     $options [] = array($dir2->path_rel, $dir2->getPathRu(), true);
                 } else {
-                    $options [] = array($dir2->getPath(), for_value($dir2->getPathRu() . ' <- ' . $dir->runame));
+                    $options [] = array($dir2->getPath(), text::toValue($dir2->getPathRu() . ' <- ' . $dir->runame));
                 }
             }
 
@@ -106,7 +106,7 @@ if ($access_edit) {
                 if ($dir2->path_rel == $dir->path_rel) {
                     $options [] = array($dir2->path_rel, $dir2->getPathRu(), true);
                 } else {
-                    $options [] = array($dir2->getPath(), for_value($dir2->getPathRu() . ' <- ' . $dir->runame));
+                    $options [] = array($dir2->getPath(), text::toValue($dir2->getPathRu() . ' <- ' . $dir->runame));
                 }
             }
 
