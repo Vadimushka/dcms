@@ -20,7 +20,7 @@ if (!mysql_num_rows($q)) {
     if (isset($_GET['return']))
         header('Refresh: 1; url=' . $_GET['return']);
     else
-        header('Refresh: 1; url=theme.php?id=' . $theme['id']);
+        header('Refresh: 1; url=theme.php?id=' . $id_theme);
     $doc->err(__('Тема не доступна'));
     exit;
 }
