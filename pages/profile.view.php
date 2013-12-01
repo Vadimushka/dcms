@@ -152,7 +152,7 @@ if ($ank->group > 1) {
     $q = mysql_query("SELECT `id_adm` FROM `log_of_user_status` WHERE `id_user` = '$ank->id' ORDER BY `id` DESC LIMIT 1");
     if (mysql_num_rows($q)) {
         $adm = new user(mysql_result($q, 0));
-        $post->content = __('Назначил' . ($adm->sex ? '' : 'а')) . ' ' . __($adm->group_name) . ' "' . $adm->nick . '"';
+        $post->content = __('Назначил' . ($adm->sex ? '' : 'а')) . ' ' . $adm->group_name . ' "' . $adm->nick . '"';
     }
 } elseif ($ank->is_vip) {
     $post = $listing->post();
