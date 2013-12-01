@@ -83,10 +83,10 @@ while ($ank = mysql_fetch_assoc($q)) {
 
     switch ($order) {
         case 'id':
-            $post->content[] = '[b]' . __('ID пользователя') . ': ' . $p_user->id . '[/b]';
+            $post->content[] = '[b]' . 'ID: ' . $p_user->id . '[/b]';
             break;
         case 'group':
-            $post->content[] = '[b]' . __($p_user->group_name) . '[/b]';
+            $post->content[] = '[b]' . $p_user->group_name . '[/b]';
             break;
         case 'rating':
             $post->content[] = '[b]' . __('Рейтинг') . ': ' . $p_user->rating . '[/b]';
