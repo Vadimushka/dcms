@@ -114,10 +114,10 @@ $form->bbcode(__('Дата рождения') . ':');
 $form->input('ank_d_r', '', $user->ank_d_r, 'text', false, 2, false, 2);
 $form->input('ank_m_r', '', $user->ank_m_r, 'text',  false, 2, false, 2);
 $form->input('ank_g_r', '', $user->ank_g_r, 'text',  true, 4, false, 4);
-$form->text('icq', __('Номер ICQ'), $user->icq_uin);
-$form->text('skype', __('Skype логин'), $user->skype);
-$form->text('email', __('E-mail'), $user->email);
-$form->text('wmid_tmp', __('WebMoney ID') . ($user->wmid_tmp ? ' (' . $user->wmid_tmp . ' ?)' : ''), $user->wmid, true, !!$user->wmid);
+$form->text('icq', 'ICQ UIN', $user->icq_uin);
+$form->text('skype', 'Skype', $user->skype);
+$form->text('email', 'E-Mail', $user->email);
+$form->text('wmid_tmp', 'WMID' . ($user->wmid_tmp ? ' (' . $user->wmid_tmp . ' ?)' : ''), $user->wmid, true, false, !!$user->wmid);
 $form->textarea('description', __('О себе') . ' [256]', $user->description);
 
 $form->button(__('Применить'), 'save');
