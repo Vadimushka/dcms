@@ -2,7 +2,7 @@
 
 include '../sys/inc/start.php';
 $doc = new document();
-$doc->title = 'Скачать DCMS';
+$doc->title = __('Скачать %s', 'DCMS');
 
 $listing = new listing();
 
