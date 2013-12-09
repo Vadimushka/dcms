@@ -97,8 +97,6 @@ $class_fix = $dcms->ie_ver ? 'ie ie' . $dcms->ie_ver : '';
                 <? if ($adt->top) { ?>
                     <div class="listing">
                         <div id="adt_top" class="post">
-                            <a href="http://nighthosting.ru" target="_blank"><img
-                                    src="<?= $path ?>/img/nighthosting.png" alt="NightHosting"></a>
                             <?= $this->section($adt->top, '{0}') ?>
                         </div>
                     </div>
