@@ -153,7 +153,7 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
             break;
         case 'id_user' :
             $ank = new user($files [$i]->id_user);
-            $post2 = __('Добавил') . ': ' . $ank->login . "\n";
+            $post2 = __('Добавил' . $ank->sex? '':'а') . ': ' . $ank->login . "\n";
             break;
         default :
             $post2 = '';

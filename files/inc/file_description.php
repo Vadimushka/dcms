@@ -208,7 +208,7 @@ if (empty($_GET['act'])) {
         $ank = new user($file->id_user);
 
         $post = $listing->post();
-        $post->title = __('Файл добавил');
+        $post->title = __('Добавил' . $ank->sex? '':'а');
         $post->content = $ank->nick;
         $post->url = '/profile.view.php?id=' . $ank->id;
         $post->time = misc::when($file->time_add);
