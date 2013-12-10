@@ -178,7 +178,7 @@ foreach ($browser_types as $b_type) {
 $options = array(); // Врменной сдвиг
 for ($i = -12; $i < 12; $i++)
     $options [] = array($i, date('G:i', TIME + $i * 60 * 60), $ank->time_shift == $i);
-$form->select('time_shift', __('Время') . ' (' . strtoupper($b_type) . ')', $options);
+$form->select('time_shift', __('Время'), $options);
 
 $form->text('realname', __('Реальное имя'), $ank->realname);
 
@@ -188,9 +188,9 @@ $form->text('ank_m_r', false, $ank->ank_m_r, false, 2);
 $form->text('ank_g_r', false, $ank->ank_g_r, true, 4);
 
 $form->text('balls', __('Баллы'), $ank->balls);
-$form->text('icq', __('Номер ICQ'), $ank->icq_uin);
+$form->text('icq', 'ICQ'), $ank->icq_uin);
 $form->checkbox('vis_icq', __('Показывать %s', 'ICQ'), $ank->vis_icq);
-$form->text('skype', __('Skype логин'), $ank->skype);
+$form->text('skype', 'Skype', $ank->skype);
 $form->checkbox('vis_skype', __('Показывать %s', 'Skype'), $ank->vis_skype);
 $form->text('reg_mail', 'Primary E-mail', $ank->reg_mail);
 $form->text('email', 'E-mail', $ank->email);
