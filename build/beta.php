@@ -2,7 +2,7 @@
 
 include '../sys/inc/start.php';
 $doc = new document();
-$doc->title = 'Скачать DCMS (BETA)';
+$doc->title = __('Скачать %s', 'DCMS (BETA)');
 
 $listing = new listing();
 
@@ -23,7 +23,7 @@ if ($conf_release['build_num'] == $conf['build_num']) {
 }
 
 
-$doc->title = 'Скачать DCMS (BETA #' . $conf['build_num'] . ')';
+$doc->title = __('Скачать %s', 'DCMS (BETA #' . $conf['build_num'] . ')');
 
 $ch_files = (array) glob(H . '/sys/docs/changelog/' . $conf['version_last'] . '.*.txt');
 
