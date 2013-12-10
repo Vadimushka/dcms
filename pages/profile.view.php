@@ -9,18 +9,12 @@ include_once '../sys/inc/start.php';
 $doc = new document ();
 $doc->title = __('Анкета');
 
-if (isset($_GET ['id']))
-    $ank = new user((int)$_GET ['id']);
-else
-    $ank = $user;
+$ank = (empty($_GET ['id'])) ? $user : new user((int)$_GET ['id']);
 
 if (!$ank->group)
     $doc->access_denied(__('Нет данных'));
 
-if ($user->id && $ank->id == $user->id)
-    $doc->title = __('Моя анкета');
-else
-    $doc->title = __('Анкета "%s"', $ank->login);
+$doc->title = ($user->id && $ank->id == $user->id)? __('Моя анкета') : __('Анкета "%s"', $ank->login);
 
 $doc->description = __('Анкета "%s"', $ank->login);
 $doc->keywords [] = $ank->login;

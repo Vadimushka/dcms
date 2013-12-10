@@ -63,7 +63,7 @@ if (isset($_POST ['save'])) {
         if (empty($_POST ['skype']))
             $user->skype = '';
         elseif (!is_valid::skype($_POST ['skype']))
-            $doc->err(__('Указан не корректный логин Skype'));
+            $doc->err(__('Указан не корректный %s', 'Skype login'));
         else {
             $user->skype = $_POST ['skype'];
         }
@@ -73,7 +73,7 @@ if (isset($_POST ['save'])) {
         if ($user->wmid && $user->wmid != $_POST ['wmid_tmp']) {
             $doc->err(__('Активированный WMID изменять и удалять запрещено'));
         } elseif (!is_valid::wmid($_POST ['wmid_tmp'])) {
-            $doc->err(__('Указан не корректный WebMoney идентификатор'));
+            $doc->err(__('Указан не корректный %s', 'WMID'));
         } elseif ($user->wmid != $_POST ['wmid_tmp']) {
             $tmp_code = passgen();
 
@@ -97,7 +97,7 @@ if (isset($_POST ['save'])) {
         if (empty($_POST ['email']))
             $user->email = '';
         elseif (!is_valid::mail($_POST ['email']))
-            $doc->err(__('Указан не корректный E-mail'));
+            $doc->err(__('Указан не корректный %s', 'E-Mail'));
         else {
             $user->email = $_POST ['email'];
         }
