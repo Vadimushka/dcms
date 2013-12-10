@@ -96,7 +96,7 @@ abstract class text {
         $str = (string) $str;
         // обработка ника
         //$str = preg_replace_callback('#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31})([\!\.\,\ \)\(]|$)#uim', array('text', 'nick'), $str);
-        $str = preg_replace("#(^( |\r|\n)+)|(( |\r|\n)+$)|([^\pL\r\n\s0-9" . preg_quote(' []|`@\'"-_+=~!#:;$%^&*()?/\\.,<>{}©№', '#') . "]+)#ui", '', $str);
+        $str = preg_replace("#(^( |\r|\n)+)|(( |\r|\n)+$)|([^\pL\r\n\s0-9" . preg_quote(' []|`@\'ʼ"-–—_+=~!#:;$%^&*()?/\\.,<>{}©№«»', '#') . "]+)#ui", '', $str);
 
         $inputbbcode = new inputbbcode($str);
         $str = $inputbbcode->get_html();
@@ -131,12 +131,12 @@ abstract class text {
 
         $bbcode = new bbcode($str);
 
-        $bbcode->mnemonics['[add]'] = '<img src="/sys/images/icons/bb.add.png" alt="" />';
-        $bbcode->mnemonics['[del]'] = '<img src="/sys/images/icons/bb.del.png" alt="" />';
-        $bbcode->mnemonics['[fix]'] = '<img src="/sys/images/icons/bb.fix.png" alt="" />';
-        $bbcode->mnemonics['[change]'] = '<img src="/sys/images/icons/bb.change.png" alt="" />';
-        $bbcode->mnemonics['[secure]'] = '<img src="/sys/images/icons/bb.secure.png" alt="" />';
-        $bbcode->mnemonics['[notice]'] = '<img src="/sys/images/icons/bb.notice.png" alt="" />';
+        $bbcode->mnemonics['[add]'] = '<img src="/sys/images/icons/bb.add.png" alt="add" />';
+        $bbcode->mnemonics['[del]'] = '<img src="/sys/images/icons/bb.del.png" alt="del" />';
+        $bbcode->mnemonics['[fix]'] = '<img src="/sys/images/icons/bb.fix.png" alt="fix" />';
+        $bbcode->mnemonics['[change]'] = '<img src="/sys/images/icons/bb.change.png" alt="change" />';
+        $bbcode->mnemonics['[secure]'] = '<img src="/sys/images/icons/bb.secure.png" alt="secure" />';
+        $bbcode->mnemonics['[notice]'] = '<img src="/sys/images/icons/bb.notice.png" alt="notice" />';
 
         $str = $bbcode->get_html();
 
