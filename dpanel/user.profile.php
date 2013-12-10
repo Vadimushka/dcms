@@ -188,7 +188,7 @@ $form->text('ank_m_r', false, $ank->ank_m_r, false, 2);
 $form->text('ank_g_r', false, $ank->ank_g_r, true, 4);
 
 $form->text('balls', __('Баллы'), $ank->balls);
-$form->text('icq', 'ICQ'), $ank->icq_uin);
+$form->text('icq', 'ICQ', $ank->icq_uin);
 $form->checkbox('vis_icq', __('Показывать %s', 'ICQ'), $ank->vis_icq);
 $form->text('skype', 'Skype', $ank->skype);
 $form->checkbox('vis_skype', __('Показывать %s', 'Skype'), $ank->vis_skype);
