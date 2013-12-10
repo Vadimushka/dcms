@@ -23,6 +23,6 @@ if (file_exists('builds/' . $name . '.zip')) {
 } else {
     $doc = new document();
     $doc->title = $name;
-    $doc->err('Файл не найден');
+    $doc->err(__('Файл не найден'));
 }
 ?>
