@@ -105,7 +105,7 @@ function onTextareaBBcodeClickSMALL(event) {
 
 function onTextareaBBcodeClickIMG(event) {
     var textarea = this.parentNode.parentNode.lastChild;
-    DCMS.Dom.inputInsert(textarea, '[img]http://', '[/img]');
+    DCMS.Dom.inputInsert(textarea, '[img]', '[/img]');
 }
 
 function onTextareaBBcodeClickPHP(event) {
