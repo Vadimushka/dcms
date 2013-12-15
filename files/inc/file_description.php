@@ -333,10 +333,8 @@ if (empty($_GET['act'])) {
 
     //$posts = array();
     $listing = new listing();
-    $pages = new pages;
-    $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `files_comments` WHERE `id_file` = '$file->id'"), 0); // количество сообщений
-    $pages->this_page(); // получаем текущую страницу
-
+    $pages = new pages(mysql_result(mysql_query("SELECT COUNT(*) FROM `files_comments` WHERE `id_file` = '$file->id'"), 0));
+   
     $q = mysql_query("SELECT * FROM `files_comments` WHERE `id_file` = '$file->id' ORDER BY `id` DESC LIMIT ".$pages->limit);
     while ($comment = mysql_fetch_assoc($q)) {
         $ank = new user($comment['id_user']);
