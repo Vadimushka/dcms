@@ -53,7 +53,7 @@ if ($user->group && $ank->id && $user->id != $ank->id && isset($_GET ['friend'])
         if (isset($_GET ['friend']) && isset($_POST ['add'])) {
             // предлагаем дружбу
             // отметка о запросе дружбы
-            mysql_query("INSERT INTO `friends` (`confirm`, `id_user`, `id_friend`) VALUES ('0', '$ank->id', '$user->id'), ('1', '$user->id', '$ank->id')");
+            mysql_query("INSERT INTO `friends` (`confirm`, `id_user`, `id_friend`) VALUES ('0', '$ank->id', '$user->id')");
             mysql_query("UPDATE `users` SET `friend_new_count` = `friend_new_count` + '1' WHERE `id` = '{$ank->id}' LIMIT 1");
 
             $doc->msg(__('Предложение дружбы успешно отправлено'));
