@@ -72,6 +72,7 @@ while ($rev = mysql_fetch_assoc($q)) {
     $post->counter = '+' . $rev['rating'];
     $post->icon($ank2->icon());
     $post->content = text::toOutput($rev['text']);
+    $post->url = '/profile.view.php?id=' . $ank2->id ;
 }
 $listing->display(__('Отзывы отсутствуют'));
 
