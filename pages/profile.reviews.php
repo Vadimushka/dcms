@@ -60,7 +60,6 @@ if ($user->group && $can_write && isset($_POST['review']) && $user->id != $ank->
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `reviews_users` WHERE `id_ank` = '$ank->id'"), 0); // количество сообщений
-$pages->this_page(); // получаем текущую страницу
 
 $q = mysql_query("SELECT * FROM `reviews_users` WHERE `id_ank` = '$ank->id' ORDER BY `id` DESC LIMIT " . $pages->limit);
 

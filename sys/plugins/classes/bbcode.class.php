@@ -144,7 +144,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'localimg')
         ),
         'php' => array(
             'handler' => 'php_2html',
