@@ -1,4 +1,0 @@
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteRule ^pages/([0-9]+)/ pages/index.php?id=$1 [L,QSA]
-</IfModule>
