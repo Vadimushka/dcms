@@ -36,7 +36,7 @@ if (isset($_POST['create'])) {
             if ($code_main == $code_other) {
                 mysql_query("INSERT INTO `advertising` (`space`, `url_link`, `name`, `url_img`, `page_main`, `page_other`, `time_create`, `time_start`, `time_end`, `bold`)
 VALUES ('" . my_esc($id_space) . "', '" . my_esc($main[1]) . "', '" . my_esc($main[4]) . "', '" . my_esc($main[2]) . "', '1', '1', '" . TIME . "', '0', '0', '0')");
-                header('Refresh: 1; url=adt.settings.php?id=' . $id_space);
+                header('Refresh: 1; url=adt.php?id=' . $id_space);
 
                 $doc->msg(__('Баннер успешно установлен'));
                 $doc->ret(__('Вернуться'), "adt.php?id=$id_space");
