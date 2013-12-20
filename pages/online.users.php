@@ -2,11 +2,10 @@
 
 include_once '../sys/inc/start.php';
 $doc = new document();
-$doc->title = __('Сейчас на сайте');
 
-$pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `users_online`"), 0);
-$pages->this_page(); // получаем текущую страницу
+$pages = new pages(mysql_result(mysql_query("SELECT COUNT(*) FROM `users_online`"), 0)); // получаем текущую страницу
+
+$doc->title = __('Сейчас на сайте (%s)', $pages->posts);
 
 $q = mysql_query("SELECT `users_online`.* , `browsers`.`name` AS `browser`
  FROM `users_online`
