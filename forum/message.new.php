@@ -14,7 +14,11 @@ if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
 }
 $id_theme = (int)$_GET['id_theme'];
 
-$q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_write` <= '$user->group' LIMIT 1");
+$q = mysql_query("SELECT `forum_themes`.* , `forum_categories`.`name` AS `category_name` , `forum_topics`.`name` AS `topic_name`
+FROM `forum_themes`
+LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_themes`.`id_category`
+LEFT JOIN `forum_topics` ON `forum_topics`.`id` = `forum_themes`.`id_topic`
+WHERE `forum_themes`.`id` = '$id_theme' AND `forum_themes`.`group_show` <= '$user->group' AND `forum_topics`.`group_show` <= '$user->group' AND `forum_categories`.`group_show` <= '$user->group' LIMIT 1");
 
 if (!mysql_num_rows($q)) {
     if (isset($_GET['return']))
