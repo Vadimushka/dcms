@@ -36,3 +36,4 @@ if ($user->group && $ank->group) {
 
 header('Content-type: application/json');
 echo json_encode($mail);
+?>

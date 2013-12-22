@@ -82,3 +82,4 @@ $listing->sortable = '?sortable';
 $listing->display(__('Доступных Вам категорий нет'));
 
 $doc->ret(__('Форум'), 'index.php');
+?>

@@ -78,7 +78,7 @@ class install_convert_old_version {
 
            // if (function_exists('set_time_limit'))
               //  set_time_limit(max(mysql_num_rows($q) / 2, 30));
-            while ($voice = mysql_fetch_assoc($q)) {
+            while ($voice = $q->fetch()) {
                 DB::me()->query("INSERT INTO `reviews_users` (`id_user`, `id_ank`, `rating`, `time`)
   VALUES ('$voice[id_user]', '$voice[id_kont]', '$voice[rating]', '" . TIME . "')");
             }
@@ -147,7 +147,7 @@ class install_convert_old_version {
 
         if (isset($_POST['obmen']) && empty($this->obmen)) {
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "obmennik_dir` ORDER BY `id` ASC");
-            while ($od = mysql_fetch_assoc($q)) {
+            while ($od = $q->fetch()) {
                 $d_path = H . '/sys/files/.obmen/' . $od['dir'];
                 if (!@is_dir($d_path) && !filesystem::mkdir($d_path))
                     continue;

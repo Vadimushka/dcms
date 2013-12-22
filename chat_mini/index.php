@@ -91,3 +91,4 @@ $pages->display('?'); // вывод страниц
 
 if ($user->group >= 3)
     $doc->act(__('Удаление сообщений'), 'message.delete_all.php');
+?>

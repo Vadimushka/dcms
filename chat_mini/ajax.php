@@ -72,3 +72,4 @@ if (isset($_POST['send'])) {
 
 header('Content-type: application/json; charset=utf-8', true);
 echo json_encode($json);
+?>

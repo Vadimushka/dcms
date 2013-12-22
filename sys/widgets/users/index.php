@@ -46,7 +46,7 @@ $post->hightlight = true;
 $post->icon('guest');
 $post->title = __('Гости на сайте');
 $post->url = '/online.guest.php';
-$res = $db->query("SELECT COUNT(*) FROM `guest_online` WHERE `conversions` >= '5'");
+$res = $db->query("SELECT COUNT(*) AS cnt FROM `guest_online` WHERE `conversions` >= '5'");
 $post->counter = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
 $listing->display();
