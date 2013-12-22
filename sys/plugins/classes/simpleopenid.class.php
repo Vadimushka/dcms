@@ -54,12 +54,12 @@
   https://steve.myopenid.com
   http://steve.myopenid.com/
   http://steve.myopenid.com
-  ... are representing one single user. Some OpenIDs can be in format openidserver.com/users/user/ - keep this in mind when storing identities
+  ... are representing one single user. Some OpenIDs can be in toOutput openidserver.com/users/user/ - keep this in mind when storing identities
 
   To help you store an OpenID in your DB, you can use function:
   $openid_db_safe = $openid->OpenID_Standarize($upenid);
   This may not be comatible with current specs, but it works in current enviroment. Use this function to get openid
-  in one format like steve.myopenid.com (without trailing slashes and http/https).
+  in one toOutput like steve.myopenid.com (without trailing slashes and http/https).
   Use output to insert Identity to database. Don't use this for validation - it may fail.
 
  */
@@ -334,5 +334,3 @@ class SimpleOpenID {
     }
 
 }
-
-?>

@@ -37,6 +37,14 @@ td {
     
 }
 
+.DCMS_nick_donate{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url("/sys/images/icons/donate.png");
+    margin-left: 3px;
+}
+
 .DCMS_quote{
     border: 1px solid #ccc;
     font-size: 90%;
@@ -48,6 +56,7 @@ td {
 .DCMS_phpcode{
     max-width: 600px;
     overflow: auto;
+    cursor: text;
 }
 
 .DCMS_font_bold{
@@ -68,4 +77,16 @@ td {
 
 .DCMS_spoiler_content{
     
+}
+
+.DCMS_youtube{
+    text-align: center;
+    padding: 5px 0;
+}
+
+.DCMS_youtube iframe{
+    width: 600px;
+    height: 360px;
+    display: inline-block;
+    max-width: 100%;
 }

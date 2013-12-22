@@ -12,7 +12,7 @@ if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id_theme'];
+$id_theme = (int)$_GET['id_theme'];
 
 $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
 $q->execute(Array($id_theme, $user->group));
@@ -103,7 +103,7 @@ if (!empty($_POST['vote'])) {
             }
 
             if (isset($_GET['return']))
-                $doc->ret('В тему', for_value($_GET['return']));
+                $doc->ret('В тему', text::toValue($_GET['return']));
             else
                 $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
             exit;
@@ -122,7 +122,6 @@ $form->button(__('Применить'));
 $form->display();
 
 if (isset($_GET['return']))
-    $doc->ret(__('В тему'), for_value($_GET['return']));
+    $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
-?>

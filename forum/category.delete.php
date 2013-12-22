@@ -11,7 +11,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->ret(__('Форум'), './');
     exit;
 }
-$id_category = (int) $_GET['id'];
+$id_category = (int)$_GET['id'];
 
 $q = $db->prepare("SELECT * FROM `forum_categories` WHERE `id` = ? AND `group_edit` <= ?");
 $q->execute(Array($id_category, $user->group));
@@ -53,10 +53,6 @@ WHERE `forum_topics`.`id_category` = ?");
 
         $res = $db->prepare("DELETE FROM `forum_categories` WHERE `id` = ? LIMIT 1");
         $res->execute(Array($category['id']));
-        // оптимизация таблиц после удаления данных
-        //   mysql_query("OPTIMIZE TABLE `forum_files`, `forum_categories`, `forum_topics`, `forum_themes`, `forum_messages`, `forum_history`, `forum_vote`, `forum_vote_votes`");
-        // разблокируем таблицы
-        //  mysql_query("UNLOCK TABLES");
 
         header('Refresh: 1; url=./');
         $dcms->log('Форум', 'Удаление категории "' . $category['name'] . '"');

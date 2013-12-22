@@ -52,11 +52,11 @@ if ($arr = $q->fetchAll()) {
 
         $is_open = (int) ($themes['group_write'] <= $topic['group_write']);
 
-        $post->icon("forum.theme.{$themes['top']}.$is_open");
-        $post->title = for_value($themes['name']);
-        $post->url = 'theme.php?id=' . $themes['id'];
-        $post->counter = $themes['count'];
-        $post->time = vremja($themes['time_last']);
+    $post->icon("forum.theme.{$themes['top']}.$is_open");
+    $post->title = text::toValue($themes['name']);
+    $post->url = 'theme.php?id=' . $themes['id'];
+    $post->counter = $themes['count'];
+    $post->time = misc::when($themes['time_last']);
 
 
         $autor = new user($themes['id_autor']);

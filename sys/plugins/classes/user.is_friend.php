@@ -17,13 +17,9 @@ function user_is_friend($user, $args) {
     if (!is_object($ank)) {
         $ank = $user;
     }
-
-
     if (!$ank->id) {
         return false;
     }
-
-
     if ($user->id && $user->id === $ank->id) {
         return true;
     }

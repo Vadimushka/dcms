@@ -4,9 +4,7 @@ include_once '../sys/inc/start.php';
 $doc = new document();
 $doc->title = __('Форум - Категории');
 
-
 $listing = new listing();
-
 
 $post = $listing->post();
 $post->url = 'search.php';
@@ -35,9 +33,6 @@ if ($new_themes) {
 }
 $post->icon('forum.lt');
 
-
-
-
 if (false === ($new_posts = cache_counters::get('forum.new_posts.' . $user->group))) {
     $res = $db->prepare("SELECT COUNT(DISTINCT(`msg`.`id_theme`)) AS cnt
 FROM `forum_messages` AS `msg`
@@ -61,9 +56,6 @@ if ($new_posts) {
     $post->counter = '+' . $new_posts;
 }
 $post->icon('forum.lp');
-
-
-
 
 
 if ($user->id) {
@@ -106,7 +98,7 @@ $q->execute(Array($user->group));
 while ($category = $q->fetch()) {
     $post = $listing->post();
     $post->url = "category.php?id=$category[id]";
-    $post->title = for_value($category['name']);
+    $post->title = text::toValue($category['name']);
     $post->icon('forum.category');
     $post->post = text::for_opis($category['description']);
 }

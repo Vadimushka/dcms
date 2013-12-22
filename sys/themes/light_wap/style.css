@@ -316,6 +316,11 @@ table.links {
     font-weight: bold;
 }
 
+/* ну мало ли...*/
+.DCMS_youtube iframe{
+    height: 240px;
+}
+
 /* Голосования */
 div.vote {
     margin: 3px;

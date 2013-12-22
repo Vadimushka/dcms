@@ -3,20 +3,22 @@
 /**
  * Формирование очереди писем email и поэтапная отправка.
  */
-abstract class mail {
+abstract class mail
+{
 
     /**
      * отправка писем из очереди
      * @param boolean $all Отправка сразу всех писем
      * @return boolean
      */
-    static function queue_process($all = false) {
+    static function queue_process($all = false)
+    {
         // кто-то уже занялся отправкой сообщений
         if (!$all && cache_events::get('mail.send_is_process')) {
             return false;
         }
         // остальные запросы пусть пропускают отправку
-        cache_events::set('mail.send_is_process', true, 5);
+        cache_events::set('mail.send_is_process', true, 60);
 
         $limit = $all ? '' : ' LIMIT 10';
         $q = DB::me()->query("SELECT * FROM `mail_queue` " . $limit);
@@ -39,12 +41,13 @@ abstract class mail {
 
     /**
      * Отправка Email или поставнока в очередь, если писем несколько
-     * @param mixed $toi Адресат или массив адресатов
+     * @param string|array $toi Адресат или массив адресатов
      * @param string $title заголовок сообщения
-     * @param string $content Содержимое письма
+     * @param string|array $content Содержимое письма
      * @return boolean
      */
-    static function send($toi, $title, $content) {
+    static function send($toi, $title, $content)
+    {
         // если сообщение одно, то отправляем сразу
         if (is_string($toi)) {
             return self::sendOfMail($toi, $title, $content);
@@ -52,7 +55,7 @@ abstract class mail {
 
 
         // если сообщений несколько, то ставим в очередь
-        $toi = (array) $toi;
+        $toi = (array)$toi;
 
         if (!$toi) {
             return false;
@@ -78,7 +81,8 @@ abstract class mail {
      * @param string $content
      * @return boolean
      */
-    static function sendOfMail($to, $title, $content) {
+    static function sendOfMail($to, $title, $content)
+    {
         global $dcms;
         // отправка сообщения функцией mail
         $EOL = "\r\n";
@@ -90,5 +94,4 @@ abstract class mail {
     }
 
 }
-
 ?>

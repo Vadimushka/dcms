@@ -5,4 +5,3 @@ foreach ($menu AS $item){
     else
         echo '<a href="'.$item['url'].'">'.$item['name'].'</a>';
 }
-?>

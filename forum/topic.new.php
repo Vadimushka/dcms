@@ -41,7 +41,7 @@ if (isset($_POST['name'])) {
 
         if (isset($_GET['return'])) {
             header('Refresh: 1; url=' . $_GET['return']);
-            $doc->ret(__('Вернуться'), for_value($_GET['return']));
+            $doc->ret(__('Вернуться'), text::toValue($_GET['return']));
         } else {
             header('Refresh: 1; url=topic.php?id=' . $id_topic . '&' . SID);
             $doc->ret(__('В раздел'), 'topic.php?id=' . $id_topic);
@@ -60,7 +60,6 @@ $form->button(__('Создать раздел'));
 $form->display();
 
 if (isset($_GET['return']))
-    $doc->ret(__('В категорию'), for_value($_GET['return']));
+    $doc->ret(__('В категорию'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В категорию'), 'category.php?id=' . $category['id']);
-?>

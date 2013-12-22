@@ -31,7 +31,7 @@ $autor = new user((int) $message['id_user']);
 $access_edit = false;
 $edit_time = $message['time'] - TIME + 600;
 
-if ($user->group >= $message['group_edit'])
+if ($user->group > $autor->group || $user->group == groups::max())
     $access_edit = true;
 elseif ($user->id == $autor->id && $edit_time > 0) {
     $access_edit = true;
@@ -59,7 +59,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'hide') {
     $res->execute(Array($message['id']));
     $doc->msg(__('Сообщение успешно скрыто'));
     if (isset($_GET['return']))
-        $doc->ret(__('В тему'), for_value($_GET['return']));
+        $doc->ret(__('В тему'), text::toValue($_GET['return']));
     else
         $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
     exit;
@@ -74,7 +74,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'show') {
     $res->execute(Array($message['id']));
     $doc->msg(__('Сообщение будет отображаться'));
     if (isset($_GET['return']))
-        $doc->ret('В тему', for_value($_GET['return']));
+        $doc->ret('В тему', text::toValue($_GET['return']));
     else
         $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
     exit;
@@ -100,7 +100,7 @@ if (isset($_POST['message'])) {
         $doc->msg(__('Сообщение успешно изменено'));
 
         if (isset($_GET['return']))
-            $doc->ret('В тему', for_value($_GET['return']));
+            $doc->ret('В тему', text::toValue($_GET['return']));
         else
             $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
         exit;
@@ -117,7 +117,7 @@ $form->display();
 $doc->act(__('Вложения'), 'message.files.php?id=' . $message['id'] . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
 
 if (isset($_GET['return']))
-    $doc->ret(__('В тему'), for_value($_GET['return']));
+    $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
 ?>

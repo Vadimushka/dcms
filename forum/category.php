@@ -34,7 +34,7 @@ $listing = new listing();
 while ($topics = $q->fetch()) {
     $post = $listing->post();
     $post->icon('forum.topic.png');
-    $post->title = for_value($topics['name']);
+    $post->title = text::toValue($topics['name']);
     $post->content = text::for_opis($topics['description']);
     $post->url = "topic.php?id={$topics['id']}";
 }

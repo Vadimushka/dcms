@@ -33,6 +33,7 @@ if (isset($_POST['send'])) {
     $json['remove'] = $skip_ids;
     $json['add'] = array();
 
+
     $res = $db->query("SELECT COUNT(*) AS cnt FROM `chat_mini`");
     $cnt = ($row = $res->fetch()) ? $row['cnt'] : 0;
     $pages = new pages($cnt);
@@ -45,18 +46,18 @@ if (isset($_POST['send'])) {
         foreach ($arr AS $message) {
             $id_post = 'chat_post_' . $message['id'];
 
-            if (in_array($id_post, $skip_ids)) {
-                $key = array_search($id_post, $json['remove']);
-                unset($json['remove'][$key]);
-            } else {
-                $ank = new user($message['id_user']);
-                $post = new listing_post();
-                $post->id = $id_post;
-                $post->url = 'actions.php?id=' . $message['id'];
-                $post->time = vremja($message['time']);
-                $post->title = $ank->nick();
-                $post->post = output_text($message['message']);
-                $post->icon($ank->icon());
+        if (in_array($id_post, $skip_ids)) {
+            $key = array_search($id_post, $json['remove']);
+            unset($json['remove'][$key]);
+        } else {
+            $ank = new user($message['id_user']);
+            $post = new listing_post();
+            $post->id = $id_post;
+            $post->url = 'actions.php?id=' . $message['id'];
+            $post->time = misc::when($message['time']);
+            $post->title = $ank->nick();
+            $post->post = text::toOutput($message['message']);
+            $post->icon($ank->icon());
 
                 $json['add'][] = array(
                     'after_id' => $after_id,
@@ -71,4 +72,3 @@ if (isset($_POST['send'])) {
 
 header('Content-type: application/json; charset=utf-8', true);
 echo json_encode($json);
-?>

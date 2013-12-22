@@ -45,7 +45,7 @@ class menu {
             $post = $this->_listing->post();
 
             if (empty($value['razdel'])) {
-                $post->url = for_value(@$this->value($value['url']));
+                $post->url = text::toValue(@$this->value($value['url']));
             } else {
                 $post->hightlight = true;
             }
@@ -75,5 +75,3 @@ class menu {
     }
 
 }
-
-?>

@@ -19,8 +19,8 @@ abstract class files_types {
 
     /**
      * Обработчик для получения описания файла
-     * @param type $path
-     * @return type
+     * @param string $path
+     * @return string
      */
     public static function getPropertiesType($path) {
         $pinfo = pathinfo(strtolower($path));
@@ -31,8 +31,8 @@ abstract class files_types {
 
     /**
      * Обработчик получения скриншота
-     * @param type $path
-     * @return type
+     * @param string $path
+     * @return string
      */
     public static function getScreenType($path) {
         $pinfo = pathinfo(strtolower($path));
@@ -43,7 +43,7 @@ abstract class files_types {
 
     /**
      * получение иконки
-     * @param type $path
+     * @param string $path
      * @return string
      */
     public static function getIconType($path) {
@@ -56,7 +56,7 @@ abstract class files_types {
 
     /**
      * получение mime-типа файла по расширению
-     * @param type $filename
+     * @param string $filename
      * @return string
      */
     public static function get_mime($filename) {
@@ -114,5 +114,3 @@ abstract class files_types {
     }
 
 }
-
-?>

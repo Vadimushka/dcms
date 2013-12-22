@@ -110,7 +110,7 @@ if (!empty($_POST['start'])) {
 $changelog = @file_get_contents(H . '/changelog.txt');
 
 if ($changelog) {
-    echo output_text($changelog);
+    echo text::toOutput($changelog);
 } else {
     $doc->err('Список изменений пуст');
 }

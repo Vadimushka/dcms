@@ -43,7 +43,6 @@ if (isset($_POST['save'])) {
             $theme['topic_name_old'] = $theme['topic_name'];
             $theme['topic_name'] = $topic['name'];
 
-
             $theme['id_category_old'] = $theme['id_category'];
             $theme['id_category'] = $topic['id_category'];
             $theme['category_name_old'] = $theme['category_name'];
@@ -107,4 +106,3 @@ $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);
 $doc->ret(empty($theme['topic_name']) ? __('В раздел') : $theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);
 $doc->ret(empty($theme['category_name']) ? __('В категорию') : $theme['category_name'], 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
-?>

@@ -79,5 +79,3 @@ abstract class crypt {
     }
 
 }
-
-?>

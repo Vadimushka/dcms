@@ -164,14 +164,14 @@ $listing = new listing();
 
 $post = $listing->post();
 $post->icon('adt');
-$post->title = for_value($adt['name']);
+$post->title = text::toValue($adt['name']);
 $post->hightlight = true;
 
 
 if ($adt['time_create']) {
     $post = $listing->post();
     $post->title = __('Дата создания');
-    $post->content = vremja($adt['time_create']);
+    $post->content = misc::when($adt['time_create']);
 }
 
 $post = $listing->post();
@@ -180,9 +180,9 @@ if (!$adt['time_start']) {
     $post->content = __('Нет данных');
 } elseif ($adt['time_start'] > TIME) {
     $post->hightlight = true;
-    $post->content = vremja($adt['time_start']);
+    $post->content = misc::when($adt['time_start']);
 } else {
-    $post->content = vremja($adt['time_start']);
+    $post->content = misc::when($adt['time_start']);
 }
 
 $post = $listing->post();
@@ -190,7 +190,7 @@ $post->title = __('Конец показа');
 if (!$adt['time_end'])
     $post->content = __('Бесконечный показ');
 else
-    $post->content = vremja($adt['time_end']);
+    $post->content = misc::when($adt['time_end']);
 
 $listing->display();
 

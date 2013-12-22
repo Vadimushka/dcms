@@ -3,7 +3,8 @@
 /**
  * Работа с виджетами
  */
-class widget {
+class widget
+{
 
     protected $_isset = false;
     protected $_data = array();
@@ -12,7 +13,8 @@ class widget {
      * Инициализация виджета
      * @param string $path Путь к папке виджета
      */
-    function __construct($path) {
+    function __construct($path)
+    {
         $this->_data ['path_abs'] = realpath($path);
         $this->_data ['runame'] = $this->_data ['name'] = basename($this->_data ['path_abs']);
         $this->_data ['version'] = '1.0'; // версия
@@ -29,14 +31,15 @@ class widget {
         if ($config = ini::read($this->_data ['path_abs'] . '/config.ini')) {
             $this->_isset = true;
             // загружаем конфиг
-            $this->_data = array_merge($this->_data, (array) @$config);
+            $this->_data = array_merge($this->_data, (array)@$config);
         }
     }
 
     /**
      * Выводим сформированный HTML код виджета в браузер
      */
-    function display() {
+    function display()
+    {
         if (!$this->_isset) {
             return;
         }
@@ -58,7 +61,8 @@ class widget {
      * @global \dcms $dcms
      * @return string
      */
-    function getContent() {
+    function getContent()
+    {
         if (!$this->_isset) {
             return;
         }
@@ -86,7 +90,8 @@ class widget {
      * @global \language_pack $user_language_pack
      * @return boolean
      */
-    protected function _getCacheId() {
+    protected function _getCacheId()
+    {
         if (!$this->_isset) {
             return false;
         }
@@ -126,7 +131,8 @@ class widget {
         return implode('.', $cache_id);
     }
 
-    function __get($n) {
+    function __get($n)
+    {
         if (!$this->_isset) {
             return false;
         }
@@ -134,14 +140,14 @@ class widget {
         return isset($this->_data [$n]) ? $this->_data [$n] : false;
     }
 
-    function __set($n, $v) {
-        if (!$this->_isset) {
-            return false;
-        }
+    function __set($n, $v)
+    {
+        if (!$this->_isset)
+            return;
 
-        if (!isset($this->_data [$n])) {
-            return false;
-        }
+        if (!isset($this->_data [$n]))
+            return;
+
         $this->_data [$n] = $v;
     }
 
@@ -149,10 +155,11 @@ class widget {
      * Сохранение конфига виджета
      * @return boolean
      */
-    function saveData() {
-        if (!$this->_isset) {
-            return;
-        }
+    function saveData()
+    {
+        if (!$this->_isset)
+            return false;
+
         return ini::save($this->_data ['path_abs'] . '/config.ini', $this->_data);
     }
 

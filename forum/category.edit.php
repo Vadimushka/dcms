@@ -129,9 +129,8 @@ $doc->act(__('Чистить категорию'), 'category.clear.php?id=' . $c
 $doc->act(__('Удалить категорию'), 'category.delete.php?id=' . $category['id']);
 
 if (isset($_GET['return']))
-    $doc->ret(__('В категорию'), for_value($_GET['return']));
+    $doc->ret(__('В категорию'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В категорию'), 'category.php?id=' . $category['id']);
 
 $doc->ret(__('Форум'), './');
-?>

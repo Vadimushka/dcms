@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id'];
+$id_theme = (int)$_GET['id'];
 
 $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
 $q->execute(Array($id_theme, $user->group));
@@ -23,9 +23,11 @@ if (!$theme = $q->fetch()) {
 $doc->title .= ' - ' . $theme['name'];
 
 switch (@$_GET['show']) {
-    case 'all':$show = 'all';
+    case 'all':
+        $show = 'all';
         break;
-    default:$show = 'part';
+    default:
+        $show = 'part';
         break;
 }
 
@@ -73,8 +75,6 @@ $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
-
-
 $listing = new listing();
 
 if ($show == 'part') {
@@ -95,7 +95,7 @@ if ($arr = $q->fetchAll()) {
         $ank = new user((int) $messages['id_user']);
 
         $ch->title = $ank->nick;
-        $ch->time = vremja($messages['time']);
+        $ch->time = misc::when($messages['time']);
         $ch->name = 'post' . $messages['id'];
         $ch->content = text::for_opis($messages['message']);
     }

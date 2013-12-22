@@ -1,6 +1,6 @@
 <?php
 
-if (isset($_POST['edit_unlink']) && $file->name {0} !== '.') {
+if (isset($_POST['edit_unlink']) && $file->name{0} !== '.') {
     $id_user = $file->id_user;
     $runame = $file->runame;
     if ($file->delete()) {
@@ -10,14 +10,14 @@ if (isset($_POST['edit_unlink']) && $file->name {0} !== '.') {
             $ank->mess("Ваш файл $runame был удален.\nПричина: $reason.\nУдалил [user]$user->id[/user].");
 
             $dcms->log('Файлы', 'Удаление файла ' . $runame . ' пользователя [user]' . $id_user . '[/user]. Причина: ' . $reason);
-        }else
+        } else
             $dcms->log('Файлы', 'Удаление файла ' . $runame . ' пользователя [user]' . $id_user . '[/user]');
 
         $doc->msg(__('Файл успешно удален'));
         $doc->ret(__('Вернуться'), './?' . passgen() . '&amp;order=' . $order);
         header('Refresh: 1; url=./?' . passgen() . '&order=' . $order);
         exit;
-    }else {
+    } else {
         $doc->err(__('Ошибка при удалении файла'));
     }
 }
@@ -29,6 +29,10 @@ if (isset($_POST['edit_prop'])) {
         $file->description = text::input_text($_POST['description']);
     if (isset($_POST['description_small']))
         $file->description_small = text::input_text($_POST['description_small']);
+    if (isset($_POST ['meta_description']))
+        $file->meta_description = text::input_text($_POST ['meta_description']);
+    if (isset($_POST ['meta_keywords']))
+        $file->meta_keywords = text::input_text($_POST ['meta_keywords']);
 
     if (!empty($_POST['name'])) {
         $runame = text::for_name($_POST['name']);
@@ -60,7 +64,7 @@ if (isset($_POST['edit_prop'])) {
     }
     if ($file->group_edit <= $user->group) {
         if (isset($_POST['group_show'])) { // просмотр
-            $group_show = (int) $_POST['group_show'];
+            $group_show = (int)$_POST['group_show'];
             if (isset($groups[$group_show]) && $group_show != $file->group_show) {
                 $file->group_show = $group_show;
                 $doc->msg(__('Просмотр файла разрешен группе "%s" и выше', groups::name($group_show)));
@@ -69,7 +73,7 @@ if (isset($_POST['edit_prop'])) {
         }
 
         if (isset($_POST['group_edit'])) { // редактирование
-            $group_edit = (int) $_POST['group_edit'];
+            $group_edit = (int)$_POST['group_edit'];
             if (isset($groups[$group_edit]) && $group_edit != $file->group_edit) {
                 if ($file->group_show > $group_show)
                     $doc->err(__('Для изменения параметров файла группе "%s" сначала необходимо дать права на просмотр файла', groups::name($group_edit)));
@@ -82,8 +86,6 @@ if (isset($_POST['edit_prop'])) {
         }
     }
 }
-
-
 
 
 if (isset($_POST ['edit_path']) && !empty($_POST ['path_rel_new'])) {
@@ -114,4 +116,3 @@ if (isset($_POST ['edit_path']) && !empty($_POST ['path_rel_new'])) {
         $doc->err(__('Ошибка при выборе нового каталога'));
     }
 }
-?>

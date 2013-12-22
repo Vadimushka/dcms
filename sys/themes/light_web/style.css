@@ -233,6 +233,24 @@ html, body, #main{
     border-color: #A8A8A8;
 }
 
+.bbcode_smiles{
+    display: none;
+}
+
+.bbcode_smile{
+    display: inline-block;
+    vertical-align: bottom;
+    margin: 3px;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.bbcode_smile:hover{
+    background-color: #9bc4ff;
+    border-color: #607ba3;
+    border-radius: 2px;
+}
+
 .listing{
     margin-bottom: 10px;
     box-shadow: 0 1px 17px -9px black;

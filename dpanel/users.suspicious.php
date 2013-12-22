@@ -47,7 +47,7 @@ if (isset($_GET['id'])) {
     $post->icon($ank->icon());
     $post2 = __('E-mail: %s', $ank->reg_mail) . "\n";
     $post2 .= __('Фраза: %s', $sus['text']);
-    $post->content = output_text($post2);
+    $post->content = text::toOutput($post2);
 
 
 
@@ -98,7 +98,8 @@ if ($arr = $q->fetchAll()) {
         $post2 = __('E-mail: %s', $ank->reg_mail) . "\n";
         $post2 .= __('Фраза: %s', $sus['text']);
 
-        $post->content = output_text($post2);
+
+        $post->content = text::toOutput($post2);
     }
 }
 

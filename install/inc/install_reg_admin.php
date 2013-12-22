@@ -76,13 +76,13 @@ class install_reg_admin {
 
     function form() {
         echo "<div style='background-color:" . ($this->err_login ? '#FFADB0' : '#ADFFB0') . "'>";
-        echo __('Логин') . ":<br /><input type='text' name='login' value='" . for_value($this->login) . "' /><br />";
+        echo __('Логин') . ":<br /><input type='text' name='login' value='" . text::toValue($this->login) . "' /><br />";
         echo "</div>";
         echo "<div style='background-color:" . ($this->err_pass1 ? '#FFADB0' : '#ADFFB0') . "'>";
-        echo __('Пароль') . ":<br /><input type='password' name='password' value='" . for_value($this->pass1) . "' /><br />";
+        echo __('Пароль') . ":<br /><input type='password' name='password' value='" . text::toValue($this->pass1) . "' /><br />";
         echo "</div>";
         echo "<div style='background-color:" . ($this->err_pass2 ? '#FFADB0' : '#ADFFB0') . "'>";
-        echo __('Подтверждение') . ":<br /><input type='password' name='password_retry' value='" . for_value($this->pass2) . "' /><br />";
+        echo __('Подтверждение') . ":<br /><input type='password' name='password_retry' value='" . text::toValue($this->pass2) . "' /><br />";
         echo "</div>";
         echo __('Пол') . ":<br /><select name='sex'><option value='1'>" . __('Мужской') . "</option><option value='0'>" . __('Женский') . "</option></select>";
 

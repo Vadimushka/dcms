@@ -33,7 +33,7 @@ class tables {
 
     /**
      * Получение дампа таблицы для вставки
-     * @param name $table Имя таблицы
+     * @param string $table Имя таблицы
      * @param int $c_ins Максимальное кол-во строк в одном INSERT`е
      * @return string
      */
@@ -97,3 +97,4 @@ class tables {
     }
 
 }
+?>

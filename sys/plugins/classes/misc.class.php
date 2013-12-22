@@ -3,14 +3,16 @@
 /**
  * Различные полезные функции
  */
-abstract class misc {
+abstract class misc
+{
 
     /**
      * Удаление пользователя и всех связанных с ним данных
      * @param int $id Идентификатор пользователя
      */
-    static function user_delete($id) {
-        $id = (int) $id;
+    static function user_delete($id)
+    {
+        $id = (int)$id;
         $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
         $res = DB::me()->prepare("DELETE FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = ?");
         foreach ($tables AS $v) {
@@ -26,7 +28,8 @@ abstract class misc {
      * @param string $module Модуль, к которому относится сообщение
      * @return boolean
      */
-    static function log($text, $module = 'system') {
+    static function log($text, $module = 'system')
+    {
         $time = date("H:i:s d.m.Y");
         $file = H . '/sys/logs/' . basename($module) . '.log';
 
@@ -43,40 +46,47 @@ abstract class misc {
 
     /**
      * перемещение ключа $key массива $array на $step шагов
-     * @param type $array
-     * @param type $key
-     * @param type $step
-     * @return type
+     * @param array $array
+     * @param string $key
+     * @param int $step
+     * @return array
      */
-    static function array_key_move(&$array, $key, $step = 1) {
+    static function array_key_move(&$array, $key, $step = 1)
+    {
         return arraypos::move($array, $key, $step);
     }
 
     /**
-     * 
+     *
      * @param int $num
      * @param string $one
      * @param string $two
      * @param string $more
      * @return string
      */
-    static function number($num, $one, $two, $more) {
-        $num = (int) $num;
+    static function number($num, $one, $two, $more)
+    {
+        $num = (int)$num;
         $l2 = substr($num, strlen($num) - 2, 2);
 
         if ($l2 >= 5 && $l2 <= 20)
             return $more;
         $l = substr($num, strlen($num) - 1, 1);
         switch ($l) {
-            case 1:return $one;
+            case 1:
+                return $one;
                 break;
-            case 2:return $two;
+            case 2:
+                return $two;
                 break;
-            case 3:return $two;
+            case 3:
+                return $two;
                 break;
-            case 4:return $two;
+            case 4:
+                return $two;
                 break;
-            default:return $more;
+            default:
+                return $more;
                 break;
         }
     }
@@ -86,10 +96,11 @@ abstract class misc {
      * @param int $g Год
      * @param int $m Месяц
      * @param int $d День
-     * @param boolean $read 
+     * @param boolean $read
      * @return string
      */
-    static function get_age($g, $m, $d, $read = false) {
+    static function get_age($g, $m, $d, $read = false)
+    {
         if (strlen($g) == 2)
             $g += 1900;
         if (strlen($g) == 3)
@@ -110,7 +121,8 @@ abstract class misc {
      * @param int $filesize размер в байтах
      * @return string размер в (KB, MB...)
      */
-    static function size_data($filesize = 0) {
+    static function getDataCapacity($filesize = 0)
+    {
         $filesize_ed = __('байт');
         if ($filesize >= 1024) {
             $filesize = round($filesize / 1024, 2);
@@ -143,7 +155,8 @@ abstract class misc {
      * @param boolean $adaptive Адаптивное представлени (вместо полной даты использовать "сегодня", "вчера")
      * @return string
      */
-    static function vremja($time = null, $adaptive = true) {
+    static function when($time = null, $adaptive = true)
+    {
         if ($time > TIME) {
             $time -= TIME;
             $mes = 0;
@@ -177,8 +190,8 @@ abstract class misc {
                 return $hour . ' час' . self::number($hour, '', 'а', 'ов') . ($min ? (', ' . $min . ' минут' . self::number($min, 'а', 'ы', '') . ($sec ? ' и ' . $sec . ' секунд' . self::number($sec, 'а', 'ы', '') : '')) : '');
             }
             if ($min) {
-                
-            }return $min . ' минут' . self::number($min, 'а', 'ы', '') . ($sec ? ' и ' . $sec . ' секунд' . self::number($sec, 'а', 'ы', '') : '');
+                return $min . ' минут' . self::number($min, 'а', 'ы', '') . ($sec ? ' и ' . $sec . ' секунд' . self::number($sec, 'а', 'ы', '') : '');
+            }
             return $sec . ' секунд' . self::number($sec, 'а', 'ы', '');
         } else {
             global $user;
@@ -222,21 +235,35 @@ abstract class misc {
      * @param int $v вариант написания
      * @return string
      */
-    static function rus_mes($num, $v = 1) {
+    static function getLocaleMonth($num, $v = 1)
+    {
         switch ($num) {
-            case 1:return __('Январ' . ($v ? 'я' : 'ь'));
-            case 2:return __('Феврал' . ($v ? 'я' : 'ь'));
-            case 3:return __('Март' . ($v ? 'а' : ''));
-            case 4:return __('Апрел' . ($v ? 'я' : 'ь'));
-            case 5:return __('Ма' . ($v ? 'я' : 'й'));
-            case 6:return __('Июн' . ($v ? 'я' : 'ь'));
-            case 7:return __('Июл' . ($v ? 'я' : 'ь'));
-            case 8:return __('Август' . ($v ? 'а' : ''));
-            case 9:return __('Сентябр' . ($v ? 'я' : 'ь'));
-            case 10:return __('Октябр' . ($v ? 'я' : 'ь'));
-            case 11:return __('Ноябр' . ($v ? 'я' : 'ь'));
-            case 12:return __('Декабр' . ($v ? 'я' : 'ь'));
-            default:return false;
+            case 1:
+                return __('Январ' . ($v ? 'я' : 'ь'));
+            case 2:
+                return __('Феврал' . ($v ? 'я' : 'ь'));
+            case 3:
+                return __('Март' . ($v ? 'а' : ''));
+            case 4:
+                return __('Апрел' . ($v ? 'я' : 'ь'));
+            case 5:
+                return __('Ма' . ($v ? 'я' : 'й'));
+            case 6:
+                return __('Июн' . ($v ? 'я' : 'ь'));
+            case 7:
+                return __('Июл' . ($v ? 'я' : 'ь'));
+            case 8:
+                return __('Август' . ($v ? 'а' : ''));
+            case 9:
+                return __('Сентябр' . ($v ? 'я' : 'ь'));
+            case 10:
+                return __('Октябр' . ($v ? 'я' : 'ь'));
+            case 11:
+                return __('Ноябр' . ($v ? 'я' : 'ь'));
+            case 12:
+                return __('Декабр' . ($v ? 'я' : 'ь'));
+            default:
+                return false;
         }
     }
 

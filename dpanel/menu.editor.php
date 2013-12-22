@@ -272,7 +272,7 @@ if (!empty($_GET['menu'])) {
         $post = $listing->post();
         $post->id = $name;
         $post->url = '?menu=' . urlencode($menu) . '&amp;item=' . urlencode($name);
-        $post->title = for_value($name);
+        $post->title = text::toValue($name);
 
         $post->icon(@$item['icon']);
 
@@ -299,7 +299,7 @@ if (!empty($_GET['menu'])) {
         if (!empty($item['group'])) {
             $post->content .= __('Только для группы [b]%s[/b] (%s)', groups::name($item['group']), $item['group']) . " \n";
         }
-        $post->content = output_text($post->content);
+        $post->content = text::toOutput($post->content);
     }
 
 
@@ -318,7 +318,7 @@ if (!empty($_GET['menu'])) {
 $listing = new listing();
 foreach ($menus as $menu) {
     $post = $listing->post();
-    $post->title = for_value($menu);
+    $post->title = text::toValue($menu);
     $post->url = '?menu=' . urlencode($menu);
     $post->icon('menu.editor');
 }

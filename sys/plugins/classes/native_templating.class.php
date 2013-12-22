@@ -1,16 +1,18 @@
 <?php
 
 /**
- * Шаблонизатор с PHP синтаксисом 
+ * Шаблонизатор с PHP синтаксисом
  */
-class native_templating {
+class native_templating
+{
 
     public $cache_template = true; // кэширование шаблона в памяти. Используется eval вместо include
     protected $_dir_template = ''; // папка с файлами шаблонов
     protected $_assigned = array(); // переменные, которые будут переданы в шаблон
 
-    function __construct() {
-        
+    function __construct()
+    {
+
     }
 
     /**
@@ -19,7 +21,8 @@ class native_templating {
      * @param mixed $value Значение
      * @param int $filter Тип фильтрации. 0 - без фильтрации, 1 - экранирование HTML, 2 - полноценная обработка BBCODE с фильтрацией
      */
-    public function assign($name, $value = null, $filter = 0) {
+    public function assign($name, $value = null, $filter = 0)
+    {
         if (is_array($name)) {
             foreach ($name as $key => $value) {
                 $this->assign($key, $value);
@@ -35,7 +38,8 @@ class native_templating {
      * @param string $tpl_file Путь к файлу шаблона или его имя, если указан dir_template
      * @return string HTML код после обработки
      */
-    public function fetch($tpl_file) {
+    public function fetch($tpl_file)
+    {
         if (($tpl_path = $this->_getTemplatePath($tpl_file)) === false) {
             return null;
         }
@@ -55,7 +59,8 @@ class native_templating {
      * выводим обработанный шаблон
      * @param string $tpl_file Путь к файлу шаблона или его имя, если указан dir_template
      */
-    public function display($tpl_file) {
+    public function display($tpl_file)
+    {
         echo $this->fetch($tpl_file);
     }
 
@@ -64,7 +69,8 @@ class native_templating {
      * @param string $tpl_name Путь к файлу шаблона или его имя, если указан dir_template
      * @return string Путь к файлу шаблона
      */
-    protected function _getTemplatePath($tpl_name) {
+    protected function _getTemplatePath($tpl_name)
+    {
         if (strpos($tpl_name, 'file:') === 0) {
             $abs_path = text::substr($tpl_name, 256, 5, '');
             $tpl_path = dirname($abs_path) . '/' . basename($abs_path, '.tpl') . '.tpl.php';
@@ -87,7 +93,8 @@ class native_templating {
      * @param string $tpl_path Путь к файлу шаблона или его имя, если указан dir_template
      * @return string
      */
-    protected function _getTemplate($tpl_path) {
+    protected function _getTemplate($tpl_path)
+    {
         static $templates = array();
         if (!array_key_exists($tpl_path, $templates)) {
             $templates[$tpl_path] = file_get_contents($tpl_path);
@@ -102,12 +109,13 @@ class native_templating {
      * @param boolean $reverse
      * @return string
      */
-    protected function section($array, $tpl, $reverse = false) {
+    protected function section($array, $tpl, $reverse = false)
+    {
         $return = '';
         if ($reverse)
             $array = array_reverse($array);
         foreach ($array AS $data) {
-            $return.=$this->replace($data, $tpl);
+            $return .= $this->replace($data, $tpl);
         }
         return $return;
     }
@@ -118,7 +126,8 @@ class native_templating {
      * @param string $tpl шаблон вида <a href="{url}">{name}</a>
      * @return string
      */
-    protected function replace($data, $tpl) {
+    protected function replace($data, $tpl)
+    {
         $keys = array();
         $values = array();
         foreach ($data AS $key => $value) {
@@ -127,5 +136,4 @@ class native_templating {
         }
         return str_replace($keys, $values, $tpl);
     }
-
 }

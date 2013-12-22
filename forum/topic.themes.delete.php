@@ -23,9 +23,11 @@ if (!$topic = $q->fetch()) {
 $doc->title .= ' - ' . $topic['name'];
 
 switch (@$_GET['show']) {
-    case 'all':$show = 'all';
+    case 'all':
+        $show = 'all';
         break;
-    default:$show = 'part';
+    default:
+        $show = 'part';
         break;
 }
 
@@ -94,12 +96,12 @@ if ($arr = $q->fetchAll()) {
     foreach ($arr AS $theme) {
         $ch = $listing->checkbox();
         $ch->name = 'theme' . $theme['id'];
-        $ch->title = for_value($theme['name']);
+        $ch->title = text::toValue($theme['name']);
 
         $autor = new user($theme['id_autor']);
         $last_msg = new user($theme['id_last']);
 
-        $ch->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . ' (' . vremja($theme['time_last']) . ')';
+        $ch->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . ' (' . misc::when($theme['time_last']) . ')';
     }
 }
 

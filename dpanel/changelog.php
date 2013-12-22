@@ -35,7 +35,7 @@ if (!empty($_GET['ver'])) {
 $listing = new listing();
 foreach ($files AS $name) {
     $post = $listing->post();
-    $post -> title = for_value($name);
+    $post -> title = text::toValue($name);
     $post -> url = '?ver=' . urlencode($name);
     $post -> icon('changelog');    
 }

@@ -13,7 +13,8 @@ function user_nick($user, $args) {
         return '[' . __('Пользователь удален') . ']';
     }
 
-    return '<span class="' . ($user->online ? 'DCMS_nick_on' : 'DCMS_nick_off') . '">' . $user->login . '</span>';
-}
+    $classes = array();
+    $classes[] = $user->online ? 'DCMS_nick_on' : 'DCMS_nick_off';
 
-?>
+    return '<span class="' . implode(' ', $classes) . '">' . $user->login . '</span>'.($user->donate_rub?'<span class="DCMS_nick_donate"></span>':'');
+}

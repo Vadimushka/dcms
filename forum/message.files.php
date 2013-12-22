@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора сообщения'));
     exit;
 }
-$id_message = (int) $_GET['id'];
+$id_message = (int)$_GET['id'];
 
 $q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id` = ?");
 $q->execute(Array($id_message));
@@ -37,7 +37,7 @@ if (!$theme = $q->fetch()) {
 }
 
 
-$autor = new user((int) $message['id_user']);
+$autor = new user((int)$message['id_user']);
 
 $access_edit = false;
 $edit_time = $message['time'] - TIME + 600;
@@ -106,7 +106,7 @@ if (!empty($_FILES['file'])) {
         }
     }
 } elseif (!empty($_GET['delete'])) {
-    
+
 }
 
 $doc->title = __('Файлы к сообщению от "%s"', $autor->login);
@@ -118,7 +118,7 @@ foreach ($content['files'] AS $file) {
     $post = $listing->post();
     $post->icon($file->icon());
     $post->image = $file->image();
-    $post->title = for_value($file->runame);
+    $post->title = text::toValue($file->runame);
     $post->url = "/files{$dir->path_rel}/" . urlencode($file->name) . ".htm";
     $post->content[] = $file->properties;
 }
@@ -130,10 +130,9 @@ $smarty->assign('files', 1);
 $smarty->assign('action', "/forum/message.files.php?id=$message[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
 $elements = array();
 $elements[] = array('type' => 'file', 'title' => 'Файл', 'br' => 1, 'info' => array('name' => 'file'));
-$elements[] = array('type' => 'text', 'br' => 1, 'value' => '* ' . __('Файлы, размер которых превышает %s, загружены не будут', size_data($dcms->forum_files_upload_size))); // кнопка
+$elements[] = array('type' => 'text', 'br' => 1, 'value' => '* ' . __('Файлы, размер которых превышает %s, загружены не будут', misc::getDataCapacity($dcms->forum_files_upload_size))); // кнопка
 $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Прикрепить'))); // кнопка
 $smarty->assign('el', $elements);
 $smarty->display('input.form.tpl');
 
 $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
-?>

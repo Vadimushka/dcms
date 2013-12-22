@@ -27,5 +27,3 @@ class files_screen_xap {
     }
 
 }
-
-?>

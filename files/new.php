@@ -37,11 +37,11 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
     $ank = new user($files[$i]->id_user);
 
     $post = $listing->post();
-    $post->title = for_value($files[$i]->runame);
+    $post->title = text::toValue($files[$i]->runame);
     $post->url = "/files" . $files[$i]->getPath() . ".htm";
     $post->image = $files[$i]->image();
     $post->icon($files[$i]->icon());
-    $post1 = __('Файл добавлен') . ': ' . vremja($files[$i]->time_add) . ($ank->id ? ' (' . $ank->nick . ')' : '') . "<br />\n";
+    $post1 = __('Файл добавлен') . ': ' . misc::when($files[$i]->time_add) . ($ank->id ? ' (' . $ank->nick . ')' : '') . "<br />\n";
 
 
     $post2 = '';
@@ -52,7 +52,7 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
     if ($description = $files[$i]->description_small)
         $post2 .= $description . "\n";
 
-    $post->post = $post1 . output_text($post2);
+    $post->post = $post1 . text::toOutput($post2);
 }
 
 $listing->display(__('За последние сутки небыло добавлено ни одного файла'));

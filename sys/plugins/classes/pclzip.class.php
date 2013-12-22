@@ -94,7 +94,7 @@ $g_pclzip_version = "2.8.2";
 //   -7 : Invalid extracted file size
 //   -8 : Unable to create directory
 //   -9 : Invalid archive extension
-//  -10 : Invalid archive format
+//  -10 : Invalid archive toOutput
 //  -11 : Unable to delete file (unlink)
 //  -12 : Unable to rename file (rename)
 //  -13 : Invalid header checksum
@@ -233,7 +233,7 @@ class PclZip {
     //   This method creates a Zip Archive. The Zip file is created in the
     //   filesystem. The files and directories indicated in $p_filelist
     //   are added in the archive. See the parameters description for the
-    //   supported format of $p_filelist.
+    //   supported toOutput of $p_filelist.
     //   When a directory is in the list, the directory and its content is added
     //   in the archive.
     //   In this synopsis, the function takes an optional variable list of
@@ -259,7 +259,7 @@ class PclZip {
     // Return Values :
     //   0 on failure,
     //   The list of the added files, with a status of the add action.
-    //   (see PclZip::listContent() for list entry format)
+    //   (see PclZip::listContent() for list entry toOutput)
     // --------------------------------------------------------------------------------
     function create($p_filelist) {
         $v_result = 1;
@@ -435,7 +435,7 @@ class PclZip {
     // Return Values :
     //   0 on failure,
     //   The list of the added files, with a status of the add action.
-    //   (see PclZip::listContent() for list entry format)
+    //   (see PclZip::listContent() for list entry toOutput)
     // --------------------------------------------------------------------------------
     function add($p_filelist) {
         $v_result = 1;
@@ -613,7 +613,7 @@ class PclZip {
     //                read_error : the file was not extracted because there was a error
     //                             while reading the file
     //                invalid_header : the file was not extracted because of an archive
-    //                                 format error (bad file header)
+    //                                 toOutput error (bad file header)
     //   Note that each time a method can continue operating when there
     //   is an action error on a file, the error is only logged in the file status.
     // Return Values :
@@ -673,7 +673,7 @@ class PclZip {
     // Return Values :
     //   0 or a negative value on failure,
     //   The list of the extracted files, with a status of the action.
-    //   (see PclZip::listContent() for list entry format)
+    //   (see PclZip::listContent() for list entry toOutput)
     // --------------------------------------------------------------------------------
     function extract() {
         $v_result = 1;
@@ -823,7 +823,7 @@ class PclZip {
     // Return Values :
     //   0 on failure,
     //   The list of the extracted files, with a status of the action.
-    //   (see PclZip::listContent() for list entry format)
+    //   (see PclZip::listContent() for list entry toOutput)
     // --------------------------------------------------------------------------------
     //function extractByIndex($p_index, options...)
     function extractByIndex($p_index) {
@@ -968,7 +968,7 @@ class PclZip {
     // Return Values :
     //   0 on failure,
     //   The list of the files which are still present in the archive.
-    //   (see PclZip::listContent() for list entry format)
+    //   (see PclZip::listContent() for list entry toOutput)
     // --------------------------------------------------------------------------------
     function delete() {
         $v_result = 1;
@@ -1136,7 +1136,7 @@ class PclZip {
         else if (is_string($p_archive)) {
 
             // ----- Check that $p_archive is a valid zip file
-            // TBC : Should also check the archive format
+            // TBC : Should also check the archive toOutput
             if (!is_file($p_archive)) {
                 // ----- Error log
                 PclZip::privErrorLog(PCLZIP_ERR_MISSING_FILE, "No file with filename '" . $p_archive . "'");
@@ -1581,7 +1581,7 @@ class PclZip {
                     // ----- Reduce the index list
                     // each index item in the list must be a couple with a start and
                     // an end value : [0,3], [5-5], [8-10], ...
-                    // ----- Check the format of each item
+                    // ----- Check the toOutput of each item
                     $v_sort_flag = false;
                     $v_sort_value = 0;
                     for ($j = 0; $j < sizeof($v_work_list); $j++) {
@@ -2880,7 +2880,7 @@ class PclZip {
         // ----- Store the offset position of the file
         $p_header['offset'] = ftell($this->zip_fd);
 
-        // ----- Transform UNIX mtime to DOS format mdate/mtime
+        // ----- Transform UNIX mtime to DOS toOutput mdate/mtime
         $v_date = getdate($p_header['mtime']);
         $v_mtime = ($v_date['hours'] << 11) + ($v_date['minutes'] << 5) + $v_date['seconds'] / 2;
         $v_mdate = (($v_date['year'] - 1980) << 9) + ($v_date['mon'] << 5) + $v_date['mday'];
@@ -2916,7 +2916,7 @@ class PclZip {
         // TBC
         //for(reset($p_header); $key = key($p_header); next($p_header)) {
         //}
-        // ----- Transform UNIX mtime to DOS format mdate/mtime
+        // ----- Transform UNIX mtime to DOS toOutput mdate/mtime
         $v_date = getdate($p_header['mtime']);
         $v_mtime = ($v_date['hours'] << 11) + ($v_date['minutes'] << 5) + $v_date['seconds'] / 2;
         $v_mdate = (($v_date['year'] - 1980) << 9) + ($v_date['mon'] << 5) + $v_date['mday'];
@@ -3112,7 +3112,7 @@ class PclZip {
             }
         }
 
-        // ----- Look for path to remove format (should end by /)
+        // ----- Look for path to remove toOutput (should end by /)
         if (($p_remove_path != "") && (substr($p_remove_path, -1) != '/')) {
             $p_remove_path .= '/';
         }
@@ -3736,7 +3736,7 @@ class PclZip {
         }
 
 
-        // ----- Write gz file format header
+        // ----- Write gz file toOutput header
         $v_binary_data = pack('va1a1Va1a1', 0x8b1f, Chr($p_entry['compression']), Chr(0x00), time(), Chr(0x00), Chr(3));
         @fwrite($v_dest_file, $v_binary_data, 10);
 
@@ -3750,7 +3750,7 @@ class PclZip {
             $v_size -= $v_read_size;
         }
 
-        // ----- Write gz file format footer
+        // ----- Write gz file toOutput footer
         $v_binary_data = pack('VV', $p_entry['crc'], $p_entry['size']);
         @fwrite($v_dest_file, $v_binary_data, 8);
 
@@ -4079,7 +4079,7 @@ class PclZip {
         $p_header['flag'] = $v_data['flag'];
         $p_header['filename_len'] = $v_data['filename_len'];
 
-        // ----- Recuperate date in UNIX format
+        // ----- Recuperate date in UNIX toOutput
         $p_header['mdate'] = $v_data['mdate'];
         $p_header['mtime'] = $v_data['mtime'];
         if ($p_header['mdate'] && $p_header['mtime']) {
@@ -4093,7 +4093,7 @@ class PclZip {
             $v_month = ($p_header['mdate'] & 0x01E0) >> 5;
             $v_day = $p_header['mdate'] & 0x001F;
 
-            // ----- Get UNIX date format
+            // ----- Get UNIX date toOutput
             $p_header['mtime'] = @mktime($v_hour, $v_minute, $v_seconde, $v_month, $v_day, $v_year);
         } else {
             $p_header['mtime'] = time();
@@ -4173,7 +4173,7 @@ class PclZip {
             $p_header['comment'] = '';
 
         // ----- Extract properties
-        // ----- Recuperate date in UNIX format
+        // ----- Recuperate date in UNIX toOutput
         //if ($p_header['mdate'] && $p_header['mtime'])
         // TBC : bug : this was ignoring time with 0/0/0
         if (1) {
@@ -4187,7 +4187,7 @@ class PclZip {
             $v_month = ($p_header['mdate'] & 0x01E0) >> 5;
             $v_day = $p_header['mdate'] & 0x001F;
 
-            // ----- Get UNIX date format
+            // ----- Get UNIX date toOutput
             $p_header['mtime'] = @mktime($v_hour, $v_minute, $v_seconde, $v_month, $v_day, $v_year);
         } else {
             $p_header['mtime'] = time();
@@ -5341,6 +5341,3 @@ function PclZipUtilTranslateWinPath($p_path, $p_remove_disk_letter = true) {
     }
     return $p_path;
 }
-
-// --------------------------------------------------------------------------------
-?>

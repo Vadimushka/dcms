@@ -52,7 +52,7 @@ if ($ank->id == $user->id && !empty($_GET ['act']) && $_GET ['act'] == 'create')
         if (!$name)
             $doc->err(__('Название состоит из запрещенных символов'));
         elseif (!$album = $albums_dir->mkdir($name))
-            $dir->err(__('Не удалось создать альбом'));
+            $doc->err(__('Не удалось создать альбом'));
         else {
             $doc->ret(__('К альбому %s', $name), 'photos.php?id=' . $ank->id . '&mp;album=' . urlencode($album->name));
             $doc->ret(__('К альбомам'), '?id=' . $ank->id);
@@ -84,7 +84,7 @@ $listing = new listing();
 for ($i = 0; $i < count($dirs); $i++) {
     $post = $listing->post();
     $post->icon($dirs [$i]->icon());
-    $post->title = for_value($dirs [$i]->runame);
+    $post->title = text::toValue($dirs [$i]->runame);
     $post->url = "photos.php?id={$ank->id}&amp;album=" . urlencode($dirs [$i]->name);
 }
 $listing->display(__('Фотоальбомы отсутствуют'));

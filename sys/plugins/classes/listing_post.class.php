@@ -2,6 +2,7 @@
 
 /**
  * UI. Пост в списке постов
+ * @property mixed post
  */
 class listing_post extends ui {
 
@@ -72,8 +73,8 @@ class listing_post extends ui {
 
     /**
      * Замена старых названий свойств
-     * @param type $name
-     * @return type
+     * @param string $name
+     * @return string
      */
     protected function _replace_old_properties($name) {
         if (isset($this->_old_props[$name])) {
@@ -88,7 +89,7 @@ class listing_post extends ui {
         $this->_data['time'] = $this->time;
         $this->_data['title'] = $this->title;
         if (is_array($this->content)) {
-            $this->content = output_text(implode("\n", $this->content));
+            $this->content = text::toOutput(implode("\n", $this->content));
         }
         $this->_data['content'] = $this->content;
         $this->_data['counter'] = $this->counter;
@@ -101,5 +102,3 @@ class listing_post extends ui {
     }
 
 }
-
-?>

@@ -7,7 +7,7 @@ abstract class captcha {
     
     /**
      * генерация проверочного кода и возврат сессии
-     * @return type
+     * @return string
      */
     static function gen()
     {

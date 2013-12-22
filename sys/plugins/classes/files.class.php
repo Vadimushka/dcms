@@ -2,6 +2,10 @@
 
 /**
  * Работа с директориями загруз-центра
+ * @property string path_abs Абсолютный путь
+ * @property string path_rel Относительный путь
+ * @property string meta_description
+ * @property string meta_keywords
  */
 class files {
 
@@ -16,12 +20,13 @@ class files {
     private $db;
 
     /**
-     * Работа с директорией загруц-центра
+     * Работа с директорией загруз-центра
      * @param string $path_abs Абсолютный путь к папке загруз-центра
      */
     function __construct($path_abs) {
         $this->db = DB::me();
         $path_abs = realpath($path_abs);
+        // это все идет через __set в $_data
         $this->type = 'folder'; // тип содержимого для иконки (по-умолчанию: папка)
         $this->runame = convert::to_utf8(basename($path_abs)); // отображаемое название папки
         $this->group_show = 2; // группа пользователей, которой разрешен просмотр папки
@@ -32,15 +37,18 @@ class files {
         $this->description = ''; // описание папки
         $this->time_last = 0; // время последних действий
         $this->sort_default = 'runame::asc'; // сортировка по-умолчанию
+        $this->meta_description = '';
+        $this->meta_keywords = '';
 
         if ($cfg_ini = ini::read($path_abs . '/' . $this->_config_file_name, true)) {
             // загружаем конфиг
-            $this->_data = array_merge($this->_data, (array) @$cfg_ini ['CONFIG']);
-            $this->_screens = array_merge($this->_screens, (array) @$cfg_ini ['SCREENS']);
-            $this->_keys = array_merge($this->_keys, (array) @$cfg_ini ['ADDKEYS']);
+            $this->_data = array_merge($this->_data, (array) @$cfg_ini['CONFIG']);
+            $this->_screens = array_merge($this->_screens, (array) @$cfg_ini['SCREENS']);
+            $this->_keys = array_merge($this->_keys, (array) @$cfg_ini['ADDKEYS']);
         } else {
             $this->time_create = TIME; // время создания
         }
+
         // настоящее имя папки
         $this->name = basename($path_abs);
         // получение путей на основе абсолютного пути
@@ -137,7 +145,7 @@ class files {
 
     /**
      * Добавление локальных(или выгруженных) файлов в папку
-     * @param type $files
+     * @param array $files
      * @return \files_file
      */
     public function filesAdd($files) {
@@ -199,8 +207,8 @@ class files {
 
     /**
      * Создает папку в данной папке
-     * @param type $runame
-     * @param type $name
+     * @param string $runame
+     * @param string|bool $name
      * @return boolean|\files
      */
     public function mkdir($runame, $name = false) {
@@ -234,11 +242,11 @@ class files {
         if (!is_dir($this->path_abs))
             return false;
         // папки и файлы с точкой являются системными и их случайное удаление крайне нежелательно
-        if ($this->name {0} === '.')
+        if ($this->name{0} === '.')
             return false;
         $od = opendir($this->path_abs);
         while ($rd = readdir($od)) {
-            if ($rd {0} == '.')
+            if ($rd{0} == '.')
                 continue;
 
             if (is_dir($this->path_abs . '/' . $rd)) {
@@ -271,9 +279,10 @@ class files {
     /**
      * Возвращает массив новых файлов
      * @global \user $user
-     * @return \files_file
+     * @return \files_file[][]
      */
     public function getNewFiles() {
+        $time = NEW_TIME;
         global $user;
         $content = array('dirs' => array(), 'files' => array());
         $path_rel_ru = convert::to_utf8($this->path_rel);
@@ -295,10 +304,39 @@ class files {
     }
 
     /**
+     * Возвращает список файлов по id пользователя,
+     * сортирует по дате добавления файла
+     * @param $id_user
+     * @return \files_file[][]
+     */
+    public function getFilesByUserId($id_user) {
+        global $user;
+        $content = array('dirs' => array(), 'files' => array());
+        $path_rel_ru = convert::to_utf8($this->path_rel);
+        $q = $this->db->prepare("SELECT * 
+            FROM `files_cache` 
+            WHERE `group_show` <= '" . intval($user->group) . "' 
+                AND `path_file_rel` LIKE ? 
+                AND `path_file_rel` NOT LIKE ? 
+                    ORDER BY `time_add` DESC");
+        $q->execute(Array($user->group, $path_rel_ru . '/%', $path_rel_ru . '/.%'));
+
+        while ($files = $q->fetch()) {
+            $abs_path = FILES . convert::of_utf8($files['path_file_rel']);
+            $pathinfo = pathinfo($abs_path);
+            $file = new files_file($pathinfo ['dirname'], $pathinfo ['basename']);
+            if (!is_file($abs_path) || $file->id_user != $id_user)
+                continue;
+            $content ['files'] [] = $file;
+        }
+        return $content;
+    }
+
+    /**
      * Поиск файлов в данной папке и во всех вложенных папках
      * @global \user $user
      * @param string $search часть имени файла
-     * @return \files_file
+     * @return \files_file[][]
      */
     protected function _search($search) {
         global $user;
@@ -376,7 +414,7 @@ class files {
         $content = array('dirs' => array(), 'files' => array());
         $od = opendir($this->path_abs);
         while ($rd = readdir($od)) {
-            if ($rd {0} == '.')
+            if ($rd{0} == '.')
                 continue; // все файлы и папки начинающиеся с точки пропускаем
             if (is_dir($this->path_abs . '/' . $rd)) {
                 $content ['dirs'] [] = new files($this->path_abs . '/' . $rd);
@@ -417,7 +455,7 @@ class files {
         if ($f1->$sn == $f2->$sn) {
             return 0;
         }
-        return ($f1->$sn < $f2->$sn) ? - 1 : 1;
+        return ($f1->$sn < $f2->$sn) ? -1 : 1;
     }
 
     /**
@@ -432,7 +470,7 @@ class files {
         if (!$sort) {
             $sort = $this->sort_default;
         }
-        @list ($this->user_sort, $order ) = @explode(':', $sort);
+        @list ($this->user_sort, $order) = @explode(':', $sort);
         usort($list ['files'], array($this, '_sort_cmp_files'));
         if ($order == 'desc') {
             $list ['files'] = array_reverse($list ['files']);
@@ -492,8 +530,8 @@ class files {
 
     /**
      * Возвращает содержимое директории
-     * @param string $sort Ключ сортировки (список ключей можно получить методом getKeys)
-     * @param string $search Фильтр по имени файла
+     * @param bool|string $sort Ключ сортировки (список ключей можно получить методом getKeys)
+     * @param bool|string $search Фильтр по имени файла
      * @return array
      */
     public function getList($sort = false, $search = false) {
@@ -665,7 +703,7 @@ class files {
      */
     public function rename($runame, $realname) {
         // переименование папки
-        if ($this->path_rel && $this->name {0} !== '.') {
+        if ($this->path_rel && $this->name{0} !== '.') {
             $path_new = preg_replace('#[^\/\\\]+$#u', $realname, $this->path_rel);
 
             if (!@rename($this->path_abs, FILES . $path_new))
@@ -689,8 +727,8 @@ class files {
 
     /**
      * Список всех вложенных папок (рекурсивно)
-     * @param string $exclude Абсолютный путь, который будет исключен из перебора
-     * @return array \files
+     * @param string|bool $exclude Абсолютный путь, который будет исключен из перебора
+     * @return \files[]
      */
     public function getPathesRecurse($exclude = false) {
         // получение всех объектов папок (рекурсивно)
@@ -726,7 +764,7 @@ class files {
     public function setGroupShowRecurse($group_show) {
         $od = @opendir($this->path_abs);
         while ($rd = @readdir($od)) {
-            if ($rd {0} == '.')
+            if ($rd{0} == '.')
                 continue;
             if (is_dir($this->path_abs . '/' . $rd)) {
                 if (function_exists('set_time_limit'))
@@ -758,10 +796,11 @@ class files {
     function __destruct() {
         if ($this->_need_save) {
             $this->time_last = TIME; // время последних действий
+            if ($this->path_rel === $this->path_abs) /// !! пишет куда попало
+                return;
             ini::save($this->path_abs . '/' . $this->_config_file_name, array('CONFIG' => $this->_data, 'SCREENS' => $this->_screens, 'ADDKEYS' => $this->_keys), true);
         }
     }
 
 }
-
 ?>

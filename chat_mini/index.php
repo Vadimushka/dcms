@@ -10,6 +10,7 @@ $pages = new pages($cnt);
 $pages->this_page(); // получаем текущую страницу
 
 $can_write = true;
+/** @var $user \user */
 if (!$user->is_writeable) {
     $doc->msg(__('Писать запрещено'), 'write_denied');
     $can_write = false;
@@ -72,14 +73,16 @@ if (!empty($form))
 $q = $db->query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
 if ($arr = $q->fetchAll()) {
     foreach ($arr AS $message) {
-        $ank = new user($message['id_user']);
-        $post = $listing->post();
-        $post->id = 'chat_post_' . $message['id'];
-        $post->url = 'actions.php?id=' . $message['id'];
-        $post->time = vremja($message['time']);
-        $post->title = $ank->nick();
-        $post->post = output_text($message['message']);
-        $post->icon($ank->icon());
+       $ank = new user($message['id_user']);
+    $post = $listing->post();
+    $post->id = 'chat_post_' . $message['id'];
+    $post->url = 'actions.php?id=' . $message['id'];
+    $post->time = misc::when($message['time']);
+    $post->title = $ank->nick();
+    $post->post = text::toOutput($message['message']);
+    $post->icon($ank->icon());
+    if (!$doc->last_modified)
+        $doc->last_modified = $message['time'];
     }
 }
 $listing->setAjaxUrl('ajax.php?page=' . $pages->this_page);
@@ -88,4 +91,3 @@ $pages->display('?'); // вывод страниц
 
 if ($user->group >= 3)
     $doc->act(__('Удаление сообщений'), 'message.delete_all.php');
-?>

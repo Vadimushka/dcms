@@ -2,6 +2,31 @@
 
 /**
  * Пользователь
+ * @property int id Уникальный идентификатор пользователя
+ * @property int group Идентификатор группы пользователя
+ * @property string recovery_password ключ для восстановления пароля
+ * @property string password хэш пароля
+ * @property string login логин
+ * @property boolean vis_friends флаг отображения списка друзей
+ * @property string group_name название группы пользователя
+ * @property int balls кол-во баллов
+ * @property float rating рейтинг
+ * @property int reg_date дата регистрация (TIMESTAMP)
+ * @property int last_visit последнее посещенеие (TIMESTAMP)
+ * @property string language Языковой пакет
+ * @property bool online Пользователь в сети
+ * @property int sex Пол пользователя (0 - женский, 1 - мужской)
+ * @property bool is_ban Флаг, указывающий на то, что пользователь забанен
+ * @property bool is_ban_full Пользователь забанен без возможности просматривать сайт
+ * @property int conversions Кол-во переходов по сайту
+ * @property int count_visit Счетчик посещений сайта (авторизаций по cookie, post)
+ * @property int is_writeable Флаг, означающий что пользователю разрешено оставлять сообщения на сайте
+ * @property mixed nick ник пользователя
+ * @property float donate_rub Сумма пожертвований
+ * @method string nick() Возвращает ник пользователя в теге span с классом, отражающим присутствие пользователя
+ * @method bool mess(string $message) mess(string $message, int $userId)
+ * @method string icon() Возвращает название иконки пользователя (в зависимости от статуса, пола и бана)
+ * @method string getAvatar() getAvatar(int $maxWidth) Возвращает путь к изображению аватара пользователя
  */
 class user extends plugins {
 
@@ -28,7 +53,7 @@ class user extends plugins {
     /**
      * Получение данных сразу нескольких пользователей и помещение их в кэш
      * @staticvar array $cache Массив с кэшем данных пользователей
-     * @param array $get_users_by_id Массив идентификаторов пользователей
+     * @param array|int $get_users_by_id Массив идентификаторов пользователей
      * @return array Массив данных запрошенных пользователей
      */
     protected function _usersFromCache($get_users_by_id) {

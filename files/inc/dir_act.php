@@ -106,7 +106,7 @@ if ($access_edit) {
         }
     }
 
-    if (isset($_POST ['edit_unlink']) && $rel_path && $dir->name {0} !== '.') {
+    if (isset($_POST ['edit_unlink']) && $rel_path && $dir->name{0} !== '.') {
         if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session'])) {
             $design->err(__('Проверочное число введено неверно'));
         } else {
@@ -128,10 +128,16 @@ if ($access_edit) {
 
 
         if ($rel_path && isset($_POST ['position'])) {
-            $dir->position = (int) $_POST ['position'];
+            $dir->position = (int)$_POST ['position'];
         }
         if (isset($_POST ['description'])) {
             $dir->description = text::input_text($_POST ['description']);
+        }
+        if (isset($_POST ['meta_description'])) {
+            $dir->meta_description = text::input_text($_POST ['meta_description']);
+        }
+        if (isset($_POST ['meta_keywords'])) {
+            $dir->meta_keywords = text::input_text($_POST ['meta_keywords']);
         }
 
 
@@ -139,7 +145,6 @@ if ($access_edit) {
         if (!empty($_POST ['sort_default']) && isset($order_keys [$_POST ['sort_default']])) {
             $dir->sort_default = $_POST ['sort_default'];
         }
-
 
 
         if (!empty($_POST ['name'])) {
@@ -160,7 +165,7 @@ if ($access_edit) {
         }
 
         if (isset($_POST ['group_show'])) { // просмотр
-            $group_show = (int) $_POST ['group_show'];
+            $group_show = (int)$_POST ['group_show'];
             if (isset($groups [$group_show]) && $group_show != $dir->group_show) {
                 $dir->setGroupShowRecurse($group_show); // данный параметр необходимо применять рекурсивно
 
@@ -172,7 +177,7 @@ if ($access_edit) {
         }
 
         if (isset($_POST ['group_write'])) { // запись
-            $group_write = (int) $_POST ['group_write'];
+            $group_write = (int)$_POST ['group_write'];
             if (isset($groups [$group_write]) && $group_write != $dir->group_write) {
                 if ($dir->group_show > $group_write)
                     $doc->err(__('Для того, чтобы выгружать файлы группе "%s" сначала необходимо дать права на просмотр этой папки', groups::name($group_write)));
@@ -187,7 +192,7 @@ if ($access_edit) {
         }
 
         if (isset($_POST ['group_edit'])) { // редактирование
-            $group_edit = (int) $_POST ['group_edit'];
+            $group_edit = (int)$_POST ['group_edit'];
             if (isset($groups [$group_edit]) && $group_edit != $dir->group_edit) {
                 if ($dir->group_write > $group_edit)
                     $doc->err(__('Для изменения параметров папки и создания папок группе "%s" сначала необходимо дать права на запись в папку', groups::name($group_edit)));
@@ -208,4 +213,3 @@ if ($access_edit) {
         exit;
     }
 }
-?>

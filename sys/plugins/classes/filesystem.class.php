@@ -7,7 +7,7 @@ abstract class filesystem {
 
     /**
      * Возвращает массив строк из текстового файла
-     * @param type $path Путь к текстовому файлу
+     * @param string $path Путь к текстовому файлу
      * @return array
      */
     static function fileToArray($path) {
@@ -52,7 +52,7 @@ abstract class filesystem {
 
     /**
      * Возвращает оптимальный CHMOD на запись
-     * @param bollean $is_dir для папки
+     * @param bool $is_dir для папки
      * @return int
      */
     static function getChmodToWrite($is_dir = false) {
@@ -65,7 +65,7 @@ abstract class filesystem {
 
     /**
      * Возвращает оптимальный CHMOD на чтение
-     * @param bollean $is_dir для папки
+     * @param bool $is_dir для папки
      * @return int
      */
     static function getChmodToRead($is_dir = false) {
@@ -209,7 +209,7 @@ abstract class filesystem {
 
     /**
      * Возвращает общий размер всех устаревших временных файлов
-     * @return type
+     * @return int
      */
     static function getOldTmpFilesSize() {
         $files = self::getOldTmpFiles();
@@ -248,8 +248,8 @@ abstract class filesystem {
 
     /**
      * Ищет все файлы по указанному пути, соответствующие регулярному выражению
-     * @param путь поиска $path_abs
-     * @param шаблон имени файла $pattern
+     * @param string $path_abs шаблон имени файла
+     * @param string $pattern
      * @param boolean $recursive искать во вложенных папках
      * @return array
      */
@@ -268,5 +268,3 @@ abstract class filesystem {
     }
 
 }
-
-?>

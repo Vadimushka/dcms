@@ -7,15 +7,15 @@ abstract class text {
 
     /**
      * Фильтрация текста
-     * @param type $str
-     * @param type $type
-     * @return type
+     * @param string $str
+     * @param int $type
+     * @return string
      */
     static function filter($str, $type = 1) {
         switch ($type) {
-            case 1: return self::for_value($str);
+            case 1: return self::toValue($str);
                 break;
-            case 2: return self::output_text($str);
+            case 2: return self::toOutput($str);
                 break;
             default:return $str;
         }
@@ -23,7 +23,7 @@ abstract class text {
 
     /**
      * Получение корректного ICQ UIN
-     * @param type $icq
+     * @param string|int $icq
      * @return string|null
      */
     static function icq_uin($icq) {
@@ -37,14 +37,14 @@ abstract class text {
     /**
      * Фильтрация текста с ограничением длины в зависимости от типа браузера.
      * Обрабатывается BBCODE
-     * @global type $dcms
-     * @param type $text
-     * @return type
+     * @global \dcms $dcms
+     * @param string $text
+     * @return string
      */
     static function for_opis($text) {
         global $dcms;
         $text = self::substr($text, $dcms->browser_type == 'web' ? 100000 : 4096);
-        $text = self::output_text($text);
+        $text = self::toOutput($text);
         return $text;
     }
 
@@ -96,7 +96,7 @@ abstract class text {
         $str = (string) $str;
         // обработка ника
         //$str = preg_replace_callback('#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31})([\!\.\,\ \)\(]|$)#uim', array('text', 'nick'), $str);
-        $str = preg_replace("#(^( |\r|\n)+)|(( |\r|\n)+$)|([^\pL\r\n\s0-9" . preg_quote(' []|`@\'"-_+=~!#:;$%^&*()?/\\.,<>{}©№', '#') . "]+)#ui", '', $str);
+        $str = preg_replace("#(^( |\r|\n)+)|(( |\r|\n)+$)|([^\pL\r\n\s0-9" . preg_quote(' []|`@\'ʼ"-–—_+=~!#:;$%^&*()?/\\.,<>{}©№«»', '#') . "]+)#ui", '', $str);
 
         $inputbbcode = new inputbbcode($str);
         $str = $inputbbcode->get_html();
@@ -110,7 +110,7 @@ abstract class text {
      * @param string $str
      * @return string
      */
-    static function output_text($str) {
+    static function toOutput($str) {
 
         //
         // преобразование смайлов в BBcode
@@ -118,6 +118,9 @@ abstract class text {
 
         // обработка старых цитат с числом в теге
         $str = preg_replace('#\[(/?)quote_([0-9]+)(\]|\=)#ui', '[\1quote\3', $str);
+
+        // преобразование ссылки на youtube ролик в ИИсщву
+        $str = preg_replace('#(^|\s|\(|\])((https?://)?www\.youtube\.com/watch\?(.*?&)*v=([^ \r\n\t`\'"<]+))(,|\[|<|\s|$)#iuU', '\1[youtube]\5[/youtube]\6', $str);
 
         // преобразование ссылок в тег URL
         $str = preg_replace('#(^|\s|\(|\])([a-z]+://([^ \r\n\t`\'"<]+))(,|\[|<|\s|$)#iuU', '\1[url="\2"]\2[/url]\4', $str);
@@ -128,12 +131,12 @@ abstract class text {
 
         $bbcode = new bbcode($str);
 
-        $bbcode->mnemonics['[add]'] = '<img src="/sys/images/icons/bb.add.png" alt="" />';
-        $bbcode->mnemonics['[del]'] = '<img src="/sys/images/icons/bb.del.png" alt="" />';
-        $bbcode->mnemonics['[fix]'] = '<img src="/sys/images/icons/bb.fix.png" alt="" />';
-        $bbcode->mnemonics['[change]'] = '<img src="/sys/images/icons/bb.change.png" alt="" />';
-        $bbcode->mnemonics['[secure]'] = '<img src="/sys/images/icons/bb.secure.png" alt="" />';
-        $bbcode->mnemonics['[notice]'] = '<img src="/sys/images/icons/bb.notice.png" alt="" />';
+        $bbcode->mnemonics['[add]'] = '<img src="/sys/images/icons/bb.add.png" alt="add" />';
+        $bbcode->mnemonics['[del]'] = '<img src="/sys/images/icons/bb.del.png" alt="del" />';
+        $bbcode->mnemonics['[fix]'] = '<img src="/sys/images/icons/bb.fix.png" alt="fix" />';
+        $bbcode->mnemonics['[change]'] = '<img src="/sys/images/icons/bb.change.png" alt="change" />';
+        $bbcode->mnemonics['[secure]'] = '<img src="/sys/images/icons/bb.secure.png" alt="secure" />';
+        $bbcode->mnemonics['[notice]'] = '<img src="/sys/images/icons/bb.notice.png" alt="notice" />';
 
         $str = $bbcode->get_html();
 
@@ -178,8 +181,8 @@ abstract class text {
 
     /**
      * Callback для замены ника пользователя в тексте сообщения
-     * @param type $value
-     * @return type
+     * @param string $value
+     * @return string
      */
     static function nick($value) {
         if (!@mysql_ping()) {
@@ -200,10 +203,10 @@ abstract class text {
 
     /**
      * Обработка текста
-     * @param type $str
-     * @return type
+     * @param string $str
+     * @return string
      */
-    static function for_value($str) {
+    static function toValue($str) {
 
         // обработка старых цитат с числом в теге
         $str = preg_replace('#\[(/?)quote_([0-9]+)(\]|\=)#ui', '[\1quote\3', $str);

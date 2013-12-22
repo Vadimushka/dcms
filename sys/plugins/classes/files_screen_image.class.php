@@ -29,5 +29,3 @@ class files_screen_image {
     }
 
 }
-
-?>

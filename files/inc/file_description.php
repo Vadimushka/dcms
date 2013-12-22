@@ -27,13 +27,18 @@ if ($access_edit && isset($_GET['act']) && $_GET['act'] == 'edit_screens')
 
 
 $doc->title = __('Файл %s - скачать', $file->runame);
-$doc->description = __('Скачать файл %s (%s)', $file->runame, $file->name);
+$doc->description = $file->meta_description ? $file->meta_description : $dir->meta_description;
+$doc->keywords = $file->meta_keywords ? explode(',', $file->meta_keywords) : ($dir->meta_keywords ? explode(',', $dir->meta_keywords) : '');
+
+
+
+
 
 if ($access_edit)
     include 'inc/file_act.php';
 
 if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
-    $my_rating = (int) $_POST['rating'];
+    $my_rating = (int)$_POST['rating'];
     if (isset($file->ratings[$my_rating])) {
         $file->rating_my($my_rating);
         $doc->msg(__('Ваша оценка файла успешно принята'));
@@ -48,7 +53,7 @@ if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
 
 if (empty($_GET['act'])) {
     $screens_count = $file->getScreensCount();
-    $query_screen = (int) @$_GET['screen_num'];
+    $query_screen = (int)@$_GET['screen_num'];
     if ($screens_count) {
         if ($query_screen < 0 || $query_screen >= $screens_count)
             $query_screen = 0;
@@ -124,7 +129,7 @@ if (empty($_GET['act'])) {
         $post->content[] = $comment;
     }
 
-    if ($track_number = (int) $file->track_number) {
+    if ($track_number = (int)$file->track_number) {
         $post = $listing->post();
         $post->title = __('Номер трека');
         $post->content[] = $track_number;
@@ -154,13 +159,13 @@ if (empty($_GET['act'])) {
         $post->content[] = $vendor;
     }
 
-    if (($width = (int) $file->width) && ($height = (int) $file->height)) {
+    if (($width = (int)$file->width) && ($height = (int)$file->height)) {
         $post = $listing->post();
         $post->title = __('Разрешение');
         $post->content[] = $width . 'x' . $height;
     }
 
-    if ($frames = (int) $file->frames) {
+    if ($frames = (int)$file->frames) {
         $post = $listing->post();
         $post->title = __('Кол-во кадров');
         $post->content[] = $frames;
@@ -172,10 +177,10 @@ if (empty($_GET['act'])) {
         $post->content[] = $playtime_string;
     }
 
-    if (($video_bitrate = (int) $file->video_bitrate) && ($video_bitrate_mode = $file->video_bitrate_mode)) {
+    if (($video_bitrate = (int)$file->video_bitrate) && ($video_bitrate_mode = $file->video_bitrate_mode)) {
         $post = $listing->post();
         $post->title = __('Видео битрейт');
-        $post->content[] = size_data($video_bitrate) . "/s (" . $video_bitrate_mode . ")";
+        $post->content[] = misc::getDataCapacity($video_bitrate) . "/s (" . $video_bitrate_mode . ")";
     }
 
     if ($video_codec = $file->video_codec) {
@@ -190,10 +195,10 @@ if (empty($_GET['act'])) {
         $post->content[] = __('%s кадров в секунду', round($video_frame_rate / 60));
     }
 
-    if (($audio_bitrate = (int) $file->audio_bitrate) && ($audio_bitrate_mode = $file->audio_bitrate_mode)) {
+    if (($audio_bitrate = (int)$file->audio_bitrate) && ($audio_bitrate_mode = $file->audio_bitrate_mode)) {
         $post = $listing->post();
         $post->title = __('Аудио битрейт');
-        $post->content[] = size_data($audio_bitrate) . "/s (" . $audio_bitrate_mode . ")";
+        $post->content[] = misc::getDataCapacity($audio_bitrate) . "/s (" . $audio_bitrate_mode . ")";
     }
 
     if ($audio_codec = $file->audio_codec) {
@@ -206,10 +211,11 @@ if (empty($_GET['act'])) {
         $ank = new user($file->id_user);
 
         $post = $listing->post();
-        $post->title = __('Файл добавил');
+        $post->title = __('Добавил' . $ank->sex? '':'а');
+
         $post->content = $ank->nick;
         $post->url = '/profile.view.php?id=' . $ank->id;
-        $post->time = vremja($file->time_add);
+        $post->time = misc::when($file->time_add);
     }
 
     $post = $listing->post();
@@ -218,7 +224,7 @@ if (empty($_GET['act'])) {
 
     $post = $listing->post();
     $post->title = __('Размер файла');
-    $post->content[] = size_data($file->size);
+    $post->content[] = misc::getDataCapacity($file->size);
 
     $post = $listing->post();
     $post->title = __('Общая оценка');
@@ -264,7 +270,7 @@ if (!$user->is_writeable) {
 
 // комменты к файлу
 if ($can_write && isset($_POST['send']) && isset($_POST['message']) && $user->group) {
-    $message = (string) $_POST['message'];
+    $message = (string)$_POST['message'];
     $users_in_message = text::nickSearch($message);
     $message = text::input_text($message);
 
@@ -321,7 +327,7 @@ if (empty($_GET['act'])) {
     }
 
     if (!empty($_GET['delete_comm']) && $user->group >= $file->group_edit) {
-        $delete_comm = (int) $_GET['delete_comm'];
+        $delete_comm = (int)$_GET['delete_comm'];
         $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id` = ? AND `id_file` = ?");
         $res->execute(Array($delete_comm, $file->id));
         $k = ($row = $res->fetch()) ? $row['cnt'] : 0;
@@ -342,17 +348,19 @@ if (empty($_GET['act'])) {
     $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
     $pages->this_page(); // получаем текущую страницу
 
+
     $q = $db->prepare("SELECT * FROM `files_comments` WHERE `id_file` = ? ORDER BY `id` DESC LIMIT $pages->limit");
     $q->execute(Array($file->id));
     if ($arr = $q->fetchAll()) {
         foreach ($arr AS $comment) {
+
             $ank = new user($comment['id_user']);
 
             $post = $listing->post();
             $post->url = '/profile.view.php?id=' . $ank->id;
             $post->title = $ank->nick();
-            $post->time = vremja($comment['time']);
-            $post->post = output_text($comment['text']);
+            $post->time = misc::when($comment['time']);
+            $post->post = text::toOutput($comment['text']);
             $post->icon($ank->icon());
 
             if ($user->group >= $file->group_edit) {
@@ -367,7 +375,7 @@ if (empty($_GET['act'])) {
 
 // переход к рядом лежащим файлам в папке
 $content = $dir->getList($order);
-$files = &$content['files'];
+$files = & $content['files'];
 $count = count($files);
 
 if ($count > 1) {
@@ -381,14 +389,14 @@ if ($count > 1) {
 
         if ($fileindex >= 1) {
             $last_index = $fileindex - 1;
-            $select[] = array('./' . urlencode($files[$last_index]->name) . '.htm?order=' . $order, for_value($files[$last_index]->runame));
+            $select[] = array('./' . urlencode($files[$last_index]->name) . '.htm?order=' . $order, text::toValue($files[$last_index]->runame));
         }
 
-        $select[] = array('?order=' . $order, for_value($file->runame), true);
+        $select[] = array('?order=' . $order, text::toValue($file->runame), true);
 
         if ($fileindex < $count - 1) {
             $next_index = $fileindex + 1;
-            $select[] = array('./' . urlencode($files[$next_index]->name) . '.htm?order=' . $order, for_value($files[$next_index]->runame));
+            $select[] = array('./' . urlencode($files[$next_index]->name) . '.htm?order=' . $order, text::toValue($files[$next_index]->runame));
         }
 
         $show = new design();

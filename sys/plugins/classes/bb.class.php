@@ -42,7 +42,7 @@ class bb {
      * @return string
      */
     public function fetch() {
-        return output_text(trim($this->_content));
+        return text::toOutput(trim($this->_content));
     }
 
     /**
@@ -69,5 +69,3 @@ class bb {
     }
 
 }
-
-?>

@@ -4,6 +4,12 @@ include_once '../sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Мои темы');
 
+$doc = new document(1); // инициализация документа для браузера
+$ank = (empty($_GET['id'])) ? $user : new user((int) $_GET['id']);
+if (!$ank->group)
+    $doc->access_denied(__('Нет данных'));
+$doc->title = ($ank->id == $user->id) ? __('Мои темы') : __('Темы пользователя "%s"', $ank->login);
+$pages = new pages;
 $res = $db->prepare("SELECT COUNT(DISTINCT(`msg`.`id_theme`)) AS cnt
 FROM `forum_messages` AS `msg`
 LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
@@ -44,8 +50,8 @@ if ($arr = $q->fetchAll()) {
         $is_open = (int) ($themes['group_write'] <= $themes['topic_group_write']);
         $post = $listing->post();
         $post->icon("forum.theme.{$themes['top']}.$is_open.png");
-        $post->time = vremja($themes['time_last']);
-        $post->title = for_value($themes['name']);
+        $post->time = misc::when($themes['time_last']);
+        $post->title = text::toValue($themes['name']);
         $post->counter = $themes['count'];
         $post->url = 'theme.php?id=' . $themes['id'] . '&amp;page=end';
         $autor = new user($themes['id_autor']);
@@ -56,8 +62,9 @@ if ($arr = $q->fetchAll()) {
     }
 }
 
-$listing->display(__('Созданных Вами тем не найдено'));
+$listing->display(($ank->id == $user->id) ? __('Созданных Вами тем не найдено') : __('%s еще не создавал' . ($ank->sex ? '' : 'а') . ' тем на форуме', $ank->login));
 
-$pages->display('?'); // вывод страниц
+
+$pages->display("?id=$ank->id&amp;"); // вывод страниц
 $doc->ret(__('Форум'), './');
 ?>

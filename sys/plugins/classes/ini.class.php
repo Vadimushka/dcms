@@ -103,5 +103,3 @@ abstract class ini {
     }
 
 }
-
-?>

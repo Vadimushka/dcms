@@ -35,8 +35,8 @@ $ank = new user($message['id_user']);
 
 $post = $listing->post();
 $post->title = $ank->nick();
-$post->content = output_text($message['message']);
-$post->time = vremja($message['time']);
+$post->content = text::toOutput($message['message']);
+$post->time = misc::when($message['time']);
 $post->icon($ank->icon());
 
 $post = $listing->post();

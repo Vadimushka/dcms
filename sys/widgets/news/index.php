@@ -17,12 +17,11 @@ if ($dcms->widget_items_count) {
     while ($news = $q->fetch()) {
         $post = $listing->post();
         $post->icon('news');
-        $post->title = for_value($news['title']);
+        $post->title = text::toValue($news['title']);
         $post->url = '/news/comments.php?id=' . $news['id'];
-        $post->time = vremja($news['time']);
+        $post->time = misc::when($news['time']);
         $post->hightlight = $news['time'] > NEW_TIME;
     }
 }
 
 $listing->display();
-?>

@@ -12,7 +12,7 @@ if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id_theme'];
+$id_theme = (int)$_GET['id_theme'];
 
 $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_write` <= ? LIMIT 1");
 $q->execute(Array($id_theme, $user->group));
@@ -38,12 +38,12 @@ if (!$user->is_writeable) {
 if ($can_write) {
 
     if (isset($_POST['message'])) {
-        $message = (string) $_POST['message'];
+        $message = (string)$_POST['message'];
         $users_in_message = text::nickSearch($message);
         $message = text::input_text($message);
 
 
-        $af = &$_SESSION['antiflood']['forummessage'][$id_theme][$message]; // защита от дублирования сообщений в теме
+        $af = & $_SESSION['antiflood']['forummessage'][$id_theme][$message]; // защита от дублирования сообщений в теме
 
         if ($dcms->censure && $mat = is_valid::mat($message)) {
             $doc->err(__('Обнаружен мат: %', $mat));
@@ -69,7 +69,8 @@ if ($can_write) {
             }
 
             if ($post_update && !isset($_POST['add_file'])) {
-                $message = $last_post['message'] . "\n\n[small]Через " . vremja(TIME - $theme['time_last'] + TIME) . ":[/small]\n" . $message;
+
+                $message = $last_post['message'] . "\n\n[small]Через " . misc::when(TIME - $theme['time_last'] + TIME) . ":[/small]\n" . $message;
                 $res = $db->prepare("UPDATE `forum_messages` SET `message` = ? WHERE `id_theme` = ? AND `id_user` = ? ORDER BY `id` DESC LIMIT 1");
                 $res->execute(Array($message, $theme['id'], $user->id));
             } else {
@@ -125,7 +126,7 @@ if ($can_write) {
 
 
 if (isset($_GET['return']))
-    $doc->ret(__('В тему'), for_value($_GET['return']));
+    $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
 ?>

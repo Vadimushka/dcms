@@ -15,5 +15,3 @@ function user_show($user, $args) {
         return '[Нет данных]';
     }
 }
-
-?>

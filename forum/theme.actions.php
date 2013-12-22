@@ -27,7 +27,6 @@ if (!$theme = $q->fetch()) {
 
 $doc->title = __('Тема %s - действия', $theme['name']);
 
-
 $listing = new listing();
 
 if ($theme['group_edit'] <= $user->group) {
@@ -36,30 +35,24 @@ if ($theme['group_edit'] <= $user->group) {
     $post->title = $theme['group_write'] > $theme['topic_group_write'] ? __('Открыть тему') : __('Закрыть тему');
     $post->icon($theme['group_write'] > $theme['topic_group_write'] ? 'lock' : 'unlock');
 }
-
-
 if ($theme['group_edit'] <= $user->group) {
     $post = $listing->post();
     $post->url = 'theme.rename.php?id=' . $theme['id'];
     $post->title = __('Переименовать');
     $post->icon('rename');
 }
-
 if ($theme['group_edit'] <= $user->group) {
     $post = $listing->post();
     $post->url = 'theme.move.php?id=' . $theme['id'];
     $post->title = __('Переместить');
     $post->icon('move');
 }
-
 if ($theme['group_edit'] <= $user->group) {
     $post = $listing->post();
     $post->url = 'theme.security.php?id=' . $theme['id'];
     $post->title = __('Разрешения');
     $post->icon('security');
 }
-
-
 if (!$theme['id_vote'] && $theme['group_write'] <= $user->group && $user->group >= 2) {
     $post = $listing->post();
     $post->url = 'vote.new.php?id_theme=' . $theme['id'];
@@ -72,8 +65,6 @@ if ($theme['id_vote'] && $theme['group_write'] <= $user->group && $user->group >
     $post->title = __('Изменить голосование');
     $post->icon('vote');
 }
-
-
 if ($theme['group_edit'] <= $user->group && $user->group >= 2) {
     $post = $listing->post();
     $post->url = 'theme.posts.delete.php?id=' . $theme['id'];
@@ -87,10 +78,7 @@ if ($theme['group_edit'] <= $user->group && $user->group >= 2) {
     $post->icon('delete');
 }
 
-
-
 $listing->display();
-
 
 $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);
 $doc->ret($theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);

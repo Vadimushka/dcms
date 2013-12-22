@@ -16,7 +16,7 @@ class check_sys {
     /**
      * Возвращает массив файлов с ошибками CHMOD
      * @param string $path путь относительно корня сайта
-     * @param string $errorIfNotExists если путь не существует, то считать ошибкой
+	 * @param string|bool $errorIfNotExists если путь не существует, то считать ошибкой
      * @return array
      */
     static public function getChmodErr($path, $errorIfNotExists = false) {
@@ -119,7 +119,7 @@ class check_sys {
         if (ini_get('arg_separator.output') == '&amp;') {
             $this->oks[] = 'arg_separator.output: &amp;amp;: OK';
         } else {
-            $this->notice[] = 'arg_separator.output: ' . output_text(ini_get('arg_separator.output')) . ' ' . __('Возможно появление xml ошибок');
+            $this->notice[] = 'arg_separator.output: ' . text::toOutput(ini_get('arg_separator.output')) . ' ' . __('Возможно появление xml ошибок');
         }
     }
 

@@ -60,5 +60,3 @@ class listing extends ui_contaner {
     }
 
 }
-
-?>

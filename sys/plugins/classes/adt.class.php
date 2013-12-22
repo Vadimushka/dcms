@@ -2,6 +2,7 @@
 
 /**
  * Реклама
+ * TODO: надо бы все тут переделать к херам
  */
 class adt extends menu {
 
@@ -19,7 +20,7 @@ class adt extends menu {
 
     /**
      * Возвращает название рекламной площадки по id, если таковая существует
-     * @param type $id
+     * @param string $id
      * @return mixed(string||boolean)
      */
     function getNameById($id) {
@@ -46,9 +47,9 @@ class adt extends menu {
             $q->execute(Array($id, TIME, TIME));
             while ($adt = $q->fetch()) {
                 if ($adt['url_img']) {
-                    $return[]['0'] = '<a rel="nofollow" href="http://' . $_SERVER['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($adt['url_link']) . '"' . $target . '><img src="' . $adt['url_img'] . '" alt="' . for_value($adt['name']) . '" /></a>';
+                    $return[]['0'] = '<a rel="nofollow" href="http://' . $_SERVER['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($adt['url_link']) . '"' . $target . '><img src="' . $adt['url_img'] . '" alt="' . text::toValue($adt['name']) . '" /></a>';
                 } else {
-                    $return[]['0'] = '<a rel="nofollow" ' . ($adt['bold'] ? 'class="DCMS_font_bold"' : '') . ' href="http://' . $_SERVER['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($adt['url_link']) . '"' . $target . '>' . for_value($adt['name']) . '</a>';
+                    $return[]['0'] = '<a rel="nofollow" ' . ($adt['bold'] ? 'class="DCMS_font_bold"' : '') . ' href="http://' . $_SERVER['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($adt['url_link']) . '"' . $target . '>' . text::toValue($adt['name']) . '</a>';
                 }
             }
             if (!isset($_SESSION['adt'][$id]['time_show']) || $_SESSION['adt'][$id]['time_show'] < TIME - 10) {
@@ -62,5 +63,3 @@ class adt extends menu {
     }
 
 }
-
-?>

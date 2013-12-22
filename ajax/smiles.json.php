@@ -25,4 +25,3 @@ foreach ($smiles_a as $name => $path) {
 
 header('Content-type: application/json');
 echo json_encode($data);
-?>

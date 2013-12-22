@@ -9,7 +9,7 @@ if (!isset($_GET['id_message']) || !is_numeric($_GET['id_message'])) {
     $doc->err(__('Ошибка выбора сообщения'));
     exit;
 }
-$id_message = (int) $_GET['id_message'];
+$id_message = (int)$_GET['id_message'];
 
 $q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id` = ? AND `group_show` <= ?");
 $q->execute(Array($id_message, $user->group));
@@ -40,8 +40,6 @@ if ($theme['group_show'] > $user->group) {
     exit;
 }
 
-
-
 $doc->title = $theme['name'];
 
 
@@ -52,10 +50,7 @@ if (!$user->is_writeable) {
 }
 
 
-
-
 $autor = new user((int) $message['id_user']);
-
 
 if (!$autor->id) {
     $can_write = false;
@@ -68,7 +63,7 @@ if (isset($_GET['quote'])) {
 }
 
 if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->group) {
-    $message = (string) $_POST['message'];
+    $message = (string)$_POST['message'];
     $users_in_message = text::nickSearch($message);
     $message_re = text::input_text($message);
 
@@ -109,14 +104,12 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
             }
         }
 
-
         if ($autor->notification_forum && $user->id != $autor->id) {
             $res = $db->prepare("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
             $res->execute(Array($theme['id'], $autor->group));
             $count_posts_for_user = ($row = $res->fetch()) ? $row['cnt'] : 0;
             $autor->mess("[user]{$user->id}[/user] ответил" . ($user->sex ? '' : 'а') . " Вам на форуме в [url=/forum/message.php?id_message={$id_message}]сообщении[/url] в теме [url=/forum/theme.php?id={$theme['id']}&postnum={$count_posts_for_user}#message{$id_message}]{$theme['name']}[/url]");
         }
-
 
         $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id'] . '&amp;page=end#message' . $id_message);
         exit;
@@ -125,7 +118,6 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
     }
 }
 
-
 if ($autor->id && $user->id) {
     $doc->title = __('Ответ для "%s"', $autor->login);
     //$can_write = false;
@@ -133,17 +125,15 @@ if ($autor->id && $user->id) {
     $doc->title = __('Сообщение от "%s"', $autor->login);
 }
 
-
-
 $listing = new listing();
 $post = $listing->post();
 $post->title = $autor->nick();
-$post->time = vremja($message['edit_time'] ? $message['edit_time'] : $message['time']);
+
+$post->time = misc::when($message['edit_time'] ? $message['edit_time'] : $message['time']);
 $post->url = '/profile.view.php?id=' . $autor->id;
 $post->icon($autor->icon());
-$post->content = output_text($message['message']);
+$post->content = text::toOutput($message['message']);
 $listing->display();
-
 
 
 if (!isset($_GET['files'])) {

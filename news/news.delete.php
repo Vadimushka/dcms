@@ -37,7 +37,7 @@ $smarty->assign('method', 'post');
 $smarty->assign('action', '?id=' . $id . '&amp;' . passgen());
 $elements = array();
 $elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-$elements[] = array('type' => 'text', 'value' => '* ' . output_text(__('Новость "%s" будет удалена без возможности восстановления', $news['title'])), 'br' => 1);
+$elements[] = array('type' => 'text', 'value' => '* ' . text::toOutput(__('Новость "%s" будет удалена без возможности восстановления', $news['title'])), 'br' => 1);
 $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Удалить'))); // кнопка
 $smarty->assign('el', $elements);
 $smarty->display('input.form.tpl');

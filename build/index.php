@@ -2,7 +2,7 @@
 
 include '../sys/inc/start.php';
 $doc = new document();
-$doc->title = 'Скачать DCMS';
+$doc->title = __('Скачать %s', 'DCMS');
 
 $listing = new listing();
 
@@ -53,4 +53,3 @@ $listing->display();
 $form = new form('download/' . $conf['version_last'] . '.' . $conf['build_num'] . '.zip', false);
 $form->button(__('Скачать %s', 'DCMS ' . $conf['version_last']. '.' . $conf['build_num']));
 $form->display();
-?>

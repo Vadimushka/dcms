@@ -12,7 +12,7 @@ if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id_theme'];
+$id_theme = (int)$_GET['id_theme'];
 
 $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
 $q->execute(Array($id_theme, $user->group));
@@ -20,7 +20,7 @@ if (!$theme = $q->fetch()) {
     if (isset($_GET['return']))
         header('Refresh: 1; url=' . $_GET['return']);
     else
-        header('Refresh: 1; url=theme.php?id=' . $theme['id']);
+        header('Refresh: 1; url=theme.php?id=' . $id_theme);
     $doc->err(__('Тема не доступна'));
     exit;
 }
@@ -72,7 +72,7 @@ VALUES (?,?,?, " . implode(', ', $v) . ")");
                 $dcms->log('Форум', 'Создание голосования в теме [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
 
                 if (isset($_GET['return']))
-                    $doc->ret(__('В тему'), for_value($_GET['return']));
+                    $doc->ret(__('В тему'), text::toValue($_GET['return']));
                 else
                     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
                 exit;
@@ -89,7 +89,6 @@ $form->button(__('Создать голосование'));
 $form->display();
 
 if (isset($_GET['return']))
-    $doc->ret(__('В тему'), for_value($_GET['return']));
+    $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
-?>

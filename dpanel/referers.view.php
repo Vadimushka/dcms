@@ -30,7 +30,7 @@ if (isset($_GET['id_site'])) {
     $res->execute(Array($id));
     while ($ref = $q->fetch()) {
         $post = $listing->post();
-        $post->title = vremja($ref['time']);
+        $post->title = misc::when($ref['time']);
         $post->content[] = $ref['full_url'];
         $post->counter = $ref['count'];
     }
@@ -77,9 +77,9 @@ $listing = new listing();
 $q = $db->query("SELECT * FROM `log_of_referers_sites` ORDER BY $order LIMIT $pages->limit");
 while ($ref = $q->fetch()) {
     $post = $listing->post();
-    $post->title = output_text($ref['domain']);
+    $post->title = text::toOutput($ref['domain']);
     $post->url = '?id_site=' . $ref['id'];
-    $post->time = vremja($ref['time']);
+    $post->time = misc::when($ref['time']);
     $post->counter = $ref['count'];
 }
 

@@ -23,7 +23,7 @@ $post = $listing->post();
 $post->icon('js');
 $post->title = __('Последний раз собирался:');
 $time = filemtime(H . '/sys/javascript/dcms.js');
-$post->content[] = $time ? misc::vremja($time) : __('Еще не собирался');
+$post->content[] = $time ? misc::when($time) : __('Еще не собирался');
 $listing->display();
 
 

@@ -67,7 +67,7 @@ foreach ($tables as $table) {
             $checked = true;
     }
 
-    $post = empty($sql) ? '' : '<pre>' . output_text($sql) . '</pre>';
+    $post = empty($sql) ? '' : '<pre>' . text::toOutput($sql) . '</pre>';
     if ($post) {
         $ch = $listing->checkbox();
         $ch->checked = $checked;

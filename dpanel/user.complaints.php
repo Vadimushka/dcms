@@ -39,9 +39,9 @@ if (!empty($_GET['id_ank']) && !empty($_GET['code'])) {
             $post = $listing->post();
             $post->url = 'user.ban.php?id_ank=' . $ank->id . '&amp;code=' . urlencode($code) . '&amp;link=' . urlencode($c['link']);
             $post->title = $c['count'] . ' ' . misc::number($c['count'], 'жалоба', 'жалобы', 'жалоб');
-            $post->time = vremja($c['time']);
-            $p = __('Ссылка на нарушение:') . ' <a' . ($dcms->browser_type == 'web' ? ' target="_blank"' : null) . ' href="' . for_value($c['link']) . '">' . for_value($c['link']) . '</a><br />';
-            $p .= output_text($c['comment']);
+            $post->time = misc::when($c['time']);
+            $p = __('Ссылка на нарушение:') . ' <a' . ($dcms->browser_type == 'web' ? ' target="_blank"' : null) . ' href="' . text::toValue($c['link']) . '">' . text::toValue($c['link']) . '</a><br />';
+            $p .= text::toOutput($c['comment']);
             $post->content = $p;
             $post->action('delete', '?id_ank=' . $ank->id . '&amp;code=' . urlencode($code) . '&amp;link=' . urlencode($c['link']) . '&amp;delete');
         }

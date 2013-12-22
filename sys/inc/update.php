@@ -175,7 +175,7 @@ class update {
 
     /**
      * Установка списка пропускаемых файлов
-     * @param type $files
+     * @param array $files
      */
     public function setSkipFiles($files) {
         $this->_skip = (array) $files;

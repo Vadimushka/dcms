@@ -56,5 +56,3 @@ class log_of_visits {
     }
 
 }
-
-?>

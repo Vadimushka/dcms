@@ -1,7 +1,24 @@
 <?php
 
 /**
- * Базовый класс системы. Объек хранится в глобальной переменной $dcms
+ * Базовый класс системы. Объект хранится в глобальной переменной $dcms
+ * @property bool debug Включен режим разработчика
+ * @property integer ip_long IP пользователя в после ip2long
+ * @property string browser_name Название браузера пользователя
+ * @property string salt Соль для хэша пароля пользователя. Генерируется при установке движка.
+ * @property \log_of_visits log_of_visits
+ * @property \log_of_referers log_of_referers
+ * @property string mysql_base Название базы данных
+ * @property string mysql_host Сервер базы данных
+ * @property string mysql_user Имя пользователя базы
+ * @property string mysql_pass Пароль пользователя базы
+ * @property string language Системный языковой пакет
+ * @property int widget_items_count Кол-во отображаемых пунктов в виджете
+ * @property bool new_time_as_date
+ * @property string browser_type Тип браузера
+ * @property bool donate_message флаг, указывающий на то, что сообщение о пожертвовании отправлено
+ * @property bool censure Проверка на мат
+ * @property mixed forum_files_upload_size
  */
 class dcms {
 
@@ -179,6 +196,7 @@ class dcms {
 
     /**
      * Сохранение настроек
+     * @param \document|boolean $doc
      * @return boolean
      */
     public function save_settings($doc = false) {

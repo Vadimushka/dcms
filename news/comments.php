@@ -21,9 +21,9 @@ $ank = new user((int) $news['id_user']);
 
 
 $post->icon('news');
-$post->content = output_text($news['text']);
-$post->title = for_value($news['title']);
-$post->time = vremja($news['time']);
+$post->content = text::toOutput($news['text']);
+$post->title = text::toValue($news['title']);
+$post->time = misc::when($news['time']);
 $post->bottom = '<a href="/profile.view.php?id=' . $news['id_user'] . '">' . $ank->nick() . '</a>';
 
 if ($user->group >= max($ank->group, 4)) {
@@ -118,13 +118,13 @@ if ($arr = $q->fetchAll()) {
         $post->title = $ank->nick();
         $post->url = '/profile.view.php?id=' . $ank->id;
         $post->icon($ank->icon());
-        $post->time = vremja($message['time']);
+        $post->time = misc::when($message['time']);
 
         if ($user->group >= 2) {
             $post->action('delete', "comment.delete.php?id=$message[id]&amp;return=" . URL);
         }
 
-        $post->content = output_text($message['text']);
+        $post->content = text::toOutput($message['text']);
     }
 }
 

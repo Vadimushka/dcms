@@ -106,7 +106,6 @@ if ($can_write) {
 }
 
 if (isset($_GET ['return']))
-    $doc->ret(__('В раздел'), for_value($_GET ['return']));
+    $doc->ret(__('В раздел'), text::toValue($_GET ['return']));
 else
     $doc->ret(__('В раздел'), 'theme.php?id=' . $theme ['id']);
-?>

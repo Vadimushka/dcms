@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id'];
+$id_theme = (int)$_GET['id'];
 
 $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
 $q->execute(Array($id_theme, $user->group));
@@ -31,9 +31,6 @@ if (isset($_POST['delete'])) {
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
-        // блокируем таблицы
-        //  mysql_query("LOCK TABLES `forum_themes` WRITE READ, `forum_messages` WRITE READ, `forum_history` WRITE READ, `forum_vote` WRITE READ, `forum_vote_votes` WRITE READ");
-
         $res = $db->prepare("DELETE FROM `forum_themes` WHERE `id` = ? LIMIT 1");
         $res->execute(Array($theme['id']));
 
@@ -51,10 +48,6 @@ WHERE `forum_messages`.`id_theme` = ?");
         $res = $db->prepare("DELETE FROM `forum_views` WHERE `id_theme` = ?");
         $res->execute(Array($theme['id']));
 
-        // оптимизация таблиц после удаления данных
-        // mysql_query("OPTIMIZE TABLE `forum_themes`, `forum_messages`, `forum_history`, `forum_vote`, `forum_vote_votes`");
-        // разблокируем таблицы
-        // mysql_query("UNLOCK TABLES");
         // удаление всех файлов темы
         $dir = new files(FILES . '/.forum/' . $theme['id']);
         $dir->delete();
@@ -74,7 +67,7 @@ $form->button(__('Удалить'), 'delete');
 $form->display();
 
 if (isset($_GET['return']))
-    $doc->ret(__('В тему'), for_value($_GET['return']));
+    $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
 

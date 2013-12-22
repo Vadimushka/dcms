@@ -154,10 +154,9 @@ $doc->act(__('Удаление тем'), 'topic.themes.delete.php?id=' . $topic 
 $doc->act(__('Удалить раздел'), 'topic.delete.php?id=' . $topic ['id']);
 
 if (isset($_GET ['return']))
-    $doc->ret(__('В раздел'), for_value($_GET ['return']));
+    $doc->ret(__('В раздел'), text::toValue($_GET ['return']));
 else
     $doc->ret(__('В раздел'), 'topic.php?id=' . $topic ['id']);
 
 $doc->ret(__('В категорию'), 'category.php?id=' . $topic ['id_category']);
 $doc->ret(__('Форум'), './');
-?>

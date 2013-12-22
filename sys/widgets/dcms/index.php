@@ -33,4 +33,3 @@ if ($beta_show) {
 }
 
 $listing->display();
-?>

@@ -18,7 +18,6 @@ $post->title = __('Последние зарегистрированные');
 if ($users)
     $post->counter = '+' . $users;
 
-
 if ($dcms->widget_items_count) {
     $q = $db->prepare("SELECT * FROM `users` WHERE `a_code` = '' AND `reg_date` > ? ORDER BY `id` DESC LIMIT " . $dcms->widget_items_count);
     $q->execute(Array(NEW_TIME));
@@ -42,7 +41,6 @@ $post->url = '/online.users.php';
 $res = $db->query("SELECT COUNT(*) AS cnt FROM `users_online`");
 $post->counter = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
-
 $post = $listing->post();
 $post->hightlight = true;
 $post->icon('guest');
@@ -50,7 +48,6 @@ $post->title = __('Гости на сайте');
 $post->url = '/online.guest.php';
 $res = $db->query("SELECT COUNT(*) FROM `guest_online` WHERE `conversions` >= '5'");
 $post->counter = ($row = $res->fetch()) ? $row['cnt'] : 0;
-
 
 $listing->display();
 ?>
