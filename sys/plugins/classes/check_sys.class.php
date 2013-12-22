@@ -55,6 +55,17 @@ class check_sys {
             $this->errors[] = __('Невозможно получить информацию о MySQL');
         }
 
+        // проверка PDO
+        if (class_exists('pdo')) {
+            if (array_search('mysql', PDO::getAvailableDrivers()) !== false) {
+                $this->oks[] = 'PDO: OK';
+            } else {
+                $this->errors[] = __('Нет драйвера mysql для PDO');
+            }
+        } else {
+            $this->errors[] = __('Необходимо подключить PDO');
+        }
+
         // шифрование
         if (function_exists('mcrypt_module_open')) {
             $this->oks[] = 'mcrypt: OK';
