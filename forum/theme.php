@@ -14,7 +14,7 @@ $q = mysql_query("SELECT `forum_themes`.* , `forum_categories`.`name` AS `catego
 FROM `forum_themes`
 LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_themes`.`id_category`
 LEFT JOIN `forum_topics` ON `forum_topics`.`id` = `forum_themes`.`id_topic`
-WHERE `forum_themes`.`id` = '$id_theme' AND `forum_themes`.`group_show` <= '$user->group' AND `forum_topics`.`group_show` <= '$user->group' AND `forum_categories`.`group_show` <= '$user->group'");
+WHERE `forum_themes`.`id` = '$id_theme' AND `forum_themes`.`group_show` <= '$user->group' AND `forum_topics`.`group_show` <= '$user->group' AND `forum_categories`.`group_show` <= '$user->group' LIMIT 1");
 if (!mysql_num_rows($q)) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна'));
