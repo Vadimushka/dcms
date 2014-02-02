@@ -51,7 +51,27 @@ $doc->keywords [] = $ank->login;
 if (!empty($_GET ['act']) && $ank->id == $user->id) {
     switch ($_GET ['act']) {
         case 'prop' :
-            $doc->title .= ' - ' . __('Параметры');
+        
+			if(isset($_POST['update'])){
+				$runame = text::for_name($_POST['name']) ;
+				$name = text::for_filename($runame) ;
+
+				if($runame != $album->runame){
+					if(!$runame || !$name){
+						$doc->err('Неверно задано имя альбома') ;
+					}elseif(!$album->rename($runame, $name)){
+						$doc->err('Не удалось переименовать альбом') ;
+					}else{
+						$doc->msg('Новое название альбома - ' . $runame);	
+					}
+				}
+			}
+            $doc->title = $album->runame . ' - ' . __('Параметры');
+			
+			$form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=prop') ;
+			$form->text('name', 'Название', $album->runame) ;
+			$form->button('Применить', 'update') ;
+			$form->display() ;
 
             $doc->ret(__('В альбом'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
             exit();
