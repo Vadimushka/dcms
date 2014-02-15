@@ -60,8 +60,10 @@ class design extends native_templating {
      */
     function getIconPath($name) {
         if (!$name)
-            return null;
-        return $this->theme['icons'] . '/' . basename($name, '.png') . '.png';
+            return NULL ;
+			$icon = $this->theme['icons'] . '/' . basename($name, '.png') . '.png' ;
+			$icon = is_file(H . $icon) ? $icon : '/sys/images/icons/' . basename($name, '.png') . '.png' ;
+			return $icon ;
     }
 
 }
