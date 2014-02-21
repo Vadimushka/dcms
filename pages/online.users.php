@@ -6,7 +6,6 @@ $doc->title = __('Сейчас на сайте');
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `users_online`"), 0);
-$pages->this_page(); // получаем текущую страницу
 
 $q = mysql_query("SELECT `users_online`.* , `browsers`.`name` AS `browser`
  FROM `users_online`
