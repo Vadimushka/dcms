@@ -40,7 +40,7 @@ if (false === ($posts_all = cache::get($cache_id))) {
         `tp`.`group_write` AS `topic_group_write`,
             GREATEST(`th`.`group_show`, `tp`.`group_show`, `cat`.`group_show`, `msg`.`group_show`) AS `group_show`,
             COUNT(DISTINCT `msg`.`id`) AS `count`,     
-            (SELECT COUNT(*) FROM `forum_messages` AS `msg` WHERE `msg`.`id_theme` = `th`.`id` AND `msg`.`time` > '" . $q_time_start . "') AS `count_new`,
+            (SELECT COUNT(*) FROM `forum_messages` AS `msg` WHERE `msg`.`id_theme` = `th`.`id` AND `msg`.`time` > '" . $q_time_start . "' AND `msg`.`id_user` > '0') AS `count_new`,
             (SELECT COUNT(`fv`.`id_user`) FROM `forum_views` AS `fv` WHERE `fv`.`id_theme` = `msg`.`id_theme`)  AS `views`            
 FROM `forum_messages` AS `msg`
 LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`

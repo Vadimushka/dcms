@@ -46,7 +46,7 @@ if (isset($_POST['create'])) {
 
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
-    } elseif ($name_adt && $url && $url != 'http://') {
+    } elseif ($name_adt && $url && $url != 'http://' && ($on_main || $on_other)) {
         mysql_query("INSERT INTO `advertising` (`space`, `url_link`, `name`, `url_img`, `page_main`, `page_other`, `time_create`, `time_start`, `time_end`, `bold`)
 VALUES ('" . my_esc($id_space) . "', '" . my_esc($url) . "', '" . my_esc($name_adt) . "', '" . my_esc($url_img) . "', '$on_main', '$on_other', '" . TIME . "', '$time1', '$time2', '$bold')");
 
