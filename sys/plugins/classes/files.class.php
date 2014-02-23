@@ -188,6 +188,10 @@ class files
         $path_rel_ru = convert::to_utf8($this->path_rel);
         $q = mysql_query("SELECT * FROM `files_cache` WHERE `path_file_rel` LIKE '" . my_esc($path_rel_ru) . "/%'");
         while ($files = @mysql_fetch_assoc($q)) {
+            if (function_exists('set_time_limit')) {
+                set_time_limit(30);
+            }
+
             $abs_path = FILES . convert::of_utf8($files ['path_file_rel']);
             if (is_file($abs_path)) {
                 continue;
