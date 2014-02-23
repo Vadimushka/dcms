@@ -9,7 +9,7 @@ $q = mysql_query("SELECT * FROM `users_online` WHERE `id_user` = '{$user->id}' L
 if (mysql_num_rows($q)) {
     $exit_user = mysql_fetch_assoc($q);
     // количество посещений
-    unset($user);
+    $user->guest_init();
     mysql_query("DELETE FROM `users_online` WHERE `id_user` = '{$exit_user['id_user']}' LIMIT 1");
 }
 
@@ -22,7 +22,6 @@ session_destroy();
 session_name(SESSION_NAME) or die(__('Невозможно инициализировать сессии'));
 @session_start() or die(__('Невозможно инициализировать сессии'));
 
-$user = new user();
 /*
 if (isset($_GET['return'])) {
     header('Refresh: 1; url=' . $_GET['return']);

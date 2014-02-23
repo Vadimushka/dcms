@@ -39,10 +39,10 @@ class user extends plugins {
      */
     function __construct($id_or_arrayToCache = false) {
         if ($id_or_arrayToCache === false) {
-            $this->_guest_init();
+            $this->guest_init();
         } elseif (is_array($id_or_arrayToCache)) {
             $this->_usersFromCache($id_or_arrayToCache);
-            $this->_guest_init();
+            $this->guest_init();
         } else {
             $this->_user_init($id_or_arrayToCache);
         }
@@ -80,10 +80,11 @@ class user extends plugins {
     }
 
     /**
-     * Инициализация данных неавторизованного пользователя (гостя)
+     * Инициализация данных неавторизованного пользователя (гостя).
+     * Если был инициализирован пользователь, то произойдет запись данных в базу с очисткой текущего объекта
      */
-    protected function _guest_init() {
-        $this->_update = array();
+    public function guest_init() {
+        $this->_save_data();
         $this->_data = array();
         $this->_data ['id'] = false;
         $this->_data ['sex'] = 1;
@@ -97,7 +98,7 @@ class user extends plugins {
      * @param int $id
      */
     protected function _user_init($id) {
-        $this->_guest_init();
+        $this->guest_init();
 
         if ($id === 0) {
             global $dcms;
@@ -245,13 +246,18 @@ class user extends plugins {
         }
     }
 
-    function __destruct() {
+    protected function _save_data(){
         if ($this->_update) {
             $sql = array();
             foreach ($this->_update as $key => $value) {
                 $sql [] = "`" . my_esc($key) . "` = '" . my_esc($value) . "'";
             }
             mysql_query("UPDATE `users` SET " . implode(', ', $sql) . " WHERE `id` = '" . $this->_data ['id'] . "' LIMIT 1");
+            $this->_update = array();
         }
+    }
+
+    function __destruct() {
+        $this->_save_data();
     }
 }
