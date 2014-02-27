@@ -110,9 +110,9 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
             unset($_SESSION[SESSION_ID_USER]);
             unset($_SESSION[SESSION_PASSWORD_USER]);
         }
-    } elseif (!empty($_COOKIE [COOKIE_ID_USER]) && !empty($_COOKIE [COOKIE_USER_PASSWORD]) && $_SERVER ['SCRIPT_NAME'] !== '/pages/login.php' && $_SERVER ['SCRIPT_NAME'] !== '/pages/captcha.php') {
+    } elseif (!empty($_COOKIE [COOKIE_ID_USER]) && !empty($_COOKIE [COOKIE_USER_PASSWORD]) && !isset($_GET['login_from_cookie']) && $_SERVER ['SCRIPT_NAME'] !== '/pages/login.php' && $_SERVER ['SCRIPT_NAME'] !== '/pages/captcha.php') {
         // авторизация по COOKIE (получение сессии, по которой пользователь авторизуется)
-        header('Location: /login.php?cookie&return=' . URL);
+        header('Location: /login.php?login_from_cookie&return=' . URL);
         exit;
     } else {
         // пользователь будет являться гостем
