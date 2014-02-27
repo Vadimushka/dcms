@@ -835,9 +835,8 @@ class bbcode
 
     function youtube_2html($elem)
     {
-        return '<div class="DCMS_youtube"><iframe src="http://www.youtube.com/embed/' . $this->get_html($elem['val']) . '" frameborder="0"></iframe></div>';
+        return '<div class="DCMS_youtube"><iframe src="http://www.youtube.com/embed/' . text::toValue($elem['val']) . '" frameborder="0"></iframe></div>';
     }
-
 
     function u_2html($elem)
     {
