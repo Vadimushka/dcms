@@ -97,7 +97,7 @@ if ($k_inv > $k) {
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `invations` WHERE `id_user` = '$user->id'"), 0); // количество пригласительных
-$pages->this_page();
+//$pages->this_page();
 
 $q = mysql_query("SELECT * FROM `invations` WHERE `id_user` = '$user->id' ORDER BY (`id_invite` IS NULL) DESC, (`email` IS NULL) ASC, `id` ASC LIMIT " . $pages->limit);
 

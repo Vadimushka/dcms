@@ -21,7 +21,7 @@ if (isset($_GET['id_user'])) {
         $listing = new listing();
         $pages = new pages;
         $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `action_list_administrators`$sql_where AND `module` = '" . my_esc($module) . "'"), 0); // количество
-        $pages->this_page(); // получаем текущую страницу
+        //$pages->this_page(); // получаем текущую страницу
         $q = mysql_query("SELECT * FROM `action_list_administrators`$sql_where AND `module` = '" . my_esc($module) . "' ORDER BY `id` DESC LIMIT $pages->limit");
         while ($action = mysql_fetch_assoc($q)) {
             $ank = new user($action['id_user']);
@@ -44,7 +44,7 @@ if (isset($_GET['id_user'])) {
 
     $pages = new pages;
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`module`)) FROM `action_list_administrators`$sql_where"), 0); // количество модулей
-    $pages->this_page(); // получаем текущую страницу
+    //$pages->this_page(); // получаем текущую страницу
     $q = mysql_query("SELECT `module` FROM `action_list_administrators`$sql_where GROUP BY `module` LIMIT $pages->limit");
     while ($module = mysql_fetch_assoc($q)) {
         $post = $listing->post();

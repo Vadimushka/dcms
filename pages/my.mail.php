@@ -68,7 +68,7 @@ if (isset($_GET ['id'])) {
 
     $pages = new pages ();
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `mail` WHERE (`id_user` = '{$user->id}' AND `id_sender` = '$id_kont') OR (`id_user` = '$id_kont' AND `id_sender` = '{$user->id}')"), 0); // количество писем
-    $pages->this_page(); // получаем текущую страницу
+    //$pages->this_page(); // получаем текущую страницу
 
 
     $q = mysql_query("SELECT * FROM `mail`
@@ -114,7 +114,7 @@ if (isset($_GET ['only_unreaded'])) {
 
 $pages = new pages ();
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) FROM `mail` WHERE " . implode(' AND ', $sql_where)), 0); // количество написавших пользователей
-$pages->this_page(); // получаем текущую страницу
+//$pages->this_page(); // получаем текущую страницу
 
 $q = mysql_query("SELECT `users`.`id`,
         `mail`.`id_sender`,

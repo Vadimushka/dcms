@@ -78,7 +78,7 @@ $listing = new listing();
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*)  FROM `users_suspicion`"), 0); // количество постов
-$pages->this_page(); // получаем текущую страницу
+//$pages->this_page(); // получаем текущую страницу
 
 $q = mysql_query("SELECT *  FROM `users_suspicion` ORDER BY `id_user` ASC LIMIT $pages->limit");
 while ($sus = mysql_fetch_assoc($q)) {

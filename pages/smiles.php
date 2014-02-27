@@ -15,7 +15,7 @@ foreach ($smiles_gl as $path) {
 
 $pages = new pages ();
 $pages->posts = count($smiles_a);
-$pages->this_page();
+//$pages->this_page();
 $start = $pages->my_start();
 $end = $pages->end();
 

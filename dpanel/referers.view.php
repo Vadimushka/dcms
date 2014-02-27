@@ -23,7 +23,7 @@ if (isset($_GET['id_site'])) {
     $listing = new listing();
     $pages = new pages;
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT `full_url`) FROM `log_of_referers` WHERE `id_site` = '$id'"), 0);
-    $pages->this_page(); // получаем текущую страницу
+    //$pages->this_page(); // получаем текущую страницу
     $q = mysql_query("SELECT `full_url`, COUNT(*) AS `count`, MAX(`time`) AS `time` FROM `log_of_referers` WHERE `id_site` = '$id' GROUP BY `full_url` ORDER BY `time` DESC LIMIT $pages->limit");
     while ($ref = mysql_fetch_assoc($q)) {
         $post = $listing->post();
@@ -56,7 +56,7 @@ switch (@$_GET['order']) {
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_referers_sites`"), 0);
-$pages->this_page(); // получаем текущую страницу
+//$pages->this_page(); // получаем текущую страницу
 //
 //
 // меню сортировки

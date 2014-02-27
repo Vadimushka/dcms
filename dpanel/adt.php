@@ -36,7 +36,7 @@ if (isset($_GET['id'])) {
 
     $pages = new pages;
     $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `advertising` WHERE `space` = '$id_space'$sql"), 0);
-    $pages->this_page(); // получаем текущую страницу
+    //$pages->this_page(); // получаем текущую страницу
     // меню сортировки
     $ord = array();
     $ord[] = array("?id=$id_space&amp;filter=all&amp;page={$pages->this_page}", __('Все'), $filter == 'all');

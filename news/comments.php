@@ -45,7 +45,7 @@ if (!$user->is_writeable) {
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `news_comments` WHERE `id_news` = '$news[id]'"), 0); // количество сообщений
-$pages->this_page(); // получаем текущую страницу
+//$pages->this_page(); // получаем текущую страницу
 
 
 if ($can_write) {

@@ -6,7 +6,7 @@ $doc->title = __('Журнал авторизаций');
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_user_aut` WHERE `id_user` = '$user->id'"), 0);
-$pages->this_page(); // получаем текущую страницу
+//$pages->this_page(); // получаем текущую страницу
 $q = mysql_query("SELECT
         `log_of_user_aut`.`time` AS `time`,
         `log_of_user_aut`.`method` AS `method`,

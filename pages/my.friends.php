@@ -8,7 +8,7 @@ $user->friend_new_count = mysql_result(mysql_query("SELECT COUNT(*) FROM `friend
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `friends` WHERE `id_user` = '$user->id'"), 0);
-$pages->this_page();
+//$pages->this_page();
 
 $q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$user->id' ORDER BY `confirm` ASC, `time` DESC LIMIT ".$pages->limit);
 
