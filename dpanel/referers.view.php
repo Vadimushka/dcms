@@ -5,7 +5,7 @@ $doc = new document(5);
 $doc->title = __('Рефералы');
 
 if (isset($_GET['id_site'])) {
-    $id = (string) $_GET['id_site'];
+    $id = (string)$_GET['id_site'];
 
     $q = mysql_query("SELECT * FROM `log_of_referers_sites` WHERE `id` = '$id' LIMIT 1");
 
@@ -43,22 +43,24 @@ if (!$dcms->log_of_referers)
     $doc->err(__('Служба записи рефералов не запущена'));
 
 switch (@$_GET['order']) {
-    case 'count':$filter = 'count';
+    case 'count':
+        $filter = 'count';
         $order = "`count` DESC";
         break;
-    case 'domain':$filter = 'domain';
+    case 'domain':
+        $filter = 'domain';
         $order = "`domain` ASC";
         break;
-    default:$filter = 'time';
+    default:
+        $filter = 'time';
         $order = '`time` DESC';
         break;
 }
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_referers_sites`"), 0);
-//$pages->this_page(); // получаем текущую страницу
-//
-//
+
+
 // меню сортировки
 $ord = array();
 $ord[] = array("?order=time&amp;page={$pages->this_page}", __('Последние'), $filter == 'time');
@@ -87,4 +89,3 @@ if (!$dcms->log_of_referers) {
     $doc->act(__('Управление службами'), 'sys.daemons.php');
 }
 $doc->ret(__('Админка'), './');
-?>

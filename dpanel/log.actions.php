@@ -79,4 +79,3 @@ while ($ank_q = mysql_fetch_assoc($q)) {
 $listing->display(__('Нет администрации'));
 
 $doc->ret(__('Админка'), './');
-?>

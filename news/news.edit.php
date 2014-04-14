@@ -78,4 +78,3 @@ if ($news_e['checked']) {
 }
 
 $form->display();
-?>

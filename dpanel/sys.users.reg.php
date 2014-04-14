@@ -28,4 +28,3 @@ $form->button(__('Применить'), 'save');
 $form->display();
 
 $doc->ret(__('Админка'), '/dpanel/');
-?>

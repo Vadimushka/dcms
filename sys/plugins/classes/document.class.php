@@ -5,7 +5,6 @@
  */
 class document extends design
 {
-
     public $title = 'Заголовок';
     public $description = '';
     public $keywords = array();
@@ -65,6 +64,10 @@ class document extends design
         $this->actions[] = array($name, $link);
     }
 
+    /**
+     * Отображение страницы с ошибкой
+     * @param string $err Текст ошибки
+     */
     function access_denied($err)
     {
         if (isset($_GET['return'])) {

@@ -32,6 +32,7 @@ $search = false;
 if (!empty($_GET ['search']))
     $search = text::input_text($_GET ['search']);
 
+// !!!TODO: Smarty??
 $smarty = new design ();
 $smarty->assign('method', 'get');
 $smarty->assign('action', '?');
@@ -40,6 +41,7 @@ $elements [] = array('type' => 'hidden', 'info' => array('name' => 'order', 'val
 $elements [] = array('type' => 'input_text', 'title' => __('Имя файла (или его часть)'), 'br' => 0, 'info' => array('name' => 'search', 'value' => $search));
 $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Поиск'))); // кнопка
 $smarty->assign('el', $elements);
+
 if (empty($_GET ['act'])) {
     $smarty->display('input.form.tpl');
 }

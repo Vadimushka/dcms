@@ -31,6 +31,7 @@ if (isset($_POST['delete'])) {
     }
 }
 
+/// !TODO: Избавиться от Smarty
 $smarty = new design();
 $smarty->assign('method', 'post');
 $smarty->assign('action', '?id=' . $id . '&amp;' . passgen());
@@ -40,4 +41,3 @@ $elements[] = array('type' => 'text', 'value' => '* ' . text::toOutput(__('Но�
 $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Удалить'))); // кнопка
 $smarty->assign('el', $elements);
 $smarty->display('input.form.tpl');
-?>

@@ -30,4 +30,3 @@ if (preg_match('#Opera mobile#ui', $dcms->browser))
     $form->bbcode('[notice] '.__('Функция Turbo должна быть отключена'));
 $form->button(__('Войти'));
 $form->display();
-?>

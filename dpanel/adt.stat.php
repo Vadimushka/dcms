@@ -5,7 +5,6 @@ $doc = new document(5);
 $doc->title = __('Статистика по рекламе');
 $browser_types = array('wap', 'pda', 'itouch', 'web');
 
-
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('Refresh: 1; url=adt.settings.php');
     $doc->ret(__('Реклама и баннеры'), 'adt.php');
@@ -95,8 +94,6 @@ foreach ($browser_types AS $b_type) {
 
 $listing->display();
 
-
 $doc->ret(__('Вернуться'), "adt.php?id=$adt[space]");
 $doc->ret(__('Рекламные площадки'), 'adt.php');
 $doc->ret(__('Админка'), '/dpanel/');
-?>

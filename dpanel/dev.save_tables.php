@@ -58,4 +58,3 @@ $form->button(__('Данные'), 'data', false);
 $form->display();
 
 $doc->ret(__('Админка'), './');
-?>

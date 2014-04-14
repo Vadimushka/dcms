@@ -33,12 +33,10 @@ if ($ank->group >= $user->group) {
     exit;
 }
 
-
 $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
 
-
 if (isset($_POST['change'])) {
-    $id_new = (int) @$_POST['id_new'];
+    $id_new = (int)@$_POST['id_new'];
     $id_old = $ank->id;
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
@@ -67,12 +65,10 @@ if (isset($_POST['change'])) {
 $form = new form("?id_ank=$ank->id&amp;" . passgen());
 $form->text('id_new', __('Новый ID'), $ank->id);
 $form->captcha();
-$form->bbcode('[notice] '.__('Изменение ID пользователя может повлечь ошибки в сторонних модулях.'));
+$form->bbcode('[notice] ' . __('Изменение ID пользователя может повлечь ошибки в сторонних модулях.'));
 $form->button(__('Применить'), 'change');
 $form->display();
-
 
 $doc->ret(__('Действия'), 'user.actions.php?id=' . $ank->id);
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);
 $doc->ret(__('Админка'), '/dpanel/');
-?>

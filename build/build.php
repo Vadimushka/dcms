@@ -9,9 +9,6 @@ $doc->title = 'Сборка движка';
 
 $conf = ini::read('config.beta.ini'); // основной конфиг
 
-
-
-
 if (!empty($_POST['start'])) {
     if (empty($_POST['version'])) {
         $doc->err('Не указана версия движка');
@@ -36,28 +33,25 @@ if (!empty($_POST['start'])) {
         $tmp_dir = 'tmp/' . passgen();
         filesystem::mkdir($tmp_dir);
 
-
-
-        // echo nl2br(print_r($noskips, 1));
-        // echo nl2br(print_r($skips, 1));
-        // echo nl2br(print_r($dirs, 1));
-        // echo nl2br(print_r($files, 1));
         // создаем папки
         foreach ($dirs as $path) {
-            //echo "<b>mkdir</b> $path<br /><br />";
             filesystem::mkdir($tmp_dir . '/' . $path);
         }
 
         // копируем файлы
         foreach ($files as $path) {
-            //echo "<b>copy(</b>/$path, $tmp_dir/$path<b>)</b><br /><br />";
             copy(H . '/' . $path, $tmp_dir . '/' . $path);
+
+            // удаляем лишнюю информацию из конфигов загруз-центра
+            if (basename($path) === ".!config.dir.ini"){
+                $ini = ini::read($tmp_dir . '/' . $path, true);
+                unset($ini['CONFIG']['path_abs']);
+                unset($ini['CONFIG']['description']);
+                ini::save($tmp_dir . '/' . $path, $ini, true);
+            }
         }
 
-
-
-
-        // предустановлчные параметры
+        // предустановочные параметры
         $preset = ini::read($tmp_dir . '/sys/preinstall/settings.ini');
         $preset['version'] = $version;
         $preset['salt'] = '';
@@ -67,15 +61,12 @@ if (!empty($_POST['start'])) {
         $preset['mysql_base'] = '';
         ini::save($tmp_dir . '/sys/preinstall/settings.ini', $preset);
 
-
         $content = "[title]{$version}[/title]\r\n\r\n" . file_get_contents(H . '/changelog.txt');
 
         file_put_contents(H . '/sys/docs/changelog/' . $version . '.txt', $content);
         file_put_contents($tmp_dir . '/sys/docs/changelog/' . $version . '.txt', $content);
         file_put_contents(H . '/changelog.txt', '');
         $files[] = 'sys/docs/changelog/' . $version . '.txt';
-
-
 
         // получение хэшей файлов (необходимо для создания пакета обновления)
         $hashes = array();
@@ -84,7 +75,6 @@ if (!empty($_POST['start'])) {
         }
 
         keyvalue::save('hashes/' . $version . '.ini', $hashes);
-
 
         $build_file = 'builds/' . $version . '.zip';
 
@@ -116,7 +106,6 @@ if ($changelog) {
 }
 
 
-
 $smarty = new design();
 $smarty->assign('method', 'post');
 $smarty->assign('action', '?' . passgen());
@@ -130,4 +119,3 @@ if ($changelog) {
 
 $smarty->assign('el', $elements);
 $smarty->display('input.form.tpl');
-?>

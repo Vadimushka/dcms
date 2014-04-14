@@ -98,4 +98,3 @@ $form->display();
 $doc->ret(__('Вернуться'), "adt.php?id=$id_space");
 $doc->ret(__('Рекламные позиции'), 'adt.php');
 $doc->ret(__('Админка'), '/dpanel/');
-?>

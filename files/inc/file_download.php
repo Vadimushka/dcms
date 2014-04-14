@@ -16,5 +16,3 @@ $downloaded = $f->output();
 
 $file->downloads += round($file->size / $downloaded, 7);
 exit;
-
-?>

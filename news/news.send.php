@@ -92,6 +92,7 @@ if (isset($_POST['send'])) {
     }
 }
 
+/// TODO: Smarty
 $smarty = new design();
 $smarty->assign('method', 'post');
 $smarty->assign('action', '?id=' . $id . '&amp;' . passgen());

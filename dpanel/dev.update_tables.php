@@ -6,7 +6,7 @@ $doc = new document(6);
 $doc->title = __('Обновление структуры таблиц');
 
 $tables_exists = new tables();
-$table_files = (array) glob(H . '/sys/preinstall/base.create.*.ini');
+$table_files = (array)glob(H . '/sys/preinstall/base.create.*.ini');
 $tables = array();
 foreach ($table_files as $table_file) {
     preg_match('#base.create\.(.+)\.ini#ui', $table_file, $m);
@@ -32,7 +32,7 @@ if (!empty($_POST)) {
                     $tab_old = new table_structure();
                     $tab_old->loadFromBase($table);
                     $sql = $tab_old->getSQLQueryChange($tab);
-                }else
+                } else
                     $sql = $tab->getSQLQueryCreate();
 
                 if (mysql_query($sql)) {
@@ -88,4 +88,3 @@ if ($listing->count()) {
 }
 
 $doc->ret(__('Админка'), './');
-?>

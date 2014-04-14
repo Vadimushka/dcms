@@ -7,7 +7,7 @@ $doc->title = __('Подозрительные пользователи');
 
 
 if (!empty($_GET['approve'])) {
-    $app = (int) $_GET['approve'];
+    $app = (int)$_GET['approve'];
     if (@mysql_result(mysql_query("SELECT COUNT(*) FROM `users_suspicion` WHERE `id_user` = '$app'"), 0)) {
         mysql_query("DELETE FROM `users_suspicion` WHERE `id_user` = '$app' LIMIT 1");
         $ank = new user($app);
@@ -17,7 +17,7 @@ if (!empty($_GET['approve'])) {
 
 
 if (isset($_GET['id'])) {
-    $ank = new user((int) $_GET['id']);
+    $ank = new user((int)$_GET['id']);
     if (!$ank->id) {
         $doc->err(__('Пользователь не найден'));
         $doc->ret(__('Подозрительные пользователи'), '?');
@@ -45,9 +45,6 @@ if (isset($_GET['id'])) {
     $post2 .= __('Фраза: %s', $sus['text']);
     $post->content = text::toOutput($post2);
 
-
-
-
     $post = $listing->post();
     $post->icon('approve');
     $post->title = __('Подтвердить регистрацию');
@@ -64,21 +61,16 @@ if (isset($_GET['id'])) {
     $post->title = __('Удалить пользователя');
     $post->url = "user.delete.php?id_ank=$ank->id";
 
-
-
     $listing->display();
     $doc->ret(__('Подозрительные пользователи'), '?');
     $doc->ret(__('Админка'), '/dpanel/');
     exit;
 }
 
-
-
 $listing = new listing();
 
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*)  FROM `users_suspicion`"), 0); // количество постов
-//$pages->this_page(); // получаем текущую страницу
+$pages->posts = mysql_result(mysql_query("SELECT COUNT(*)  FROM `users_suspicion`"), 0);
 
 $q = mysql_query("SELECT *  FROM `users_suspicion` ORDER BY `id_user` ASC LIMIT $pages->limit");
 while ($sus = mysql_fetch_assoc($q)) {
@@ -98,7 +90,5 @@ while ($sus = mysql_fetch_assoc($q)) {
 
 $listing->display(__('Нет подозрительных пользователей'));
 
-
 $pages->display('?'); // вывод страниц
 $doc->ret(__('Админка'), '/dpanel/');
-?>

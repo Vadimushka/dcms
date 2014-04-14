@@ -19,6 +19,8 @@
  * @property bool donate_message флаг, указывающий на то, что сообщение о пожертвовании отправлено
  * @property bool censure Проверка на мат
  * @property mixed forum_files_upload_size
+ * @property string title Заголовок сайта
+ * @property mixed browser
  */
 class dcms {
 
@@ -54,7 +56,7 @@ class dcms {
      * @param string $module Название модуля
      * @param string $description Описание действия
      * @param boolean $is_system Если сестемное действие
-     * @return type
+     * @return resource
      */
     public function log($module, $description, $is_system = false) {
         $id_user = 0;
@@ -164,7 +166,7 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
             if (mysql_num_rows($q)) {
                 $browser_id = mysql_result($q, 0);
             } else {
-                $q = mysql_query("INSERT INTO `browsers` (`type`, `name`) VALUES ('" . my_esc(browser::getType()) . "','" . my_esc(browser::getName()) . "')");
+                mysql_query("INSERT INTO `browsers` (`type`, `name`) VALUES ('" . my_esc(browser::getType()) . "','" . my_esc(browser::getName()) . "')");
                 $browser_id = mysql_insert_id();
             }
         }
@@ -205,5 +207,4 @@ VALUES ('$id_user', '" . TIME . "', '" . my_esc($module) . "', '" . my_esc($desc
 
         return $result;
     }
-
 }

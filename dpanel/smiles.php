@@ -88,4 +88,3 @@ foreach ($smiles_a as $name => $path) {
 $listing->display(__('Смайлы отсутствуют'));
 
 $doc->ret(__('Админка'), './');
-?>

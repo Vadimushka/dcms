@@ -42,6 +42,7 @@ if (isset($_POST['next'])) {
     if ($title && $text)$news['checked'] = 1;
 }
 
+// TODO: Избавиться от Smarty
 $smarty = new design();
 $smarty->assign('method', 'post');
 $smarty->assign('action', '?' . passgen());
@@ -60,5 +61,3 @@ if ($news['checked']) {
 
 $smarty->assign('el', $elements);
 $smarty->display('input.form.tpl');
-
-?>

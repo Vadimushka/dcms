@@ -44,7 +44,6 @@ if (!empty($widgets_conf_need_save)) {
     unset($widgets_conf_need_save);
 }
 
-
 if (isset($_GET['sortable'])) {
     $doc->clean();
     $sortable = explode(',', $_POST['sortable']);
@@ -62,7 +61,6 @@ if (isset($_GET['sortable'])) {
     }
     exit;
 }
-
 
 if (!empty($_GET['widget']) && isset($widgets_conf[$_GET['widget']]) && !empty($_GET['act'])) {
     switch ($_GET['act']) {
@@ -108,8 +106,6 @@ if (!empty($_GET['widget']) && isset($widgets_conf[$_GET['widget']]) && !empty($
     exit;
 }
 
-
-
 $listing = new listing();
 
 foreach ($widgets_conf as $name => $show) {
@@ -120,9 +116,6 @@ foreach ($widgets_conf as $name => $show) {
     $post->title = $widget->runame;
     $post->id = urlencode($name);
 
-
-
-
     $post2 = array();
     if ($autor = $widget->autor) {
         $post2[] = __('Автор: %s', text::toValue($autor));
@@ -132,8 +125,6 @@ foreach ($widgets_conf as $name => $show) {
         $post2[] = __('Версия: %s', text::toValue($version));
     }
     $post->content = implode("<br />\n", $post2);
-
-
 
     if ($show) {
         $post->action('hide', '?widget=' . urlencode($name) . '&amp;act=hide');
@@ -147,8 +138,6 @@ foreach ($widgets_conf as $name => $show) {
 
     $post->action('up', '?widget=' . urlencode($name) . '&amp;act=up');
     $post->action('down', '?widget=' . urlencode($name) . '&amp;act=down');
-
-    // $listing ->postAdd($post);
 }
 
 $listing->sortable = '?sortable';
