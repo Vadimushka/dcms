@@ -34,7 +34,7 @@ if (!empty($_GET ['search']))
 if (empty($_GET ['act'])) {
     $form = new form("?", false);
     $form->hidden('order', $order);
-    $form->text('search', __('Имя файла (или его часть)'), $search);
+    $form->text('search', __('Имя файла (или его часть)'), $search, false);
     $form->button(__('Поиск'));
     $form->display();
 }
