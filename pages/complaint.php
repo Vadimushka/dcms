@@ -75,18 +75,12 @@ VALUES ('" . TIME . "', '$user->id', '$ank->id', '" . my_esc($link) . "', '" . m
 
 $link = !empty($_GET['link']) ? $_GET['link'] : (!empty($_POST['link']) ? $_POST['link'] : false);
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', '?' . passgen() . '&amp;id=' . $ank->id . (!empty($_GET['return']) ? '&amp;return=' . text::toValue($_GET['return']) : null));
-$elements = array();
-$elements[] = array('type' => 'input_text', 'title' => __('Ссылка'), 'br' => 1, 'info' => array('name' => 'link', 'value' => $link));
-
-$elements[] = array('type' => 'select', 'br' => 1, 'title' => __('Нарушение'), 'info' => array('name' => 'code', 'options' => $menu->options()));
-
-$elements[] = array('type' => 'textarea', 'title' => __('Комментарий'), 'br' => 1, 'info' => array('name' => 'comment'));
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Пожаловаться'), 'name' => 'complaint')); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form('?' . passgen() . '&amp;id=' . $ank->id . (!empty($_GET['return']) ? '&amp;return=' . text::toValue($_GET['return']) : null));
+$form->text('link', __('Ссылка'), $link);
+$form->select('code', __('Нарушение'), $menu->options());
+$form->textarea('comment', __('Комментарий'));
+$form->button(__('Пожаловаться'), 'complaint');
+$form->display();
 
 if (!empty($_GET['return'])) {
     $doc->ret(__('Вернуться'), text::toValue($_GET['return']));

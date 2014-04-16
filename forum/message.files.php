@@ -124,15 +124,10 @@ foreach ($content['files'] AS $file) {
 }
 $listing->display(__('Вложения отсутствуют'));
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('files', 1);
-$smarty->assign('action', "/forum/message.files.php?id=$message[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-$elements = array();
-$elements[] = array('type' => 'file', 'title' => 'Файл', 'br' => 1, 'info' => array('name' => 'file'));
-$elements[] = array('type' => 'text', 'br' => 1, 'value' => '* ' . __('Файлы, размер которых превышает %s, загружены не будут', misc::getDataCapacity($dcms->forum_files_upload_size))); // кнопка
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Прикрепить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form("/forum/message.files.php?id=$message[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form->file('file', __("Файл"));
+$form->bbcode('* ' . __('Файлы, размер которых превышает %s, загружены не будут', misc::getDataCapacity($dcms->forum_files_upload_size)));
+$form->button(__('Прикрепить'));
+$form->display();
 
 $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);

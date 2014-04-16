@@ -88,19 +88,13 @@ if ($can_write) {
     }
 
     if ($user->group) {
-        // TODO: Smarty
-        $smarty = new design();
-        $smarty->assign('method', 'post');
-        $smarty->assign('action', '?id=' . $id . '&amp;page=' . $pages->this_page . '&amp;' . passgen());
-        $elements = array();
-        $elements[] = array('type' => 'textarea', 'title' => __('Комментарий'), 'br' => 1, 'info' => array('name' => 'comment'));
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'send', 'value' => __('Отправить'))); // кнопка
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'refresh', 'value' => __('Обновить'))); // кнопка
-        $smarty->assign('el', $elements);
-        $smarty->display('input.form.tpl');
+        $form = new form('?id=' . $id . '&amp;page=' . $pages->this_page . '&amp;' . passgen());
+        $form->textarea('comment', __('Комментарий'));
+        $form->button(__('Отправить'), 'send', false);
+        $form->button(__('Обновить'), 'refresh');
+        $form->display();
     }
 }
-
 
 $q = mysql_query("SELECT * FROM `news_comments` WHERE `id_news` = '$news[id]' ORDER BY `id` DESC LIMIT $pages->limit");
 
@@ -117,7 +111,7 @@ while ($message = mysql_fetch_assoc($q)) {
         $post->action('delete', "comment.delete.php?id=$message[id]&amp;return=" . URL);
     }
 
-    $post->content = text::toOutput($message['text']);
+    $post->content[] = $message['text'];
 }
 
 $listing->display(__('Комментарии отсутствуют'));

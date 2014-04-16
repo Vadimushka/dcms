@@ -245,12 +245,9 @@ if (empty($_GET['act'])) {
         $form->display('input.form.tpl');
     }
 
-    $smarty = new design();
-    $elements = array();
-
-    $elements[] = array('type' => 'input_text', 'br' => 0, 'title' => __('Скопировать ссылку'), 'info' => array('value' => 'http://' . $_SERVER['HTTP_HOST'] . '/files' . $file->getPath()));
-    $smarty->assign('el', $elements);
-    $smarty->display('input.form.tpl');
+    $form = new form();
+    $form->text('url', __('Скопировать ссылку'), 'http://' . $_SERVER['HTTP_HOST'] . '/files' . $file->getPath());
+    $form->display();
 
     $form = new form('/files' . $file->getPath());
     $form->hidden('rnd', passgen());
@@ -307,18 +304,12 @@ if ($can_write && isset($_POST['send']) && isset($_POST['message']) && $user->gr
 if (empty($_GET['act'])) {
     // комменты будут отображаться только когда над файлом не производится никаких действий
     if ($can_write && $user->group) {
-        $smarty = new design();
-        $smarty->assign('method', 'post');
-        $smarty->assign('action', '?order=' . $order . '&amp;screen_num=' . $query_screen . '&amp;' . passgen());
-        $elements = array();
-        $elements[] = array('type' => 'textarea', 'title' => __('Комментарий'), 'br' => 1, 'info' => array('name' => 'message'));
-
+        $form = new form('?order=' . $order . '&amp;screen_num=' . $query_screen . '&amp;' . passgen());
+        $form->textarea('message', __('Комментарий'));
         if ($file->id_user && $file->id_user != $user->id)
-            $elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'send', 'value' => __('Отправить'))); // кнопка
-        $smarty->assign('el', $elements);
-        $smarty->display('input.form.tpl');
+            $form->captcha();
+        $form->button(__('Отправить'), 'send');
+        $form->display();
     }
 
     if (!empty($_GET['delete_comm']) && $user->group >= $file->group_edit) {

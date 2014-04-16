@@ -43,7 +43,7 @@ if (!empty($_POST['start'])) {
             copy(H . '/' . $path, $tmp_dir . '/' . $path);
 
             // удаляем лишнюю информацию из конфигов загруз-центра
-            if (basename($path) === ".!config.dir.ini"){
+            if (basename($path) === ".!config.dir.ini") {
                 $ini = ini::read($tmp_dir . '/' . $path, true);
                 unset($ini['CONFIG']['path_abs']);
                 unset($ini['CONFIG']['description']);
@@ -96,7 +96,6 @@ if (!empty($_POST['start'])) {
     }
 }
 
-
 $changelog = @file_get_contents(H . '/changelog.txt');
 
 if ($changelog) {
@@ -105,17 +104,10 @@ if ($changelog) {
     $doc->err('Список изменений пуст');
 }
 
-
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', '?' . passgen());
-$elements = array();
-$elements[] = array('type' => 'input_text', 'title' => 'Версия (build #' . ($conf['build_num'] + 1) . ')', 'br' => 1, 'info' => array('name' => 'version', 'value' => $conf['version_last']));
-if ($changelog) {
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'start', 'value' => 'Собрать')); // кнопка
-} else {
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'refresh', 'value' => 'Обновить данные')); // кнопка
-}
-
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form('?' . passgen());
+$form->text('version', 'Версия (build #' . ($conf['build_num'] + 1) . ')', $conf['version_last']);
+if ($changelog)
+    $form->button('Собрать', 'start');
+else
+    $form->button('Обновить данные', 'refresh');
+$form->display();
