@@ -177,6 +177,7 @@ html, body, #main{
 
 .form input[type="submit"]{
     margin-right: 5px;
+    margin-top: 5px;
 }
 
 .form textarea{
@@ -231,6 +232,10 @@ html, body, #main{
 
 .form input[type="text"]:focus, .form input[type="password"]:focus, .form textarea:focus{
     border-color: #A8A8A8;
+}
+
+.form .text{
+
 }
 
 .bbcode_smiles{
