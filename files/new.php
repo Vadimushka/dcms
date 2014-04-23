@@ -29,7 +29,7 @@ $files = &$content['files'];
 $listing = new listing();
 $pages = new pages;
 $pages->posts = count($files);
-$pages->this_page();
+//$pages->this_page();
 
 $start = $pages->my_start();
 $end = $pages->end();

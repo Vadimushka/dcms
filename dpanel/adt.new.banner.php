@@ -37,7 +37,7 @@ if (isset($_POST['create'])) {
                 $res = $db->prepare("INSERT INTO `advertising` (`space`, `url_link`, `name`, `url_img`, `page_main`, `page_other`, `time_create`, `time_start`, `time_end`, `bold`)
 VALUES (?, ?, ?, ?, '1', '1', ?, '0', '0', '0')");
                 $res->execute(Array($id_space, $main[1], $main[4], $main[2], TIME));
-                header('Refresh: 1; url=adt.settings.php?id=' . $id_space);
+                header('Refresh: 1; url=adt.php?id=' . $id_space);
 
                 $doc->msg(__('Баннер успешно установлен'));
                 $doc->ret(__('Вернуться'), "adt.php?id=$id_space");

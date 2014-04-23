@@ -18,7 +18,6 @@ if (isset($log_of_visits) && $k) {
 $res = $db->query("SELECT COUNT(*) AS cnt FROM `log_of_visits_for_days`");
 $pages = new pages;
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
-$pages->this_page(); // получаем текущую страницу
 
 $listing = new listing();
 $q = $db->query("SELECT * FROM `log_of_visits_for_days` ORDER BY `time_day` DESC LIMIT $pages->limit");

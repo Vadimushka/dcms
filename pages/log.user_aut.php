@@ -9,7 +9,6 @@ $res->execute(Array($user->id));
 
 $pages = new pages;
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-$pages->this_page(); // получаем текущую страницу
 $q = $db->prepare("SELECT
         `log_of_user_aut`.`time` AS `time`,
         `log_of_user_aut`.`method` AS `method`,

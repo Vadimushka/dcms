@@ -82,7 +82,6 @@ $listing = new listing();
 $res = $db->query("SELECT COUNT(*) AS cnt FROM `users_suspicion`");
 $pages = new pages;
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество постов
-$pages->this_page(); // получаем текущую страницу
 
 $q = $db->query("SELECT *  FROM `users_suspicion` ORDER BY `id_user` ASC LIMIT $pages->limit");
 if ($arr = $q->fetchAll()) {

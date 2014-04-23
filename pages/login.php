@@ -11,9 +11,9 @@ $doc->title = __('Авторизация');
 if (isset($_GET['redirected_from']) && in_array($_GET['redirected_from'], array('wap', 'pda', 'itouch', 'web'))) {
     $subdomain_var = "subdomain_" . $_GET['redirected_from'];
     if (isset($_GET['return'])) {
-        $return = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $dcms->$subdomain_var . '.' . $dcms->subdomain_main . '/login.php?cookie&return=' . urlencode($_GET['return']);
+        $return = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $dcms->$subdomain_var . '.' . $dcms->subdomain_main . '/login.php?login_from_cookie&return=' . urlencode($_GET['return']);
     } else {
-        $return = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $dcms->$subdomain_var . '.' . $dcms->subdomain_main . '/login.php?cookie&return=' . urlencode('/');
+        $return = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $dcms->$subdomain_var . '.' . $dcms->subdomain_main . '/login.php?login_from_cookie&return=' . urlencode('/');
     }
 } else {
     if (isset($_GET['return'])) {

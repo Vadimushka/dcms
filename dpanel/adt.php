@@ -37,7 +37,6 @@ if (isset($_GET['id'])) {
     $res->execute(Array($id_space, TIME, TIME));
     $pages = new pages;
     $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-    $pages->this_page(); // получаем текущую страницу
     // меню сортировки
     $ord = array();
     $ord[] = array("?id=$id_space&amp;filter=all&amp;page={$pages->this_page}", __('Все'), $filter == 'all');

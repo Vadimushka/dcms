@@ -8,7 +8,6 @@ $doc->title = __('Наши новости');
 $pages = new pages;
 $res = $db->query("SELECT COUNT(*) AS cnt FROM `news`");
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
-$pages->this_page(); // получаем текущую страницу
 
 $q = $db->query("SELECT * FROM `news` ORDER BY `id` DESC LIMIT $pages->limit");
 

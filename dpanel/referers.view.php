@@ -25,7 +25,6 @@ if (isset($_GET['id_site'])) {
     $listing = new listing();
     $pages = new pages;
     $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-    $pages->this_page(); // получаем текущую страницу
     $q = $db->prepare("SELECT `full_url`, COUNT(*) AS `count`, MAX(`time`) AS `time` FROM `log_of_referers` WHERE `id_site` = ? GROUP BY `full_url` ORDER BY `time` DESC LIMIT $pages->limit");
     $res->execute(Array($id));
     while ($ref = $q->fetch()) {
@@ -60,7 +59,7 @@ switch (@$_GET['order']) {
 $res = $db->query("SELECT COUNT(*) AS cnt FROM `log_of_referers_sites`");
 $pages = new pages;
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-$pages->this_page(); // получаем текущую страницу
+
 //
 //
 // меню сортировки

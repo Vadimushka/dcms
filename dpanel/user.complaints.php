@@ -31,7 +31,6 @@ if (!empty($_GET['id_ank']) && !empty($_GET['code'])) {
         $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `complaints` WHERE `processed` = '0' AND `id_ank` = ? AND `code` = ?");
         $res->execute(Array($ank->id, $code));
         $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-        $pages->this_page(); // получаем текущую страницу
 
         $q = $db->prepare("SELECT `comment`, `link`, COUNT(*) as `count`, MAX(`time`) as `time` FROM `complaints` WHERE `processed` = '0' AND `id_ank` = ? AND `code` = ? GROUP BY `link` ORDER BY `count` DESC LIMIT $pages->limit");
         $q->execute(Array($ank->id, $code));
@@ -62,7 +61,6 @@ $listing = new listing();
 $res = $db->query("SELECT COUNT(DISTINCT `id_ank`, `code`) AS cnt FROM `complaints` WHERE `processed` = '0'");
 $pages = new pages;
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-$pages->this_page(); // получаем текущую страницу
 
 $q = $db->query("SELECT *, COUNT(*) as `count` FROM `complaints` WHERE `processed` = '0' GROUP BY `id_ank`, `code` ORDER BY `count` DESC LIMIT $pages->limit");
 if ($arr = $q->fetchAll()) {

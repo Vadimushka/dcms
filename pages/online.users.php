@@ -2,12 +2,12 @@
 
 include_once '../sys/inc/start.php';
 $doc = new document();
-$doc->title = __('Сейчас на сайте');
 
 $pages = new pages;
 $res = $db->query("SELECT COUNT(*) AS cnt FROM `users_online`");
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-$pages->this_page(); // получаем текущую страницу
+
+$doc->title = __('Сейчас на сайте (%s)', $pages->posts);
 
 $q = $db->query("SELECT `users_online`.* , `browsers`.`name` AS `browser`
  FROM `users_online`
@@ -41,4 +41,3 @@ if ($arr = $q->fetchAll()) {
 $listing->display(__('Нет пользователей'));
 
 $pages->display('?');
-?>

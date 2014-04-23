@@ -50,7 +50,6 @@ if (isset($_GET['id_user'])) {
     $pages = new pages;
     $res = $db->query("SELECT COUNT(DISTINCT(`module`)) AS cnt FROM `action_list_administrators`$sql_where");
     $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество модулей
-    $pages->this_page(); // получаем текущую страницу
     $q = $db->query("SELECT `module` FROM `action_list_administrators`$sql_where GROUP BY `module` LIMIT $pages->limit");
     while ($module = $q->fetch()) {
         $post = $listing->post();

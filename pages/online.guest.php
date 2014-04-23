@@ -5,7 +5,6 @@ $doc = new document();
 $pages = new pages;
 $res = $db->query("SELECT COUNT(*) AS cnt FROM `guest_online` WHERE `conversions` >= '5'");
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-$pages->this_page(); // получаем текущую страницу
 
 $doc->title = __('Гости на сайте (%s)', $pages->posts);
 
