@@ -33,28 +33,7 @@ switch (@$_GET['period']) {
 $cache_id = 'forum.last.posts_all.period-' . $period;
 
 if (false === ($posts_all = cache::get($cache_id))) {
-    $posts_all = array();
-    $q = mysql_query("SELECT `th`.* ,
-        `tp`.`name` AS `topic_name`,
-        `cat`.`name` AS `category_name`,
-        `tp`.`group_write` AS `topic_group_write`,
-            GREATEST(`th`.`group_show`, `tp`.`group_show`, `cat`.`group_show`, `msg`.`group_show`) AS `group_show`,
-            COUNT(DISTINCT `msg`.`id`) AS `count`,     
-            (SELECT COUNT(*) FROM `forum_messages` AS `msg` WHERE `msg`.`id_theme` = `th`.`id` AND `msg`.`time` > '" . $q_time_start . "' AND `msg`.`id_user` > '0') AS `count_new`,
-            (SELECT COUNT(`fv`.`id_user`) FROM `forum_views` AS `fv` WHERE `fv`.`id_theme` = `msg`.`id_theme`)  AS `views`            
-FROM `forum_messages` AS `msg`
-LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
-LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
-LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`time_last` > '" . $q_time_start . "'
-AND `th`.`time_last` < '" . $q_time_end . "'
-GROUP BY `msg`.`id_theme`
-ORDER BY MAX(`msg`.`id`) DESC");
-
-    while ($theme = mysql_fetch_assoc($q)) {
-        $posts_all[] = $theme;
-    }
-
+    $posts_all = forum::getFreshThemes($q_time_start, $q_time_end);
     cache::set($cache_id, $posts_all, $cache_time);
 }
 
