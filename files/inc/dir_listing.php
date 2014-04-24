@@ -1,5 +1,4 @@
 <?php
-// TODO: избавиться от Smarty
 defined('DCMS') or die();
 $dir = new files($abs_path);
 
@@ -32,16 +31,12 @@ $search = false;
 if (!empty($_GET ['search']))
     $search = text::input_text($_GET ['search']);
 
-$smarty = new design ();
-$smarty->assign('method', 'get');
-$smarty->assign('action', '?');
-$elements = array();
-$elements [] = array('type' => 'hidden', 'info' => array('name' => 'order', 'value' => $order));
-$elements [] = array('type' => 'input_text', 'title' => __('Имя файла (или его часть)'), 'br' => 0, 'info' => array('name' => 'search', 'value' => $search));
-$elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Поиск'))); // кнопка
-$smarty->assign('el', $elements);
 if (empty($_GET ['act'])) {
-    $smarty->display('input.form.tpl');
+    $form = new form("?", false);
+    $form->hidden('order', $order);
+    $form->text('search', __('Имя файла (или его часть)'), $search, false);
+    $form->button(__('Поиск'));
+    $form->display();
 }
 
 if ($search) {
@@ -153,7 +148,7 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
             break;
         case 'id_user' :
             $ank = new user($files [$i]->id_user);
-            $post2 = __('Добавил' . $ank->sex? '':'а') . ': ' . $ank->login . "\n";
+            $post2 = __('Добавил' . ($ank->sex ? '' : 'а')) . ': ' . $ank->login . "\n";
             break;
         default :
             $post2 = '';

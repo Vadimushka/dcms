@@ -908,7 +908,7 @@ class bbcode
         return '<div class="DCMS_spoiler"><span class="DCMS_spoiler_title">' . text::toValue($title) . '</span><div class="DCMS_spoiler_content">' . $this->get_html($elem['val']) . '</div></div>';
 
 
-        return smiles::bbcode($elem['val'][0]['str']);
+        //return smiles::bbcode($elem['val'][0]['str']);
         // return $arr[0];
     }
 

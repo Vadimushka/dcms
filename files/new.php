@@ -24,12 +24,11 @@ $doc->title = __('%s - Новые файлы', $dir->runame);
 
 $content = $dir->getNewFiles();
 
-$files = &$content['files'];
+$files = & $content['files'];
 
 $listing = new listing();
 $pages = new pages;
 $pages->posts = count($files);
-//$pages->this_page();
 
 $start = $pages->my_start();
 $end = $pages->end();
@@ -45,9 +44,8 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
 
 
     $post2 = '';
-    if ($properties = $files[$i]->properties)
-        ; // Параметры файла (только основное)
-    $post2 .= $properties . "\n";
+    if ($properties = $files[$i]->properties) // Параметры файла (только основное)
+        $post2 .= $properties . "\n";
 
     if ($description = $files[$i]->description_small)
         $post2 .= $description . "\n";
@@ -57,4 +55,3 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
 
 $listing->display(__('За последние сутки небыло добавлено ни одного файла'));
 $pages->display('?dir=' . $dir->path_rel . '&amp;'); // вывод страниц
-?>

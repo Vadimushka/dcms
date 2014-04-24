@@ -232,8 +232,6 @@ if (!empty($_GET['menu'])) {
         exit;
     }
 
-
-
     if (isset($_GET['up']) || isset($_GET['down'])) {
         $ini = ini::read(H . '/sys/ini/menu.' . $menu . '.ini', true);
 
@@ -326,4 +324,3 @@ $listing->display(__('Нет меню для редактирования'));
 
 
 $doc->ret(__('Админка'), './?' . passgen());
-?>

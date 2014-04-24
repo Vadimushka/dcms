@@ -223,4 +223,3 @@ if (!isset($_GET['delete'])) {
 $doc->ret(__('Вернуться'), "adt.php?id=$adt[space]");
 $doc->ret(__('Рекламные площадки'), 'adt.php');
 $doc->ret(__('Админка'), '/dpanel/');
-?>

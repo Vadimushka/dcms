@@ -96,14 +96,9 @@ if (!empty($_GET['from'])) {
                 $bb = new bb('description_update.txt');
                 $bb->display();
 
-                $smarty = new design();
-                $smarty->assign('method', 'post');
-                $smarty->assign('action', '?from=' . urlencode($from) . '&amp;to=' . urlencode($to));
-                $elements = array();
-                $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Скачать выбранное обновление'))); // кнопка
-                $smarty->assign('el', $elements);
-                $smarty->display('input.form.tpl');
-
+                $form = new form('?from=' . urlencode($from) . '&amp;to=' . urlencode($to));
+                $form->button(__('Скачать выбранное обновление'));
+                $form->display();
                 exit;
             } else {
                 $update_file = 'updates/' . $from . '-' . $to . '.zip';
@@ -111,20 +106,12 @@ if (!empty($_GET['from'])) {
                     createUpdate($from, $to);
                 }
 
-
                 $doc->clean();
                 $f = new download('dcms_update-' . $from . '-' . $to . '.zip', $update_file);
                 $f->output();
                 exit;
             }
         }
-
-
-
-
-
-
-
 
         if (isset($_GET['to_version']) && in_array($_GET['to_version'], $versions)) {
 

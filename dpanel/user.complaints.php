@@ -58,7 +58,6 @@ $listing = new listing();
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT `id_ank`, `code`) FROM `complaints` WHERE `processed` = '0'"), 0);
-//$pages->this_page(); // получаем текущую страницу
 
 $q = mysql_query("SELECT *, COUNT(*) as `count` FROM `complaints` WHERE `processed` = '0' GROUP BY `id_ank`, `code` ORDER BY `count` DESC LIMIT $pages->limit");
 while ($c = mysql_fetch_assoc($q)) {
@@ -74,4 +73,3 @@ $listing->display(__('Жалобы отсутствуют'));
 
 $pages->display("?");
 $doc->ret(__('Админка'), './');
-?>

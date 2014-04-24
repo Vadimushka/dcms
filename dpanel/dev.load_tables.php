@@ -6,7 +6,7 @@ $doc = new document(6);
 $doc->title = __('Загрузка таблиц');
 
 $tables_exists = new tables();
-$table_files = (array) glob(H . '/sys/preinstall/base.create.*.ini');
+$table_files = (array)glob(H . '/sys/preinstall/base.create.*.ini');
 $tables = array();
 foreach ($table_files as $table_file) {
     preg_match('#base.create\.(.+)\.ini#ui', $table_file, $m);
@@ -50,10 +50,10 @@ if (!empty($_POST)) {
 
 $listing = new listing();
 foreach ($tables as $table) {
-    $ch = $listing ->checkbox();
-    $ch -> name = $table;
-    $ch -> title = $table;
-    $ch -> checked = !in_array($table, $tables_exists->tables);    
+    $ch = $listing->checkbox();
+    $ch->name = $table;
+    $ch->title = $table;
+    $ch->checked = !in_array($table, $tables_exists->tables);
 }
 
 if ($listing->count()) {
@@ -68,4 +68,3 @@ if ($listing->count()) {
 }
 
 $doc->ret(__('Админка'), './');
-?>

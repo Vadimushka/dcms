@@ -5,7 +5,7 @@ $doc = new document();
 $doc->title = __('Комментарии к новости');
 $doc->ret(__('Все новости'), './');
 
-$id = (int) @$_GET['id'];
+$id = (int)@$_GET['id'];
 
 $q = mysql_query("SELECT * FROM `news` WHERE `id` = '$id' LIMIT 1");
 
@@ -17,7 +17,7 @@ $news = mysql_fetch_assoc($q);
 
 $listing = new listing();
 $post = $listing->post();
-$ank = new user((int) $news['id_user']);
+$ank = new user((int)$news['id_user']);
 
 
 $post->icon('news');
@@ -45,14 +45,12 @@ if (!$user->is_writeable) {
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `news_comments` WHERE `id_news` = '$news[id]'"), 0); // количество сообщений
-//$pages->this_page(); // получаем текущую страницу
-
 
 if ($can_write) {
 
     if (isset($_POST['send']) && isset($_POST['comment']) && $user->group) {
 
-        $text = (string) $_POST['comment'];
+        $text = (string)$_POST['comment'];
         $users_in_message = text::nickSearch($text);
         $text = text::input_text($text);
 
@@ -83,7 +81,6 @@ if ($can_write) {
             }
 
 
-
             exit;
         } else {
             $doc->err(__('Комментарий пуст'));
@@ -91,18 +88,13 @@ if ($can_write) {
     }
 
     if ($user->group) {
-        $smarty = new design();
-        $smarty->assign('method', 'post');
-        $smarty->assign('action', '?id=' . $id . '&amp;page=' . $pages->this_page . '&amp;' . passgen());
-        $elements = array();
-        $elements[] = array('type' => 'textarea', 'title' => __('Комментарий'), 'br' => 1, 'info' => array('name' => 'comment'));
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'send', 'value' => __('Отправить'))); // кнопка
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'refresh', 'value' => __('Обновить'))); // кнопка
-        $smarty->assign('el', $elements);
-        $smarty->display('input.form.tpl');
+        $form = new form('?id=' . $id . '&amp;page=' . $pages->this_page . '&amp;' . passgen());
+        $form->textarea('comment', __('Комментарий'));
+        $form->button(__('Отправить'), 'send', false);
+        $form->button(__('Обновить'), 'refresh');
+        $form->display();
     }
 }
-
 
 $q = mysql_query("SELECT * FROM `news_comments` WHERE `id_news` = '$news[id]' ORDER BY `id` DESC LIMIT $pages->limit");
 
@@ -119,10 +111,9 @@ while ($message = mysql_fetch_assoc($q)) {
         $post->action('delete', "comment.delete.php?id=$message[id]&amp;return=" . URL);
     }
 
-    $post->content = text::toOutput($message['text']);
+    $post->content[] = $message['text'];
 }
 
 $listing->display(__('Комментарии отсутствуют'));
 
 $pages->display('?id=' . $id . '&amp;'); // вывод страниц
-?>

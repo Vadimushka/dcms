@@ -57,4 +57,3 @@ $form->display();
 $doc->ret(__('Действия'), 'user.actions.php?id=' . $ank->id);
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);
 $doc->ret(__('Админка'), '/dpanel/');
-?>

@@ -6,6 +6,7 @@
  * @property string time
  * @property string name атрибут name
  * @property string content
+ * @property boolean checked
  */
 class listing_checkbox extends ui {
 

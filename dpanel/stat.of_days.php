@@ -14,7 +14,6 @@ if (isset($log_of_visits) && mysql_result(mysql_query("SELECT COUNT(*) FROM `log
 
 $pages = new pages;
 $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_for_days`"), 0); // количество сообщений
-//$pages->this_page(); // получаем текущую страницу
 
 $listing = new listing();
 $q = mysql_query("SELECT * FROM `log_of_visits_for_days` ORDER BY `time_day` DESC LIMIT $pages->limit");
@@ -37,4 +36,3 @@ if (!$dcms->log_of_visits) {
 }
 
 $doc->ret(__('Админка'), './');
-?>

@@ -71,23 +71,18 @@ while ($rev = mysql_fetch_assoc($q)) {
     $post->counter = '+' . $rev['rating'];
     $post->icon($ank2->icon());
     $post->content = text::toOutput($rev['text']);
-    $post->url = '/profile.view.php?id=' . $ank2->id ;
+    $post->url = '/profile.view.php?id=' . $ank2->id;
 }
 $listing->display(__('Отзывы отсутствуют'));
 
 $pages->display('?id=' . $ank->id . '&amp;'); // вывод страниц
 
 if ($user->group && $can_write && $user->id != $ank->id && $add) {
-    $smarty = new design();
-    $smarty->assign('method', 'post');
-    $smarty->assign('action', '?id=' . $ank->id . '&amp;' . passgen());
-    $elements = array();
-    $elements[] = array('type' => 'textarea', 'title' => __('Отзыв о пользователе') . ' *', 'br' => 1, 'info' => array('name' => 'review'));
-    $elements[] = array('type' => 'text', 'value' => '* ' . __('Разрешается оставлять только положительные отзывы. Кроме того каждый отзыв увеличивает пользователю рейтинг.'), 'br' => 1);
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Отправить'))); // кнопка
-
-    $smarty->assign('el', $elements);
-    $smarty->display('input.form.tpl');
+    $form = new form('?id=' . $ank->id . '&amp;' . passgen());
+    $form->textarea('review', __('Отзыв о пользователе') . ' *');
+    $form->bbcode('* ' . __('Разрешается оставлять только положительные отзывы. Кроме того каждый отзыв увеличивает пользователю рейтинг.'));
+    $form->button(__('Отправить'));
+    $form->display();
 }
 
 $doc->ret(__('В анкету'), "profile.view.php?id={$ank->id}");

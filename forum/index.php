@@ -12,14 +12,7 @@ $post->title = __('Поиск');
 $post->icon('forum.search');
 
 if (false === ($new_themes = cache_counters::get('forum.new_themes.' . $user->group))) {
-    $new_themes = mysql_result(mysql_query("SELECT COUNT(*)
-FROM `forum_themes` AS `th`
-LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
-LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`group_show` <= '{$user->group}'
-AND `tp`.`group_show` <= '{$user->group}'
-AND `cat`.`group_show` <= '{$user->group}'
-AND `th`.`time_create` > '" . NEW_TIME . "'"), 0);
+    $new_themes = forum::getCountNewThemes($user);
     cache_counters::set('forum.new_themes.' . $user->group, $new_themes, 20);
 }
 
@@ -32,16 +25,7 @@ if ($new_themes) {
 $post->icon('forum.lt');
 
 if (false === ($new_posts = cache_counters::get('forum.new_posts.' . $user->group))) {
-    $new_posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`msg`.`id_theme`))
-FROM `forum_messages` AS `msg`
-LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
-LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
-LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`group_show` <= '{$user->group}'
-AND `tp`.`group_show` <= '{$user->group}'
-AND `cat`.`group_show` <= '{$user->group}'
-AND `msg`.`group_show` <= '{$user->group}'
-AND `msg`.`time` > '" . NEW_TIME . "'"), 0);
+    $new_posts = forum::getCountFreshThemes($user);
     cache_counters::set('forum.new_posts.' . $user->group, $new_posts, 20);
 }
 
@@ -53,25 +37,11 @@ if ($new_posts) {
 }
 $post->icon('forum.lp');
 
-
 if ($user->id) {
     if (false === ($my_themes = cache_counters::get('forum.my_themes.' . $user->id))) {
-        $my_themes = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`msg`.`id_theme`))
-FROM `forum_messages` AS `msg`
-LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
-LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
-LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`id_autor` = '{$user->id}'
-AND `th`.`group_show` <= '{$user->group}'
-AND `tp`.`group_show` <= '{$user->group}'
-AND `cat`.`group_show` <= '{$user->group}'
-AND `msg`.`group_show` <= '{$user->group}'
-AND `msg`.`id_user` <> '{$user->id}'
-AND `msg`.`time` > '" . NEW_TIME . "'"), 0);
-
+        $my_themes = forum::getCountFreshUserThemes($user);
         cache_counters::set('forum.my_themes.' . $user->id, $my_themes, 20);
     }
-
 
     $post = $listing->post();
     $post->url = 'my.themes.php';
@@ -83,7 +53,7 @@ AND `msg`.`time` > '" . NEW_TIME . "'"), 0);
 }
 
 $pages = new pages();
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_categories` WHERE `group_show` <= '$user->group'"), 0); // количество категорий форума
+$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_categories` WHERE `group_show` <= '$user->group'"), 0);
 
 $q = mysql_query("SELECT * FROM `forum_categories` WHERE `group_show` <= '$user->group' ORDER BY `position` ASC LIMIT " . $pages->limit);
 while ($category = mysql_fetch_assoc($q)) {
@@ -95,7 +65,6 @@ while ($category = mysql_fetch_assoc($q)) {
 }
 
 $listing->display(__('Доступных Вам категорий нет'));
-
 
 $pages->display('?'); // вывод страниц
 

@@ -32,4 +32,3 @@ foreach ($check->errors as $err) {
 $listing ->display();
 
 $doc->ret(__('Админка'), '/dpanel/');
-?>
