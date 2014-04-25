@@ -71,7 +71,6 @@ if ($dcms->new_time_as_date) {
 
 /**
  * Подключение к базе данных
-
  * Переходим на PDO
  * Предлагаю, сделать двойное подключение, пока двиг не будет переписан под pdo,
  * потом убрать обычное подключение через mysql_connect, но оставить возможность
@@ -220,4 +219,3 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
         $user_language_pack = new language_pack($user->language);
     }
 }
-?>

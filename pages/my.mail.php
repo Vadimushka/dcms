@@ -78,7 +78,7 @@ if (isset($_GET ['id'])) {
 WHERE (`id_user` = ? AND `id_sender` = ?)
       OR (`id_user` = ? AND `id_sender` = ?)
 ORDER BY `id` DESC
-LIMIT $pages->limit");
+LIMIT " . $pages->limit);
     $q->execute(Array($user->id, $id_kont, $id_kont, $user->id));
 
     // отметка о прочтении писем
@@ -90,7 +90,7 @@ LIMIT $pages->limit");
 
     if ($arr = $q->fetchAll()) {
         foreach ($arr AS $mail) {
-            $ank2 = new user((int) $mail ['id_sender']);
+            $ank2 = new user((int)$mail ['id_sender']);
             $post = $listing->post();
             $post->title = $ank2->nick();
             $post->url = '/profile.view.php?id=' . $ank2->id;
@@ -116,43 +116,43 @@ $res->execute(Array($user->id));
 $user->mail_new_count = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
 $pages = new pages ();
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) FROM `mail` WHERE " . implode(' AND ', $sql_where)), 0); // количество написавших пользователей
-$pages->this_page(); // получаем текущую страницу
-
-$q = mysql_query("SELECT `users`.`id`,
+if (isset($_GET ['only_unreaded'])) {
+    $res = $db->prepare("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) AS cnt FROM `mail` WHERE `mail`.`id_user` = ? AND `mail`.`is_read` = '0'");
+    $q = $db->prepare("SELECT `users`.`id`,
         `mail`.`id_sender`,
         MAX(`mail`.`time`) AS `time`,
         MIN(`mail`.`is_read`) AS `is_read`,
         COUNT(`mail`.`id`) AS `count`
-FROM `mail`
-LEFT JOIN `users` ON `mail`.`id_sender` = `users`.`id`
-WHERE `mail`.`id_user` = ? AND `mail`.`is_read` = '0'
-GROUP BY `mail`.`id_sender`
-ORDER BY `time` DESC
-LIMIT $pages->limit");
+        FROM `mail`
+        LEFT JOIN `users` ON `mail`.`id_sender` = `users`.`id`
+        WHERE `mail`.`id_user` = ? AND `mail`.`is_read` = '0'
+        GROUP BY `mail`.`id_sender`
+        ORDER BY `time` DESC
+        LIMIT " . $pages->limit);
 } else {
+
     $res = $db->prepare("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) AS cnt FROM `mail` WHERE `mail`.`id_user` = ?");
     $q = $db->prepare("SELECT `users`.`id`,
         `mail`.`id_sender`,
         MAX(`mail`.`time`) AS `time`,
         MIN(`mail`.`is_read`) AS `is_read`,
         COUNT(`mail`.`id`) AS `count`
-FROM `mail`
-LEFT JOIN `users` ON `mail`.`id_sender` = `users`.`id`
-WHERE `mail`.`id_user` = ?
-GROUP BY `mail`.`id_sender`
-ORDER BY `time` DESC
-LIMIT $pages->limit");
+        FROM `mail`
+        LEFT JOIN `users` ON `mail`.`id_sender` = `users`.`id`
+        WHERE `mail`.`id_user` = ?
+        GROUP BY `mail`.`id_sender`
+        ORDER BY `time` DESC
+        LIMIT " . $pages->limit);
 }
+
 
 $res->execute(Array($user->id));
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество написавших пользователей
-$pages->this_page(); // получаем текущую страницу
 $q->execute(Array($user->id));
 $listing = new listing();
 if ($arr = $q->fetchAll()) {
     foreach ($arr AS $mail) {
-        $ank = new user((int) $mail['id_sender']);
+        $ank = new user((int)$mail['id_sender']);
         $post = $listing->post();
         $post->icon($ank->icon());
         $post->url = '?id=' . $ank->id;
@@ -160,11 +160,10 @@ if ($arr = $q->fetchAll()) {
         $post->counter = isset($_GET ['only_unreaded']) ? '+' . $mail['count'] : $mail['count'];
         $post->hightlight = !$mail['is_read'];
     }
-
 }
+
 
 $listing->display(__('Почта отсутствует'));
 
 $pages->display('?');
 $doc->ret(__('Личное меню'), '/menu.user.php');
-?>

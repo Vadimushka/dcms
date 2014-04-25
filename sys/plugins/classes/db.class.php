@@ -6,12 +6,14 @@
   $db = DB::me();
  */
 
-Class DB {
+Class DB
+{
 
     static protected $db = null;
 
     //Метод предоставляет доступ к объекту
-    static public function me() {
+    static public function me()
+    {
         if (is_null(self::$db)) {
             $args = func_get_args();
             if (!isset($args[3])) {
@@ -22,10 +24,9 @@ Class DB {
         return self::$db;
     }
 
-    protected function __construct() {
-        
+    protected function __construct()
+    {
+
     }
 
 }
-
-?>
