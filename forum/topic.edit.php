@@ -95,18 +95,6 @@ if (isset($_POST ['save'])) {
         }
     }
 
-    $topic_theme_create_with_wmid = (int) !empty($_POST ['theme_create_with_wmid']);
-    if ($topic_theme_create_with_wmid != $topic ['theme_create_with_wmid']) {
-        $topic ['theme_create_with_wmid'] = $topic_theme_create_with_wmid;
-        mysql_query("UPDATE `forum_topics` SET `theme_create_with_wmid` = '$topic[theme_create_with_wmid]' WHERE `id` = '$topic[id]' LIMIT 1");
-        if ($topic ['theme_create_with_wmid']) {
-            $doc->msg(__('Создавать темы в данном разделе теперь смогут только пользователи с активированным WMID'));
-        } else {
-            $doc->msg(__('Ограничение на создание тем без WMID снято'));
-        }
-
-        $dcms->log('Форум', 'Изменение ограничений WMID раздела [url=/forum/topic.php?id=' . $topic ['id'] . ']' . $topic ['name'] . '[/url]');
-    }
 }
 
 $doc->title = __('Редактирование раздела "%s"', $topic ['name']); // шапка страницы
@@ -138,7 +126,6 @@ foreach ($groups as $type => $value)
 $form->select('group_edit', __('Изменение параметров'), $options);
 
 $form->bbcode('* ' . __('Будьте внимательнее при установке доступа выше своего.'));
-$form->checkbox('theme_create_with_wmid', __('Создание тем только с WMID'), $topic['theme_create_with_wmid']);
 $form->button(__('Применить'), 'save');
 $form->display();
 
