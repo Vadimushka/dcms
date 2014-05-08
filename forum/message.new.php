@@ -31,7 +31,7 @@ if (!mysql_num_rows($q)) {
 
 $theme = mysql_fetch_assoc($q);
 
-$doc->title = $theme['name'] . ' - ' . __('Новое собщение');
+$doc->title = $theme['name'] . ' - ' . __('Новое сообщение');
 
 $can_write = true;
 if (!$user->is_writeable) {

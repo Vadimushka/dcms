@@ -5,7 +5,7 @@
         <link rel="shortcut icon" href="/favicon.ico" />
         <script charset="utf-8" src="/sys/javascript/dcms.js" type="text/javascript"></script>        
         <script charset="utf-8" src="<?= $path ?>/user.js" type="text/javascript"></script>
-        <link rel="stylesheet" href="/sys/themes/system.css" type="text/css" />
+        <link rel="stylesheet" href="/sys/themes/.common/system.css" type="text/css" />
         <link rel="stylesheet" href="<?= $path ?>/style.css" type="text/css" />
         <meta http-equiv="content-Type" content="application/xhtml+xml; charset=utf-8" />
         <meta name="generator" content="DCMS <?=$dcms->version?>" />

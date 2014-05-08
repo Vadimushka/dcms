@@ -3,8 +3,8 @@
 <head>
     <title><?= $title ?></title>
     <link rel="shortcut icon" href="/favicon.ico"/>
-    <link rel="stylesheet" href="/sys/themes/system.css" type="text/css"/>
-    <link rel="stylesheet" href="/sys/themes/theme_light.css" type="text/css"/>
+    <link rel="stylesheet" href="/sys/themes/.common/system.css" type="text/css"/>
+    <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css"/>
     <script charset="utf-8" src="/sys/javascript/dcms.js" type="text/javascript"></script>
     <script charset="utf-8" src="<?= $path ?>/user.js" type="text/javascript"></script>
