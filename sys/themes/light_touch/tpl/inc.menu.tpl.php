@@ -4,7 +4,7 @@ if ($user->id) {
     <span class="gradient_blue"><?= $user->login ?></span>
     <a class="gradient_grey" href="/menu.user.php"><?= __("Личное меню") ?></a>
     <a class="gradient_grey" href='/my.friends.php'><?= __("Друзья") ?>{{dcms.getFriends()}}</a>
-    <a class="gradient_grey" href='/my.mail.php?only_unreaded'><?= __("Почта") ?>{{dcms.getMails()}}</a>
+    <a class="gradient_grey" href='{{dcms.getMailHref()}}'><?= __("Почта") ?>{{dcms.getMails()}}</a>
 <?
 } else {
     ?>
