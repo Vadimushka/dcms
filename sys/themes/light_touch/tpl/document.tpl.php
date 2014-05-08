@@ -8,10 +8,10 @@
     <script src="/sys/themes/.common/angular.min.js" async="async"></script>
     <link rel="stylesheet" href="<?= $path ?>/style.css" type="text/css"/>
     <meta http-equiv="content-Type" content="application/xhtml+xml; charset=utf-8"/>
-    <meta name="viewport" content="minimum-scale=1.0,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta name="viewport" content="minimum-scale=1.0,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <meta name="generator" content="DCMS <?= $dcms->version ?>"/>
     <script>
-        function vibrate(ms){
+        function vibrate(ms) {
             if (window.navigator.vibrate)
                 window.navigator.vibrate(ms);
         }
@@ -42,6 +42,12 @@
                     if (dcms.menu) {
                         dcms.menu = false;
                     }
+                },
+                getFriends: function () {
+                    return dcms.user.friend_new_count != "0" ? "+" + dcms.user.friend_new_count : "";
+                },
+                getMails: function () {
+                    return dcms.user.mail_new_count != "0" ? "+" + dcms.user.mail_new_count : "";
                 }
             }
             if (dcms.user.group) {
@@ -82,7 +88,7 @@
     </style>
 </head>
 <audio id="audio_notify" preload="auto">
-    <source src="/sys/themes/.common/notify.mp3" />
+    <source src="/sys/themes/.common/notify.mp3"/>
 </audio>
 <body class="theme_light" data-ng-controller="DcmsCtrl">
 <div id="container_content" data-ng-class="{menu:dcms.menu}">
