@@ -3,8 +3,8 @@ if ($user->id) {
     ?>
     <span class="gradient_blue"><?= $user->login ?></span>
     <a class="gradient_grey" href="/menu.user.php"><?= __("Личное меню") ?></a>
-    <a class="gradient_grey" data-ng-show="dcms.user.friend_new_count!=0" href='/my.friends.php'><?= __("Друзья") ?> +{{dcms.user.friend_new_count}}</a>
-    <a class="gradient_grey" data-ng-show="dcms.user.mail_new_count!=0" href='/my.mail.php?only_unreaded'><?= __("Почта") ?> +{{dcms.user.mail_new_count}}</a>
+    <a class="gradient_grey" href='/my.friends.php'><?= __("Друзья") ?>{{dcms.getFriends()}}</a>
+    <a class="gradient_grey" href='/my.mail.php?only_unreaded'><?= __("Почта") ?>{{dcms.getMails()}}</a>
 <?
 } else {
     ?>
