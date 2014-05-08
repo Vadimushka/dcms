@@ -48,6 +48,9 @@
                 },
                 getMails: function () {
                     return dcms.user.mail_new_count != "0" ? "+" + dcms.user.mail_new_count : "";
+                },
+                getMailHref: function(){
+                    return '/my.mail.php' + (dcms.user.mail_new_count != "0" ? "?only_unreaded" : "");
                 }
             }
             if (dcms.user.group) {
