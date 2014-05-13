@@ -82,20 +82,33 @@ html, body {
     font-size: 18px;
 }
 
-#title .icon_menu {
+#title #icon_menu {
+    display: inline-block;
     height: 24px;
     width: 24px;
+    background-image: url("img/menu.png");
+    background-size: contain;
     margin-left: 8px;
-    content: url("img/menu.png");
     cursor: pointer;
 }
 
-#title .icon_menu.mail {
-    content: url("img/mail.png");
+@-webkit-keyframes blink {
+    from{
+        opacity: 1;
+    }
+    to{
+        opacity: 0.1;
+    }
 }
 
-#title .icon_menu.friends {
-    content: url("img/friend.png");
+#title #icon_menu.mail {
+    background-image: url("img/mail.png");
+    -webkit-animation: blink 1s linear infinite;
+}
+
+#title #icon_menu.friends {
+    background-image: url("img/friend.png");
+    -webkit-animation: blink 1s linear infinite;
 }
 
 #adt_top, #adt_bottom {
