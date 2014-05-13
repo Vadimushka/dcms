@@ -9,7 +9,7 @@ $(function () {
     var ajax_timeout = 7000;
     var scope = {};
 
-    $("#icon_menu, #container_overflow").on('click', function () {
+    $("#icon_menu, #container_overflow").on('click touchstart', function () {
         $("#container_overflow, #container_menu, #container_content").toggleClass('menu');
     });
 
