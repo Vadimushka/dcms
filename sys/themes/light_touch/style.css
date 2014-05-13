@@ -2,7 +2,17 @@ html, body {
     height: 100%;
 }
 
+#container_overflow{
+    background-color: rgba(255, 255, 255, 0);
+    -webkit-transition: background-color 0.5s ease-in-out;
+    -moz-transition: background-color 0.5s ease-in-out;
+    -o-transition: background-color 0.5s ease-in-out;
+    -ms-transition: background-color 0.5s ease-in-out;
+    transition: background-color 0.5s ease-in-out;
+}
+
 #container_overflow.menu {
+    display: block;
     position: fixed;
     top: 0;
     left: 0;
