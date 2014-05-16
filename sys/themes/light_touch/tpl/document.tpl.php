@@ -34,7 +34,7 @@
 
         var URL = "<?=URL?>";
     </script>
-    <script src="/sys/themes/.common/jquery-2.1.1.js"></script>
+    <script src="/sys/themes/.common/jquery-2.1.1.min.js"></script>
     <script src="<?= $path ?>/js.js"></script>
 </head>
 <body class="theme_light">
