@@ -191,6 +191,13 @@ html, body, #main{
     padding: 3px;
 }
 
+.form textarea.animate:focus {
+    -webkit-transition: height 100ms ease-in-out;
+    -moz-transition: height 100ms ease-in-out;
+    -o-transition: height 100ms ease-in-out;
+    transition: height 100ms ease-in-out;
+}
+
 .form .textarea_wrapper{
     border: 1px #E2E2E2 solid;
     padding: 1px;
@@ -223,6 +230,9 @@ html, body, #main{
     border: 1px solid #E9E9E9;
     border-radius: 1px;
     cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .form .textarea_wrapper .textarea_bbcode span:hover{
@@ -478,12 +488,16 @@ a.post:hover{
     cursor: pointer;
 }
 
-.DCMS_spoiler.expanded > .DCMS_spoiler_title:before{
+.DCMS_spoiler > .DCMS_spoiler_title:before{
     content: '▼ ';
 }
 
 .DCMS_spoiler.collapsed > .DCMS_spoiler_title:before{
     content: '► ';
+}
+
+.DCMS_spoiler.collapsed > .DCMS_spoiler_content{
+    height: 0;
 }
 
 .DCMS_spoiler > .DCMS_spoiler_content{

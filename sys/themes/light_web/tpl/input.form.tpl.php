@@ -1,4 +1,4 @@
-<div class="form">
+<div class="form" ng-controller="FormCtrl" ng-submit="form.onSubmit($event)">
     <?=
     '<form id="' . $id . '"' .
     ($method ? ' method="' . $method . '"' : '') .
@@ -47,12 +47,13 @@
                 ' />';
                 break;
             case 'textarea':
-                echo '<textarea ' .
+                echo '<div class="textarea_wrapper"><div class="textarea_bbcode"></div>
+                <textarea class="animate msd-elastic: \n;" ng-model="form.values.' . $element['info']['name'] . '" ' .
                 ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                 ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                 '>' .
                 ($element['info']['value'] ? text::toValue($element['info']['value']) : '') .
-                '</textarea>';
+                '</textarea></div>';
                 break;
             case 'checkbox':
                 echo '<label><input type="checkbox"' .
@@ -107,9 +108,3 @@
         echo '</form>';
         ?>    
 </div>
-<? if ($ajax_url) { ?>
-    <script>
-        form_ajax_submit(document.getElementById('<?= $id ?>'), '<?= $ajax_url ?>');
-    </script>
-    <?
-}?>
