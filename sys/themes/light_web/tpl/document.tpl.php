@@ -5,9 +5,11 @@
     <link rel="shortcut icon" href="/favicon.ico"/>
     <link rel="stylesheet" href="/sys/themes/.common/system.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
+    <link rel="stylesheet" href="/sys/themes/.common/animate.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css"/>
     <script charset="utf-8" src="/sys/themes/.common/jquery-2.1.1.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/angular.min.js" type="text/javascript"></script>
+    <script charset="utf-8" src="/sys/themes/.common/angular-animate.min.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/elastic.js" type="text/javascript"></script>
     <script charset="utf-8" src="<?= $path ?>/js.js" type="text/javascript"></script>
     <meta http-equiv="Сontent-Type" content="application/xhtml+xml; charset=utf-8"/>
@@ -36,7 +38,8 @@
             auth: '<?= __("Авторизация") ?>',
             reg: '<?= __("Регистрация") ?>',
             friend: '<?=__("Друзья")?>',
-            mail: '<?=__("Почта")?>'
+            mail: '<?=__("Почта")?>',
+            error: '<?=__('Неизвестная ошибка')?>'
         };
     </script>
 </head>
