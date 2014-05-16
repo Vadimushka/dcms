@@ -27,8 +27,8 @@ if (isset($_POST['send'])) {
     }
     $json['form']['message'] = '';
 } else {
-
-    $skip_ids = explode(',', @$_POST['skip_ids']);
+    $skip_ids_str = @$_POST['skip_ids'];
+    $skip_ids = $skip_ids_str ? explode(',', $skip_ids_str) : array();
 
     $json['remove'] = $skip_ids;
     $json['add'] = array();
@@ -68,6 +68,7 @@ if (isset($_POST['send'])) {
         }
     }
     $json['remove'] = array_values($json['remove']);
+    $json['pages'] = $pages;
 }
 
 header('Content-type: application/json; charset=utf-8', true);
