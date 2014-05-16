@@ -116,4 +116,3 @@ $doc->title = __('Рекламные позиции');
 $advertisement->display();
 
 $doc->ret(__('Админка'), '/dpanel/');
-?>

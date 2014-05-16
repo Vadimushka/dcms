@@ -146,7 +146,6 @@ foreach ($groups as $type => $value)
 $form->select('group_edit', __('Изменение параметров'), $options);
 
 $form->bbcode('* ' . __('Будьте внимательнее при установке доступа выше своего.'));
-$form->checkbox('theme_create_with_wmid', __('Создание тем только с WMID'), $topic['theme_create_with_wmid']);
 $form->button(__('Применить'), 'save');
 $form->display();
 

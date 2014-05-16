@@ -30,8 +30,7 @@ if (!$topic = $q->fetch()) {
 
 // лимит на создание тем
 $timelimit = (empty($_SESSION ['antiflood'] ['newtheme']) || $_SESSION ['antiflood'] ['newtheme'] < TIME - 3600) ? true : false;
-// запрет на создание тем без WMID
-$check_wmid = (empty($topic ['theme_create_with_wmid']) || $user->wmid);
+
 
 
 $time_reg = true;
@@ -43,19 +42,14 @@ if (!$user->is_writeable) {
 
 if ($user->group >= 2) {
     $timelimit = true; // админ-составу разрешается создавать темы без ограничений по времени
-    $check_wmid = true; // админ-составу разрешается создавать темы без ограничений WMID
 }
 
 if (!$timelimit) {
     $doc->err(__("Разрешается создавать темы не чаще одного раза в час"));
 }
 
-if (!$check_wmid) {
-    $doc->err(__("В данном разделе разрешено создавать темы только с заполненным и активированным полем WMID в анкете"));
-}
 
-
-$can_write = $timelimit && $check_wmid && $time_reg;
+$can_write = $timelimit && $time_reg;
 
 if ($can_write && isset($_POST ['message']) && isset($_POST ['name'])) {
     $message = text::input_text($_POST ['message']);

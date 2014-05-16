@@ -199,4 +199,3 @@ if (isset($_GET ['return'])) {
 
 $doc->ret(__('В анкету'), '/profile.view.php?id=' . $ank->id);
 $doc->ret(__('Админка'), './');
-?>

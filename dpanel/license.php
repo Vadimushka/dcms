@@ -14,4 +14,3 @@ $listing = new listing();
 $post = $listing->post();
 $post->content[] = $bb->getText();
 $listing->display();
-?>

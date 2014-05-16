@@ -92,14 +92,9 @@ if (isset($_POST['send'])) {
     }
 }
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', '?id=' . $id . '&amp;' . passgen());
-$elements = array();
-$elements [] = array('type' => 'checkbox', 'br' => 1, 'info' => array('value' => 1, 'name' => 'sendToAnkMail', 'text' => __('Задействовать анкетный email') . '*'));
-$elements [] = array('type' => 'text', 'br' => 1, 'value' => '* ' . __('По-умолчанию рассылка производится только по регистрационным e-mail'));
-$elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'send', 'value' => __('Разослать новость по Email'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
-?>
+$form = new form('?id=' . $id . '&amp;' . passgen());
+$form->checkbox('sendToAnkMail', __('Задействовать анкетный email') . '*', true);
+$form->bbcode('* ' . __('По-умолчанию рассылка производится только по регистрационным e-mail'));
+$form->captcha();
+$form->button(__('Разослать новость по Email'), 'send');
+$form->display();

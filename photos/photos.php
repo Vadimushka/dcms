@@ -104,17 +104,10 @@ if (!empty($_GET ['act']) && $ank->id == $user->id) {
                 }
             }
 
-            $smarty = new design ();
-            $smarty->assign('method', 'post');
-
-
-            $smarty->assign('files', 1);
-            $smarty->assign('action', '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=photo_add&amp;' . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'file', 'title' => __('Фотография') . ' (*.jpg)', 'br' => 1, 'info' => array('name' => 'file'));
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Выгрузить'))); // кнопка
-            $smarty->assign('el', $elements);
-            $smarty->display('input.form.tpl');
+            $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=photo_add&amp;' . passgen());
+            $form->file('file', __('Фотография') . ' (*.jpg)');
+            $form->button(__('Выгрузить'));
+            $form->display();
 
             $doc->ret(__('В альбом'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
             exit();
@@ -136,18 +129,13 @@ if (!empty($_GET ['act']) && $ank->id == $user->id) {
                     $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
                     header('Refresh: 1; url=?id=' . $ank->id . '&album=' . urlencode($album->name) . '&' . passgen());
                 }
-
                 exit();
             }
 
-            $smarty = new design ();
-            $smarty->assign('method', 'post');
-            $smarty->assign('action', '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=delete&amp;' . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Удалить альбом'))); // кнопка
-            $smarty->assign('el', $elements);
-            $smarty->display('input.form.tpl');
+            $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=delete&amp;' . passgen());
+            $form ->captcha();
+            $form->button(__('Удалить альбом'), 'delete');
+            $form->display();
 
             $doc->ret(__('В альбом'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
             exit();
@@ -159,7 +147,6 @@ $files = $list ['files']; // получение только файлов
 
 $pages = new pages ();
 $pages->posts = count($files);
-//$pages->this_page();
 $start = $pages->my_start();
 $end = $pages->end();
 
@@ -186,7 +173,6 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
 
 $listing->display(__('Фотографии отсутствуют'));
 $pages->display('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;'); // вывод страниц
-
 
 if ($ank->id == $user->id) {
     $doc->act(__('Выгрузить фото'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=photo_add');

@@ -11,7 +11,6 @@ $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количеств�
 
 $q = $db->query("SELECT * FROM `news` ORDER BY `id` DESC LIMIT $pages->limit");
 
-
 $listing = new listing();
 if ($arr = $q->fetchAll()) {
     foreach ($arr AS $news) {
@@ -43,4 +42,3 @@ $pages->display('?'); // вывод страниц
 if ($user->group >= 4) {
     $doc->act(__('Добавить новость'), 'news.add.php');
 }
-?>

@@ -21,7 +21,7 @@ if (!empty($_GET['approve'])) {
 
 
 if (isset($_GET['id'])) {
-    $ank = new user((int) $_GET['id']);
+    $ank = new user((int)$_GET['id']);
     if (!$ank->id) {
         $doc->err(__('Пользователь не найден'));
         $doc->ret(__('Подозрительные пользователи'), '?');
@@ -49,9 +49,6 @@ if (isset($_GET['id'])) {
     $post2 .= __('Фраза: %s', $sus['text']);
     $post->content = text::toOutput($post2);
 
-
-
-
     $post = $listing->post();
     $post->icon('approve');
     $post->title = __('Подтвердить регистрацию');
@@ -68,15 +65,11 @@ if (isset($_GET['id'])) {
     $post->title = __('Удалить пользователя');
     $post->url = "user.delete.php?id_ank=$ank->id";
 
-
-
     $listing->display();
     $doc->ret(__('Подозрительные пользователи'), '?');
     $doc->ret(__('Админка'), '/dpanel/');
     exit;
 }
-
-
 
 $listing = new listing();
 $res = $db->query("SELECT COUNT(*) AS cnt FROM `users_suspicion`");
@@ -104,7 +97,5 @@ if ($arr = $q->fetchAll()) {
 
 $listing->display(__('Нет подозрительных пользователей'));
 
-
 $pages->display('?'); // вывод страниц
 $doc->ret(__('Админка'), '/dpanel/');
-?>

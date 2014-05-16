@@ -18,15 +18,10 @@ if (isset($_POST['delete'])) {
     }
 }
 
-$smarty = new design();
-$smarty->assign('method', 'post');
-$smarty->assign('action', '?' . passgen());
-$elements = array();
-$elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-$elements[] = array('type' => 'text', 'value' => '* ' . __('Все сообщения будут удалены без возможности восстановления'), 'br' => 1);
-$elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Удалить'))); // кнопка
-$smarty->assign('el', $elements);
-$smarty->display('input.form.tpl');
+$form = new form('?' . passgen());
+$form->captcha();
+$form->bbcode('* '.__('Все сообщения будут удалены без возможности восстановления'));
+$form->button(__('Удалить'), "delete");
+$form->display();
 
 $doc->ret(__('Вернуться'), './');
-?>

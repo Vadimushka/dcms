@@ -6,7 +6,7 @@ $doc = new document(6);
 $doc->title = __('Загрузка таблиц');
 
 $tables_exists = new tables();
-$table_files = (array) glob(H . '/sys/preinstall/base.create.*.ini');
+$table_files = (array)glob(H . '/sys/preinstall/base.create.*.ini');
 $tables = array();
 foreach ($table_files as $table_file) {
     preg_match('#base.create\.(.+)\.ini#ui', $table_file, $m);
@@ -69,4 +69,3 @@ if ($listing->count()) {
 }
 
 $doc->ret(__('Админка'), './');
-?>

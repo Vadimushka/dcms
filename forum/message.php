@@ -138,18 +138,13 @@ $listing->display();
 
 if (!isset($_GET['files'])) {
     if ($can_write && $theme['group_write'] <= $user->group) {
-        $smarty = new design();
-        $smarty->assign('method', 'post');
-        $smarty->assign('action', "?id_theme=$theme[id]&amp;id_message=$message[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-        $elements = array();
-        $elements[] = array('type' => 'textarea', 'title' => __('Ответ'), 'br' => 1, 'info' => array('name' => 'message', 'value' => $re));
+        $form = new form("?id_theme=$theme[id]&amp;id_message=$message[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+        $form->textarea('message', __('Ответ'), $re);
         if ($dcms->forum_message_captcha && $user->group < 2)
-            $elements[] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Отправить'))); // кнопка
-        $smarty->assign('el', $elements);
-        $smarty->display('input.form.tpl');
+            $form->captcha();
+        $form->button(__('Отправить'));
+        $form->display();
     }
 }
 
 $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
-?>

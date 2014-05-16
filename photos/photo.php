@@ -5,7 +5,7 @@ $doc = new document ();
 $doc->title = __('Фотоальбомы');
 
 if (!empty($_GET ['id'])) {
-    $ank = new user((int) $_GET ['id']);
+    $ank = new user((int)$_GET ['id']);
 } else {
     $ank = $user;
 }
@@ -39,7 +39,7 @@ if (empty($_GET ['album']) || !$albums_dir->is_dir($_GET ['album'])) {
     exit();
 }
 
-$album_name = (string) $_GET ['album'];
+$album_name = (string)$_GET ['album'];
 $album = new files($albums_path . '/' . $album_name);
 $doc->title = $album->runame;
 
@@ -85,14 +85,10 @@ if ($photo->id_user && $photo->id_user == $user->id) {
             exit();
         }
 
-        $smarty = new design ();
-        $smarty->assign('method', 'post');
-        $smarty->assign('action', '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;act=delete&amp;' . passgen());
-        $elements = array();
-        $elements [] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-        $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'delete', 'value' => __('Удалить фото'))); // кнопка
-        $smarty->assign('el', $elements);
-        $smarty->display('input.form.tpl');
+        $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;act=delete&amp;' . passgen());
+        $form->captcha();
+        $form->button(__('Удалить фото'), 'delete');
+        $form->display();
 
         $doc->ret(__('К фото'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name));
         $doc->ret(__('Альбом %s', $album->name), 'photos.php?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
@@ -114,7 +110,6 @@ if (!$user->is_writeable) {
 }
 
 if ($can_write) {
-
 
 
 // добавление комментария
@@ -142,18 +137,12 @@ if ($can_write) {
 
 // форма добавления комментария
     if ($user->group) {
-        $smarty = new design ();
-        $smarty->assign('method', 'post');
-        $smarty->assign('action', '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;' . passgen());
-        $elements = array();
-        $elements [] = array('type' => 'textarea', 'title' => __('Комментарий'), 'br' => 1, 'info' => array('name' => 'message'));
-
+        $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;' . passgen());
+        $form->textarea('message', __('Комментарий'));
         if ($photo->id_user && $photo->id_user != $user->id)
-            $elements [] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-
-        $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'send', 'value' => __('Отправить'))); // кнопка
-        $smarty->assign('el', $elements);
-        $smarty->display('input.form.tpl');
+            $form->captcha();
+        $form->button(__('Отправить'), 'send');
+        $form->display();
     }
 }
 if (!empty($_GET ['delete_comm']) && $user->group >= $photo->group_edit) {
@@ -201,4 +190,3 @@ $pages->display('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&
 
 $doc->ret(__('Альбом %s', $album->runame), 'photos.php?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
 $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
-?>

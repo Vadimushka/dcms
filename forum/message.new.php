@@ -27,7 +27,7 @@ if (!$theme = $q->fetch()) {
 }
 
 
-$doc->title = $theme['name'] . ' - ' . __('Новое собщение');
+$doc->title = $theme['name'] . ' - ' . __('Новое сообщение');
 
 $can_write = true;
 if (!$user->is_writeable) {

@@ -5,7 +5,6 @@ $doc = new document(groups::max());
 $doc->title = __('Сборка dcms.js');
 $doc->ret(__('Админка'), './');
 
-
 if (isset($_POST['build'])) {
     $jsbuild = new js_assembly(H . '/sys/javascript/sources/');
     $jsbuild->buildTo(H . '/sys/javascript/dcms.js');
@@ -26,9 +25,6 @@ $time = filemtime(H . '/sys/javascript/dcms.js');
 $post->content[] = $time ? misc::when($time) : __('Еще не собирался');
 $listing->display();
 
-
-
 $form = new form();
 $form->button(__('Собрать'), 'build');
 $form->display();
-?>

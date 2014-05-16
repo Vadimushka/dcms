@@ -5,7 +5,7 @@ $doc = new document(5);
 $doc->title = __('Рефералы');
 
 if (isset($_GET['id_site'])) {
-    $id = (string) $_GET['id_site'];
+    $id = (string)$_GET['id_site'];
 
     $q = $db->prepare("SELECT * FROM `log_of_referers_sites` WHERE `id` = ? LIMIT 1");
     $q->execute(Array($id));
@@ -45,13 +45,16 @@ if (!$dcms->log_of_referers)
     $doc->err(__('Служба записи рефералов не запущена'));
 
 switch (@$_GET['order']) {
-    case 'count':$filter = 'count';
+    case 'count':
+        $filter = 'count';
         $order = "`count` DESC";
         break;
-    case 'domain':$filter = 'domain';
+    case 'domain':
+        $filter = 'domain';
         $order = "`domain` ASC";
         break;
-    default:$filter = 'time';
+    default:
+        $filter = 'time';
         $order = '`time` DESC';
         break;
 }
@@ -90,4 +93,3 @@ if (!$dcms->log_of_referers) {
     $doc->act(__('Управление службами'), 'sys.daemons.php');
 }
 $doc->ret(__('Админка'), './');
-?>

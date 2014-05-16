@@ -149,7 +149,7 @@ abstract class text {
      * Поиск ника пользователя в тексте сообщения и замена BBCOD`ом
      * @param string $str Текст сообщения
      * @param boolean $replace
-     * @return boolean
+     * @return string[]
      */
     static function nickSearch(&$str, $replace = true) {
         if (!@mysql_ping()) {

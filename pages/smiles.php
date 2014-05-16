@@ -29,7 +29,5 @@ for($i = $start; $i < $end && $i < $pages->posts; $i++){
 $listing->display(__('Смайлы отсутствуют'));
 $pages->display('?'); // вывод страниц
 
-$listing->display(__('Смайлы отсутствуют'));
-
 if (!empty($_GET['return']))
     $doc->ret(__('Вернуться'), text::toValue($_GET['return']));

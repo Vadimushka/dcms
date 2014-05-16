@@ -127,4 +127,3 @@ for ($z = $start; $z < $end && $z < $pages->posts; $z++) {
 $listing->display(__('Сообщений не найдено'));
 $pages->display('?period=' . $period . '&amp;');
 $doc->ret(__('Форум'), './');
-?>

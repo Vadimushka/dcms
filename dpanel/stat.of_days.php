@@ -40,4 +40,3 @@ if (!$dcms->log_of_visits) {
 }
 
 $doc->ret(__('Админка'), './');
-?>

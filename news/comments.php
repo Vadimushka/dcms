@@ -5,7 +5,7 @@ $doc = new document();
 $doc->title = __('Комментарии к новости');
 $doc->ret(__('Все новости'), './');
 
-$id = (int) @$_GET['id'];
+$id = (int)@$_GET['id'];
 
 $q = $db->prepare("SELECT * FROM `news` WHERE `id` = ? LIMIT 1");
 $q->execute(Array($id));
@@ -17,7 +17,7 @@ if (!$news = $q->fetch())
 
 $listing = new listing();
 $post = $listing->post();
-$ank = new user((int) $news['id_user']);
+$ank = new user((int)$news['id_user']);
 
 
 $post->icon('news');
@@ -48,12 +48,11 @@ $res->execute(Array($news['id']));
 $pages = new pages;
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
 
-
 if ($can_write) {
 
     if (isset($_POST['send']) && isset($_POST['comment']) && $user->group) {
 
-        $text = (string) $_POST['comment'];
+        $text = (string)$_POST['comment'];
         $users_in_message = text::nickSearch($text);
         $text = text::input_text($text);
 
@@ -85,7 +84,6 @@ if ($can_write) {
             }
 
 
-
             exit;
         } else {
             $doc->err(__('Комментарий пуст'));
@@ -93,15 +91,11 @@ if ($can_write) {
     }
 
     if ($user->group) {
-        $smarty = new design();
-        $smarty->assign('method', 'post');
-        $smarty->assign('action', '?id=' . $id . '&amp;page=' . $pages->this_page . '&amp;' . passgen());
-        $elements = array();
-        $elements[] = array('type' => 'textarea', 'title' => __('Комментарий'), 'br' => 1, 'info' => array('name' => 'comment'));
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'send', 'value' => __('Отправить'))); // кнопка
-        $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'refresh', 'value' => __('Обновить'))); // кнопка
-        $smarty->assign('el', $elements);
-        $smarty->display('input.form.tpl');
+        $form = new form('?id=' . $id . '&amp;page=' . $pages->this_page . '&amp;' . passgen());
+        $form->textarea('comment', __('Комментарий'));
+        $form->button(__('Отправить'), 'send', false);
+        $form->button(__('Обновить'), 'refresh');
+        $form->display();
     }
 }
 
@@ -122,12 +116,12 @@ if ($arr = $q->fetchAll()) {
         if ($user->group >= 2) {
             $post->action('delete', "comment.delete.php?id=$message[id]&amp;return=" . URL);
         }
-
-        $post->content = text::toOutput($message['text']);
+        
+        $post->content[] = $message['text'];
     }
+    
 }
 
 $listing->display(__('Комментарии отсутствуют'));
 
 $pages->display('?id=' . $id . '&amp;'); // вывод страниц
-?>

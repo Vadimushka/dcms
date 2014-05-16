@@ -1,5 +1,4 @@
 <?php
-// !TODO: избавиться от Smarty
 defined('DCMS') or die();
 // файл отвечает за отображение возможных действий
 if ($access_write) {
@@ -7,15 +6,10 @@ if ($access_write) {
     switch (@$_GET ['act']) {
         case 'file_upload' :
         {
-            $smarty = new design ();
-            $smarty->assign('method', 'post');
-            $smarty->assign('files', 1);
-            $smarty->assign('action', '?' . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'file', 'title' => __('Файл'), 'br' => 1, 'info' => array('name' => 'file'));
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Выгрузить'))); // кнопка
-            $smarty->assign('el', $elements);
-            $smarty->display('input.form.tpl');
+            $form = new form('?' . passgen());
+            $form->file('file', __('Файл'));
+            $form->button(__('Выгрузить'));
+            $form->display();
         }
             break;
     }
@@ -28,54 +22,37 @@ if ($access_edit) {
     switch (@$_GET ['act']) {
         case 'file_import' :
         {
-            $smarty = new design ();
-            $smarty->assign('method', 'post');
-            $smarty->assign('action', '?' . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'input_text', 'title' => __('URL'), 'br' => 1, 'info' => array('name' => 'url', 'value' => 'http://'));
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'file_import', 'value' => __('Импортировать'))); // кнопка
-            $smarty->assign('el', $elements);
-            $smarty->display('input.form.tpl');
+            $form = new form('?' . passgen());
+            $form->text('url', __('URL'), 'http://');
+            $form->button(__('Импортировать'), 'file_import');
+            $form->display();
         }
             break;
         case 'write_dir' :
         {
-            $smarty = new design ();
-            $smarty->assign('method', 'post');
-            $smarty->assign('action', '?' . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'input_text', 'title' => __('Название папки') . ' *', 'br' => 1, 'info' => array('name' => 'name'));
-            $elements [] = array('type' => 'text', 'value' => '* ' . __('На сервере создастся папка на транслите'), 'br' => 1);
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'write_dir', 'value' => __('Создать'))); // кнопка
-            $smarty->assign('el', $elements);
-            $smarty->display('input.form.tpl');
+            $form = new form('?' . passgen());
+            $form->text('name', __('Название папки'));
+            $form->bbcode('* ' . __('На сервере создастся папка на транслите'));
+            $form->button(__('Создать'), 'write_dir');
+            $form->display();
         }
             break;
 
         case 'edit_unlink' :
         {
-            $smarty = new design ();
-            $smarty->assign('method', 'post');
-            $smarty->assign('action', '?' . passgen());
-            $elements = array();
-            $elements [] = array('type' => 'captcha', 'session' => captcha::gen(), 'br' => 1);
-            $elements [] = array('type' => 'text', 'value' => '* ' . __('Все данные, находящиеся в этой папке будут безвозвратно удалены'), 'br' => 1);
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'edit_unlink', 'value' => __('Удалить'))); // кнопка
-            $smarty->assign('el', $elements);
-            if ($rel_path)
-                $smarty->display('input.form.tpl');
+            if ($rel_path) {
+                $form = new form('?' . passgen());
+                $form->captcha();
+                $form->bbcode('* ' . __('Все данные, находящиеся в этой папке будут безвозвратно удалены'));
+                $form->button(__('Удалить'), 'edit_unlink');
+                $form->display();
+            }
         }
             break;
         case 'edit_path' :
         {
             // перемещение папки
-            $smarty = new design ();
-            $smarty->assign('method', 'post');
-            $smarty->assign('action', '?' . passgen());
-            $elements = array();
-
             $options = array();
-
             // список папок в загруз-центре
             $root_dir = new files(FILES . '/.downloads');
             $dirs = $root_dir->getPathesRecurse($dir);
@@ -110,12 +87,11 @@ if ($access_edit) {
                 }
             }
 
+            $form = new form('?' . passgen());
+            $form->select('path_rel_new', __('Новый путь'), $options);
+            $form->button(__('Применить'), 'edit_path');
+            $form->display();
 
-            $elements [] = array('type' => 'select', 'br' => 1, 'title' => __('Новый путь'), 'info' => array('name' => 'path_rel_new', 'options' => $options));
-
-            $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'edit_path', 'value' => __('Применить'))); // кнопка
-            $smarty->assign('el', $elements);
-            $smarty->display('input.form.tpl');
         }
             break;
         case 'edit_prop' :

@@ -6,7 +6,7 @@ include '../sys/inc/start.php';
 $default = array('id');
 
 // ключи, которые будут исключены
-$skip = array('_', 'password', 'a_code', 'recovery_password', 'wmid_tmp_code');
+$skip = array('_', 'password', 'a_code', 'recovery_password');
 
 // отправляемые данные
 $data = array();

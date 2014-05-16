@@ -9,10 +9,9 @@ $doc->ret(__('Админка'), '/dpanel/');
 $types = array('wap', 'pda', 'itouch', 'web');
 
 if (isset($_POST ['save'])) {
-
     foreach ($types AS $type) {
         $prop_name = "widget_items_count_" . $type;
-        $dcms->$prop_name = min(max((int) $_POST [$prop_name], 0), 50);
+        $dcms->$prop_name = min(max((int)$_POST [$prop_name], 0), 50);
     }
 
     if ($dcms->save_settings()) {
@@ -22,7 +21,6 @@ if (isset($_POST ['save'])) {
     }
 }
 
-
 $form = new form('?' . passgen());
 foreach ($types AS $type) {
     $prop_name = "widget_items_count_" . $type;
@@ -30,4 +28,3 @@ foreach ($types AS $type) {
 }
 $form->button(__('Применить'), 'save');
 $form->display();
-?>

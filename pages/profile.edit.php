@@ -4,21 +4,6 @@ include_once '../sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Мой профиль');
 
-if (isset($_GET ['set_wmid'])) {
-    if (empty($_GET ['id_user']) || $_GET ['id_user'] != $user->id) {
-        $doc->err(__('Ошибка аккаунта'));
-    } elseif (empty($_GET ['tmp_code'])) {
-        $doc->err(__('Отсутствует код активации'));
-    } elseif ($user->wmid_tmp_code !== $_GET ['tmp_code']) {
-        $doc->err(__('Ошибка кода активации'));
-    } else {
-        $user->wmid_tmp_code = '';
-        $user->wmid = $user->wmid_tmp;
-        $user->wmid_tmp = '';
-        $doc->msg(__('Ваш WMID успешно активирован'));
-    }
-}
-
 if (isset($_POST ['save'])) {
     $user->realname = text::for_name(@$_POST ['realname']);
     $user->icq_uin = text::icq_uin(@$_POST ['icq']);
@@ -69,27 +54,13 @@ if (isset($_POST ['save'])) {
         }
     }
 
-    if (!empty($_POST ['wmid_tmp'])) {
-        if ($user->wmid && $user->wmid != $_POST ['wmid_tmp']) {
+    if (!empty($_POST ['wmid'])) {
+        if ($user->wmid && $user->wmid != $_POST ['wmid']) {
             $doc->err(__('Активированный WMID изменять и удалять запрещено'));
-        } elseif (!is_valid::wmid($_POST ['wmid_tmp'])) {
+        } elseif (!is_valid::wmid($_POST ['wmid'])) {
             $doc->err(__('Указан не корректный %s', 'WMID'));
-        } elseif ($user->wmid != $_POST ['wmid_tmp']) {
-            $tmp_code = passgen();
-
-            $user->wmid_tmp_code = $tmp_code;
-            $user->wmid_tmp = $_POST ['wmid_tmp'];
-
-
-            $t = new design();
-            $t->assign('title', __('Активация WebMoneyID'));
-            $t->assign('site', $dcms->sitename);
-            $t->assign('wmid', $user->wmid_tmp);
-            $t->assign('login', $user->login);
-            $t->assign('url', "http://{$_SERVER['HTTP_HOST']}/profile.edit.php?id_user={$user->id}&tmp_code={$tmp_code}&set_wmid");
-            mail::send($user->wmid_tmp . '@wmkeeper.com', __('Подтверждение WMID'), $t->fetch('file:' . H . '/sys/templates/mail.webmoney.tpl'));
-
-            $doc->msg(__('На Ваш email %s@wmkeeper.com отправлено письмо с кодом подтверждения', $user->wmid_tmp));
+        } elseif ($user->wmid != $_POST ['wmid']) {
+            $user->wmid = $_POST ['wmid'];
         }
     }
 
@@ -117,7 +88,7 @@ $form->input('ank_g_r', '', $user->ank_g_r, 'text',  true, 4, false, 4);
 $form->text('icq', 'ICQ UIN', $user->icq_uin);
 $form->text('skype', 'Skype', $user->skype);
 $form->text('email', 'E-Mail', $user->email);
-$form->text('wmid_tmp', 'WMID' . ($user->wmid_tmp ? ' (' . $user->wmid_tmp . ' ?)' : ''), $user->wmid, true, false, !!$user->wmid);
+$form->text('wmid', 'WMID', $user->wmid);
 $form->textarea('description', __('О себе') . ' [256]', $user->description);
 
 $form->button(__('Применить'), 'save');

@@ -33,12 +33,10 @@ if ($ank->group >= $user->group) {
     exit;
 }
 
-
 $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
 
-
 if (isset($_POST['change'])) {
-    $id_new = (int) @$_POST['id_new'];
+    $id_new = (int)@$_POST['id_new'];
     $id_old = $ank->id;
     $res = $db->prepare("SELECT COUNT(*) FROM `users` WHERE `id` = ?");
     $res->execute(Array($id_new));
@@ -75,8 +73,6 @@ $form->bbcode('[notice] ' . __('Изменение ID пользователя �
 $form->button(__('Применить'), 'change');
 $form->display();
 
-
 $doc->ret(__('Действия'), 'user.actions.php?id=' . $ank->id);
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);
 $doc->ret(__('Админка'), '/dpanel/');
-?>

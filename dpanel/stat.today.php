@@ -66,9 +66,6 @@ $post = $listing->post();
 $post->title = __('Всего посетителей');
 $post->content = __('%s посетител' . misc::number(array_sum($hosts), 'ь', 'я', 'ей'), array_sum($hosts));
 
-
-
 $listing->display();
 
 $doc->ret(__('Админка'), './');
-?>

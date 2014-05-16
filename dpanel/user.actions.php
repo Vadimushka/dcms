@@ -40,4 +40,3 @@ $user_actions->display();
 
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);
 $doc->ret(__('Админка'), '/dpanel/');
-?>

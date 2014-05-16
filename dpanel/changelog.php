@@ -4,7 +4,6 @@ include_once '../sys/inc/start.php';
 $doc = new document(groups::max());
 $doc->title = __('Список изменений');
 
-
 $files = array();
 $files_g = (array) glob(H . '/sys/docs/changelog/*.txt');
 foreach ($files_g as $path) {
@@ -31,7 +30,6 @@ if (!empty($_GET['ver'])) {
     }
 }
 
-
 $listing = new listing();
 foreach ($files AS $name) {
     $post = $listing->post();
@@ -42,4 +40,3 @@ foreach ($files AS $name) {
 $listing ->display(__('Списки изменений отсутствуют'));
 
 $doc->ret(__('Админка'), './');
-?>

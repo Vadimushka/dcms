@@ -62,16 +62,10 @@ if ($ank->id == $user->id && !empty($_GET ['act']) && $_GET ['act'] == 'create')
         }
     }
 
-    $smarty = new design ();
-    $smarty->assign('method', 'post');
-
-    $smarty->assign('action', '?id=' . $ank->id . '&amp;act=create&amp;' . passgen());
-    $elements = array();
-
-    $elements [] = array('type' => 'input_text', 'title' => __('Название альбома'), 'br' => 1, 'info' => array('name' => 'name'));
-    $elements [] = array('type' => 'submit', 'br' => 0, 'info' => array('value' => __('Создать')));
-    $smarty->assign('el', $elements);
-    $smarty->display('input.form.tpl');
+    $form = new form('?id=' . $ank->id . '&amp;act=create&amp;' . passgen());
+    $form->text('name', __('Название альбома'));
+    $form->button(__('Создать'));
+    $form->display();
 
     $doc->ret(__('К альбомам'), '?id=' . $ank->id . '&amp;' . passgen());
     exit();
@@ -94,4 +88,3 @@ $listing->display(__('Фотоальбомы отсутствуют'));
 if ($user->id == $ank->id) {
     $doc->act(__('Создать альбом'), '?id=' . $ank->id . '&amp;act=create');
 }
-?>
