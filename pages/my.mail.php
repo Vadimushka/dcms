@@ -69,7 +69,7 @@ if (isset($_GET ['id'])) {
 
 
     $pages = new pages ();
-    $res = $db->prepare("SELECT COUNT(*) FROM `mail` WHERE (`id_user` = ? AND `id_sender` = ?) OR (`id_user` = ? AND `id_sender` = ?)");
+    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `mail` WHERE (`id_user` = ? AND `id_sender` = ?) OR (`id_user` = ? AND `id_sender` = ?)");
     $res->execute(Array($user->id, $id_kont, $id_kont, $user->id));
     $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество писем
 
