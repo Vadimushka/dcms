@@ -6,7 +6,7 @@ $checked_st = $checked ? ' checked="checked"' : '';
 ?>
 <div class="<?= $div ?>">
     <label for="<?= $name ?>">
-        <table cellspacing="0" callpadding="0" width="100%">
+        <table cellspacing="0" cellpadding="0" width="100%">
 
             <tr>
                 <td style="width:16px">

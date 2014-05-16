@@ -5,7 +5,7 @@ $post_counter = $counter ? '<span class="counter gradient_grey invert border">' 
 $post_actions = '<span class="actions">' . $this->section($actions, '<a href="{url}"><img src="{icon}" alt="" /></a>') . '</span>';
 ?>
 <?= ($url ? '<a href="' . $url . '" class="' : '<div class="') . 'post' . ($hightlight ? ' hightlight' : '') . '" id="' . $id . '">' ?>
-    <table <?= $iefix ?> cellspacing="0" callpadding="0" width="100%">
+    <table <?= $iefix ?> cellspacing="0" cellpadding="0" width="100%">
         <? if ($image) { ?>
             <tr>
                 <td class="image" rowspan="4">

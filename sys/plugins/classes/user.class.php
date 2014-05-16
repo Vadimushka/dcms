@@ -28,16 +28,18 @@
  * @method string icon() Возвращает название иконки пользователя (в зависимости от статуса, пола и бана)
  * @method string getAvatar() getAvatar(int $maxWidth) Возвращает путь к изображению аватара пользователя
  */
-class user extends plugins {
+class user extends plugins
+{
 
     protected $_update = array();
     protected $_data = array();
 
     /**
-     * 
+     *
      * @param boolean|int|array $id_or_arrayToCache Идентификатор пользователя или массив идентификаторов для запроса из базы и помещения в кэш
      */
-    function __construct($id_or_arrayToCache = false) {
+    function __construct($id_or_arrayToCache = false)
+    {
         if ($id_or_arrayToCache === false) {
             $this->guest_init();
         } elseif (is_array($id_or_arrayToCache)) {
@@ -54,9 +56,10 @@ class user extends plugins {
      * @param array|int $get_users_by_id Массив идентификаторов пользователей
      * @return array Массив данных запрошенных пользователей
      */
-    protected function _usersFromCache($get_users_by_id) {
+    protected function _usersFromCache($get_users_by_id)
+    {
         static $cache = array(); // кэш пользователей
-        $get_users_by_id = array_unique((array) $get_users_by_id);
+        $get_users_by_id = array_unique((array)$get_users_by_id);
 
         $users_from_mysql = array(); // пользователи, которые будут запрашиваться из базы (нет в кэше)
         $users_return = array(); // пользователи, которые будут возвращены
@@ -65,7 +68,7 @@ class user extends plugins {
             if (array_key_exists($id_user, $cache))
                 $users_return[$id_user] = $cache[$id_user];
             else
-                $users_from_mysql[] = (int) $id_user;
+                $users_from_mysql[] = (int)$id_user;
         }
 
         if ($users_from_mysql) {
@@ -83,7 +86,8 @@ class user extends plugins {
      * Инициализация данных неавторизованного пользователя (гостя).
      * Если был инициализирован пользователь, то произойдет запись данных в базу с очисткой текущего объекта
      */
-    public function guest_init() {
+    public function guest_init()
+    {
         $this->_save_data();
         $this->_data = array();
         $this->_data ['id'] = false;
@@ -97,7 +101,8 @@ class user extends plugins {
      * @staticvar array $cache
      * @param int $id
      */
-    protected function _user_init($id) {
+    protected function _user_init($id)
+    {
         $this->guest_init();
 
         if ($id === 0) {
@@ -120,7 +125,8 @@ class user extends plugins {
      * @staticvar array $is_ban Массив с кэшем забаненых пользователй
      * @return boolean Забанен ли пользователь
      */
-    protected function _is_ban() {
+    protected function _is_ban()
+    {
         static $is_ban = array();
 
         if (!isset($is_ban [$this->_data ['id']])) {
@@ -135,7 +141,8 @@ class user extends plugins {
      * @staticvar array $is_ban_full Массив с кэшем забаненых пользователей
      * @return boolean Пользователь забанен с запретом навигации по сайту
      */
-    protected function _is_ban_full() {
+    protected function _is_ban_full()
+    {
         static $is_ban_full = array();
 
         if (!isset($is_ban_full [$this->_data ['id']])) {
@@ -151,7 +158,8 @@ class user extends plugins {
      * @param integer $id_user Идентификатор пользователя
      * @return boolean Пользователь онлайн
      */
-    protected function _is_online($id_user) {
+    protected function _is_online($id_user)
+    {
         static $online = false;
         if ($online === false) {
             $online = array();
@@ -168,7 +176,8 @@ class user extends plugins {
      * @global \dcms $dcms
      * @return boolean Пользователь может писать сообщения
      */
-    protected function _is_writeable() {
+    protected function _is_writeable()
+    {
         if ($this->_is_ban())
             return false;
 
@@ -188,12 +197,36 @@ class user extends plugins {
     }
 
     /**
-     * 
+     * Возвращает данные пользователя по указанным полям
+     * @param $fields
+     * @return array
+     */
+    function getCustomData($fields = array())
+    {
+        $data = array();
+        // ключи, которые будут переданы обязательно
+        $default = array('id');
+        // ключи, которые будут исключены
+        $skip = array('_', 'password', 'a_code', 'recovery_password');
+        $options = array_merge($default, $fields);
+
+        foreach ($options as $key) {
+            if (in_array($key, $skip)) {
+                continue;
+            }
+            $data[$key] = $this->$key;
+        }
+        return $data;
+    }
+
+    /**
+     *
      * @global \dcms $dcms
      * @param string $n ключ
      * @return mixed значение
      */
-    function __get($n) {
+    function __get($n)
+    {
         global $dcms;
         switch ($n) {
             case 'language' :
@@ -205,7 +238,7 @@ class user extends plugins {
             case 'is_ban_full' :
                 return $this->_is_ban_full();
             case 'online' :
-                return (bool) (@$this->_data ['last_visit'] > TIME - SESSION_LIFE_TIME);
+                return (bool)(@$this->_data ['last_visit'] > TIME - SESSION_LIFE_TIME);
             case 'group_name' :
                 return groups::name($this->_data ['group']);
             case 'items_per_page' :
@@ -220,12 +253,13 @@ class user extends plugins {
     }
 
     /**
-     * 
+     *
      * @global \dcms $dcms
      * @param string $n ключ
      * @param string $v значение
      */
-    function __set($n, $v) {
+    function __set($n, $v)
+    {
         if (empty($this->_data ['id']))
             return;
         global $dcms;
@@ -246,7 +280,8 @@ class user extends plugins {
         }
     }
 
-    protected function _save_data(){
+    protected function _save_data()
+    {
         if ($this->_update) {
             $sql = array();
             foreach ($this->_update as $key => $value) {
@@ -257,7 +292,8 @@ class user extends plugins {
         }
     }
 
-    function __destruct() {
+    function __destruct()
+    {
         $this->_save_data();
     }
 }

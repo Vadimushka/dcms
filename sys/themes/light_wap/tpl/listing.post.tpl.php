@@ -7,7 +7,7 @@ $post_counter = $counter ? '<span class="counter">' . $counter . '</span>' : '';
 $post_actions = '<span class="actions">' . $this->section($actions, '<a href="{url}"><img src="{icon}" alt="" /></a>') . '</span>';
 ?>
 <div class="post<?= ($hightlight ? ' hightlight' : '') ?>">
-    <table cellspacing="0" callpadding="0" width="100%">
+    <table cellspacing="0" cellpadding="0" width="100%">
         <? if ($image) { ?>            
             <tr>
                 <td class="image" rowspan="4">
