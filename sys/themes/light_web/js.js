@@ -276,7 +276,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     if (sound && data.mail_new_count > scope.user.mail_new_count)
                         $rootScope.$broadcast('dcms:newMessage');
 
-                    scope.user = data;
+                    scope.user = angular.extend(scope.user, data);
 
                     var cMail = +scope.user.mail_new_count;
                     var cFriends = +scope.user.friend_new_count;

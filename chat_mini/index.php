@@ -1,7 +1,10 @@
 <?php
 
 include_once '../sys/inc/start.php';
-$doc = new document();
+if (AJAX)
+    $doc = new document_json();
+else
+    $doc = new document();
 $doc->title = __('Мини чат');
 
 $pages = new pages(mysql_result(mysql_query("SELECT COUNT(*) FROM `chat_mini`"), 0));
@@ -15,7 +18,7 @@ if (!$user->is_writeable) {
 
 if ($can_write && $pages->this_page == 1) {
     if (isset($_POST['send']) && isset($_POST['message']) && $user->group) {
-        $message = (string) $_POST['message'];
+        $message = (string)$_POST['message'];
         $users_in_message = text::nickSearch($message);
         $message = text::input_text($message);
 
@@ -27,6 +30,10 @@ if ($can_write && $pages->this_page == 1) {
             header('Refresh: 1; url=?' . passgen() . '&' . SID);
             $doc->ret(__('Вернуться'), '?' . passgen());
             $doc->msg(__('Сообщение успешно отправлено'));
+
+            if ($doc instanceof document_json)
+                $doc->form_value('message', '');
+
             exit;
         } else {
             $doc->err(__('Сообщение пусто'));
@@ -36,7 +43,7 @@ if ($can_write && $pages->this_page == 1) {
     if ($user->group) {
         $message_form = '';
         if (isset($_GET ['message']) && is_numeric($_GET ['message'])) {
-            $id_message = (int) $_GET ['message'];
+            $id_message = (int)$_GET ['message'];
             $q = mysql_query("SELECT * FROM `chat_mini` WHERE `id` = '$id_message' LIMIT 1");
             if (mysql_num_rows($q)) {
                 $message = mysql_fetch_assoc($q);
@@ -52,7 +59,7 @@ if ($can_write && $pages->this_page == 1) {
 
         $form = new form('?' . passgen());
         $form->refresh_url('?' . passgen());
-        $form->setAjaxUrl('ajax.php');
+        $form->setAjaxUrl('?');
         $form->textarea('message', __('Сообщение'), $message_form);
         $form->button(__('Отправить'), 'send', false);
         $form->display();
@@ -65,7 +72,8 @@ $listing = new listing();
 if (!empty($form))
     $listing->setForm($form);
 
-$q = mysql_query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT ".$pages->limit);
+$q = mysql_query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT " . $pages->limit);
+$after_id = false;
 while ($message = mysql_fetch_assoc($q)) {
     $ank = new user($message['id_user']);
     $post = $listing->post();
@@ -78,10 +86,18 @@ while ($message = mysql_fetch_assoc($q)) {
 
     if (!$doc->last_modified)
         $doc->last_modified = $message['time'];
+
+    if ($doc instanceof document_json)
+        $doc->add_post($post, $after_id);
+
+    $after_id = $post->id;
 }
-$listing->setAjaxUrl('ajax.php?page=' . $pages->this_page);
+$listing->setAjaxUrl('?page=' . $pages->this_page);
 $listing->display(__('Сообщения отсутствуют'));
 $pages->display('?'); // вывод страниц
+
+if ($doc instanceof document_json)
+    $doc->set_pages($pages);
 
 if ($user->group >= 3)
     $doc->act(__('Удаление сообщений'), 'message.delete_all.php');

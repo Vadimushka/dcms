@@ -1,7 +1,12 @@
 <?php
 
 include_once '../sys/inc/start.php';
-$doc = new document(1);
+
+if (AJAX)
+    $doc = new document_json(1);
+else
+    $doc = new document(1);
+
 $doc->title = __('Моя почта');
 
 if (isset($_GET ['id'])) {
@@ -40,8 +45,13 @@ if (isset($_GET ['id'])) {
         if ($user->group <= $ank->group && !$ank->is_friend($user) && (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session'])))
             $doc->err(__('Проверочное число введено неверно'));
         elseif (!$mess)
-            $doc->err(__('Сообщение пусто')); else {
+            $doc->err(__('Сообщение пусто'));
+        else {
             $ank->mess($mess, $user->id);
+
+            if ($doc instanceof document_json)
+                $doc->form_value('mess', '');
+
             $doc->msg(__('Сообщение успешно отправлено'));
             header('Refresh: 1; url=?id=' . $id_kont);
             exit();
@@ -61,7 +71,7 @@ if (isset($_GET ['id'])) {
 
         $form->button(__('Отправить'), 'post', false);
         $form->refresh_url("/my.mail.php?id=$id_kont&amp;" . passgen());
-        //$form ->button(__('Обновить'), 'refresh', false);
+        $form->setAjaxUrl('/my.mail.php?id=' . $id_kont);
         $form->display();
     }
 
@@ -84,21 +94,34 @@ LIMIT " . $pages->limit);
         }
     }
 
+    $id_after = false;
     $listing = new listing();
     while ($mail = mysql_fetch_assoc($q)) {
         $ank2 = new user((int)$mail ['id_sender']);
         $post = $listing->post();
+        $post->id = 'chat_' . $mail['id'];
         $post->title = $ank2->nick();
         $post->url = '/profile.view.php?id=' . $ank2->id;
         $post->icon($ank2->icon());
         $post->content = text::toOutput($mail ['mess']);
         $post->hightlight = !$mail ['is_read'];
         $post->time = misc::when($mail ['time']);
+
+        if ($doc instanceof document_json)
+            $doc->add_post($post, $id_after);
+
+        $id_after = $post->id;
     }
+    if ($form)
+        $listing->setForm($form);
+    $listing->setAjaxUrl('?id=' . $ank->id);
+
     $listing->display(__('Переписка отсутствует'));
 
-    $pages->display('?id=' . $ank->id . '&amp;'); // вывод страниц
+    if ($doc instanceof document_json)
+        $doc->set_pages($pages);
 
+    $pages->display('?id=' . $ank->id . '&amp;'); // вывод страниц
 
     $doc->ret(__('Все сообщения'), '/my.mail.php');
     $doc->ret(__('Личное меню'), '/menu.user.php');
