@@ -66,9 +66,12 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
         };
     })
     .controller('FormCtrl',
-        ['$rootScope', '$scope', '$element', '$http', '$timeout',
-            function ($rootScope, $scope, $element, $http, $timeout) {
+        ['$rootScope', '$scope', '$element', '$http', '$timeout', '$compile',
+            function ($rootScope, $scope, $element, $http, $timeout, $compile) {
                 var form = $scope.form = {
+                    showSmiles: false,
+                    smilesLoaded: false,
+                    smilesContent: '',
                     msg: '',
                     err: '',
                     sending: false, // происходит отправка сообщения
@@ -77,6 +80,10 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     },
                     onBBcodeClick: function (args) {
                         InputInsert(args.Textarea, args.Code.Prepend, args.Code.Append);
+                        $scope.$broadcast('elastic:adjust'); // обновление высоты textarea
+                    },
+                    pasteSmile: function (smile, textarea_id) {
+                        InputInsert(document.getElementById(textarea_id), '', ' ' + smile + ' ', true);
                         $scope.$broadcast('elastic:adjust'); // обновление высоты textarea
                     },
                     onSubmit: function (event, url) {
@@ -126,6 +133,22 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     }
                 };
 
+                $scope.$watch('form.showSmiles', function () {
+                    if (!form.showSmiles)
+                        return;
+                    if (form.smilesLoaded)
+                        return;
+                    form.smilesContent = 'Загрузка';
+                    $http.get('/ajax/smiles.json.php')
+                        .success(function ($data) {
+                            form.smiles = $data;
+                            form.smilesLoaded = true;
+                        })
+                        .error(function () {
+
+                        });
+                });
+
                 var codes = [
                     {Text: 'B', Title: translates.bbcode_b, Prepend: '[b]', Append: '[/b]'},
                     {Text: 'I', Title: translates.bbcode_i, Prepend: '[i]', Append: '[/i]'},
@@ -150,6 +173,15 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                         $el.on('click', angular.bind($scope, form.onBBcodeClick, {Code: codes[ii], Textarea: textareaNode}));
                         $bbcodes.append($el);
                     }
+
+                    var $el = angular.element('<span class="smiles" ng-click="form.showSmiles = !form.showSmiles" style="float: right"></span>');
+                    $el.text(translates.smiles);
+                    $el.append('<div class="smiles_drop_menu" ng-show="form.showSmiles"><div class="smiles_drop_menu_container">' +
+                        '<div ng-repeat="smile in form.smiles" ng-click="form.pasteSmile(smile.code, \'' + textareaNode.id + '\')"><img ng-src="{{smile.image}}" alt="{{smile.title}}" /></div>' +
+                        '</div></div>')
+                    //$el.on('click', angular.bind($scope, form.onSmilesClick));
+                    $compile($el)($scope);
+                    $bbcodes.append($el);
                 }
             }])
     .controller('ListingCtrl',

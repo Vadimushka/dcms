@@ -50,7 +50,7 @@
                 break;
             case 'textarea':
                 echo '<div class="textarea_wrapper"><div class="textarea_bbcode"></div>
-                <textarea ng-initial="" class="animate msd-elastic: \n;" ng-model="form.values.' . $element['info']['name'] . '" ' .
+                <textarea id="' . passgen() . '" ng-initial="" class="animate msd-elastic: \n;" ng-model="form.values.' . $element['info']['name'] . '" ' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                     '>' .
@@ -83,8 +83,7 @@
                     if ($option['groupstart'])
                         echo '<optgroup label="' . $option[0] . '">';
                     elseif ($option['groupend'])
-                        echo '</optgroup>';
-                    else
+                        echo '</optgroup>'; else
                         echo '<option' .
                             ($option[2] ? ' selected="selected"' : '') .
                             ' value="' . $option[0] . '"' .
@@ -102,6 +101,7 @@
     ?>
     <span class="msg animate" ng-show="form.msg" ng-bind="form.msg"></span>
     <span class="err animate" ng-show="form.err" ng-bind="form.err"></span>
+
     <div class="waiter animate" ng-show="form.sending"></div>
     <? if ($refresh_url) { ?>
         <a class="refresh" title="<?= __('Обновить') ?>" href="<?= $refresh_url ?>"><img
