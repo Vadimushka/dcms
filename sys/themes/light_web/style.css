@@ -258,22 +258,78 @@ html, body, #main {
     border-color: #A8A8A8;
 }
 
-.bbcode_smiles {
-    display: none;
+.smiles{
+    position: relative;
 }
 
-.bbcode_smile {
+/* обводка стрелочки */
+.smiles_drop_menu:before{
+    content: '';
+    position: absolute;
+    top: -17px;
+    right: 24px;
+    height: 0;
+    width: 0;
+    border: transparent solid 8px;
+    border-bottom-color: rgba(0, 0, 0, 0.38);
+}
+
+/* стрелочка */
+.smiles_drop_menu:after{
+    content: '';
+    position: absolute;
+    top: -16px;
+    right: 24px;
+    height: 0;
+    width: 0;
+    border: transparent solid 8px;
+    border-bottom-color: #FFFFFF;
+}
+
+/* меню смайлов */
+.smiles_drop_menu{
+    position: absolute;
+    top: 24px;
+    right: 0;
+    width: 200px;
+    height: 150px;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.17);
+    border-radius: 3px;
+}
+
+/* внутренний контейнер меню смайлов */
+.smiles_drop_menu_container{
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    background-color: #eeeeee;
+    border: 1px solid #D8D8D8;
+    box-shadow: inset 1px 1px 4px -3px #000;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.smiles_drop_menu_container div{
     display: inline-block;
-    vertical-align: bottom;
-    margin: 3px;
-    cursor: pointer;
-    border: 1px solid transparent;
+    min-width: 40px;
+    min-height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ECECEC;
+    margin: 1px;
+    border-radius: 3px;
 }
 
-.bbcode_smile:hover {
-    background-color: #9bc4ff;
-    border-color: #607ba3;
-    border-radius: 2px;
+.smiles_drop_menu_container div:hover{
+    border: 1px solid #d3d3d3;
+}
+
+.smiles_drop_menu_container div img{
+    vertical-align: middle;
 }
 
 .listing {
@@ -305,13 +361,13 @@ html, body, #main {
 }
 
 .post.ng-enter {
-    -webkit-animation: fadeInUp 1s;
-    animation: fadeInUp 1s;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
 }
 
 .post.ng-leave {
-    -webkit-animation: fadeOutRight 1s;
-    animation: fadeOutRight 1s;
+    -webkit-animation: fadeOut 1s;
+    animation: fadeOut 1s;
  }
 
 .post td {

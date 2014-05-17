@@ -21,7 +21,7 @@
                 <img id="captcha" src="/captcha.php?captcha_session=<?= $element['session'] ?>&amp;<?= SID ?>"
                      alt="captcha"/><br/>
                 <?= $lang->getString("Введите число с картинки") ?>:<br/>
-                <input class="gradient_grey invert border padding radius" type="text" autocomplete="off" name="captcha"
+                <input class="gradient_grey invert border padding radius" type="number" autocomplete="off" name="captcha"
                        size="5" maxlength="5"/>
                 <?
                 break;

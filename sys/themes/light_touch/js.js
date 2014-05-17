@@ -4,7 +4,8 @@ $(function () {
         $login = $("#login"),
         $my_mail = $("#my_mail"),
         $my_friends = $("#my_friends"),
-        $menu_user = $("#menu_user");
+        $menu_user = $("#menu_user"),
+        $icon_menu = $("#icon_menu");
 
     var ajax_timeout = 7000;
     var scope = {};
@@ -32,8 +33,8 @@ $(function () {
             user = data;
         }
 
-        $("#icon_menu").toggleClass('mail', !!+user.mail_new_count);
-        $("#icon_menu").toggleClass('friends', !!+user.friend_new_count);
+        $icon_menu.toggleClass('mail', !!+user.mail_new_count);
+        $icon_menu.toggleClass('friends', !!+user.friend_new_count);
 
         if (user.id) {
             $user.text(user.login).show();

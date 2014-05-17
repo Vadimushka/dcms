@@ -8,6 +8,8 @@
             <path value="file://$PROJECT_DIR$/c55bf3fc219b9610c2b8abde2d8ed171" />
             <path value="file://$PROJECT_DIR$/sys/ini" />
             <path value="file://$PROJECT_DIR$/sys/files" />
+            <path value="file://$PROJECT_DIR$/sys/tmp" />
+            <path value="file://$PROJECT_DIR$/sys/logs" />
           </resourceRoots>
         </entryData>
       </entry>
