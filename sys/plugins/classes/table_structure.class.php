@@ -108,7 +108,7 @@ class table_structure {
      * @return string SQL запрос на создание таблицы
      */
     function getSQLQueryCreate() {
-        $sql = "CREATE TABLE `" . my_esc($this->_properties['name']) . "` (\r\n";
+        $sql = "CREATE TABLE `" . $this->_properties['name'] . "` (\r\n";
         $structure = array();
         foreach ($this->_structure as $name => $struct) {
             $struct_tmp = array();

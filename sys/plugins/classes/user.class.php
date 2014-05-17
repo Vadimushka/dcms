@@ -41,6 +41,7 @@ class user extends plugins
      */
     function __construct($id_or_arrayToCache = false)
     {
+        $this->db = DB::me();
         if ($id_or_arrayToCache === false) {
             $this->guest_init();
         } elseif (is_array($id_or_arrayToCache)) {

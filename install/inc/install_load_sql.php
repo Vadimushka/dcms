@@ -33,8 +33,8 @@ class install_load_sql {
 
         foreach ($files_ini as $file) {
             $tab = new table_structure($file);
-            $sql = $tab->getSQLQueryCreate();
-             //echo '<pre>'.output_text($sql).';</pre><br />';
+            $sql = $tab->getSQLQueryCreate();     
+             //echo '<pre>'.output_text($sql).';</pre><br />'; 
             if (!DB::me()->query($sql))
                 $return = false;
         }
