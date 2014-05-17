@@ -169,85 +169,91 @@ html, body {
     margin: 5px;
 }
 
+.form form[disabled="disabled"] input[type="submit"]{
+    background: #ccc;
+    border-color: #bbb;
+    text-shadow: none;
+}
+
 .listing {
     margin-bottom: 10px;
 }
 
-.post > table {
+.listing .post > table {
     padding: 5px;
 }
 
-.post {
-    display: block !important;
-    border-top-style: none !important;
+.listing .post {
+    display: block;
+    border-top-style: none;
 }
 
-.post:first-child {
-    border-top-style: solid !important;
+.listing .post:first-child {
+    border-top-style: solid;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
 
-.post:last-child {
+.listing .post:last-child {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
 
-.post td {
+.listing .post td {
     padding: 2px;
 }
 
-.post td.icon {
+.listing .post td.icon {
     width: 16px;
 }
 
-.post td.image {
+.listing .post td.image {
     width: 48px;
 }
 
-.post td.title {
+.listing .post td.title {
 }
 
-.post.hightlight td.title {
+.listing .post.hightlight td.title {
     font-weight: bold;
     color: #6F6F6F;
 }
 
-a.post:hover {
+.listing a.post:hover {
     text-decoration: none !important;
 }
 
-.post td.right {
+.listing .post td.right {
     width: 1px;
     white-space: nowrap;
     font-size: 80%;
     color: #979797;
 }
 
-.post td.content {
+.listing .post td.content {
     font-size: 90%;
     word-break: break-word;
 }
 
-.post td.bottom {
+.listing .post td.bottom {
     text-align: right;
     font-size: 80%;
     color: #979797;
 }
 
-.post .actions a {
+.listing .post .actions a {
     padding: 2px;
     opacity: 0.7;
 }
 
-.post .actions a:hover {
+.listing .post .actions a:hover {
     opacity: 1;
 }
 
-.post .time {
+.listing .post .time {
 }
 
-.post .counter {
+.listing .post .counter {
     white-space: nowrap;
     border-radius: 10000px;
     padding: 0px 4px;
