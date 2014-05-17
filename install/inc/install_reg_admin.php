@@ -24,8 +24,10 @@ class install_reg_admin {
 
         $this->settings = &$_SESSION['settings'];
 
-        $this->users_count = DB::me()->query("SELECT COUNT(*) FROM `users`");
-        $this->adm_count = DB::me()->query("SELECT COUNT(*) FROM `users` WHERE `group` > '1'");
+        $res = DB::me()->query("SELECT COUNT(*) AS cnt FROM `users`");
+        $this->users_count = ($row = $res->fetch()) ? $row['cnt'] : 0;
+        $res = DB::me()->query("SELECT COUNT(*) AS cnt FROM `users` WHERE `group` > '1'");
+        $this->adm_count = ($row = $res->fetch()) ? $row['cnt'] : 0;
     }
 
     function actions() {
