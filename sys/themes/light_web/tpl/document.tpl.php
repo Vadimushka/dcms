@@ -52,6 +52,7 @@
         <div id="header" class="gradient_blue">
             <div class="body_width_limit">
                 <h1 id="title"><?= $title ?></h1>
+
                 <div id="navigation">
                     <? if (!IS_MAIN) { ?>
                         <a class="gradient_blue invert border radius padding" href='/'><?= __("На главную") ?></a>
@@ -65,15 +66,15 @@
                     echo $this->section($actions, '<a class="gradient_grey border radius padding" href="{1}">{0}</a>');
                     ?>
                     <a ng-show="+user.friend_new_count" class='gradient_grey border radius padding'
-                       href='/my.friends.php'>{{str.friends}}</a>
+                       href='/my.friends.php' ng-bind="str.friends"><?= __("Друзья") ?></a>
                     <a ng-show="+user.mail_new_count" class='gradient_grey border radius padding'
-                       href='/my.mail.php?only_unreaded'>{{str.mail}}</a>
+                       href='/my.mail.php?only_unreaded' ng-bind="str.mail"><?= __("Почта") ?></a>
                     <a ng-show="+user.group" class="gradient_grey border radius padding"
-                       href="/menu.user.php">{{user.login}}</a>
+                       href="/menu.user.php" ng-bind="user.login"><?= $user->login ?></a>
                     <a ng-hide="+user.group" class="gradient_grey border radius padding"
-                       href="/login.php?return={{URL}}">{{translates.auth}}</a>
+                       href="/login.php?return={{URL}}" ng-bind="translates.auth"><?= __("Авторизация") ?></a>
                     <a ng-hide="+user.group" class="gradient_grey border radius padding"
-                       href="/reg.php?return={{URL}}">{{translates.reg}}</a>
+                       href="/reg.php?return={{URL}}" ng-bind="translates.reg"><?= __("Регистрация") ?></a>
                 </div>
             </div>
         </div>
