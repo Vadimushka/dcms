@@ -64,15 +64,15 @@
                     <?
                     echo $this->section($actions, '<a class="gradient_grey border radius padding" href="{1}">{0}</a>');
                     ?>
-                    <a ng-hide="user.friend_new_count == '0'" class='gradient_grey border radius padding'
+                    <a ng-show="+user.friend_new_count" class='gradient_grey border radius padding'
                        href='/my.friends.php'>{{str.friends}}</a>
-                    <a ng-hide="user.mail_new_count == '0'" class='gradient_grey border radius padding'
+                    <a ng-show="+user.mail_new_count" class='gradient_grey border radius padding'
                        href='/my.mail.php?only_unreaded'>{{str.mail}}</a>
-                    <a ng-hide="user.group == '0'" class="gradient_grey border radius padding"
+                    <a ng-show="+user.group" class="gradient_grey border radius padding"
                        href="/menu.user.php">{{user.login}}</a>
-                    <a ng-show="user.group == '0'" class="gradient_grey border radius padding"
+                    <a ng-hide="+user.group" class="gradient_grey border radius padding"
                        href="/login.php?return={{URL}}">{{translates.auth}}</a>
-                    <a ng-show="user.group == '0'" class="gradient_grey border radius padding"
+                    <a ng-hide="+user.group" class="gradient_grey border radius padding"
                        href="/reg.php?return={{URL}}">{{translates.reg}}</a>
                 </div>
             </div>

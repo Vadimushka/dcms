@@ -1,6 +1,6 @@
 <div class="form gradient_grey invert border padding">
     <?=
-    '<form id="'.$id.'" data-ng-submit="dcms.onFormSubmit($event, \'' . $ajax_url . '\')"' .
+    '<form id="' . $id . '" data-ajax-url="' . $ajax_url . '"' .
     ($method ? ' method="' . $method . '"' : '') .
     ($action ? ' action="' . $action . '"' : '') .
     ($files ? ' enctype="multipart/form-data"' : '')
@@ -21,8 +21,12 @@
                 <img id="captcha" src="/captcha.php?captcha_session=<?= $element['session'] ?>&amp;<?= SID ?>"
                      alt="captcha"/><br/>
                 <?= $lang->getString("Введите число с картинки") ?>:<br/>
-                <input class="gradient_grey invert border padding radius" type="number" autocomplete="off" name="captcha"
-                       size="5" maxlength="5"/>
+                <input class="gradient_grey invert border padding radius"
+                       type="number"
+                       autocomplete="off"
+                       name="captcha"
+                       size="5"
+                       maxlength="5"/>
                 <?
                 break;
             case 'input_text':
