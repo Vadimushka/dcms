@@ -14,6 +14,102 @@ $(function () {
         $("#container_overflow, #container_menu, #container_content").toggleClass('menu');
     });
 
+    $('form').each(function () {
+        var $element = $(this);
+        var url = $element.attr('data-ajax-url');
+        if (!url)
+            return;
+
+        $element.on('submit', function (event) {
+            event.preventDefault();
+
+            var formNode = event.target;
+            var postData = {};
+            for (var i = 0; i < formNode.elements.length; i++) {
+                postData[formNode.elements[i].name ] = formNode.elements[i].value;
+            }
+
+            $element.attr('disabled', 'disabled');
+
+            $.post(url, postData)
+                .success(function (data) {
+                    //form.sending = false;
+                    //if ($data.msg)
+                    //    form.showMessage($data.msg);
+
+                    //if ($data.err)
+                    //    form.showError($data.err);
+
+                    for (var i = 0; i < formNode.elements.length; i++) {
+                        var name = formNode.elements[i].name;
+                        if (typeof data.form[name] == "undefined")
+                            continue;
+                        formNode.elements[i].value = data.form[name];
+                    }
+                    $element.attr('disabled', '');
+                    $(scope).trigger('form_submit', $element.attr('id')); // Уведомляем о том, что форма была отправлена. Это событие должен слушать листинг
+                })
+                .error(function () {
+                    $element.attr('disabled', '');
+                });
+        });
+    });
+
+    $(".listing").each(function () {
+        var $element = $(this);
+        var id_form = $element.attr('data-form-id');
+        var url = $element.attr('data-ajax-url');
+        if (!url)
+            return;
+        var timeout;
+
+        $(scope).on('form_submit', function (event, id_form_arg) {
+            if (id_form_arg == id_form)
+                refresh(true);
+        });
+
+        var refresh = function (forcibly) {
+            clearTimeout(timeout);
+
+            var skip_ids = [];
+            $element.children().each(function () {
+                skip_ids.push(this.id);
+            });
+
+            $.post(url, {skip_ids: skip_ids.join(',')})
+                .success(function (data) {
+
+                    if (data.remove && data.remove.length)
+                        for (var i = 0; i < data.remove.length; i++) {
+                            $('#' + data.remove[i]).remove();
+                        }
+
+                    if (data.add && data.add.length) {
+                        for (var i = 0; i < data.add.length; i++) {
+                            var after_id = data.add[i].after_id;
+                            var $el = $(data.add[i].html).css('opacity', '0');
+                            if (after_id)
+                                $element.children('#' + after_id).after($el);
+                            else
+                                $el.prependTo($element);
+
+                            $el.animate({opacity: 1}, 500);
+                        }
+
+                        if (!forcibly)
+                            $(scope).trigger('newMessage');
+                    }
+
+                    timeout = setTimeout(refresh, ajax_timeout);
+                })
+                .error(function () {
+                    timeout = setTimeout(refresh, 60000);
+                });
+        };
+
+        timeout = setTimeout(refresh, ajax_timeout);
+    });
+
     $(scope).on('newMessage', function () {
         if (window.navigator.vibrate)
             window.navigator.vibrate([100, 100]);
@@ -60,15 +156,16 @@ $(function () {
     });
 
     $(scope).on('userRefresh', function () {
-        $.get(user_ajax_url, user).success(function (data) {
-            if (!data)
-                return;
-            ajax_timeout = 7000;
-            $(scope).trigger('userRefreshed', data);
-        }).error(function () {
-            ajax_timeout = 60000;
-            $(scope).trigger('userRefreshed');
-        });
+        $.get(user_ajax_url, user)
+            .success(function (data) {
+                if (!data)
+                    return;
+                ajax_timeout = 7000;
+                $(scope).trigger('userRefreshed', data);
+            }).error(function () {
+                ajax_timeout = 60000;
+                $(scope).trigger('userRefreshed');
+            });
     });
 
     $(scope).trigger('userRefreshed');
