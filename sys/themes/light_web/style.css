@@ -305,13 +305,13 @@ html, body, #main {
 }
 
 .post.ng-enter {
-    -webkit-animation: fadeInUp 1s;
-    animation: fadeInUp 1s;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
 }
 
 .post.ng-leave {
-    -webkit-animation: fadeOutRight 1s;
-    animation: fadeOutRight 1s;
+    -webkit-animation: fadeOut 1s;
+    animation: fadeOut 1s;
  }
 
 .post td {

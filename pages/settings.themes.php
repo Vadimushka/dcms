@@ -27,19 +27,11 @@ if (!empty($probe_theme)) {
         exit;
     }
 
-
-    $form = new design();
-    $form->assign('method', 'post');
-    $form->assign('action', '?theme=' . urlencode($probe_theme) . '&amp;' . passgen());
-    $elements = array();
-
-    $elements [] = array('type' => 'text', 'br' => 1, 'value' => __('Вы действительно хотите применить тему оформления "%s" для браузеров типа "%s"?', $theme['name'], $dcms->browser_type));
-
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Применить')));
-    $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'cancel', 'value' => __('Отмена')));
-
-    $form->assign('el', $elements);
-    $form->display('input.form.tpl');
+    $form = new form('?theme=' . urlencode($probe_theme) . '&amp;' . passgen());
+    $form->bbcode(__('Вы действительно хотите применить тему оформления "%s" для браузеров типа "%s"?', $theme['name'], $dcms->browser_type));
+    $form->button(__('Применить'), 'save', false);
+    $form->button(__('Отмена'), 'cancel');
+    $form->display();
     exit;
 }
 
