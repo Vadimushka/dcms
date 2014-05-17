@@ -68,7 +68,7 @@ if (isset($_GET['id_user'])) {
 $listing = new listing();
 $month_time = mktime(0, 0, 0, date('n'), 0); // начало текущего месяца
 $q = $db->prepare("SELECT *, COUNT(`id`) AS `count` FROM `action_list_administrators` WHERE `time` > ? GROUP BY `id_user` ORDER BY `count` DESC");
-$q->execute($month_time);
+$q->execute(Array($month_time));
 $post = $listing->post();
 $post->title = __('Все администраторы');
 $post->url = '?id_user=all';

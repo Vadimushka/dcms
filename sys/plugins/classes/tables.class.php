@@ -11,7 +11,7 @@ class tables {
     function __construct() {
         $this->db = DB::me();
         $tab = $this->db->query('SHOW TABLES');
-        while ($table = $tab->fetch()) {
+        while ($table = $tab->fetch(PDO::FETCH_BOTH)) {
             $this->tables[] = $table[0];
         }
     }
