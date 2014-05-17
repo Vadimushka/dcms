@@ -9,6 +9,7 @@
             <path value="file://$PROJECT_DIR$/sys/ini" />
             <path value="file://$PROJECT_DIR$/sys/files" />
             <path value="file://$PROJECT_DIR$/sys/tmp" />
+            <path value="file://$PROJECT_DIR$/sys/logs" />
           </resourceRoots>
         </entryData>
       </entry>
