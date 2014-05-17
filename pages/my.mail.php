@@ -112,7 +112,7 @@ LIMIT " . $pages->limit);
 
         $id_after = $post->id;
     }
-    if ($form)
+    if (isset($form))
         $listing->setForm($form);
     $listing->setAjaxUrl('?id=' . $ank->id);
 
