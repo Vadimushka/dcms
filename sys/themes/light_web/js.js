@@ -222,13 +222,15 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                                         $animate.leave($element.find('#' + $data.remove[i]));
                                     }
 
-                                if ($data.add && $data.add.length)
+                                if ($data.add && $data.add.length) {
                                     for (var i = 0; i < $data.add.length; i++) {
                                         var after_id = $data.add[i].after_id;
                                         var $el = angular.element($data.add[i].html);
                                         $animate.enter($el, $element, after_id ? $element.children('#' + after_id) : null);
                                     }
-
+                                    if (!forcibly)
+                                        $rootScope.$broadcast('dcms:newMessage');
+                                }
                             })
                             .error(function () {
                                 if (counter != listing.counter)
@@ -244,11 +246,11 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     listing.update(true);
                 });
 
-                $interval(listing.update, 7000);
+                $interval(angular.bind(listing, listing.update, false), 7000);
             }])
     .controller('DcmsCtrl',
-        ['$scope', '$http', '$timeout',
-            function ($scope, $http, $timeout) {
+        ['$scope', '$http', '$timeout', '$rootScope',
+            function ($scope, $http, $timeout, $rootScope) {
                 var scope = {
                     online: true,
                     interval: null,
@@ -261,11 +263,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                         friends: translates.friends // Друзья +[count]
                     },
                     onNewMessage: function () {
-                        var audio = document.querySelector("#audio_notify");
-                        audio.pause();
-                        audio.loop = false;
-                        audio.currentTime = 0;
-                        audio.play();
+
                     }
                 };
 
@@ -276,7 +274,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                         return;
 
                     if (sound && data.mail_new_count > scope.user.mail_new_count)
-                        scope.onNewMessage();
+                        $rootScope.$broadcast('dcms:newMessage');
 
                     scope.user = data;
 
@@ -304,6 +302,14 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                             $timeout(scope.requestUserData, 30000);
                         });
                 };
+
+                $rootScope.$on('dcms:newMessage', function () {
+                    var audio = document.querySelector("#audio_notify");
+                    audio.pause();
+                    audio.loop = false;
+                    audio.currentTime = 0;
+                    audio.play();
+                });
 
                 scope.setUserData(user, false); // user из document.tpl.php
                 scope.requestUserData();
