@@ -37,8 +37,9 @@ function InputInsert(node, Open, Close, CursorEnd) {
 }
 
 $(function () {
-    $('.DCMS_spoiler_title').on('click',function () {
+    $('.DCMS_spoiler_title').on('click',function (event) {
         $(this).parent().toggleClass('collapsed');
+        event.preventDefault();
     }).parent().addClass('collapsed');
 });
 
