@@ -23,6 +23,7 @@ index.html
 /tpl_c/
 /tpl_cache/
 ispmanager
+.gitignore
 php_errors.log
 api
 error_log
