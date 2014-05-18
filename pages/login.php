@@ -16,7 +16,7 @@ if (isset($_GET['redirected_from']) && in_array($_GET['redirected_from'], array(
         $return = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $dcms->$subdomain_var . '.' . $dcms->subdomain_main . '/login.php?login_from_cookie&return=' . urlencode('/');
     }
 } else {
-    if (isset($_GET['return'])) {
+    if (isset($_GET['return']) && !preg_match('/exit/', $_GET['return'])) {
         $return = $_GET['return'];
     } else {
         $return = '/';
