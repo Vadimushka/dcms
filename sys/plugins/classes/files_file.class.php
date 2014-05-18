@@ -309,7 +309,7 @@ class files_file
     {
         $this->_createScreensAuto();
         if (!empty($this->_screens[$num])) {
-            $screen_path_rel = '/sys/tmp/public.' . md5($this->path_file_rel) . '.num' . $num . '.width' . $img_max_width . '.jpg';
+            $screen_path_rel = '/sys/tmp/public.' . md5($this->path_file_rel) . '.time_add' . $this->time_add . '.num' . $num . '.width' . $img_max_width . '.jpg';
 
             if (file_exists(H . $screen_path_rel))
                 return $screen_path_rel;
