@@ -69,7 +69,7 @@ if ($user->group && $ank->id && $user->id != $ank->id) {
             // пользователь находится в друзьях
             if (isset($_GET ['friend']) && $_GET ['friend'] == 'delete') {
                 $form = new form("?id={$ank->id}&amp;friend&amp;" . passgen());
-                $form->html(output_text(__('Действительно хотите удалить пользователя "%s" из друзей?', $ank->login)));
+                $form->bbcode(__('Действительно хотите удалить пользователя "%s" из друзей?', $ank->login));
                 $form->button(__('Да, удалить'), 'delete');
                 $form->display();
             }
@@ -80,7 +80,7 @@ if ($user->group && $ank->id && $user->id != $ank->id) {
         } else {
             // пользователь не в друзьях
             $form = new form("?id={$ank->id}&amp;friend&amp;" . passgen());
-            $form->html(output_text(__('Пользователь "%s" предлагает Вам дружбу', $ank->login)));
+            $form->bbcode(__('Пользователь "%s" предлагает Вам дружбу', $ank->login));
             $form->button(__('Принимаю'), 'ok', false);
             $form->button(__('Не принимаю'), 'no', false);
             $form->display();
@@ -88,7 +88,7 @@ if ($user->group && $ank->id && $user->id != $ank->id) {
     } else {
         if (isset($_GET ['friend']) && $_GET ['friend'] == 'add') {
             $form = new form("?id={$ank->id}&amp;friend&amp;" . passgen());
-            $form->html(output_text(__('Предложить пользователю "%s" дружбу?', $ank->login)));
+            $form->bbcode(__('Предложить пользователю "%s" дружбу?', $ank->login));
             $form->button(__('Предложить'), 'add', false);
             $form->display();
         }
