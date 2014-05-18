@@ -42,9 +42,14 @@
             error: '<?=__('Неизвестная ошибка')?>'
         };
     </script>
+    <style type="text/css">
+        .ng-hide{
+            display: none !important;
+        }
+    </style>
 </head>
 <body class="theme_light_web theme_light" ng-controller="DcmsCtrl">
-<audio id="audio_notify" preload="auto">
+<audio id="audio_notify" preload="auto" class="ng-hide">
     <source src="/sys/themes/.common/notify.mp3"/>
 </audio>
 <div id="main">
@@ -65,15 +70,15 @@
                     <?
                     echo $this->section($actions, '<a class="gradient_grey border radius padding" href="{1}">{0}</a>');
                     ?>
-                    <a ng-show="+user.friend_new_count" class='gradient_grey border radius padding'
+                    <a ng-show="+user.friend_new_count" class='gradient_grey border radius padding ng-hide'
                        href='/my.friends.php' ng-bind="str.friends"><?= __("Друзья") ?></a>
-                    <a ng-show="+user.mail_new_count" class='gradient_grey border radius padding'
+                    <a ng-show="+user.mail_new_count" class='gradient_grey border radius padding ng-hide'
                        href='/my.mail.php?only_unreaded' ng-bind="str.mail"><?= __("Почта") ?></a>
-                    <a ng-show="+user.group" class="gradient_grey border radius padding"
+                    <a ng-show="+user.group" class="gradient_grey border radius padding ng-hide"
                        href="/menu.user.php" ng-bind="user.login"><?= $user->login ?></a>
-                    <a ng-hide="+user.group" class="gradient_grey border radius padding"
+                    <a ng-hide="+user.group" class="gradient_grey border radius padding ng-hide"
                        href="/login.php?return={{URL}}" ng-bind="translates.auth"><?= __("Авторизация") ?></a>
-                    <a ng-hide="+user.group" class="gradient_grey border radius padding"
+                    <a ng-hide="+user.group" class="gradient_grey border radius padding ng-hide"
                        href="/reg.php?return={{URL}}" ng-bind="translates.reg"><?= __("Регистрация") ?></a>
                 </div>
             </div>
