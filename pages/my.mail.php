@@ -44,9 +44,7 @@ if (isset($_GET ['id'])) {
         text::nickSearch($mess); // поиск и преобразование @nick
         $mess = text::input_text($mess);
 
-        if ($user->group <= $ank->group && !$ank->is_friend($user) && (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session'])))
-            $doc->err(__('Проверочное число введено неверно'));
-        elseif (!$mess)
+        if (!$mess)
             $doc->err(__('Сообщение пусто'));
         else {
             $ank->mess($mess, $user->id);
@@ -67,9 +65,6 @@ if (isset($_GET ['id'])) {
     if ($accept_send) {
         $form = new form("/my.mail.php?id=$id_kont&amp;" . passgen());
         $form->textarea('mess', __('Сообщение'));
-
-        if ($user->group <= $ank->group && !$ank->is_friend($user))
-            $form->captcha();
 
         $form->button(__('Отправить'), 'post', false);
         $form->refresh_url("/my.mail.php?id=$id_kont&amp;" . passgen());
