@@ -47,14 +47,13 @@ if (!empty($_POST['query'])) {
             $searched_mark[$i] = '#([^\[].*)(' . preg_quote($st, '#') . '[a-zа-я0-9]*)([^\]].*)#ui';
             $search_query_sql[$i] = '+' . my_esc($st) . '*';
         }
-        $q = mysql_query("SELECT `forum_themes`.`id`,`forum_themes`.`name`, `forum_messages`.`message`, `forum_messages`.`id` AS `id_message` FROM `forum_themes`
+        $q = $db->prepare("SELECT `forum_themes`.`id`,`forum_themes`.`name`, `forum_messages`.`message`, `forum_messages`.`id` AS `id_message` FROM `forum_themes`
 LEFT JOIN `forum_messages` ON `forum_themes`.`id` = `forum_messages`.`id_theme`
-WHERE `forum_themes`.`group_show` <= '$user->group' AND  (`forum_messages`.`group_show` IS NULL OR `forum_messages`.`group_show` <= '$user->group')
+WHERE `forum_themes`.`group_show` <= ? AND  (`forum_messages`.`group_show` IS NULL OR `forum_messages`.`group_show` <= ?)
 AND MATCH (`forum_themes`.`name`,`forum_messages`.`message`) AGAINST ('" . implode(' ', $search_query_sql) . "' IN BOOLEAN MODE)
 GROUP BY `forum_themes`.`id`");
-        while ($result = mysql_fetch_assoc($q)) {
-            $searched[] = $result;
-        }
+        $q->execute(Array($user->group, $user->group));
+        $searched = $q->fetchAll();
     }
 }
 

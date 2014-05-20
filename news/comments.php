@@ -7,12 +7,12 @@ $doc->ret(__('Все новости'), './');
 
 $id = (int)@$_GET['id'];
 
-$q = mysql_query("SELECT * FROM `news` WHERE `id` = '$id' LIMIT 1");
+$q = $db->prepare("SELECT * FROM `news` WHERE `id` = ? LIMIT 1");
+$q->execute(Array($id));
 
-if (!mysql_num_rows($q))
+if (!$news = $q->fetch())
     $doc->access_denied(__('Новость не найдена или удалена'));
 
-$news = mysql_fetch_assoc($q);
 
 
 $listing = new listing();
@@ -43,8 +43,10 @@ if (!$user->is_writeable) {
     $can_write = false;
 }
 
+$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `news_comments` WHERE `id_news` = ?");
+$res->execute(Array($news['id']));
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `news_comments` WHERE `id_news` = '$news[id]'"), 0); // количество сообщений
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
 
 if ($can_write) {
 
@@ -59,12 +61,13 @@ if ($can_write) {
             $doc->err(__('Обнаружен мат: %s', $mat));
         elseif ($text) {
             $user->balls++;
-            mysql_query("INSERT INTO `news_comments` (`id_news`, `id_user`, `time`, `text`) VALUES ('$news[id]', '$user->id', '" . TIME . "', '" . my_esc($text) . "')");
+            $res = $db->prepare("INSERT INTO `news_comments` (`id_news`, `id_user`, `time`, `text`) VALUES (?,?,?,?)");
+            $res->execute(Array($news['id'], $user->id, TIME, $text));
             header('Refresh: 1; url=?id=' . $id . '&' . passgen());
             $doc->ret(__('Вернуться'), '?id=' . $id . '&amp;' . passgen());
             $doc->msg(__('Комментарий успешно отправлен'));
 
-            $id_message = mysql_insert_id();
+            $id_message = $db->lastInsertId();
 
 
             if ($users_in_message) {
@@ -96,22 +99,27 @@ if ($can_write) {
     }
 }
 
-$q = mysql_query("SELECT * FROM `news_comments` WHERE `id_news` = '$news[id]' ORDER BY `id` DESC LIMIT $pages->limit");
+
+$q = $db->prepare("SELECT * FROM `news_comments` WHERE `id_news` = ? ORDER BY `id` DESC LIMIT $pages->limit");
+$q->execute(Array($news['id']));
 
 $listing = new listing();
-while ($message = mysql_fetch_assoc($q)) {
-    $post = $listing->post();
-    $ank = new user($message['id_user']);
-    $post->title = $ank->nick();
-    $post->url = '/profile.view.php?id=' . $ank->id;
-    $post->icon($ank->icon());
-    $post->time = misc::when($message['time']);
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $message) {
+        $post = $listing->post();
+        $ank = new user($message['id_user']);
+        $post->title = $ank->nick();
+        $post->url = '/profile.view.php?id=' . $ank->id;
+        $post->icon($ank->icon());
+        $post->time = misc::when($message['time']);
 
-    if ($user->group >= 2) {
-        $post->action('delete', "comment.delete.php?id=$message[id]&amp;return=" . URL);
+        if ($user->group >= 2) {
+            $post->action('delete', "comment.delete.php?id=$message[id]&amp;return=" . URL);
+        }
+        
+        $post->content[] = $message['text'];
     }
-
-    $post->content[] = $message['text'];
+    
 }
 
 $listing->display(__('Комментарии отсутствуют'));

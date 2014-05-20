@@ -8,16 +8,20 @@ if (!$dcms->log_of_visits) {
     $doc->err(__('Служба ведения статистики отключена'));
 }
 
-if (isset($log_of_visits) && mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` <> '" . DAY_TIME . "' LIMIT 1"), 0)) {
+$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_visits_today` WHERE `time` <> ? LIMIT 1");
+$res->execute(Array(DAY_TIME));
+$k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+if (isset($log_of_visits) && $k) {
     $log_of_visits->tally();
 }
 
+$res = $db->query("SELECT COUNT(*) AS cnt FROM `log_of_visits_for_days`");
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_for_days`"), 0); // количество сообщений
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
 
 $listing = new listing();
-$q = mysql_query("SELECT * FROM `log_of_visits_for_days` ORDER BY `time_day` DESC LIMIT $pages->limit");
-while ($st = mysql_fetch_assoc($q)) {
+$q = $db->query("SELECT * FROM `log_of_visits_for_days` ORDER BY `time_day` DESC LIMIT $pages->limit");
+while ($st = $q->fetch()) {
     $post = $listing->post();
     $post->title = date('d-m-Y', $st['time_day']);
     $post->icon('statistics');

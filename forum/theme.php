@@ -9,25 +9,28 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int)$_GET['id'];
-$q = mysql_query("SELECT `forum_themes`.* , `forum_categories`.`name` AS `category_name` , `forum_topics`.`name` AS `topic_name`
+$id_theme = (int) $_GET['id'];
+$q = $db->prepare("SELECT `forum_themes`.* , `forum_categories`.`name` AS `category_name` , `forum_topics`.`name` AS `topic_name`
 FROM `forum_themes`
 LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_themes`.`id_category`
 LEFT JOIN `forum_topics` ON `forum_topics`.`id` = `forum_themes`.`id_topic`
-WHERE `forum_themes`.`id` = '$id_theme' AND `forum_themes`.`group_show` <= '$user->group' AND `forum_topics`.`group_show` <= '$user->group' AND `forum_categories`.`group_show` <= '$user->group' LIMIT 1");
-if (!mysql_num_rows($q)) {
+WHERE `forum_themes`.`id` = ? AND `forum_themes`.`group_show` <= ? AND `forum_topics`.`group_show` <= ? AND `forum_categories`.`group_show` <= ?");
+$q->execute(Array($id_theme, $user->group, $user->group, $user->group));
+if (!$theme = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна'));
     exit;
 }
-$theme = mysql_fetch_assoc($q);
 
 if ($user->group) {
-    $q = mysql_query("SELECT * FROM `forum_views` WHERE `id_theme` = '$theme[id]' AND `id_user` = '$user->id'");
-    if (!mysql_num_rows($q)) {
-        mysql_query("INSERT INTO `forum_views` (`id_theme`, `id_user`, `time`) VALUES ('{$theme['id']}', '{$user->id}', '" . (TIME + 1) . "')");
+    $q = $db->prepare("SELECT * FROM `forum_views` WHERE `id_theme` = ? AND `id_user` = ?");
+    $q->execute(Array($theme['id'], $user->id));
+    if (!$q->fetch()) {
+        $res = $db->prepare("INSERT INTO `forum_views` (`id_theme`, `id_user`, `time`) VALUES (?, ?, ?)");
+        $res->execute(Array($theme['id'], $user->id, (TIME + 1)));
     } else {
-        mysql_query("UPDATE `forum_views` SET `time` = '" . (TIME + 1) . "' WHERE `id_user` = '{$user->id}' AND `id_theme` = '{$theme['id']}'");
+        $res = $db->prepare("UPDATE `forum_views` SET `time` = ? WHERE `id_user` = ? AND `id_theme` = ?");
+        $res->execute(Array((TIME + 1), $user->id, $theme['id']));
     }
 }
 
@@ -38,24 +41,28 @@ $doc->keywords[] = $theme['name'];
 $doc->keywords[] = $theme['topic_name'];
 $doc->keywords[] = $theme['category_name'];
 
+$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
+$res->execute(Array($theme['id'], $user->group));
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group'"), 0);
-
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений  теме
+$pages->this_page(); // получаем текущую страницу
 $doc->description = __('Форум') . ' - ' . $theme['name'] . ' - '. __('Страница %s из %s', $pages->this_page, $pages->pages);
 
 if ($theme['id_vote']) {
-    $q = mysql_query("SELECT * FROM `forum_vote` WHERE `id` = '$theme[id_vote]' AND `group_view` <= '$user->group'");
-    if (mysql_num_rows($q)) {
-        $vote = mysql_fetch_assoc($q);
+    $q = $db->prepare("SELECT * FROM `forum_vote` WHERE `id` = ? AND `group_view` <= ?");
+    $q->execute(Array($theme['id_vote'], $user->group));
+    if ($vote = $q->fetch()) {
 
         $votes = new votes($vote['name']);
-
-        $vote_accept = !@mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_vote_votes` WHERE `id_vote` = '$theme[id_vote]' AND `id_user` = '$user->id'"), 0);
+        $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_vote_votes` WHERE `id_vote` = ? AND `id_user` = ?");
+        $res->execute(Array($theme['id_vote'], $user->id));
+        $vote_accept = (($row = $res->fetch()) ? $row['cnt'] : 0) ? false : true;
         if (!$vote['active'])
             $vote_accept = false;
-        $q = mysql_query("SELECT `vote`, COUNT(*) AS `count` FROM `forum_vote_votes` WHERE `id_vote` = '$theme[id_vote]' GROUP BY `vote`");
+        $q = $db->prepare("SELECT `vote`, COUNT(*) as `count` FROM `forum_vote_votes` WHERE `id_vote` = ? GROUP BY `vote`");
+        $q->execute(Array($theme['id_vote']));
         $countets = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0);
-        while ($r = mysql_fetch_assoc($q)) {
+        while ($r = $q->fetch()) {
             $countets[$r['vote']] = $r['count'];
         }
 
@@ -68,7 +75,8 @@ if ($theme['id_vote']) {
         if (!empty($_GET['vote']) && $user->group >= $vote['group_vote'] && $vote_accept) {
             $vote_add = (int)$_GET['vote'];
             if ($vote['v' . $vote_add]) {
-                mysql_query("INSERT INTO `forum_vote_votes` (`id_vote`, `id_theme`, `id_user`, `vote`) VALUES ('$vote[id]','$theme[id]', '$user->id', '$vote_add')");
+                $res = $db->prepare("INSERT INTO `forum_vote_votes` (`id_vote`, `id_theme`, `id_user`, `vote`) VALUES (?,?,?,?)");
+                $res->execute(Array($vote['id'], $theme['id'], $user->id, $vote_add));
                 $doc->msg(__('Ваш голос успешно засчитан'));
                 header('Refresh: 1; url=theme.php?id=' . $theme['id'] . '&page=' . $pages->this_page);
                 $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id'] . '&amp;page=' . $pages->this_page);
@@ -80,11 +88,11 @@ if ($theme['id_vote']) {
     }
 }
 
-$q = mysql_query("SELECT * FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group' ORDER BY `id` ASC LIMIT $pages->limit");
-
+$q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC LIMIT $pages->limit");
+$q->execute(Array($theme['id'], $user->group));
 $users_preload = array();
 $messages = array();
-while ($message = mysql_fetch_assoc($q)) {
+while ($message = $q->fetch()) {
     $messages[] = $message;
     $users_preload[] = $message['id_user'];
 }
@@ -172,3 +180,4 @@ if ($user->group >= 2 || $theme['group_edit'] <= $user->group) {
 $doc->ret($theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);
 $doc->ret($theme['category_name'], 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
+?>

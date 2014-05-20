@@ -29,6 +29,7 @@ class files_file
     protected $_screens = array(); // скриншоты (имена файлов)
     protected $_need_save = false; // необходимость пересохранения сведений о файле
     var $ratings = array();
+    protected $db;
 
     /**
      * files_file::__construct()
@@ -36,8 +37,8 @@ class files_file
      * @param string $path_dir_abs
      * @param string $filename
      */
-    function __construct($path_dir_abs, $filename)
-    {
+    function __construct($path_dir_abs, $filename) {
+        $this->db = DB::me();
         $this->ratings = array(
             -2 => __('Ужасный файл'),
             -1 => __('Плохой файл'),
@@ -229,26 +230,28 @@ class files_file
     public function rating_my($set = false)
     {
         global $user;
-        $q = mysql_query("SELECT `rating` FROM `files_rating` WHERE `id_file` = '{$this->id}' AND `id_user` = '{$user->id}'");
-        if (mysql_num_rows($q)) {
-            $my_rating = mysql_result($q, 0);
-        } else {
+        $q = $this->db->prepare("SELECT `rating` FROM `files_rating` WHERE `id_file` = ? AND `id_user` = ?");
+        $q->execute(Array($this->id, $user->id));
+        if (!$my_rating = $q->fetch()) {
             $my_rating = 0;
         }
 
         if ($set !== false && isset($this->ratings[$set])) {
             if ($set && $my_rating) {
                 // Изменяем запись
-                $my_rating = (int)$set;
-                mysql_query("UPDATE `files_rating` SET `rating` = '$my_rating', `time` = '" . TIME . "' WHERE `id_file` = '{$this->id}' AND `id_user` = '{$user->id}' LIMIT 1");
+                $my_rating = (int) $set;
+                $res = $this->db->prepare("UPDATE `files_rating` SET `rating` = ?, `time` = ? WHERE `id_file` = ? AND `id_user` = ? LIMIT 1");
+                $res->execute(Array($my_rating, TIME, $this->id, $user->id));
             } elseif ($set) {
                 // Вносим запись
-                $my_rating = (int)$set;
-                mysql_query("INSERT INTO `files_rating` (`id_file`, `id_user`, `time`, `rating`) VALUES ('{$this->id}', '{$user->id}', '" . TIME . "', '$my_rating')");
+                $my_rating = (int) $set;
+                $res = $this->db->prepare("INSERT INTO `files_rating` (`id_file`, `id_user`, `time`, `rating`) VALUES (?, ?, ?, ?)");
+                $res->execute(Array($this->id, $this->id, TIME, $my_rating));
             } elseif ($my_rating) {
                 // Удаляем запись
                 $my_rating = 0;
-                mysql_query("DELETE FROM `files_rating` WHERE `id_file` = '{$this->id}' AND `id_user` = '{$user->id}'");
+                $res = $this->db->prepare("DELETE FROM `files_rating` WHERE `id_file` = ? AND `id_user` = ?");
+                $res->execute(Array($this->id, $user->id));
             }
 
             $this->rating_update();
@@ -260,10 +263,10 @@ class files_file
     /**
      * Обновление рейтинга
      */
-    public function rating_update()
-    {
-        $q = mysql_query("SELECT AVG(`rating`) AS `rating`, COUNT(`id_user`) AS `rating_count` FROM `files_rating` WHERE `id_file` = '{$this->_data['id']}'");
-        $data = mysql_fetch_assoc($q);
+    public function rating_update() {
+        $q = $this->db->prepare("SELECT AVG(`rating`) AS `rating`, COUNT(`id_user`) AS `rating_count` FROM `files_rating` WHERE `id_file` = ?");
+        $q->execute(Array($this->_data['id']));
+        $data = $q->fetch();
         $this->rating = $data['rating'];
         $this->rating_count = $data['rating_count'];
     }
@@ -456,22 +459,23 @@ class files_file
         if ($this->name{0} == '.')
             return false;
 
-        mysql_query("INSERT INTO `files_cache` (`path_file_rel`, `time_add`, `group_show`, `runame`)
-VALUES ('" . my_esc(convert::to_utf8($this->path_file_rel)) . "', '" . intval($this->time_add) . "', '" . intval($this->group_show) . "', '" . my_esc($this->runame) . "')");
-        return (bool)$this->id = mysql_insert_id();
+        $res = $this->db->prepare("INSERT INTO `files_cache` (`path_file_rel`, `time_add`, `group_show`, `runame`)
+VALUES (?, ?, ?, ?)");
+        $res->execute(Array(convert::to_utf8($this->path_file_rel), intval($this->time_add), intval($this->group_show), $this->runame));
+        return (bool) $this->id = $this->db->lastInsertId();
     }
 
     /**
      * обновляем сведения о файле в базе данных
      */
-    protected function _baseUpdate()
-    {
-        mysql_query("UPDATE `files_cache`
-SET `path_file_rel` = '" . my_esc(convert::to_utf8($this->path_file_rel)) . "',
-`time_add` = '" . intval($this->time_add) . "',
-`group_show` = '" . intval($this->group_show) . "',
-`runame` = '" . my_esc($this->runame) . "'
-WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
+    protected function _baseUpdate() {
+        $res = $this->db->prepare("UPDATE `files_cache`
+SET `path_file_rel` = ?,
+`time_add` = ?,
+`group_show` = ?,
+`runame` = ?
+WHERE `id` = ? LIMIT 1");
+        $res->execute(Array(convert::to_utf8($this->path_file_rel), intval($this->time_add), intval($this->group_show), $this->runame, intval($this->id)));
     }
 
     /**
@@ -481,11 +485,14 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
     protected function _baseDelete()
     {
         // удаление файла из кэша базы
-        mysql_query("DELETE FROM `files_cache` WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
+        $res=$this->db->prepare("DELETE FROM `files_cache` WHERE `id` = ? LIMIT 1");
+        $res->execute(Array(intval($this->id)));
         // удаление комментов к файлу
-        mysql_query("DELETE FROM `files_comments` WHERE `id_file` = '" . intval($this->id) . "'");
+        $res=$this->db->prepare("DELETE FROM `files_comments` WHERE `id_file` = ?");
+        $res->execute(Array(intval($this->id)));
         // удаление рейтингов файла
-        mysql_query("DELETE FROM `files_rating` WHERE `id_file` = '" . intval($this->id) . "'");
+        $res=$this->db->prepare("DELETE FROM `files_rating` WHERE `id_file` = ?");
+        $res->execute(Array(intval($this->id)));
         return true;
     }
 
@@ -586,3 +593,4 @@ WHERE `id` = '" . intval($this->id) . "' LIMIT 1");
     }
 
 }
+?>

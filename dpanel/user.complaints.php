@@ -19,8 +19,8 @@ if (!empty($_GET['id_ank']) && !empty($_GET['code'])) {
         $doc->title = __('Жалобы на "%s"', $ank->login);
 
         if (isset($_GET['delete'])) {
-            mysql_query("UPDATE `complaints` SET `processed` = '1'  WHERE `id_ank` = '$ank->id' AND `code` = '" . my_esc($code) . "'");
-
+            $res = $db->prepare("UPDATE `complaints` SET `processed` = '1'  WHERE `id_ank` = ? AND `code` = ?");
+            $res->execute(Array($ank->id, $code));
             $doc->msg(__('Нарушение помечено как обработанное'));
         }
 
@@ -28,11 +28,13 @@ if (!empty($_GET['id_ank']) && !empty($_GET['code'])) {
         $listing = new listing();
 
         $pages = new pages;
-        $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `complaints` WHERE `processed` = '0' AND `id_ank` = '$ank->id' AND `code` = '" . my_esc($code) . "'"), 0);
-        //$pages->this_page(); // получаем текущую страницу
+        $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `complaints` WHERE `processed` = '0' AND `id_ank` = ? AND `code` = ?");
+        $res->execute(Array($ank->id, $code));
+        $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
-        $q = mysql_query("SELECT `comment`, `link`, COUNT(*) as `count`, MAX(`time`) as `time` FROM `complaints` WHERE `processed` = '0' AND `id_ank` = '$ank->id' AND `code` = '" . my_esc($code) . "' GROUP BY `link` ORDER BY `count` DESC LIMIT $pages->limit");
-        while ($c = mysql_fetch_assoc($q)) {
+        $q = $db->prepare("SELECT `comment`, `link`, COUNT(*) as `count`, MAX(`time`) as `time` FROM `complaints` WHERE `processed` = '0' AND `id_ank` = ? AND `code` = ? GROUP BY `link` ORDER BY `count` DESC LIMIT $pages->limit");
+        $q->execute(Array($ank->id, $code));
+        while ($c = $q->fetch()) {
             $post = $listing->post();
             $post->url = 'user.ban.php?id_ank=' . $ank->id . '&amp;code=' . urlencode($code) . '&amp;link=' . urlencode($c['link']);
             $post->title = $c['count'] . ' ' . misc::number($c['count'], 'жалоба', 'жалобы', 'жалоб');
@@ -56,18 +58,21 @@ if (!empty($_GET['id_ank']) && !empty($_GET['code'])) {
 
 $listing = new listing();
 
+$res = $db->query("SELECT COUNT(DISTINCT `id_ank`, `code`) AS cnt FROM `complaints` WHERE `processed` = '0'");
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(DISTINCT `id_ank`, `code`) FROM `complaints` WHERE `processed` = '0'"), 0);
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
-$q = mysql_query("SELECT *, COUNT(*) as `count` FROM `complaints` WHERE `processed` = '0' GROUP BY `id_ank`, `code` ORDER BY `count` DESC LIMIT $pages->limit");
-while ($c = mysql_fetch_assoc($q)) {
-    $post = $listing->post();
-    $ank = new user($c['id_ank']);
-    $post->title = $ank->nick();
-    $post->counter = $c['count'];
-    $post->url = "?id_ank=$c[id_ank]&amp;code=" . urlencode($c['code']);
-    $post->content[] = $c['code'];
-    $post->content[] = __('Жалоба от %s', '[user]' . $c['id_user'] . '[/user]');
+$q = $db->query("SELECT *, COUNT(*) as `count` FROM `complaints` WHERE `processed` = '0' GROUP BY `id_ank`, `code` ORDER BY `count` DESC LIMIT $pages->limit");
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $c) {
+        $post = $listing->post();
+        $ank = new user($c['id_ank']);
+        $post->title = $ank->nick();
+        $post->counter = $c['count'];
+        $post->url = "?id_ank=$c[id_ank]&amp;code=" . urlencode($c['code']);
+        $post->content[] = $c['code'];
+        $post->content[] = __('Жалоба от %s', '[user]' . $c['id_user'] . '[/user]');
+    }
 }
 $listing->display(__('Жалобы отсутствуют'));
 

@@ -5,37 +5,54 @@
  */
 class log_of_visits {
 
+    private $db;
+
     function __construct() {
         global $dcms;
+        $this->db = DB::me();
         if (!cache_log_of_visits::get($dcms->ip_long)) {
-            mysql_query("INSERT INTO `log_of_visits_today` (`time`, `browser_type`, `id_browser`, `iplong`) VALUES ('" . DAY_TIME . "', '{$dcms->browser_type}', '{$dcms->browser_id}', '{$dcms->ip_long}')");
+            $res = $this->db->prepare("INSERT INTO `log_of_visits_today` (`time`, `browser_type`, `id_browser`, `iplong`) VALUES (?, ?, ?, ?)");
+            $res->execute(Array(DAY_TIME, $dcms->browser_type, $dcms->browser_id, $dcms->ip_long));
             cache_log_of_visits::set($dcms->ip_long, true, 1);
         }
     }
 
     // подведение итогов посещений по дням
     function tally() {
-        mysql_query("LOCK TABLES `log_of_visits_today` WRITE READ, `log_of_visits_for_days` WRITE READ");
+     //   $res = $this->db->query("LOCK TABLES `log_of_visits_today` WRITE READ, `log_of_visits_for_days` WRITE READ");
         // запрашиваем дни, которые есть в базе исключая текущий
-        $q = mysql_query("SELECT DISTINCT `time`  FROM `log_of_visits_today` WHERE `time` <> '" . DAY_TIME . "'");
-        while ($day = mysql_fetch_assoc($q)) {
-            $hits['wap'] = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = '$day[time]' AND `browser_type` = 'wap'"), 0);
-            $hits['pda'] = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = '$day[time]' AND `browser_type` = 'pda'"), 0);
-            $hits['itouch'] = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = '$day[time]' AND `browser_type` = 'itouch'"), 0);
-            $hits['web'] = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = '$day[time]' AND `browser_type` = 'web'"), 0);
+        $q = $this->db->prepare("SELECT DISTINCT `time`  FROM `log_of_visits_today` WHERE `time` <> ?");
+        $q->execute(Array(DAY_TIME));
+        $res_hits = $this->db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
+        $res_hosts = $this->db->prepare("SELECT COUNT(DISTINCT `iplong` , `id_browser`) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
+        $res_insert = $this->db->prepare("INSERT INTO `log_of_visits_for_days` (`time_day`, `hits_web`,`hosts_web`,`hits_wap`,`hosts_wap`,`hits_pda`,`hosts_pda`,`hits_itouch`,`hosts_itouch`) VALUES (?,?,?,?,?,?,?,?,?)");
+        while ($day = $q->fetch()) {
+            $res_hits->execute(Array($day['time'], 'wap'));
+            $hits['wap'] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
+            $res_hits->execute(Array($day['time'], 'pda'));
+            $hits['pda'] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
+            $res_hits->execute(Array($day['time'], 'itouch'));
+            $hits['itouch'] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
+            $res_hits->execute(Array($day['time'], 'web'));
+            $hits['web'] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
 
-            $hosts['wap'] = mysql_result(mysql_query("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = '$day[time]' AND `browser_type` = 'wap'"), 0);
-            $hosts['pda'] = mysql_result(mysql_query("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = '$day[time]' AND `browser_type` = 'pda'"), 0);
-            $hosts['itouch'] = mysql_result(mysql_query("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = '$day[time]' AND `browser_type` = 'itouch'"), 0);
+            $res_hosts->execute(Array($day['time'], 'wap'));
+            $hosts['wap'] = ($row = $res_hosts->fetch()) ? $row['cnt'] : 0;
+            $res_hosts->execute(Array($day['time'], 'pda'));
+            $hosts['pda'] = ($row = $res_hosts->fetch()) ? $row['cnt'] : 0;
+            $res_hosts->execute(Array($day['time'], 'itouch'));
+            $hosts['itouch'] = ($row = $res_hosts->fetch()) ? $row['cnt'] : 0;
+            $res_hosts->execute(Array($day['time'], 'web'));
+            $hosts['web'] = ($row = $res_hosts->fetch()) ? $row['cnt'] : 0;
 
-            $hosts['web'] = mysql_result(mysql_query("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = '$day[time]' AND `browser_type` = 'web'"), 0);
-            mysql_query("INSERT INTO `log_of_visits_for_days` (`time_day`, `hits_web`,`hosts_web`,`hits_wap`,`hosts_wap`,`hits_pda`,`hosts_pda`,`hits_itouch`,`hosts_itouch`) VALUES ('$day[time]','$hits[web]','$hosts[web]','$hits[wap]','$hosts[wap]','$hits[pda]','$hosts[pda]','$hits[itouch]','$hosts[itouch]')");
+            $res_insert->execute(Array($day['time'], $hits['web'], $hosts['web'], $hits['wap'], $hosts['wap'], $hits['pda'], $hosts['pda'], $hits['itouch'], $hosts['itouch']));
         }
-        mysql_query("DELETE FROM `log_of_visits_today` WHERE `time` <> '" . DAY_TIME . "'");
+        $res = $this->db->prepare("DELETE FROM `log_of_visits_today` WHERE `time` <> ?");
+        $res->execute(Array(DAY_TIME));
         // оптимизация таблиц после удаления данных
-        mysql_query("OPTIMIZE TABLE `log_of_visits_today`");
+        $this->db->query("OPTIMIZE TABLE `log_of_visits_today`");
         // разблокируем таблицы
-        mysql_query("UNLOCK TABLES");
+        $this->db->query("UNLOCK TABLES");
     }
 
 }

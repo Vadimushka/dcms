@@ -31,6 +31,9 @@ $doc->description = $file->meta_description ? $file->meta_description : $dir->me
 $doc->keywords = $file->meta_keywords ? explode(',', $file->meta_keywords) : ($dir->meta_keywords ? explode(',', $dir->meta_keywords) : '');
 
 
+
+
+
 if ($access_edit)
     include 'inc/file_act.php';
 
@@ -209,6 +212,7 @@ if (empty($_GET['act'])) {
 
         $post = $listing->post();
         $post->title = __('Добавил' . $ank->sex? '':'а');
+
         $post->content = $ank->nick;
         $post->url = '/profile.view.php?id=' . $ank->id;
         $post->time = misc::when($file->time_add);
@@ -273,10 +277,11 @@ if ($can_write && isset($_POST['send']) && isset($_POST['message']) && $user->gr
         $doc->err(__('Обнаружен мат: %s', $mat));
     } elseif ($message) {
         $user->balls++;
-        mysql_query("INSERT INTO `files_comments` (`id_file`, `id_user`, `time`, `text`) VALUES ('$file->id','$user->id', '" . TIME . "', '" . my_esc($message) . "')");
+        $res = $db->prepare("INSERT INTO `files_comments` (`id_file`, `id_user`, `time`, `text`) VALUES (?,?,?,?)");
+        $res->execute(Array($file->id, $user->id, TIME, $message));
         $doc->msg(__('Комментарий успешно оставлен'));
 
-        $id_message = mysql_insert_id();
+        $id_message = $db->lastInsertId();
         if ($users_in_message) {
             for ($i = 0; $i < count($users_in_message) && $i < 20; $i++) {
                 $user_id_in_message = $users_in_message[$i];
@@ -314,31 +319,44 @@ if (empty($_GET['act'])) {
 
     if (!empty($_GET['delete_comm']) && $user->group >= $file->group_edit) {
         $delete_comm = (int)$_GET['delete_comm'];
-        if (mysql_result(mysql_query("SELECT COUNT(*) FROM `files_comments` WHERE `id` = '$delete_comm' AND `id_file` = '$file->id' LIMIT 1"), 0)) {
-            mysql_query("DELETE FROM `files_comments` WHERE `id` = '$delete_comm' LIMIT 1");
+        $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id` = ? AND `id_file` = ?");
+        $res->execute(Array($delete_comm, $file->id));
+        $k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+        if ($k) {
+            $res = $db->prepare("DELETE FROM `files_comments` WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($delete_comm));
             $file->comments--;
             $doc->msg(__('Комментарий успешно удален'));
-        } else
+        }else
             $doc->err(__('Комментарий уже удален'));
     }
 
     //$posts = array();
     $listing = new listing();
-    $pages = new pages(mysql_result(mysql_query("SELECT COUNT(*) FROM `files_comments` WHERE `id_file` = '$file->id'"), 0));
-   
-    $q = mysql_query("SELECT * FROM `files_comments` WHERE `id_file` = '$file->id' ORDER BY `id` DESC LIMIT ".$pages->limit);
-    while ($comment = mysql_fetch_assoc($q)) {
-        $ank = new user($comment['id_user']);
+    $pages = new pages;
+    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id_file` = ?");
+    $res->execute(Array($file->id));
+    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
+    $pages->this_page(); // получаем текущую страницу
 
-        $post = $listing->post();
-        $post->url = '/profile.view.php?id=' . $ank->id;
-        $post->title = $ank->nick();
-        $post->time = misc::when($comment['time']);
-        $post->post = text::toOutput($comment['text']);
-        $post->icon($ank->icon());
 
-        if ($user->group >= $file->group_edit) {
-            $post->action('delete', '?order=' . $order . '&amp;screen_num=' . $query_screen . '&amp;delete_comm=' . $comment['id']);
+    $q = $db->prepare("SELECT * FROM `files_comments` WHERE `id_file` = ? ORDER BY `id` DESC LIMIT $pages->limit");
+    $q->execute(Array($file->id));
+    if ($arr = $q->fetchAll()) {
+        foreach ($arr AS $comment) {
+
+            $ank = new user($comment['id_user']);
+
+            $post = $listing->post();
+            $post->url = '/profile.view.php?id=' . $ank->id;
+            $post->title = $ank->nick();
+            $post->time = misc::when($comment['time']);
+            $post->post = text::toOutput($comment['text']);
+            $post->icon($ank->icon());
+
+            if ($user->group >= $file->group_edit) {
+                $post->action('delete', '?order=' . $order . '&amp;screen_num=' . $query_screen . '&amp;delete_comm=' . $comment['id']);
+            }
         }
     }
     $listing->display(__('Комментарии отсутствуют'));
@@ -387,3 +405,4 @@ for ($i = 0; $i < count($return); $i++) {
 if ($access_edit)
     include 'inc/file_form.php';
 exit;
+?>

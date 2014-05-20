@@ -50,7 +50,10 @@ elseif (isset($search) && $search) {
 
 $posts = array();
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `users` $where"), 0);
+
+$res = $db->query("SELECT COUNT(*) AS cnt FROM `users` $where");
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$pages->this_page(); // получаем текущую страницу
 // меню сортировки
 $ord = array();
 $ord[] = array("?order=id&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('ID пользователя'), $order == 'id');
@@ -63,44 +66,41 @@ $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
-$q = mysql_query("SELECT `id` FROM `users` $where ORDER BY `$order` " . $sort . " LIMIT " . $pages->limit);
+
+$q = $db->query("SELECT `id` FROM `users` $where ORDER BY `$order` $sort LIMIT $pages->limit");
+
 
 $listing = new listing();
-if ($order == 'donate_rub') {
-    $post = $listing->post();
-    $post->url = '/faq.php?info=donate';
-    $post->title = __('Как сюда попасть');
-    $post->hightlight = true;
-    $post->icon('donate');
-}
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $ank) {
+        $post = $listing->post();
+        $p_user = new user($ank['id']);
 
-while ($ank = mysql_fetch_assoc($q)) {
-    $post = $listing->post();
-    $p_user = new user($ank['id']);
-    $post->icon($p_user->icon());
-    $post->title = $p_user->nick();
-    $post->url = '/profile.view.php?id=' . $p_user->id;
+        $post->icon($p_user->icon());
+        $post->title = $p_user->nick();
+        $post->url = '/profile.view.php?id=' . $p_user->id;
 
-    switch ($order) {
-        case 'id':
-            $post->content[] = '[b]' . 'ID: ' . $p_user->id . '[/b]';
-            break;
-        case 'group':
-            $post->content[] = '[b]' . $p_user->group_name . '[/b]';
-            break;
-        case 'rating':
-            $post->content[] = '[b]' . __('Рейтинг') . ': ' . $p_user->rating . '[/b]';
-            break;
-        case 'balls':
-            $post->content[] = '[b]' . __('Баллы') . ': ' . ((int)$p_user->balls) . '[/b]';
-            break;
-        case 'donate_rub':
-            $post->content[] = '[b]' . __('Сумма пожертвований: %s руб.', $p_user->donate_rub) . '[/b]';
-            break;
+        switch ($order) {
+            case 'id':
+                $post->content[] = '[b]' . 'ID: ' . $p_user->id . '[/b]';
+                break;
+            case 'group':
+                $post->content[] = '[b]' . $p_user->group_name . '[/b]';
+                break;
+            case 'rating':
+                $post->content[] = '[b]' . __('Рейтинг') . ': ' . $p_user->rating . '[/b]';
+                break;
+            case 'balls':
+                $post->content[] = '[b]' . __('Баллы') . ': ' . ((int) $p_user->balls) . '[/b]';
+                break;
+            case 'donate_rub':
+                $post->content[] = '[b]' . __('Сумма пожертвований: %s руб.', $p_user->donate_rub) . '[/b]';
+                break;
+        }
+
+        $post->content[] = '[small]' . __('Дата регистрации') . ': ' . date('d-m-Y', $p_user->reg_date) . '[/small]';
+        $post->content[] = '[small]' . __('Последний визит') . ': ' . misc::when($p_user->last_visit) . '[/small]';
     }
-
-    $post->content[] = '[small]' . __('Дата регистрации') . ': ' . date('d-m-Y', $p_user->reg_date) . '[/small]';
-    $post->content[] = '[small]' . __('Последний визит') . ': ' . misc::when($p_user->last_visit) . '[/small]';
 }
 
 $form = new form('?', false);
@@ -112,3 +112,4 @@ $form->display();
 $listing->display($order == 'donate_rub' ? __('Нет пользователей, пожертвовавших денег на проект') : __('Нет пользователей'));
 
 $pages->display("?order=$order&amp;" . (isset($search) ? 'search=' . urlencode($search) . '&amp;' : '')); // вывод страниц
+?>

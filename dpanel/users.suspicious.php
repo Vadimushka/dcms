@@ -7,9 +7,13 @@ $doc->title = __('Подозрительные пользователи');
 
 
 if (!empty($_GET['approve'])) {
-    $app = (int)$_GET['approve'];
-    if (@mysql_result(mysql_query("SELECT COUNT(*) FROM `users_suspicion` WHERE `id_user` = '$app'"), 0)) {
-        mysql_query("DELETE FROM `users_suspicion` WHERE `id_user` = '$app' LIMIT 1");
+    $app = (int) $_GET['approve'];
+    $res = $db->prepare("SELECT COUNT(*)AS cnt FROM `users_suspicion` WHERE `id_user` = ?");
+    $res->execute(Array($app));
+    $k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+    if ($k) {
+        $res = $db->prepare("DELETE FROM `users_suspicion` WHERE `id_user` = ? LIMIT 1");
+        $res->execute(Array($app));
         $ank = new user($app);
         $doc->msg(__('Пользователь %s успешно одобрен', $ank->login));
     }
@@ -26,14 +30,14 @@ if (isset($_GET['id'])) {
     }
 
 
-    $q = mysql_query("SELECT *  FROM `users_suspicion` WHERE `id_user` = '$ank->id'");
-    if (!mysql_num_rows($q)) {
+    $q = $db->prepare("SELECT *  FROM `users_suspicion` WHERE `id_user` = ?");
+    $q->execute(Array($ank->id));
+    if (!$sus = $q->fetch()) {
         $doc->err(__('Выбранный пользователь отсутствует в списке подозрительных'));
         $doc->ret(__('Подозрительные пользователи'), '?');
         $doc->ret(__('Админка'), '/dpanel/');
         exit;
     }
-    $sus = mysql_fetch_assoc($q);
     $listing = new listing();
 
     $post = $listing->post();
@@ -68,24 +72,27 @@ if (isset($_GET['id'])) {
 }
 
 $listing = new listing();
-
+$res = $db->query("SELECT COUNT(*) AS cnt FROM `users_suspicion`");
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*)  FROM `users_suspicion`"), 0);
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество постов
 
-$q = mysql_query("SELECT *  FROM `users_suspicion` ORDER BY `id_user` ASC LIMIT $pages->limit");
-while ($sus = mysql_fetch_assoc($q)) {
-    $ank = new user($sus['id_user']);
+$q = $db->query("SELECT *  FROM `users_suspicion` ORDER BY `id_user` ASC LIMIT $pages->limit");
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $sus) {
+        $ank = new user($sus['id_user']);
 
-    $post = $listing->post();
+        $post = $listing->post();
 
-    $post->url = '?id=' . $ank->id;
-    $post->title = $ank->nick();
-    $post->icon($ank->icon());
+        $post->url = '?id=' . $ank->id;
+        $post->title = $ank->nick();
+        $post->icon($ank->icon());
 
-    $post2 = __('E-mail: %s', $ank->reg_mail) . "\n";
-    $post2 .= __('Фраза: %s', $sus['text']);
+        $post2 = __('E-mail: %s', $ank->reg_mail) . "\n";
+        $post2 .= __('Фраза: %s', $sus['text']);
 
-    $post->content = text::toOutput($post2);
+
+        $post->content = text::toOutput($post2);
+    }
 }
 
 $listing->display(__('Нет подозрительных пользователей'));

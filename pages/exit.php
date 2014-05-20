@@ -6,14 +6,11 @@ $doc = new document(1);
 $doc->title = __('Выход');
 
 if (isset($_POST['exit'])){
-    $q = mysql_query("SELECT * FROM `users_online` WHERE `id_user` = '{$user->id}' LIMIT 1");
-    if (mysql_num_rows($q)) {
-        $exit_user = mysql_fetch_assoc($q);
-        // количество посещений
-        $user->guest_init();
-        mysql_query("DELETE FROM `users_online` WHERE `id_user` = '{$exit_user['id_user']}' LIMIT 1");
-    }
-
+    $res = $db->prepare("DELETE FROM `users_online` WHERE `id_user` = ?;");
+    $res->execute(Array($user->id));
+    
+    $user->guest_init();
+    
     setcookie(COOKIE_ID_USER);
     setcookie(COOKIE_USER_PASSWORD);
     unset($_SESSION);

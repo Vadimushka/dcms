@@ -30,20 +30,29 @@ $doc->title = __('Друзья %s', $ank->login);
 $posts = array();
 
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `friends` WHERE `id_user` = '$ank->id' AND `confirm` = '1'"), 0); // количество друзей
 
-$q = mysql_query("SELECT * FROM `friends` WHERE `id_user` = '$ank->id' AND `confirm` = '1' ORDER BY `time` DESC LIMIT ". $pages->limit);
+$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `friends` WHERE `id_user` = ? AND `confirm` = '1'");
+$res->execute(Array($ank->id));
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество друзей
+$pages->this_page(); // получаем текущую страницу
+
+$q = $db->prepare("SELECT * FROM `friends` WHERE `id_user` = ? AND `confirm` = '1' ORDER BY `time` DESC LIMIT $pages->limit");
+$q->execute(Array($ank->id));
+
 
 $listing = new listing();
-while ($friend = mysql_fetch_assoc($q)) {
-    $fr = new user($friend['id_friend']);
-    $post = $listing->post();
-    $post->title = $fr->nick();
-    $post->url = '/profile.view.php?id=' . $fr->id;
-    $post->icon($fr->icon());
+while ($arr = $q->fetchAll()) {
+    foreach ($arr AS $friend) {
+        $fr = new user($friend['id_friend']);
+        $post = $listing->post();
+        $post->title = $fr->nick();
+        $post->url = '/profile.view.php?id=' . $fr->id;
+        $post->icon($fr->icon());
+    }
 }
 $listing->display(__('У пользователя "%s" еще нет друзей', $ank->login));
 
 $pages->display('?id=' . $ank->id . '&amp;'); // вывод страниц
 
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);
+?>

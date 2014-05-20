@@ -3,14 +3,15 @@
 /**
  * Работа с таблицами в базе
  */
-class tables
-{
-    public $tables = array();
+class tables {
 
-    function __construct()
-    {
-        $tab = mysql_query('SHOW TABLES');
-        while ($table = mysql_fetch_array($tab)) {
+    public $tables = array();
+    private $db;
+
+    function __construct() {
+        $this->db = DB::me();
+        $tab = $this->db->query('SHOW TABLES');
+        while ($table = $tab->fetch(PDO::FETCH_BOTH)) {
             $this->tables[] = $table[0];
         }
     }
@@ -21,10 +22,9 @@ class tables
      * @param boolean $auto_increment включать в запрос значение auto increment
      * @return string
      */
-    function get_create($table, $auto_increment = true)
-    {
+    function get_create($table, $auto_increment = true) {
         $sql = "/* Структура таблицы `$table` */\r\n";
-        $row = mysql_fetch_row(mysql_query("SHOW CREATE TABLE `" . my_esc($table) . "`"));
+        $row = $this->db->query("SHOW CREATE TABLE `" . my_esc($table) . "`")->fetch();
         if (!$auto_increment) {
             $row[1] = preg_replace('#AUTO_INCREMENT\=[0-9]+#ui', '/*\0*/', $row[1]);
         }
@@ -37,24 +37,26 @@ class tables
      * @param int $c_ins Максимальное кол-во строк в одном INSERT`е
      * @return string
      */
-    function get_data($table, $c_ins = 2000)
-    {
+    function get_data($table, $c_ins = 2000) {
         $sql = '';
-        $num_row_all = mysql_result(mysql_query("SELECT COUNT(*) FROM `" . my_esc($table) . "`"), 0);
+        $res = $this->db->query("SELECT COUNT(*) AS cnt FROM `" . my_esc($table) . "`");
+        $num_row_all = ($row = $res->fetch()) ? $row['cnt'] : 0;
         $start = 0;
 
         if ($num_row_all) {
             $sql .= "/* Данные таблицы `$table` */\r\n";
-            $table_keys = @implode("`, `", @array_keys(mysql_fetch_assoc(mysql_query("SELECT * FROM `" . my_esc($table) . "` LIMIT 1"))));
+            $res = $this->db->query("SELECT * FROM `" . my_esc($table) . "` LIMIT 1");
+            $table_keys = @implode("`, `", @array_keys($res->fetch()));
             while ($start < $num_row_all) {
-                $res = mysql_query("SELECT * FROM `$table` LIMIT " . $start . ", " . $c_ins);
-
-                if ($num_row_all > $c_ins) $sql .= "/* блок записей $start - " . ($start + $c_ins) . " */\r\n";
+                $res = $this->db->query("SELECT * FROM `$table` LIMIT $start, $c_ins");
+                $res_cnt = $this->db->query("SELECT COUNT(*) FROM `$table` LIMIT $start, $c_ins");
+                if ($num_row_all > $c_ins)
+                    $sql .= "/* блок записей $start - " . ($start + $c_ins) . " */\r\n";
 
                 $sql .= "INSERT INTO `" . my_esc($table) . "` (`$table_keys`) VALUES \r\n";
-                $num_row = mysql_num_rows($res);
+                $num_row = $res_cnt->fetchColumn();
                 $counter = 0;
-                while (($row = @mysql_fetch_assoc($res))) {
+                while (($row = $res->fetch())) {
                     $values = @array_values($row);
 
                     foreach ($values as $k => $v) {
@@ -66,7 +68,8 @@ class tables
                 }
                 $start = $start + $c_ins;
             }
-        } else $sql .= "/* Таблица `$table` пуста */\r\n";
+        } else
+            $sql .= "/* Таблица `$table` пуста */\r\n";
 
         return $sql;
     }
@@ -78,8 +81,7 @@ class tables
      * @param boolean $ai auto_increment
      * @return boolean
      */
-    function save_create($path, $table, $ai = false)
-    {
+    function save_create($path, $table, $ai = false) {
         return @file_put_contents($path, $this->get_create($table, $ai));
     }
 
@@ -90,8 +92,9 @@ class tables
      * @param int $c_ins Максимальное кол-во строк в одном INSERT`е
      * @return boolean
      */
-    function save_data($path, $table, $c_ins = 2000)
-    {
+    function save_data($path, $table, $c_ins = 2000) {
         return @file_put_contents($path, $this->get_data($table, $c_ins));
     }
+
 }
+?>

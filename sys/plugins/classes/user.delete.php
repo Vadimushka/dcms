@@ -7,10 +7,12 @@
  */
 function user_delete($ank) {
     $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
-    foreach ($tables AS  $v) {
-        mysql_query("DELETE FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = '$ank->id'");
+    foreach ($tables AS $v) {
+        $res = DB::me()->prepare("DELETE FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = ?");
+        $res->execute(Array($ank->id));
     }
-    mysql_query("DELETE FROM `users` WHERE `id` = '$ank->id'");
+    $res = DB::me()->prepare("DELETE FROM `users` WHERE `id` = ?");
+    $res->execute(Array($ank->id));
 }
 
 ?>

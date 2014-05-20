@@ -16,10 +16,11 @@ if (!$user->is_ban) {
     $doc->err(__('Вам запрещено писать на сайте'));
 }
 
-$q = mysql_query("SELECT * FROM `ban` WHERE `id_user` = '$user->id' ORDER BY `id` DESC");
+$q = $db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? ORDER BY `id` DESC");
+$q->execute(Array($user->id));
 
 $listing = new listing();
-while ($c = mysql_fetch_assoc($q)) {
+while ($c = $q->fetch()) {
     $adm = new user($c['id_adm']);
 
     $post = $listing->post();

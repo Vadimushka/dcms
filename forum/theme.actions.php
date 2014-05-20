@@ -9,21 +9,21 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int)$_GET['id'];
-$q = mysql_query("SELECT `forum_themes`.* ,
+$id_theme = (int) $_GET['id'];
+$q = $db->prepare("SELECT `forum_themes`.* ,
         `forum_categories`.`name` AS `category_name` ,
         `forum_topics`.`name` AS `topic_name`,
         `forum_topics`.`group_write` AS `topic_group_write`
 FROM `forum_themes`
 LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_themes`.`id_category`
 LEFT JOIN `forum_topics` ON `forum_topics`.`id` = `forum_themes`.`id_topic`
-WHERE `forum_themes`.`id` = '$id_theme' AND `forum_themes`.`group_show` <= '$user->group' AND `forum_topics`.`group_show` <= '$user->group' AND `forum_categories`.`group_show` <= '$user->group'");
-if (!mysql_num_rows($q)) {
+WHERE `forum_themes`.`id` = ? AND `forum_themes`.`group_show` <= ? AND `forum_topics`.`group_show` <= ? AND `forum_categories`.`group_show` <= ?");
+$q->execute(Array($id_theme, $user->group, $user->group, $user->group));
+if (!$theme = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна'));
     exit;
 }
-$theme = mysql_fetch_assoc($q);
 
 $doc->title = __('Тема %s - действия', $theme['name']);
 
@@ -84,3 +84,4 @@ $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id']);
 $doc->ret($theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);
 $doc->ret($theme['category_name'], 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
+?>

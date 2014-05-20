@@ -56,12 +56,13 @@ if (isset($_POST['post'])) {
         $doc->err(__('Указан не корректный E-mail'));
     else {
         $mail = $_POST['mail'];
-        $q = mysql_query("SELECT `id` FROM `users` WHERE `reg_mail` = '" . my_esc($mail) . "' ORDER BY `id` DESC LIMIT 1");
+        $q = $db->prepare("SELECT `id` FROM `users` WHERE `reg_mail` = ? ORDER BY `id` DESC LIMIT 1");
+        $q->execute(Array($mail));
 
-        if (!mysql_num_rows($q))
+        if (!$row = $q->fetch()) {
             $doc->err(__('Учетная запись, зарегистрированная на данный Email не обнаружена'));
-        else {
-            $ank = new user(mysql_result($q, 0, 'id'));
+        } else {
+            $ank = new user($row['id']);
             $ank->recovery_password = $recovery_password = md5(passgen(100));
 
             $t = new design();
