@@ -257,7 +257,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     requesting: false,
                     user: {}, // данные пользователя
                     translates: translates, // из document.tpl
-                    URL: encodeURI(window.location.pathname),// адрес текущей страницы
+                    URL: encodeURI(window.location.pathname + window.location.search),// адрес текущей страницы
                     str: {
                         mail: translates.mail, // Почта +[count]
                         friends: translates.friends // Друзья +[count]

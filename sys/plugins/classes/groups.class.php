@@ -45,9 +45,12 @@ abstract class groups {
         }
         $group = (int) $group;
 
-        $q = mysql_query("SELECT `id` FROM `users` WHERE `group` >= '$group'");
-        while ($us = mysql_fetch_assoc($q)) {
-            $users[] = new user($us['id']);
+        $q = DB::me()->prepare("SELECT `id` FROM `users` WHERE `group` >= ?");
+        $q->execute(Array($group));
+        if ($arr = $q->fetchAll()) {
+            foreach ($arr AS $us) {
+                $users[] = new user($us['id']);
+            }
         }
         return $users;
     }

@@ -14,9 +14,10 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_adt = (int) $_GET['id'];
 
-$q = mysql_query("SELECT * FROM `advertising` WHERE `id` = '$id_adt'");
+$q = $db->prepare("SELECT * FROM `advertising` WHERE `id` = ?");
+$q->execute(Array($id_adt));
 
-if (!mysql_num_rows($q)) {
+if (!$adt = $q->fetch()) {
     header('Refresh: 1; url=adt.php?id=' . $id_adt);
     $doc->ret(__('Вернуться'), 'adt.php?id=' . $id_adt);
     $doc->ret(__('Реклама и баннеры'), 'adt.php');
@@ -25,13 +26,13 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$adt = mysql_fetch_assoc($q);
 
 if (isset($_POST['delete'])) {
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
-        mysql_query("DELETE FROM `advertising` WHERE `id` = '$adt[id]'");
+        $res = $db->prepare("DELETE FROM `advertising` WHERE `id` = ?");
+        $res->execute(Array($adt['id']));
 
         header('Refresh: 1; url=adt.php?id=' . $adt['space']);
         $doc->msg(__('Рекламная площадка успешно удалена'));
@@ -52,8 +53,8 @@ if (isset($_POST['common'])) {
             $dcms->log('Реклама', 'Изменение названия рекламной площадки ' . $adt['name'] . ' на [url="/dpanel/adt.edit.php?id=' . $id_adt . '"]' . $name . '[/url]');
 
             $adt['name'] = $name;
-            mysql_query("UPDATE `advertising` SET `name` = '" . my_esc($adt['name']) . "' WHERE `id` = '$id_adt' LIMIT 1");
-
+            $res = $db->prepare("UPDATE `advertising` SET `name` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($adt['name'], $id_adt));
             $doc->msg(__('Название успешно изменено'));
         } elseif (!$name)
             $doc->err(__('Название не может быть пустым'));
@@ -64,7 +65,8 @@ if (isset($_POST['common'])) {
     if ($adt['bold'] != $bold) {
         $adt['bold'] = $bold;
 
-        mysql_query("UPDATE `advertising` SET `bold` = '$bold' WHERE `id` = '$id_adt' LIMIT 1");
+        $res = $db->prepare("UPDATE `advertising` SET `bold` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($bold, $id_adt));
         if ($adt['bold']) {
             $dcms->log('Реклама', 'Изменение рекламной площадки [url="/dpanel/adt.edit.php?id=' . $id_adt . '"]' . $name . '[/url] (установка жирности)');
             $doc->msg(__('Реклама будет выделяться жирным шрифтом'));
@@ -78,7 +80,8 @@ if (isset($_POST['common'])) {
         $url_link = text::input_text($_POST['url_link']);
         if ($url_link && $url_link != $adt['url_link']) {
             $adt['url_link'] = $url_link;
-            mysql_query("UPDATE `advertising` SET `url_link` = '" . my_esc($adt['url_link']) . "' WHERE `id` = '$id_adt' LIMIT 1");
+            $res = $db->prepare("UPDATE `advertising` SET `url_link` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($adt['url_link'], $id_adt));
             $dcms->log('Реклама', 'Изменение рекламной площадки [url="/dpanel/adt.edit.php?id=' . $id_adt . '"]' . $name . '[/url] (ссылка: ' . $adt['url_link'] . ')');
             $doc->msg(__('Адрес ссылки успешно изменен'));
         } elseif (!$url_link)
@@ -89,7 +92,8 @@ if (isset($_POST['common'])) {
         $url_img = text::input_text($_POST['url_img']);
         if ($url_img != $adt['url_img']) {
             $adt['url_img'] = $url_img;
-            mysql_query("UPDATE `advertising` SET `url_img` = '" . my_esc($adt['url_img']) . "' WHERE `id` = '$id_adt' LIMIT 1");
+            $res = $db->prepare("UPDATE `advertising` SET `url_img` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($adt['url_img'], $id_adt));
             $dcms->log('Реклама', 'Изменение рекламной площадки [url="/dpanel/adt.edit.php?id=' . $id_adt . '"]' . $name . '[/url] (адрес изображения: ' . $adt['url_img'] . ')');
             $doc->msg(__('Адрес изображения успешно изменен'));
         }
@@ -103,7 +107,8 @@ if (isset($_POST['common'])) {
     elseif ($page_main != $adt['page_main'] || $page_other != $adt['page_other']) {
         $adt['page_main'] = $page_main;
         $adt['page_other'] = $page_other;
-        mysql_query("UPDATE `advertising` SET `page_main` = '{$adt['page_main']}', `page_other` = '{$adt['page_other']}' WHERE `id` = '$id_adt' LIMIT 1");
+        $res = $db->prepare("UPDATE `advertising` SET `page_main` = ?, `page_other` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($adt['page_main'], $adt['page_other'], $id_adt));
         $dcms->log('Реклама', 'Изменение рекламной площадки [url="/dpanel/adt.edit.php?id=' . $id_adt . '"]' . $name . '[/url] (место отображения)');
         $doc->msg(__('Место отображения рекламы изменено'));
     }
@@ -114,7 +119,8 @@ if (isset($_POST['time'])) {
     if ($adt['time_end']) {
         if ($always) {
             $adt['time_end'] = 0;
-            mysql_query("UPDATE `advertising` SET `time_end` = '0' WHERE `id` = '$id_adt' LIMIT 1");
+            $res = $db->prepare("UPDATE `advertising` SET `time_end` = '0' WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($id_adt));
             $dcms->log('Реклама', 'Изменение рекламной площадки [url="/dpanel/adt.edit.php?id=' . $id_adt . '"]' . $adt['name'] . '[/url] (вечный показ)');
             $doc->msg(__('Вечный показ включен'));
         } else {
@@ -136,7 +142,8 @@ if (isset($_POST['time'])) {
                         $adt['time_end'] = TIME + $add * $mn * 60 * 60 * 24;
                     }
 
-                    mysql_query("UPDATE `advertising` SET $clear_counters_sql`time_end` = '{$adt['time_end']}', `time_start` = '{$adt['time_start']}' WHERE `id` = '$id_adt' LIMIT 1");
+                    $res = $db->prepare("UPDATE `advertising` SET $clear_counters_sql`time_end` = ?, `time_start` = ? WHERE `id` = ? LIMIT 1");
+                    $res->execute(Array($adt['time_end'], $adt['time_start'], $id_adt));
                     $doc->msg(__('Время завершения показа обновлено'));
                 }else
                     $doc->err(__('Не корректное время показа'));
@@ -146,7 +153,8 @@ if (isset($_POST['time'])) {
         if (!$always) {
             $adt['time_end'] = TIME;
             $dcms->log('Реклама', 'Изменение рекламной площадки [url="/dpanel/adt.edit.php?id=' . $id_adt . '"]' . $adt['name'] . '[/url] (вечный показ отключен)');
-            mysql_query("UPDATE `advertising` SET `time_end` = '" . TIME . "' WHERE `id` = '$id_adt' LIMIT 1");
+            $res = $db->prepare("UPDATE `advertising` SET `time_end` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array(TIME, $id_adt));
             $doc->msg(__('Вечный показ отключен'));
         }
     }

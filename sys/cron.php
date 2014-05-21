@@ -83,7 +83,8 @@ if ($cron_time && $cron_time > TIME - 10) {
      */
     if (!cache_events::get('clear_users_online')) {
         cache_events::set('clear_users_online', true, 30);
-        mysql_query("DELETE FROM `users_online` WHERE `time_last` < '" . (TIME - SESSION_LIFE_TIME) . "'");
+        $res = $db->prepare("DELETE FROM `users_online` WHERE `time_last` < ?");
+        $res->execute(Array((TIME - SESSION_LIFE_TIME)));
     }
     misc::log('Удаление пользователей вышедших из онлайна завершено', 'cron');
 
@@ -93,10 +94,12 @@ if ($cron_time && $cron_time > TIME - 10) {
     if ($dcms->clear_users_not_verify && !cache_events::get('clear_users_not_verify')) {
         cache_events::set('clear_users_not_verify', true, mt_rand(82800, 86400));
 
-        $q = mysql_query("SELECT `id` FROM `users` WHERE `a_code` <> '' AND `reg_date` < '" . (TIME - 86400) . "'");
-        if ($count_delete = mysql_num_rows($q)) {
+        $q = $db->prepare("SELECT `id` FROM `users` WHERE `a_code` <> '' AND `reg_date` < ?");
+        $q->execute(Array((TIME - 86400)));
+        if ($arr = $q->fetchAll()) {
+            $count_delete = count($arr);
             misc::log('Будет удалено неактивированных пользователей: ' . $count_delete, 'system.users');
-            while ($u = mysql_fetch_assoc($q)) {
+            foreach ($arr AS $u) {
                 misc::user_delete($u['id']);
             }
         }

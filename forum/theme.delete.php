@@ -11,19 +11,19 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_theme = (int)$_GET['id'];
 
-$q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_edit` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
+$q->execute(Array($id_theme, $user->group));
+if (!$theme = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна для редактирования'));
     exit;
 }
 
-$theme = mysql_fetch_assoc($q);
 
-$q = mysql_query("SELECT * FROM `forum_topics` WHERE `id` = '$theme[id_topic]' LIMIT 1");
+$q = $db->prepare("SELECT * FROM `forum_topics` WHERE `id` = ? LIMIT 1");
+$q->execute(Array($theme['id_topic']));
 
-$topic = mysql_fetch_assoc($q);
+$topic = $q->fetch();
 
 $doc->title .= ' "' . $theme['name'] . '"';
 
@@ -31,16 +31,24 @@ if (isset($_POST['delete'])) {
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
-        mysql_query("DELETE FROM `forum_themes` WHERE `id` = '$theme[id]' LIMIT 1");
+        $res = $db->prepare("DELETE FROM `forum_themes` WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($theme['id']));
 
-        mysql_query("DELETE
+        $res = $db->prepare("DELETE
 FROM `forum_messages`, `forum_history`
 USING `forum_messages`
 LEFT JOIN `forum_history` ON `forum_history`.`id_message` = `forum_messages`.`id`
-WHERE `forum_messages`.`id_theme` = '$theme[id]'");
-        mysql_query("DELETE FROM `forum_vote` WHERE `id_theme` = '$theme[id]'");
-        mysql_query("DELETE FROM `forum_vote_votes` WHERE `id_theme` = '$theme[id]'");
-        mysql_query("DELETE FROM `forum_views` WHERE `id_theme` = '$theme[id]'");
+WHERE `forum_messages`.`id_theme` = ?");
+        $res->execute(Array($theme['id']));
+
+        $res = $db->prepare("DELETE FROM `forum_vote` WHERE `id_theme` = ?");
+        $res->execute(Array($theme['id']));
+        $res = $db->prepare("DELETE FROM `forum_vote_votes` WHERE `id_theme` = ?");
+        $res->execute(Array($theme['id']));
+        $res = $db->prepare("DELETE FROM `forum_views` WHERE `id_theme` = ?");
+        $res->execute(Array($theme['id']));
+
+        // удаление всех файлов темы
         $dir = new files(FILES . '/.forum/' . $theme['id']);
         $dir->delete();
         unset($dir);
@@ -66,3 +74,4 @@ else
 $doc->ret(__('В раздел'), 'topic.php?id=' . $theme['id_topic']);
 $doc->ret(__('В категорию'), 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
+?>

@@ -24,8 +24,8 @@ class install_reg_admin {
 
         $this->settings = &$_SESSION['settings'];
 
-        $this->users_count = mysql_result(mysql_query("SELECT COUNT(*) FROM `users`"), 0);
-        $this->adm_count = mysql_result(mysql_query("SELECT COUNT(*) FROM `users` WHERE `group` > '1'"), 0);
+        $this->users_count = DB::me()->query("SELECT COUNT(*) FROM `users`")->first();
+        $this->adm_count = DB::me()->query("SELECT COUNT(*) FROM `users` WHERE `group` > '1'")->first();
     }
 
     function actions() {
@@ -38,7 +38,9 @@ class install_reg_admin {
         if (isset($_POST['login']))
             if (is_valid::nick($_POST['login'])) {
                 $this->login = $_POST['login'];
-                if (!mysql_result(mysql_query("SELECT COUNT(*) FROM `users` WHERE `login` = '" . my_esc($this->login) . "'"), 0)) {
+                $res = DB::me()->prepare("SELECT COUNT(*) AS cnt FROM `users` WHERE `login` = ?");
+                $res->execute(Array($this->login));
+                if ($row = $res->fetch() AND !$row['cnt']) {
                     if (empty($_POST['password']))
                         $this->err_pass1 = true;
                     elseif (empty($_POST['password_retry']))
@@ -55,11 +57,13 @@ class install_reg_admin {
                             $this->settings['salt'] = passgen();
                         // делаем всех админов простыми пользователями
                         if (!empty($_POST['clear_adm']))
-                            mysql_query("UPDATE `users` SET `group` = '1'");
+                            DB::me()->query("UPDATE `users` SET `group` = '1'");
 
                         $sex = (int) !empty($_POST['sex']);
                         $this->pass2 = $this->pass1 = $_POST['password'];
-                        mysql_query("INSERT INTO `users` (`reg_date`, `group`, `login`, `password`, `sex`) values('" . TIME . "', '6', '" . my_esc($this->login) . "', '" . crypt::hash($this->pass1, $this->settings['salt']) . "', '$sex')");
+                        $res = DB::me()->prepare("INSERT INTO `users` (`reg_date`, `group`, `login`, `password`, `sex`) 
+                            values(?, '6', ?, ?, ?)");
+                        $res->execute(Array(TIME, $this->login, crypt::hash($this->pass1, $this->settings['salt']), $sex));
                         $return = true;
                     }
                 }else {

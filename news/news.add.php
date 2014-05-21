@@ -1,4 +1,5 @@
 <?php
+
 include_once '../sys/inc/start.php';
 $doc = new document(4);
 $doc->title = __('Создание новости');
@@ -18,9 +19,8 @@ if ($news['checked'] && isset($_POST['send'])) {
     if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))
         $doc->err(__('Ошибка при вводе чисел с картинки'));
     else {
-        mysql_query("INSERT INTO `news` (`title`, `time`, `text`, `id_user`)
-VALUES ('" . my_esc($news['title']) . "', '" . TIME . "', '" . my_esc($news['text']) . "', '$user->id')");
-
+        $res = $db->prepare("INSERT INTO `news` (`title`, `time`, `text`, `id_user`) VALUES (?,?,?,?)");
+        $res->execute(Array($news['title'], TIME, $news['text'], $user->id));
         $doc->msg(__('Новость успешно опубликована'));
         $news = array();
         header('Refresh: 1; ./');

@@ -171,8 +171,8 @@ abstract class text {
         $users_id = array();
 
         if ($logins) {
-            $q = mysql_query("SELECT `id` FROM `users` WHERE `login` IN (" . implode(',', $logins) . ")");
-            while ($ank = mysql_fetch_assoc($q)) {
+            $q = DB::me()->query("SELECT `id` FROM `users` WHERE `login` IN (" . implode(',', $logins) . ")");
+            while ($ank = $q->fetch()) {
                 $users_id[] = $ank['id'];
             }
         }
@@ -189,8 +189,12 @@ abstract class text {
             // сделано для избежания проблем при установке, когда подключение к базе еще не выполнено
             return $value[1] . $value[2];
         }
-        $q = mysql_query("SELECT `id` FROM `users` WHERE `login` = '" . my_esc($value[1]) . "' LIMIT 1");
-        if ($ank = mysql_fetch_assoc($q)) {
+        static $q;
+        if (!isset($q)) {
+            $q = DB::me()->prepare("SELECT `id` FROM `users` WHERE `login` = ? LIMIT 1");
+        }
+        $q->execute(Array($value[1]));
+        if ($ank = $q->fetch()) {
             return '[user]' . $ank['id'] . '[/user]' . $value[2];
         } else {
             return $value[1] . $value[2];

@@ -12,15 +12,14 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_category = (int) $_GET['id'];
 
-$q = mysql_query("SELECT * FROM `forum_categories` WHERE `id` = '$id_category' AND `group_edit` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_categories` WHERE `id` = ? AND `group_edit` <= ?");
+$q->execute(Array($id_category, $user->group));
+if (!$category = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Категория не доступна для редактирования'));
     exit;
 }
 
-$category = mysql_fetch_assoc($q);
 
 if (isset($_POST['save'])) {
     if (isset($_POST['name']) && isset($_POST['description'])) {
@@ -30,13 +29,15 @@ if (isset($_POST['save'])) {
         if ($name && $name != $category['name']) {
             $dcms->log('Форум', 'Изменение названия категории "' . $category['name'] . '" на [url=/forum/category.php?id=' . $category['id'] . ']"' . $name . '"[/url]');
             $category['name'] = $name;
-            mysql_query("UPDATE `forum_categories` SET `name` = '" . my_esc($category['name']) . "' WHERE `id` = '$category[id]' LIMIT 1");
+            $res = $db->prepare("UPDATE `forum_categories` SET `name` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($category['name'], $category['id']));
             $doc->msg(__('Название категории успешно изменено'));
         }
 
         if ($description != $category['description']) {
             $category['description'] = $description;
-            mysql_query("UPDATE `forum_categories` SET `description` = '" . my_esc($category['description']) . "' WHERE `id` = '$category[id]' LIMIT 1");
+            $res = $db->prepare("UPDATE `forum_categories` SET `description` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($category['description'], $category['id']));
             $doc->msg(__('Описание категории успешно изменено'));
             $dcms->log('Форум', 'Изменение описания категории [url=/forum/category.php?id=' . $category['id'] . ']"' . $category['name'] . '"[/url]');
         }
@@ -48,7 +49,8 @@ if (isset($_POST['save'])) {
             $dcms->log('Форум', 'Изменение позиции категории [url=/forum/category.php?id=' . $category['id'] . ']"' . $category['name'] . '"[/url] с ' . $category['position'] . ' на ' . $position);
 
             $category['position'] = $position;
-            mysql_query("UPDATE `forum_categories` SET `position` = '$category[position]' WHERE `id` = '$category[id]' LIMIT 1");
+            $res = $db->prepare("UPDATE `forum_categories` SET `position` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($category['position'], $category['id']));
             $doc->msg(__('Позиция категории успешно изменена'));
             $dcms->log('Форум', 'Изменение позиции категории [url=/forum/category.php?id=' . $category['id'] . ']"' . $category['name'] . '"[/url] на ' . $position);
         }
@@ -58,7 +60,8 @@ if (isset($_POST['save'])) {
         $group_show = (int) $_POST['group_show'];
         if (isset($groups[$group_show]) && $group_show != $category['group_show']) {
             $category['group_show'] = $group_show;
-            mysql_query("UPDATE `forum_categories` SET `group_show` = '$category[group_show]' WHERE `id` = '$category[id]' LIMIT 1");
+            $res = $db->prepare("UPDATE `forum_categories` SET `group_show` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($category['group_show'], $category['id']));
             $doc->msg(__('Просматривать категорию теперь разрешено группе "%s" и выше', groups::name($group_show)));
             $dcms->log('Форум', 'Изменение прав на просмотр категории [url=/forum/category.php?id=' . $category['id'] . ']"' . $category['name'] . '"[/url] для группы ' . groups::name($group_show));
         }
@@ -71,7 +74,8 @@ if (isset($_POST['save'])) {
                 $doc->err(__('Для того, чтобы создавать разделы группе "%s" сначала необходимо дать права на просмотр категории', groups::name($group_write)));
             else {
                 $category['group_write'] = $group_write;
-                mysql_query("UPDATE `forum_categories` SET `group_write` = '$category[group_write]' WHERE `id` = '$category[id]' LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_categories` SET `group_write` = ? WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($category['group_write'], $category['id']));
                 $doc->msg(__('Создавать разделы теперь разрешено группе "%s" и выше', groups::name($group_write)));
                 $dcms->log('Форум', 'Изменение прав на создание разделов в категории [url=/forum/category.php?id=' . $category['id'] . ']"' . $category['name'] . '"[/url] для группы ' . groups::name($group_write));
             }
@@ -85,7 +89,8 @@ if (isset($_POST['save'])) {
                 $doc->err(__('Для изменения параметров категории группе "%s" сначала необходимо дать права на создание разделов', groups::name($group_edit)));
             else {
                 $category['group_edit'] = $group_edit;
-                mysql_query("UPDATE `forum_categories` SET `group_edit` = '$category[group_edit]' WHERE `id` = '$category[id]' LIMIT 1");
+                $res = $db->prepare("UPDATE `forum_categories` SET `group_edit` = ? WHERE `id` = ? LIMIT 1");
+                $res->execute(Array($category['group_edit'], $category['id']));
                 $doc->msg(__('Изменять параметры категории теперь разрешено группе "%s" и выше', groups::name($group_edit)));
                 $dcms->log('Форум', 'Изменение прав на изменение параметров категории [url=/forum/category.php?id=' . $category['id'] . ']"' . $category['name'] . '"[/url] для группы ' . groups::name($group_write));
             }

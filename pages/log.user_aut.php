@@ -4,10 +4,12 @@ include_once '../sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Журнал авторизаций');
 
+$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_user_aut` WHERE `id_user` = ?");
+$res->execute(Array($user->id));
+
 $pages = new pages;
-$pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `log_of_user_aut` WHERE `id_user` = '$user->id'"), 0);
-//$pages->this_page(); // получаем текущую страницу
-$q = mysql_query("SELECT
+$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$q = $db->prepare("SELECT
         `log_of_user_aut`.`time` AS `time`,
         `log_of_user_aut`.`method` AS `method`,
         `log_of_user_aut`.`status` AS `status`,
@@ -15,13 +17,13 @@ $q = mysql_query("SELECT
         `browsers`.`name` AS `browser`
         FROM `log_of_user_aut`
 LEFT JOIN `browsers` ON `browsers`.`id` = `log_of_user_aut`.`id_browser`
-WHERE `log_of_user_aut`.`id_user` = '$user->id'
+WHERE `log_of_user_aut`.`id_user` = ?
 ORDER BY `time` DESC
-LIMIT ".$pages->limit);
-
+LIMIT " . $pages->limit . ";");
+$q->execute(Array($user->id));
 
 $listing = new listing();
-while ($log = mysql_fetch_assoc($q)) {
+while ($log = $q->fetch()) {
     $post = $listing->post();
     $post->title = $log['method'] . ': ' . __($log['status'] ? 'Удачно' : 'Не удачно');
     $post->hightlight = !$log['status'];
@@ -33,3 +35,4 @@ $listing->display(__('Журнал пуст'));
 $pages->display('?'); // вывод страниц
 
 $doc->ret(__('Личное меню'), '/menu.user.php');
+?>

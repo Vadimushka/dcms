@@ -14,9 +14,10 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_adt = (int) $_GET['id'];
 
-$q = mysql_query("SELECT * FROM `advertising` WHERE `id` = '$id_adt'");
+$q = $db->prepare("SELECT * FROM `advertising` WHERE `id` = ?");
+$q->execute(Array($id_adt));
 
-if (!mysql_num_rows($q)) {
+if (!$adt = $q->fetch()) {
     header('Refresh: 1; url=adt.php?id=' . $id_adt);
     $doc->ret(__('Вернуться'), 'adt.php?id=' . $id_adt);
     $doc->ret(__('Реклама и баннеры'), 'adt.php');
@@ -25,7 +26,6 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$adt = mysql_fetch_assoc($q);
 
 
 $listing = new listing();

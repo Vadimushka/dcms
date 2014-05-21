@@ -16,7 +16,7 @@ class check_sys {
     /**
      * Возвращает массив файлов с ошибками CHMOD
      * @param string $path путь относительно корня сайта
-     * @param string|bool $errorIfNotExists если путь не существует, то считать ошибкой
+	 * @param string|bool $errorIfNotExists если путь не существует, то считать ошибкой
      * @return array
      */
     static public function getChmodErr($path, $errorIfNotExists = false) {
@@ -53,6 +53,17 @@ class check_sys {
             $this->oks[] = 'MySQL: OK';
         } else {
             $this->errors[] = __('Невозможно получить информацию о MySQL');
+        }
+
+        // проверка PDO
+        if (class_exists('pdo')) {
+            if (array_search('mysql', PDO::getAvailableDrivers()) !== false) {
+                $this->oks[] = 'PDO: OK';
+            } else {
+                $this->errors[] = __('Нет драйвера mysql для PDO');
+            }
+        } else {
+            $this->errors[] = __('Необходимо подключить PDO');
         }
 
         // шифрование
@@ -113,3 +124,5 @@ class check_sys {
     }
 
 }
+
+?>

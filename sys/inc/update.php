@@ -168,6 +168,7 @@ class update {
     /*
      * Список файлов, подлежащих обновлению
      */
+
     public function getUpdatebleFiles() {
         return keyvalue::read($this->_tmp_path . '/to_update.ini');
     }
@@ -377,7 +378,7 @@ class update {
                 $sql = $tab->getSQLQueryCreate();
             }
 
-            mysql_query($sql);
+            $db->query($sql);
         }
     }
 

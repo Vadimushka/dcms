@@ -77,21 +77,26 @@ if (isset($_POST ['ban'])) {
             break;
     }
 
-    if (!$time_1)
+    $res = $db->prepare("SELECT COUNT(*) FROM `ban` WHERE `id_user` = ? AND `link` = ? AND `code` = ?");
+    $res->execute(Array($ank->id, $link, $code));
+    if (!$time_1) {
         $doc->err(__('Не корректное время бана'));
-    elseif (!isset($codes->menu_arr [$code]))
+    } elseif (!isset($codes->menu_arr [$code])) {
         $doc->err(__('Не выбрано нарушение'));
-    elseif (!$comm)
+    } elseif (!$comm) {
         $doc->err(__('Необходимо прокомментировать бан'));
-    elseif ($link && mysql_result(mysql_query("SELECT COUNT(*) FROM `ban` WHERE `id_user` = '$ank->id' AND `link` = '" . my_esc($link) . "' AND `code` = '" . my_esc($code) . "'"), 0))
+    } elseif ($link && $res->fetchColumn()) {
         $doc->err(__('Нельзя банить пользователя несколько раз за одно и то же нарушение'));
-    else {
+    } else {
         // делаем все жалобы обработанными
-        mysql_query("UPDATE `complaints` SET `processed` = '1' WHERE `id_ank` = '$ank->id' AND `link` = '" . my_esc($link) . "' AND `code` = '" . my_esc($code) . "'");
+        $res = $db->prepare("UPDATE `complaints` SET `processed` = '1' WHERE `id_ank` = ? AND `link` = ? AND `code` = ?");
+        $res->execute(Array($ank->id, $link, $code));
         // ставим запись о бане
-        mysql_query("INSERT INTO `ban` (`id_user`, `id_adm`, `link`, `code`, `comment`, `time_start`, `time_end`, `access_view`)
-VALUES ('$ank->id', '$user->id', '" . my_esc($link) . "', '" . my_esc($code) . "', '" . my_esc($comm) . "', '" . TIME . "', $time_ban_end, '$access_view') ");
-        mysql_query("UPDATE `users` SET `is_ban` = '1' WHERE `id` = '$ank->id'");
+        $res = $db->prepare("INSERT INTO `ban` (`id_user`, `id_adm`, `link`, `code`, `comment`, `time_start`, `time_end`, `access_view`)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
+        $res->execute(Array($ank->id, $user->id, $link, $code, $comm, TIME, $time_ban_end, $access_view));
+        $res = $db->prepare("UPDATE `users` SET `is_ban` = '1' WHERE `id` = ?");
+        $res->execute(Array($ank->id));
 
         $dcms->log('Пользователи', 'Бан пользователя [user]' . $ank->id . '[/user] на' . ($time_ban_end == 'NULL' ? 'всегда' : (' ' . misc::when($time_ban_end) )) . "\nПричина: $comm");
 
@@ -105,15 +110,16 @@ VALUES ('$ank->id', '$user->id', '" . my_esc($link) . "', '" . my_esc($code) . "
 
 if (!empty($_GET['ban_delete'])) {
     $id_ban_delete = (int) $_GET['ban_delete'];
-    $q = mysql_query("SELECT * FROM `ban` WHERE `id_user` = '$ank->id' AND `id` = '$id_ban_delete'");
-    if (!mysql_num_rows($q)) {
+    $q = $db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `id` = ?");
+    $q->execute(Array($ank->id, $id_ban_delete));
+    if (!$ban = $q->fetch()) {
         $doc->err(__('Ошибка снятия бана'));
     } else {
-        $ban = mysql_fetch_assoc($q);
         $adm = new user($ban['id_adm']);
         if ($adm->group < $user->group || $adm->id == $user->id) {
 
-            mysql_query("DELETE FROM `ban` WHERE `id` = '$id_ban_delete' LIMIT 1");
+            $res = $db->prepare("DELETE FROM `ban` WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($id_ban_delete));
 
             $doc->msg(__('Бан успешно снят'));
         } else {
@@ -124,26 +130,30 @@ if (!empty($_GET['ban_delete'])) {
 
 $listing = new listing();
 // список нарушений
-$q = mysql_query("SELECT * FROM `ban` WHERE `id_user` = '$ank->id' ORDER BY `id` DESC");
-while ($c = mysql_fetch_assoc($q)) {
-    $post = $listing->post();
-    $adm = new user($c ['id_adm']);
-    $post->action('delete', '?id_ank=' . $ank->id . '&amp;ban_delete=' . $c['id'] . '&amp;skip');
-    $post->title = $adm->nick();
-    $post->time = misc::when($c ['time_start']);
-    $post->content[] = __('Нарушение: %s', text::toValue($c['code']));
 
-    if ($c ['time_start'] && TIME < $c ['time_start'])
-        $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . misc::when($c ['time_start']);
+$q = $db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? ORDER BY `id` DESC");
+$q->execute(Array($ank->id));
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $c) {
+        $post = $listing->post();
+        $adm = new user($c ['id_adm']);
+        $post->action('delete', '?id_ank=' . $ank->id . '&amp;ban_delete=' . $c['id'] . '&amp;skip');
+        $post->title = $adm->nick();
+        $post->time = misc::when($c ['time_start']);
+        $post->content[] = __('Нарушение: %s', for_value($c['code']));
 
-    if ($c['time_end'] === NULL)
-        $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]";
-    elseif (TIME < $c['time_end'])
-        $post->content[] = __('Осталось: %s', misc::when($c['time_end']));
+        if ($c ['time_start'] && TIME < $c ['time_start'])
+            $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . misc::when($c ['time_start']);
 
-    if ($c['link'])
-        $post->content[] = __('Ссылка на нарушение: %s', $c['link']);
-    $post->content[] = __('Комментарий: %s', $c['comment']);
+        if ($c['time_end'] === NULL)
+            $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]";
+        elseif (TIME < $c['time_end'])
+            $post->content[] = __('Осталось: %s', misc::when($c['time_end']));
+
+        if ($c['link'])
+            $post->content[] = __('Ссылка на нарушение: %s', $c['link']);
+        $post->content[] = __('Комментарий: %s', $c['comment']);
+    }
 }
 
 $listing->display(__('Нарушения отсутствуют'));

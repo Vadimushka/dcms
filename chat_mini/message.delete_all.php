@@ -10,7 +10,7 @@ if (isset($_POST['delete'])) {
     } else {
         $dcms->log('Мини чат', 'Очистка от всех сообщений');
 
-        mysql_query("TRUNCATE TABLE `chat_mini`");
+        $db->query("TRUNCATE TABLE `chat_mini`");
         $doc->msg(__('Все сообщения успешно удалены'));
         header('Refresh: 1; url=./?' . SID);
         $doc->ret(__('Вернуться'), './');

@@ -5,14 +5,13 @@ $doc = new document(4);
 $doc->title = __('Рассылка новости');
 $doc->ret(__('К новостям'), './');
 
-$id = (int)@$_GET['id'];
+$id = (int) @$_GET['id'];
 
-$q = mysql_query("SELECT * FROM `news` WHERE `id` = '$id' LIMIT 1");
-
-if (!mysql_num_rows($q))
+$q = $db->prepare("SELECT * FROM `news` WHERE `id` = ? LIMIT 1");
+$q->execute(Array($id));
+if (!$news = $q->fetch())
     $doc->access_denied(__('Новость не найдена или уже удалена'));
 
-$news = mysql_fetch_assoc($q);
 
 $ank = new user($news['id_user']);
 
@@ -26,16 +25,16 @@ if (isset($_POST['send'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
         $mail_unsubscribe = array();
-        $q = mysql_query("SELECT * FROM `mail_unsubscribe`");
-        while ($mu = mysql_fetch_assoc($q)) {
-            $mail_unsubscribe[$mu['email']] = (bool)$mu['code'];
+        $q = $db->query("SELECT * FROM `mail_unsubscribe`");
+        while ($mu = $q->fetch()) {
+            $mail_unsubscribe[$mu['email']] = (bool) $mu['code'];
         }
 
         $mailes = array();
 
-        $q = mysql_query("SELECT `reg_mail`, `email` FROM `users` ORDER BY `id`");
+        $q = $db->query("SELECT `reg_mail`, `email` FROM `users` ORDER BY `id`")->execute();
 
-        while ($um = mysql_fetch_assoc($q)) {
+        while ($um = $q->fetch()) {
             if ($um['reg_mail']) {
                 // по умолчанию отправляем только на регистрационные email`ы
                 $mailes[] = $um['reg_mail'];
@@ -77,12 +76,13 @@ if (isset($_POST['send'])) {
                 $contents[] = $t->fetch('file:' . H . '/sys/templates/mail.news.tpl');
             }
             mail::send($mailes_to_send, $news['title'], $contents);
-            mysql_query("UPDATE `news` SET `sended` = '1' WHERE `id` = '$id' LIMIT 1");
+            $res = $db->prepare("UPDATE `news` SET `sended` = '1' WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($id));
 
+            $res = $db->prepare("INSERT INTO `mail_unsubscribe` (`email`, `code`) VALUES (?,?)");
             foreach ($to_unsubscribe_table AS $email => $code) {
-                mysql_query("INSERT INTO `mail_unsubscribe` (`email`, `code`) VALUES ('" . my_esc($email) . "', '" . my_esc($code) . "')");
+                $res->execute(Array($email, $code));
             }
-
             $doc->msg(__('Новость успешно отправлена'));
         } else {
             $doc->err(__('Нет получателей новости'));

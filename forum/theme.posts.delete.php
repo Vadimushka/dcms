@@ -11,15 +11,14 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_theme = (int)$_GET['id'];
 
-$q = mysql_query("SELECT * FROM `forum_themes` WHERE `id` = '$id_theme' AND `group_edit` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
+$q->execute(Array($id_theme, $user->group));
+if (!$theme = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна для редактирования'));
     exit;
 }
 
-$theme = mysql_fetch_assoc($q);
 
 $doc->title .= ' - ' . $theme['name'];
 
@@ -50,20 +49,20 @@ if ($delete_posts) {
             }
         }
 
-        mysql_query("DELETE FROM `forum_messages`, `forum_history`
+        $res = $db->prepare("DELETE FROM `forum_messages`, `forum_history`
 USING `forum_messages`
 LEFT JOIN `forum_history`
 ON `forum_messages`.`id` = `forum_history`.`id_message`
-WHERE `forum_messages`.`id_theme` = '$theme[id]' AND (" . implode(' OR ', $delete_posts) . ")");
-
+WHERE `forum_messages`.`id_theme` = ? AND (" . implode(' OR ', $delete_posts) . ")");
+        $res->execute(Array($theme['id']));
         $dcms->log('Форум', 'Удаление сообщений из темы [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
 
         $doc->msg(__('Успешно удалено %d сообщений', count($delete_posts)));
     }
 
     if (isset($_POST['hide'])) {
-        mysql_query("UPDATE `forum_messages` SET `forum_messages`.`group_show` = '2' WHERE `forum_messages`.`id_theme` = '$theme[id]' AND (" . implode(' OR ', $delete_posts) . ") LIMIT " . count($delete_posts));
-
+        $res = $db->prepare("UPDATE `forum_messages` SET `forum_messages`.`group_show` = '2' WHERE `forum_messages`.`id_theme` = ? AND (" . implode(' OR ', $delete_posts) . ") LIMIT " . count($delete_posts));
+        $res->execute(Array($theme['id']));
         $dcms->log('Форум', 'Скрытие сообщений в теме [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
         $doc->msg(__('Успешно скрыто %d сообщений', count($delete_posts)));
     }
@@ -79,21 +78,27 @@ $or->display('design.order.tpl');
 $listing = new listing();
 
 if ($show == 'part') {
+    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
+    $res->execute(Array($theme['id'], $user->group));
     $pages = new pages;
-    $pages->posts = mysql_result(mysql_query("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group'"), 0); // количество сообщений  теме
-    $q = mysql_query("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group' ORDER BY `id` ASC LIMIT " . $pages->limit);
+    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений  теме
+    $pages->this_page(); // получаем текущую страницу
+    $q = $db->prepare("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC LIMIT $pages->limit");
 } else
-    $q = mysql_query("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = '$theme[id]' AND `group_show` <= '$user->group' ORDER BY `id` ASC");
+    $q = $db->prepare("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC");
 
-while ($messages = mysql_fetch_assoc($q)) {
-    $ch = $listing->checkbox();
+$q->execute(Array($theme['id'], $user->group));
+if ($arr = $q->fetchAll()) {
+    foreach ($arr AS $messages) {
+        $ch = $listing->checkbox();
 
-    $ank = new user((int)$messages['id_user']);
+        $ank = new user((int) $messages['id_user']);
 
-    $ch->title = $ank->nick;
-    $ch->time = misc::when($messages['time']);
-    $ch->name = 'post' . $messages['id'];
-    $ch->content = text::for_opis($messages['message']);
+        $ch->title = $ank->nick;
+        $ch->time = misc::when($messages['time']);
+        $ch->name = 'post' . $messages['id'];
+        $ch->content = text::for_opis($messages['message']);
+    }
 }
 
 $form = new form('?id=' . $theme['id']);
@@ -110,3 +115,4 @@ $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id'] .
 $doc->ret(__('В раздел'), 'topic.php?id=' . $theme['id_topic']);
 $doc->ret(__('В категорию'), 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
+?>

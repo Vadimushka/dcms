@@ -14,9 +14,9 @@ if (!isset($_GET['id_category']) || !is_numeric($_GET['id_category'])) {
 }
 $id_category = (int) $_GET['id_category'];
 
-$q = mysql_query("SELECT * FROM `forum_categories` WHERE `id` = '$id_category' AND `group_write` <= '$user->group'");
-
-if (!mysql_num_rows($q)) {
+$q = $db->prepare("SELECT * FROM `forum_categories` WHERE `id` = ? AND `group_write` <= ?");
+$q->execute(Array($id_category, $user->group));
+if (!$category = $q->fetch()) {
     if (isset($_GET['return']))
         header('Refresh: 1; url=' . $_GET['return']);
     else
@@ -25,7 +25,6 @@ if (!mysql_num_rows($q)) {
     exit;
 }
 
-$category = mysql_fetch_assoc($q);
 
 if (isset($_POST['name'])) {
     $name = text::for_name($_POST['name']);
@@ -33,10 +32,9 @@ if (isset($_POST['name'])) {
     if (!$name) {
         $doc->err(__('Введите название раздела'));
     } else {
-        mysql_query("INSERT INTO `forum_topics` (`id_category`, `time_create`,`time_last`, `name`, `description`, `group_show`, `group_write`, `group_edit`)
- VALUES ('$category[id]', '" . TIME . "','" . TIME . "','" . my_esc($name) . "', '" . my_esc($description) . "', '$category[group_show]','" . max($category['group_show'], 1) . "','" . max($user->group, 4) . "')");
-
-        $id_topic = mysql_insert_id();
+        $res = $db->prepare("INSERT INTO `forum_topics` (`id_category`, `time_create`,`time_last`, `name`, `description`, `group_show`, `group_write`, `group_edit`) VALUES (?,?,?,?,?,?,?,?)");
+        $res->execute(Array($category['id'], TIME, TIME, $name, $description, $category['group_show'], max($category['group_show'], 1), max($user->group, 4)));
+        $id_topic = $db->lastInsertId();
         $doc->msg(__('Раздел успешно создан'));
 
         $dcms->log('Форум', 'Создание раздела [url=/forum/topic.php?id=' . $id_topic . ']' . $name . '[/url] в категории [url=/forum/category.php?id=' . $category['id'] . ']' . $category['name'] . '[/url]');

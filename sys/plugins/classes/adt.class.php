@@ -43,8 +43,9 @@ class adt extends menu {
         $return = array();
         if ($this->getNameById($id)) {
             $target = $dcms->browser_type == 'web' ? ' target="_blank"' : '';
-            $q = mysql_query("SELECT * FROM `advertising` WHERE `space` = '" . my_esc($id) . "' AND `" . (IS_MAIN ? 'page_main' : 'page_other') . "` = '1' AND (`time_start` < '" . TIME . "' OR `time_start` = '0') AND (`time_end` > '" . TIME . "' OR `time_end` = '0') ORDER BY `time_start` ASC");
-            while ($adt = mysql_fetch_assoc($q)) {
+            $q = DB::me()->prepare("SELECT * FROM `advertising` WHERE `space` = ? AND `" . (IS_MAIN ? 'page_main' : 'page_other') . "` = '1' AND (`time_start` < ? OR `time_start` = '0') AND (`time_end` > ? OR `time_end` = '0') ORDER BY `time_start` ASC");
+            $q->execute(Array($id, TIME, TIME));
+            while ($adt = $q->fetch()) {
                 if ($adt['url_img']) {
                     $return[]['0'] = '<a rel="nofollow" href="http://' . $_SERVER['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($adt['url_link']) . '"' . $target . '><img src="' . $adt['url_img'] . '" alt="' . text::toValue($adt['name']) . '" /></a>';
                 } else {
@@ -54,7 +55,8 @@ class adt extends menu {
             if (!isset($_SESSION['adt'][$id]['time_show']) || $_SESSION['adt'][$id]['time_show'] < TIME - 10) {
                 // показ рекламы засчитывается один раз в 10 секунд
                 $_SESSION['adt'][$id]['time_show'] = TIME;
-                mysql_query("UPDATE `advertising` SET `count_show_" . $dcms->browser_type . "` = `count_show_" . $dcms->browser_type . "` + 1 WHERE `space` = '" . my_esc($id) . "' AND `" . (IS_MAIN ? 'page_main' : 'page_other') . "` = '1' AND (`time_start` < '" . TIME . "' OR `time_start` = '0') AND (`time_end` > '" . TIME . "' OR `time_end` = '0')");
+                $res = DB::me()->prepare("UPDATE `advertising` SET `count_show_" . $dcms->browser_type . "` = `count_show_" . $dcms->browser_type . "` + 1 WHERE `space` = ? AND `" . (IS_MAIN ? 'page_main' : 'page_other') . "` = '1' AND (`time_start` < ? OR `time_start` = '0') AND (`time_end` >? OR `time_end` = '0')");
+                $res->execute(Array($id, TIME, TIME));
             }
         }
         return $return;

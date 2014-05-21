@@ -34,8 +34,9 @@ if (isset($_POST['create'])) {
             $dcms->log('Реклама', 'Установка баннера [url=/dpanel/adt.php?id=' . $id_space . ']' . $main[1] . '[/url]');
 
             if ($code_main == $code_other) {
-                mysql_query("INSERT INTO `advertising` (`space`, `url_link`, `name`, `url_img`, `page_main`, `page_other`, `time_create`, `time_start`, `time_end`, `bold`)
-VALUES ('" . my_esc($id_space) . "', '" . my_esc($main[1]) . "', '" . my_esc($main[4]) . "', '" . my_esc($main[2]) . "', '1', '1', '" . TIME . "', '0', '0', '0')");
+                $res = $db->prepare("INSERT INTO `advertising` (`space`, `url_link`, `name`, `url_img`, `page_main`, `page_other`, `time_create`, `time_start`, `time_end`, `bold`)
+VALUES (?, ?, ?, ?, '1', '1', ?, '0', '0', '0')");
+                $res->execute(Array($id_space, $main[1], $main[4], $main[2], TIME));
                 header('Refresh: 1; url=adt.php?id=' . $id_space);
 
                 $doc->msg(__('Баннер успешно установлен'));
@@ -44,13 +45,15 @@ VALUES ('" . my_esc($id_space) . "', '" . my_esc($main[1]) . "', '" . my_esc($ma
                 $doc->ret(__('Админка'), '/dpanel/');
                 exit;
             } else {
-                mysql_query("INSERT INTO `advertising` (`space`, `url_link`, `name`, `url_img`, `page_main`, `page_other`, `time_create`, `time_start`, `time_end`, `bold`)
-VALUES ('" . my_esc($id_space) . "', '" . my_esc($main[1]) . "', '" . my_esc($main[4]) . "', '" . my_esc($main[2]) . "', '1', '0', '" . TIME . "', '0', '0', '0')");
+                $res = $db->prepare("INSERT INTO `advertising` (`space`, `url_link`, `name`, `url_img`, `page_main`, `page_other`, `time_create`, `time_start`, `time_end`, `bold`)
+VALUES (?, ?, ?, ?, '1', '0', ?, '0', '0', '0')");
+                $res->execute(Array($id_space, $main[1], $main[4], $main[2], TIME));
                 $doc->msg(__('Баннер для главной страницы успешно установлен'));
 
                 if (preg_match($pattern, $code_other, $other)) {
-                    mysql_query("INSERT INTO `advertising` (`space`, `url_link`, `name`, `url_img`, `page_main`, `page_other`, `time_create`, `time_start`, `time_end`, `bold`)
-VALUES ('" . my_esc($id_space) . "', '" . my_esc($other[1]) . "', '" . my_esc($other[4]) . "', '" . my_esc($other[2]) . "', '0', '1', '" . TIME . "', '0', '0', '0')");
+                    $res = $db->prepare("INSERT INTO `advertising` (`space`, `url_link`, `name`, `url_img`, `page_main`, `page_other`, `time_create`, `time_start`, `time_end`, `bold`)
+VALUES (?, ?, ?, ?, '0', '1', ?, '0', '0', '0')");
+                    $res->execute(Array($id_space, $other[1], $other[4], $other[2], TIME));
                     $doc->msg(__('Баннер для остальных страниц успешно установлен'));
                 }
 
