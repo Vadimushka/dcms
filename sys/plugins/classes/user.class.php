@@ -23,12 +23,8 @@
  * @property int is_writeable Флаг, означающий что пользователю разрешено оставлять сообщения на сайте
  * @property mixed nick ник пользователя
  * @property float donate_rub Сумма пожертвований
- * @method string nick() Возвращает ник пользователя в теге span с классом, отражающим присутствие пользователя
- * @method bool mess(string $message) mess(string $message, int $userId)
- * @method string icon() Возвращает название иконки пользователя (в зависимости от статуса, пола и бана)
- * @method string getAvatar() getAvatar(int $maxWidth) Возвращает путь к изображению аватара пользователя
  */
-class user extends plugins
+class user
 {
 
     protected $_update = array();
@@ -137,7 +133,7 @@ class user extends plugins
 
         if (!isset($is_ban [$this->_data ['id']])) {
             if (!isset($is_ban_res)) {
-                $is_ban_res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `time_start` < ? AND (`time_end` is NULL OR `time_end` > ?)");
+                $is_ban_res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `time_start` < ? AND (`time_end` IS NULL OR `time_end` > ?)");
             }
             $is_ban_res->execute(Array($this->_data['id'], TIME, TIME));
             $is_ban [$this->_data ['id']] = $is_ban_res->fetch();
@@ -157,7 +153,7 @@ class user extends plugins
 
         if (!isset($is_ban_full [$this->_data ['id']])) {
             if (!isset($is_ban_res)) {
-                $is_ban_res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `access_view` = '0' AND `time_start` < ? AND (`time_end` is NULL OR `time_end` > ?)");
+                $is_ban_res = $this->db->prepare("SELECT * FROM `ban` WHERE `id_user` = ? AND `access_view` = '0' AND `time_start` < ? AND (`time_end` IS NULL OR `time_end` > ?)");
             }
             $is_ban_res->execute(Array($this->_data['id'], TIME, TIME));
             $is_ban_full [$this->_data ['id']] = $is_ban_res->fetch();
@@ -233,6 +229,128 @@ class user extends plugins
             $data[$key] = $this->$key;
         }
         return $data;
+    }
+
+    /**
+     * @return string Ник пользователя с ссылкой на анкету (HTML)
+     */
+    function show()
+    {
+        if ($this->id !== false) {
+            return '<a href="/profile.view.php?id=' . $this->id . '">' . $this->nick() . '</a>';
+        } else {
+            return '[Нет данных]';
+        }
+    }
+
+    /**
+     * @return string Ник пользователя в HTML
+     */
+    function nick()
+    {
+        if ($this->id === false) {
+            return '[' . __('Пользователь удален') . ']';
+        }
+
+        $classes = array();
+        $classes[] = $this->online ? 'DCMS_nick_on' : 'DCMS_nick_off';
+
+        return '<span class="' . implode(' ', $classes) . '">' . $this->login . '</span>' . ($this->donate_rub ? '<span class="DCMS_nick_donate"></span>' : '');
+    }
+
+    /**
+     * @param $msg
+     * @param $id_user
+     * @return bool
+     */
+    function mess($msg, $id_user)
+    {
+        if (!$this->id) {
+            return false;
+        }
+
+        $res = DB::me()->prepare("UPDATE `users` SET `mail_new_count` = `mail_new_count` + '1' WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($this->id));
+        $res = DB::me()->prepare("INSERT INTO `mail` (`id_user`,`id_sender`,`time`,`mess`) VALUES (?, ?, ?, ?)");
+        $res->execute(Array($this->id, $id_user, TIME, $msg));
+        return true;
+    }
+
+    /**
+     * @param user $ank
+     * @return bool
+     */
+    function is_friend($ank)
+    {
+        if (!($ank instanceof user)) {
+            $ank = $this;
+        }
+        if (!$ank->id) {
+            return false;
+        }
+        if ($this->id && $this->id === $ank->id) {
+            return true;
+        }
+        $res = DB::me()->prepare("SELECT COUNT(*) AS cnt FROM `friends` WHERE `id_user` = ? AND `id_friend` = ? AND `confirm` = '1' LIMIT 1");
+        $res->execute(Array($this->id, $ank->id));
+        return ($row = $res->fetch()) ? $row['cnt'] : false;
+    }
+
+    /**
+     * Иконка пользователя
+     * @return string
+     */
+    function icon()
+    {
+        // система
+        if ($this->group === 6 && $this->id === 0) {
+            return 'system';
+        }
+        // забаненый пользователь
+        if ($this->is_ban) {
+            return 'shit';
+        }
+        // администратор
+        if ($this->group >= 2) {
+            return 'admin.' . $this->sex;
+        }
+        // пользователь
+        if ($this->group) {
+            return 'user.' . $this->sex;
+        }
+        // гость
+        return 'guest';
+    }
+
+    /**
+     * Получение относительного пути к изображению аватара или false, если аватар отсутствует
+     * @param int $max_width
+     * @return bool|string
+     */
+    function getAvatar($max_width = 48)
+    {
+        $avatar_file_name = $this->id . '.jpg';
+        $avatars_path = FILES . '/.avatars'; // папка с аватарами
+        $avatars_dir = new files($avatars_path);
+        if ($avatars_dir->is_file($avatar_file_name)) {
+            $avatar = new files_file($avatars_path, $avatar_file_name);
+            return $avatar->getScreen($max_width, 0);
+        }
+    }
+
+    /**
+     * Удаление текущего пользователя
+     */
+    function delete()
+    {
+        $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
+        foreach ($tables AS $v) {
+            $res = DB::me()->prepare("DELETE FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = ?");
+            $res->execute(Array($this->id));
+        }
+        $res = DB::me()->prepare("DELETE FROM `users` WHERE `id` = ?");
+        $res->execute(Array($this->id));
+        $this->guest_init();
     }
 
     /**
