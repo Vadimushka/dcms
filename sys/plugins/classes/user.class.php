@@ -23,6 +23,8 @@
  * @property int is_writeable Флаг, означающий что пользователю разрешено оставлять сообщения на сайте
  * @property mixed nick ник пользователя
  * @property float donate_rub Сумма пожертвований
+ * @property int ank_m_r Месяц рождения
+ * @property int ank_d_r День рождения
  */
 class user
 {
@@ -252,10 +254,17 @@ class user
             return '[' . __('Пользователь удален') . ']';
         }
 
-        $classes = array();
-        $classes[] = $this->online ? 'DCMS_nick_on' : 'DCMS_nick_off';
+        $ret = array('<span class="' . ($this->online ? 'DCMS_nick_on' : 'DCMS_nick_off') . '">' . $this->login . '</span>');
 
-        return '<span class="' . implode(' ', $classes) . '">' . $this->login . '</span>' . ($this->donate_rub ? '<span class="DCMS_nick_donate"></span>' : '');
+        if ($this->donate_rub)
+            $ret[] = '<span class="DCMS_nick_donate"></span>';
+
+        $today_date = date('m-d', mktime(0, 0, 0, date("m"), date("d"), 0));
+        $birthday_date = date('m-d', mktime(0, 0, 0, $this->ank_m_r, $this->ank_d_r, 0));
+        if ($today_date == $birthday_date)
+            $ret[] = '<span class="DCMS_nick_birthday"></span>';
+
+        return join('', $ret);
     }
 
     /**
