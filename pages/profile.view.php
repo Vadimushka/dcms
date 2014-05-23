@@ -117,7 +117,7 @@ if ($ank->is_ban) {
             $post = $ban_listing->post();
             $adm = new user($c ['id_adm']);
 
-            $post->title = ($adm->group <= $user->group ? '<a href="/profile.view.php?id=' . $adm->id . '">' . $adm->nick . '</a>: ' : '') . for_value($c ['code']);
+            $post->title = ($adm->group <= $user->group ? '<a href="/profile.view.php?id=' . $adm->id . '">' . $adm->nick . '</a>: ' : '') . text::toValue($c ['code']);
 
 
             if ($c ['time_start'] && TIME < $c ['time_start']) {

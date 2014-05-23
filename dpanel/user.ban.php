@@ -140,7 +140,7 @@ if ($arr = $q->fetchAll()) {
         $post->action('delete', '?id_ank=' . $ank->id . '&amp;ban_delete=' . $c['id'] . '&amp;skip');
         $post->title = $adm->nick();
         $post->time = misc::when($c ['time_start']);
-        $post->content[] = __('Нарушение: %s', for_value($c['code']));
+        $post->content[] = __('Нарушение: %s', $c['code']);
 
         if ($c ['time_start'] && TIME < $c ['time_start'])
             $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . misc::when($c ['time_start']);

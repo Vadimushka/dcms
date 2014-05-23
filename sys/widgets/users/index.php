@@ -28,7 +28,7 @@ if ($dcms->widget_items_count) {
             $post->icon($p_user->icon());
             $post->title = $p_user->nick();
             $post->url = '/profile.view.php?id=' . $p_user->id;
-            $post->time = vremja($p_user->reg_date);
+            $post->time = misc::when($p_user->reg_date);
         }
     }
 }
@@ -50,4 +50,3 @@ $res = $db->query("SELECT COUNT(*) AS cnt FROM `guest_online` WHERE `conversions
 $post->counter = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
 $listing->display();
-?>
