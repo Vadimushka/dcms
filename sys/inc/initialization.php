@@ -177,60 +177,6 @@ function my_esc($str) {
     return mysql_real_escape_string($str);
 }
 
-
-//region TODO: Выпилить к версии 7.5
-/**
- *  фильтрование текста для полей ввода
- * @param string $text
- * @return string
- * @deprecated рекомендуется использовать text::toValue
- */
-function for_value($text) {
-    return text::toValue($text);
-}
-
-/**
- * Фильтрование и форматирование текста с обработкой BBCODE
- * @param string $text
- * @return string
- * @deprecated Рекомендуется использовать text::toOutput
- */
-function output_text($text) {
-    return text::toOutput($text);
-}
-
-/**
- * Возвращает название месяца
- * @param integer $mes номер месяца
- * @param boolean $v Использование родительного падежа
- * @return string
- * @deprecated Рекомендуется использовать misc::getLocaleMonth
- */
-function rus_mes($mes, $v = true) {
-    return misc::getLocaleMonth($mes, $v);
-}
-
-/**
- * Возвращает читабельное представление времени
- * @param integer $t UNIXTIMESTAMP
- * @return string
- * @deprecated Рекомендуется использовать misc::when
- */
-function vremja($t) {
-    return misc::when($t);
-}
-
-/**
- * Возвращает читабельное представление объема данных
- * @param integer $filesize Объем данных в байтах
- * @return string
- * @deprecated рекомендуется использовать misc::getDataCapacity
- */
-function size_data($filesize = 0) {
-    return misc::getDataCapacity($filesize);
-}
-//endregion
-
 /**
  * @global \language_pack $user_language_pack Текущий языковой пакет
  */

@@ -41,7 +41,7 @@ AND `tp`.`group_show` <= ?
 AND `cat`.`group_show` <= ?
 AND `msg`.`group_show` <= ?
 GROUP BY `msg`.`id_theme`
-ORDER BY MAX(`msg`.`time`) DESC LIMIT $pages->limit");
+ORDER BY MAX(`msg`.`time`) DESC LIMIT ".$pages->limit);
 $res->execute(Array($user->id, $user->group, $user->group, $user->group, $user->group));
 
 $listing = new listing();
@@ -56,8 +56,8 @@ if ($arr = $q->fetchAll()) {
         $post->url = 'theme.php?id=' . $themes['id'] . '&amp;page=end';
         $autor = new user($themes['id_autor']);
         $last_msg = new user($themes['id_last']);
-        $post->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . '<br />';
-        $post->content .= "(<a href='category.php?id=$themes[id_category]'>" . for_value($themes['category_name']) . "</a> &gt; <a href='topic.php?id=$themes[id_topic]'>" . for_value($themes['topic_name']) . "</a>)<br />";
+        $post->content[] = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick);
+        $post->content[] = "([url=category.php?id=$themes[id_category]]" . $themes['category_name'] . "[/url] > [url=topic.php?id=$themes[id_topic]]" . $themes['topic_name'] . "[/url]";
         $post->bottom = __('Просмотров: %s', $themes['views']);
     }
 }
@@ -67,4 +67,3 @@ $listing->display(($ank->id == $user->id) ? __('Созданных Вами те
 
 $pages->display("?id=$ank->id&amp;"); // вывод страниц
 $doc->ret(__('Форум'), './');
-?>

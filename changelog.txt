@@ -1,0 +1,3 @@
+[del] Удаление устаревших функций: for_value output_text rus_mes vremja size_data. [url=http://dcms.su/forum/theme.php?id=7872]Подробнее[/url]
+[del] Удаление класса plugins. Перенос всех методов класса user обратно в файл user.class.php
+[add] Добавлена иконка, указывающая, что сегодня день рождения пользователя

@@ -3,7 +3,6 @@
 При создании своей темы оформления данный файл обязательно должен быть подгружен темой оформления
 */
 
-
 * {
     font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
     box-sizing: border-box;
@@ -20,71 +19,79 @@ table {
     border-spacing: 0;
 }
 
-td {    
+td {
     padding: 0;
 }
 
+.DCMS_mark {
 
-.DCMS_mark{
-    
 }
 
-.DCMS_nick_on{
-    
+.DCMS_nick_on {
+
 }
 
-.DCMS_nick_off{
-    
+.DCMS_nick_off {
+
 }
 
-.DCMS_nick_donate{
+.DCMS_nick_donate,
+.DCMS_nick_birthday {
     display: inline-block;
     width: 16px;
     height: 16px;
-    background-image: url("/sys/images/icons/donate.png");
     margin-left: 3px;
 }
 
-.DCMS_quote{
+.DCMS_nick_donate {
+    background-image: url("/sys/images/icons/donate.png");
+}
+
+.DCMS_nick_birthday {
+    background-image: url("/sys/images/icons/birthday.png");
+}
+
+.DCMS_quote {
     border: 1px solid #ccc;
     font-size: 90%;
 }
-.DCMS_quote_title{
-    
+
+.DCMS_quote_title {
+
 }
 
-.DCMS_phpcode{
+.DCMS_phpcode {
     max-width: 600px;
     overflow: auto;
     cursor: text;
 }
 
-.DCMS_font_bold{
+.DCMS_font_bold {
     font-weight: bold;
 }
 
-.DCMS_photo{
-    
+.DCMS_photo {
+
 }
 
-.DCMS_spoiler{
-    
+.DCMS_spoiler {
+
 }
 
-.DCMS_spoiler_title{
-    
+.DCMS_spoiler_title {
+
 }
 
-.DCMS_spoiler_content{
-    
+.DCMS_spoiler_content {
+
 }
 
-.DCMS_youtube{
+.DCMS_youtube {
     text-align: center;
     padding: 5px 0;
 }
 
-.DCMS_youtube iframe{
+.DCMS_youtube iframe {
     width: 600px;
     height: 360px;
     display: inline-block;
