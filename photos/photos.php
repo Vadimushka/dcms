@@ -51,7 +51,7 @@ $doc->keywords [] = $ank->login;
 if (!empty($_GET ['act']) && $ank->id == $user->id) {
     switch ($_GET ['act']) {
         case 'prop' :
-		    $doc->title .= ' - ' . __('Параметры');
+		    $doc->title .= ' - Параметры';
 		
 	        if (!empty($_POST ['prop'])) {
                 if ($album->id_user = $user->id){
