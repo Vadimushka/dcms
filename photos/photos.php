@@ -51,27 +51,35 @@ $doc->keywords [] = $ank->login;
 if (!empty($_GET ['act']) && $ank->id == $user->id) {
     switch ($_GET ['act']) {
         case 'prop' :
-        
-			if(isset($_POST['update'])){
-				$runame = text::for_name($_POST['name']) ;
-				$name = text::for_filename($runame) ;
+		    $doc->title .= ' - Параметры';
+		
+	        if (!empty($_POST ['prop'])) {
+                if ($album->id_user = $user->id){
 
-				if($runame != $album->runame){
-					if(!$runame || !$name){
-						$doc->err('Неверно задано имя альбома') ;
-					}elseif(!$album->rename($runame, $name)){
-						$doc->err('Не удалось переименовать альбом') ;
-					}else{
-						$doc->msg('Новое название альбома - ' . $runame);	
-					}
+                if (isset($_POST['group_show'])){
+				$album->group_show = $_POST['group_show'];
 				}
-			}
-            $doc->title = $album->runame . ' - ' . __('Параметры');
+
+                $album->runame = text::input_text(@$_POST ['name']);
+                $album->description = text::input_text(@$_POST ['description']);
+                $doc->msg(__('Альбом успешно переименован'));
+                $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
+                } else {
+                $doc->err(__('Не удалось сменит название альбома'));
+                $doc->ret(__('В альбом'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
+                $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
+                }                
+            }
 			
 			$form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=prop') ;
 			$form->text('name', 'Название', $album->runame) ;
-			$form->button('Применить', 'update') ;
-			$form->display() ;
+		    $form->textarea('description', 'Описание', $album->description) ;
+			$options = array(); 
+            $options [] = array('0', __('Всем'), $album->group_show =="0");
+			$options [] = array('1', __('Зарегистрированным'), $album->group_show =="1");
+			$form->select('group_show', __('Показывать папку:'), $options);
+            $form->button('Применить', 'prop') ;
+            $form->display();
 
             $doc->ret(__('В альбом'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
             exit();
