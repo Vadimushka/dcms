@@ -163,7 +163,6 @@ $pages = new pages ();
 $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id_file` = ?");
 $res->execute(Array($photo->id));
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
-$pages->this_page(); // получаем текущую страницу
 $q = $db->prepare("SELECT * FROM `files_comments` WHERE `id_file` = ? ORDER BY `id` DESC LIMIT $pages->limit");
 $q->execute(Array($photo->id));
 

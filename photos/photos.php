@@ -51,34 +51,34 @@ $doc->keywords [] = $ank->login;
 if (!empty($_GET ['act']) && $ank->id == $user->id) {
     switch ($_GET ['act']) {
         case 'prop' :
-		    $doc->title .= ' - Параметры';
-		
-	        if (!empty($_POST ['prop'])) {
-                if ($album->id_user = $user->id){
+            $doc->title .= ' - Параметры';
 
-                if (isset($_POST['group_show'])){
-				$album->group_show = $_POST['group_show'];
-				}
+            if (!empty($_POST ['prop'])) {
+                if ($album->id_user = $user->id) {
 
-                $album->runame = text::input_text(@$_POST ['name']);
-                $album->description = text::input_text(@$_POST ['description']);
-                $doc->msg(__('Альбом успешно переименован'));
-                $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
+                    if (isset($_POST['group_show'])) {
+                        $album->group_show = $_POST['group_show'];
+                    }
+
+                    $album->runame = text::input_text(@$_POST ['name']);
+                    $album->description = text::input_text(@$_POST ['description']);
+                    $doc->msg(__('Альбом успешно переименован'));
+                    $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
                 } else {
-                $doc->err(__('Не удалось сменит название альбома'));
-                $doc->ret(__('В альбом'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
-                $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
-                }                
+                    $doc->err(__('Не удалось сменит название альбома'));
+                    $doc->ret(__('В альбом'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
+                    $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
+                }
             }
-			
-			$form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=prop') ;
-			$form->text('name', 'Название', $album->runame) ;
-		    $form->textarea('description', 'Описание', $album->description) ;
-			$options = array(); 
-            $options [] = array('0', __('Всем'), $album->group_show =="0");
-			$options [] = array('1', __('Зарегистрированным'), $album->group_show =="1");
-			$form->select('group_show', __('Показывать папку:'), $options);
-            $form->button('Применить', 'prop') ;
+
+            $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=prop');
+            $form->text('name', 'Название', $album->runame);
+            $form->textarea('description', 'Описание', $album->description);
+            $options = array();
+            $options [] = array('0', __('Всем'), $album->group_show == "0");
+            $options [] = array('1', __('Зарегистрированным'), $album->group_show == "1");
+            $form->select('group_show', __('Показывать папку:'), $options);
+            $form->button('Применить', 'prop');
             $form->display();
 
             $doc->ret(__('В альбом'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
@@ -141,7 +141,7 @@ if (!empty($_GET ['act']) && $ank->id == $user->id) {
             }
 
             $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=delete&amp;' . passgen());
-            $form ->captcha();
+            $form->captcha();
             $form->button(__('Удалить альбом'), 'delete');
             $form->display();
 
@@ -153,11 +153,9 @@ if (!empty($_GET ['act']) && $ank->id == $user->id) {
 $list = $album->getList('time_add:desc'); // получение содержимого папки альбома
 $files = $list ['files']; // получение только файлов
 
-$pages = new pages ();
-$pages->posts = count($files);
+$pages = new pages(count($files));
 $start = $pages->my_start();
 $end = $pages->end();
-
 
 $listing = new listing();
 for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
@@ -166,17 +164,14 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
     $post->url = "photo.php?id=$ank->id&amp;album=" . urlencode($album->name) . "&amp;photo=" . urlencode($files [$i]->name);
     $post->title = text::toValue($files [$i]->runame);
 
-
     if ($comments = $files [$i]->comments) {
-        $post->content .= __('%s комментари' . misc::number($comments, 'й', 'я', 'ев'), $comments) . "\n";
+        $post->content[] = __('%s комментари' . misc::number($comments, 'й', 'я', 'ев'), $comments);
     }
 
     if ($properties = $files [$i]->properties) {
         // Параметры файла (только основное)
-        $post->content .= $properties . "\n";
+        $post->content[] = $properties;
     }
-
-    $post->content = text::toOutput($post->content);
 }
 
 $listing->display(__('Фотографии отсутствуют'));

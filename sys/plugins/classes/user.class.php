@@ -272,7 +272,7 @@ class user
      * @param $id_user
      * @return bool
      */
-    function mess($msg, $id_user)
+    function mess($msg, $id_user = 0)
     {
         if (!$this->id) {
             return false;
