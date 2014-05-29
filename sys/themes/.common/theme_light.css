@@ -11,6 +11,12 @@
     width: 100%;
 }
 
+.theme_light .form_text, .theme_light .form_title  {
+	padding-bottom:5px;
+	display:block;
+	font-weight: 700;
+}
+
 .theme_light input, .theme_light textarea, .theme_light select{    
     margin-bottom: 5px;
 }
