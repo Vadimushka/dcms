@@ -40,7 +40,7 @@ $users = ($row = $res->fetch()) ? $row['cnt'] : 0;
 $listing = new listing();
 
 $post = $listing->post();
-$post->hightlight = true;
+$post->highlight = true;
 $post->icon('forum');
 $post->url = '/forum/';
 $post->title = __('Форум');
@@ -63,4 +63,3 @@ if ($new_themes)
     $post->counter = '+' . $new_themes;
 
 $listing->display();
-?>

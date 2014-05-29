@@ -5,7 +5,7 @@ dpanel::check_access();
 $doc = new document(groups::max());
 $doc->title = __('Поддомены');
 
-$browser_types = array('wap', 'pda', 'itouch', 'web');
+$browser_types = array('light', 'mobile', 'full');
 
 if (!$dcms->check_domain_work)
     $dcms->check_domain_work = passgen();
@@ -29,32 +29,26 @@ if (isset($_POST ['save'])) {
     $dcms->subdomain_theme_redirect = (int) !empty($_POST ['subdomain_theme_redirect']);
     $dcms->subdomain_replace_url = (int) !empty($_POST ['subdomain_replace_url']);
 
-    $subdomain_wap_enable_old = $dcms->subdomain_wap_enable;
-    $dcms->subdomain_wap_enable = (int) !empty($_POST ['subdomain_wap_enable']);
+    $subdomain_light_enable_old = $dcms->subdomain_light_enable;
+    $dcms->subdomain_light_enable = (int) !empty($_POST ['subdomain_light_enable']);
 
-    $subdomain_pda_enable_old = $dcms->subdomain_pda_enable;
-    $dcms->subdomain_pda_enable = (int) !empty($_POST ['subdomain_pda_enable']);
+    $subdomain_mobile_enable_old = $dcms->subdomain_mobile_enable;
+    $dcms->subdomain_mobile_enable = (int) !empty($_POST ['subdomain_mobile_enable']);
 
-    $subdomain_itouch_enable_old = $dcms->subdomain_itouch_enable;
-    $dcms->subdomain_itouch_enable = (int) !empty($_POST ['subdomain_itouch_enable']);
-
-    $subdomain_web_enable_old = $dcms->subdomain_web_enable;
-    $dcms->subdomain_web_enable = (int) !empty($_POST ['subdomain_web_enable']);
+    $subdomain_full_enable_old = $dcms->subdomain_full_enable;
+    $dcms->subdomain_full_enable = (int) !empty($_POST ['subdomain_full_enable']);
 
 
     $dcms->subdomain_main = text::input_text($_POST ['subdomain_main']);    
     
-    $subdomain_wap_old = $dcms->subdomain_wap;
-    $dcms->subdomain_wap = text::input_text($_POST ['subdomain_wap']);
+    $subdomain_light_old = $dcms->subdomain_light;
+    $dcms->subdomain_light = text::input_text($_POST ['subdomain_light']);
 
-    $subdomain_pda_old = $dcms->subdomain_pda;
-    $dcms->subdomain_pda = text::input_text($_POST ['subdomain_pda']);
+    $subdomain_mobile_old = $dcms->subdomain_mobile;
+    $dcms->subdomain_mobile = text::input_text($_POST ['subdomain_mobile']);
 
-    $subdomain_itouch_old = $dcms->subdomain_itouch;
-    $dcms->subdomain_itouch = text::input_text($_POST ['subdomain_itouch']);
-
-    $subdomain_web_old = $dcms->subdomain_web;
-    $dcms->subdomain_web = text::input_text($_POST ['subdomain_web']);
+    $subdomain_full_old = $dcms->subdomain_full;
+    $dcms->subdomain_full = text::input_text($_POST ['subdomain_full']);
 
     if ($dcms->subdomain_theme_redirect && $dcms->subdomain_theme_redirect != $subdomain_theme_redirect_old) {
         if (!$dcms->subdomain_main) {
@@ -66,45 +60,36 @@ if (isset($_POST ['save'])) {
         }
     }
 
-    if ($dcms->subdomain_wap_enable && ($dcms->subdomain_wap_enable != $subdomain_wap_enable_old || $subdomain_wap_old != $dcms->subdomain_wap )) {
-        if (!$dcms->subdomain_wap) {
-            $doc->err(__('Поддомен для WAP тем оформления не задан'));
-            $dcms->subdomain_wap_enable = 0;
-        } elseif (!domain_check($dcms->subdomain_wap . '.' . $dcms->subdomain_main)) {
-            $doc->err(__('Поддомен для WAP тем оформления не открывает данный сайт'));
-            $dcms->subdomain_wap_enable = 0;
-        }
-    }
+    $pattern_need = "Поддомен для %s тем оформления не задан";
+    $pattern_not_opening = "Поддомен для %s тем оформления не открывает данный сайт";
 
-    if ($dcms->subdomain_pda_enable && ( $dcms->subdomain_pda_enable != $subdomain_pda_enable_old || $subdomain_pda_old != $dcms->subdomain_pda )) {
-        if (!$dcms->subdomain_pda) {
-            $doc->err(__('Поддомен для PDA тем оформления не задан'));
-            $dcms->subdomain_pda_enable = 0;
-        } elseif (!domain_check($dcms->subdomain_pda . '.' . $dcms->subdomain_main)) {
-            $doc->err(__('Поддомен для PDA тем оформления не открывает данный сайт'));
-            $dcms->subdomain_pda_enable = 0;
+    if ($dcms->subdomain_light_enable && ($dcms->subdomain_light_enable != $subdomain_light_enable_old || $subdomain_light_old != $dcms->subdomain_light )) {
+        if (!$dcms->subdomain_light) {
+            $doc->err(__($pattern_need, 'WAP (light)'));
+            $dcms->subdomain_light_enable = 0;
+        } elseif (!domain_check($dcms->subdomain_light . '.' . $dcms->subdomain_main)) {
+            $doc->err(__($pattern_not_opening, 'WAP (light)'));
+            $dcms->subdomain_light_enable = 0;
         }
     }
-    if ($dcms->subdomain_itouch_enable && ($dcms->subdomain_itouch_enable != $subdomain_itouch_enable_old || $subdomain_itouch_old != $dcms->subdomain_itouch )) {
-        if (!$dcms->subdomain_itouch) {
-            $doc->err(__('Поддомен для iTouch тем оформления не задан'));
-            $dcms->subdomain_itouch_enable = 0;
-        } elseif (!domain_check($dcms->subdomain_itouch . '.' . $dcms->subdomain_main)) {
-            $doc->err(__('Поддомен для iTouch тем оформления не открывает данный сайт'));
-            $dcms->subdomain_itouch_enable = 0;
+    if ($dcms->subdomain_mobile_enable && ($dcms->subdomain_mobile_enable != $subdomain_mobile_enable_old || $subdomain_mobile_old != $dcms->subdomain_mobile )) {
+        if (!$dcms->subdomain_mobile) {
+            $doc->err(__($pattern_need, 'Touch (mobile)'));
+            $dcms->subdomain_mobile_enable = 0;
+        } elseif (!domain_check($dcms->subdomain_mobile . '.' . $dcms->subdomain_main)) {
+            $doc->err(__($pattern_not_opening, 'Touch (mobile)'));
+            $dcms->subdomain_mobile_enable = 0;
         }
     }
-
-    if ($dcms->subdomain_web_enable && ($dcms->subdomain_web_enable != $subdomain_web_enable_old || $subdomain_web_old != $dcms->subdomain_web )) {
-        if (!$dcms->subdomain_web) {
-            $doc->err(__('Поддомен для WEB тем оформления не задан'));
-            $dcms->subdomain_web_enable = 0;
-        } elseif (!domain_check($dcms->subdomain_web . '.' . $dcms->subdomain_main)) {
-            $doc->err(__('Поддомен для WEB тем оформления не открывает данный сайт'));
-            $dcms->subdomain_web_enable = 0;
+    if ($dcms->subdomain_full_enable && ($dcms->subdomain_full_enable != $subdomain_full_enable_old || $subdomain_full_old != $dcms->subdomain_full )) {
+        if (!$dcms->subdomain_full) {
+            $doc->err(__($pattern_need, 'WEB (full)'));
+            $dcms->subdomain_full_enable = 0;
+        } elseif (!domain_check($dcms->subdomain_full . '.' . $dcms->subdomain_main)) {
+            $doc->err(__($pattern_not_opening, 'WEB (full)'));
+            $dcms->subdomain_full_enable = 0;
         }
     }
-
 
     $dcms->save_settings($doc);
 }

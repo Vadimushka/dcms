@@ -4,19 +4,18 @@ include_once '../sys/inc/start.php';
 $doc = new document(5);
 $doc->title = __('Статистика (сегодня)');
 
-$browser_types = array('wap', 'pda', 'itouch', 'web');
+$browser_types = array('light', 'mobile', 'full');
 
 if (!$dcms->log_of_visits) {
     $doc->err(__('Служба ведения статистики отключена'));
     $doc->act(__('Управление службами'), 'sys.settings.daemons.php');
 }
 
-$arr = Array('wap', 'pda', 'itouch', 'web');
 $hits = array();
 $hosts = array();
 $res_hits = $db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
 $res_hosts = $db->prepare("SELECT COUNT(DISTINCT `iplong` , `id_browser`) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
-foreach ($arr AS $val) {
+foreach ($browser_types AS $val) {
     $res_hits->execute(Array(DAY_TIME, $val));
     $hits[$val] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
     $res_hosts->execute(Array(DAY_TIME, $val));
@@ -34,7 +33,7 @@ $listing = new listing();
 $post = $listing->post();
 $post->title = __('Кол-во переходов');
 $post->icon('info');
-$post->hightlight = true;
+$post->highlight = true;
 
 foreach ($browser_types AS $b_type) {
     $post = $listing->post();
@@ -54,7 +53,7 @@ $listing = new listing();
 $post = $listing->post();
 $post->title = __('Уникальные посетители');
 $post->icon('info');
-$post->hightlight = true;
+$post->highlight = true;
 
 foreach ($browser_types AS $b_type) {
     $post = $listing->post();

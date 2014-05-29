@@ -6,7 +6,7 @@ $doc = new document(5);
 $doc->title = __('Общие настройки');
 $languages = languages::getList(); // список доступных языковых пакетов
 
-$browser_types = array('wap', 'pda', 'itouch', 'web');
+$browser_types = array('light', 'mobile', 'full');
 
 if (isset($_POST ['save'])) {
     $dcms->debug = (int) !empty($_POST ['debug']);

@@ -12,7 +12,7 @@ $new_files = count($files);
 $listing = new listing();
 
 $post = $listing->post();
-$post->hightlight = true;
+$post->highlight = true;
 $post->icon('downloads');
 $post->url = '/files/.obmen/';
 $post->title = __('Обменник');

@@ -46,7 +46,7 @@ while ($c = $q->fetch()) {
 
     $post->content = text::toOutput($post->content);
 
-    $post->hightlight = (TIME < $c['time_end'] && TIME >= $c['time_start']);
+    $post->highlight = (TIME < $c['time_end'] && TIME >= $c['time_start']);
 }
 
 $listing->display(__('Нарушения отсутствуют'));

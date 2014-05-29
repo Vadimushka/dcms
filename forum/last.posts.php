@@ -101,9 +101,9 @@ for ($z = $start; $z < $end && $z < $pages->posts; $z++) {
     $themes = $posts_for_view[$z];
     if ($user->id) {
         if (isset($views[$themes['id']])) {
-            $post->hightlight = $themes['time_last'] > $views[$themes['id']];
+            $post->highlight = $themes['time_last'] > $views[$themes['id']];
         } else {
-            $post->hightlight = true;
+            $post->highlight = true;
         }
     }
 

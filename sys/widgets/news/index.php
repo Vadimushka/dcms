@@ -4,7 +4,7 @@ defined('DCMS') or die;
 
 $listing = new listing();
 $post = $listing->post();
-$post->hightlight = true;
+$post->highlight = true;
 $post->icon('news');
 $post->url = '/news/';
 $post->title = __('Все новости');
@@ -20,7 +20,7 @@ if ($dcms->widget_items_count) {
         $post->title = text::toValue($news['title']);
         $post->url = '/news/comments.php?id=' . $news['id'];
         $post->time = misc::when($news['time']);
-        $post->hightlight = $news['time'] > NEW_TIME;
+        $post->highlight = $news['time'] > NEW_TIME;
     }
 }
 

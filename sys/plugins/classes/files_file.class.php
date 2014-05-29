@@ -536,7 +536,7 @@ WHERE `id` = ? LIMIT 1");
             case 'rating_name':
                 return $this->ratings[(int)round($this->rating)];
             case 'description_small':
-                return empty($this->_data[$n]) ? text::substr($this->description, $dcms->browser_type == 'web' ? 512 : 256) : $this->_data[$n];
+                return empty($this->_data[$n]) ? text::substr($this->description, $dcms->browser_type == 'full' ? 512 : 256) : $this->_data[$n];
             case 'time_create':
                 return isset($this->_data[$n]) ? $this->_data[$n] : $this->_getTimeCreate();
             case 'size':
@@ -593,4 +593,3 @@ WHERE `id` = ? LIMIT 1");
     }
 
 }
-?>

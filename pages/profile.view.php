@@ -151,7 +151,7 @@ if ($path = $ank->getAvatar($doc->img_max_width())) {
 if ($ank->group > 1) {
     $post = $listing->post();
     $post->title = $ank->group_name;
-    $post->hightlight = true;
+    $post->highlight = true;
     $post->icon($ank->icon());
 
     //echo "<b>$ank->group_name</b>";
@@ -174,7 +174,7 @@ if ($ank->group > 1) {
 //region Пожертвования
 if ($ank->donate_rub) {
     $post = $listing->post();
-    $post->hightlight = true;
+    $post->highlight = true;
     $post->icon('donate');
     $post->title = __('Пожертвования');
     $post->content = __('%s руб.', $ank->donate_rub);

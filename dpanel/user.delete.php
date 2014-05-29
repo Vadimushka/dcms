@@ -54,7 +54,7 @@ foreach ($tables AS $name => $v) {
     $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = ?");
     $res->execute(Array($ank->id));
     $post->counter = ($row = $res->fetch()) ? $row['cnt'] : 0;
-    $post->hightlight = (bool) $post->counter;
+    $post->highlight = (bool) $post->counter;
 }
 $listing->display();
 

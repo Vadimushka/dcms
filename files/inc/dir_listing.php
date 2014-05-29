@@ -55,7 +55,7 @@ if ($description = $dir->description) {
     $post->title = __('Информация');
     $post->icon('info');
     $post->content[] = $description;
-    $post->hightlight = true;
+    $post->highlight = true;
     $listing->display();
 }
 
@@ -95,7 +95,7 @@ if ($pages->this_page == 1) {
         if ($count_new) {
             $post->counter = '+' . $count_new;
             $post->url = '/files' . $dirs [$i]->getPath() . '?order=time_add:desc';
-            $post->hightlight = true;
+            $post->highlight = true;
         } else {
             $post->url = '/files' . $dirs [$i]->getPath();
         }
@@ -168,7 +168,7 @@ for ($i = $start; $i < $end && $i < $pages->posts; $i++) {
     $post = $listing->post();
     $post->title = text::toValue($files [$i]->runame);
     $post->post = text::toOutput($post2);
-    $post->hightlight = $files [$i]->time_add > $time_new;
+    $post->highlight = $files [$i]->time_add > $time_new;
     $post->url = "/files" . $files [$i]->getPath() . ".htm?order=$order";
     $post->icon($files [$i]->icon());
     $post->image = $files [$i]->image();

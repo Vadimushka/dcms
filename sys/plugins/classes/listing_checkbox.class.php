@@ -8,14 +8,16 @@
  * @property string content
  * @property boolean checked
  */
-class listing_checkbox extends ui {
+class listing_checkbox extends ui
+{
 
     protected $_data = array();
 
-    public function __construct($name = '', $title = '', $checked = false) {
-        parent::__construct();        
-        $this-> _tpl_file = 'listing.checkbox.tpl';        
-        
+    public function __construct($name = '', $title = '', $checked = false)
+    {
+        parent::__construct();
+        $this->_tpl_file = 'listing.checkbox.tpl';
+
         $this->_data['id'] = 0;
         $this->_data['title'] = $title;
         $this->_data['name'] = $name;
@@ -24,16 +26,18 @@ class listing_checkbox extends ui {
         $this->_data['counter'] = false;
         $this->_data['content'] = '';
         $this->_data['bottom'] = '';
-        $this->_data['hightlight'] = false;
+        $this->_data['highlight'] = false;
         $this->_data['actions'] = array();
     }
 
-    public function __get($name) {
+    public function __get($name)
+    {
         $name = $this->_replace_old_properties($name);
         return isset($this->_data[$name]) ? $this->_data[$name] : false;
     }
 
-    public function __set($name, $value) {
+    public function __set($name, $value)
+    {
         $name = $this->_replace_old_properties($name);
 
         if (isset($this->_data[$name])) {
@@ -44,21 +48,25 @@ class listing_checkbox extends ui {
         }
     }
 
-    public function action($icon, $url) {
+    public function action($icon, $url)
+    {
         $design = new design();
         $this->_data['actions'][] = array('icon' => $design->getIconPath($icon), 'url' => $url);
     }
 
-    public function icon($icon) {
+    public function icon($icon)
+    {
         $design = new design();
         $this->icon = $design->getIconPath($icon);
     }
 
-    protected function _replace_old_properties($name) {
+    protected function _replace_old_properties($name)
+    {
         static $replace = array(
-    'post' => 'content',
-    'edit' => 'bottom',
-    'new' => 'highlight',
+            'post' => 'content',
+            'edit' => 'bottom',
+            'new' => 'highlight',
+            'hightlight' => 'highlight'
         );
 
         if (isset($replace[$name])) {

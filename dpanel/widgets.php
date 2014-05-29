@@ -129,7 +129,7 @@ foreach ($widgets_conf as $name => $show) {
     if ($show) {
         $post->action('hide', '?widget=' . urlencode($name) . '&amp;act=hide');
         // $act[] = array('hide', '?widget=' . urlencode($name) . '&amp;act=hide');
-        $post->hightlight = true;
+        $post->highlight = true;
     } else {
         
         $post->action('show', '?widget=' . urlencode($name) . '&amp;act=show');

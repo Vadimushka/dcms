@@ -25,6 +25,7 @@
  * @property float donate_rub Сумма пожертвований
  * @property int ank_m_r Месяц рождения
  * @property int ank_d_r День рождения
+ * @property mixed reg_mail
  */
 class user
 {

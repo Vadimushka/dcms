@@ -287,7 +287,7 @@ if (!empty($_GET['menu'])) {
             }
         } else {
             $post->content = "[b]" . __('Разделитель') . "[/b]\n";
-            $post->hightlight = true;
+            $post->highlight = true;
         }
 
         if (!empty($item['for_vip'])) {

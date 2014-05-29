@@ -23,7 +23,7 @@ while ($friend = $q->fetch()) {
     $post->url = '/profile.view.php?id=' . $ank->id;
     $post->title = $ank->nick();
     $post->icon($ank->icon());
-    $post->hightlight = !$friend['confirm'];
+    $post->highlight = !$friend['confirm'];
     $post->content = $friend['confirm'] ? null : __('Хочет быть Вашим другом');
 }
 $listing->display(__('Друзей нет'));

@@ -42,7 +42,7 @@ foreach ($themes_list as $theme) {
     $post = $listing->post();
     $post->icon('theme');
     $post->title = $theme['name'];
-    $post->hightlight = $user->theme == $theme['dir'];
+    $post->highlight = $user->theme == $theme['dir'];
     $post->url = '?theme=' . urlencode($theme['dir']);
     $supported = in_array($dcms->browser_type, $theme['browsers']);
     if ($theme['browsers']) $post->content[] = __('Поддерживаемые типы браузеров: %s', implode(', ', $theme['browsers']));

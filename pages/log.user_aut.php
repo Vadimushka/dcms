@@ -26,7 +26,7 @@ $listing = new listing();
 while ($log = $q->fetch()) {
     $post = $listing->post();
     $post->title = $log['method'] . ': ' . __($log['status'] ? 'Удачно' : 'Не удачно');
-    $post->hightlight = !$log['status'];
+    $post->highlight = !$log['status'];
     $post->content = text::toOutput($log['browser'] . "\n" . long2ip($log['iplong']));
     $post->time = misc::when($log['time']);
 }

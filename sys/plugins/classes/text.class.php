@@ -43,7 +43,7 @@ abstract class text {
      */
     static function for_opis($text) {
         global $dcms;
-        $text = self::substr($text, $dcms->browser_type == 'web' ? 100000 : 4096);
+        $text = self::substr($text, $dcms->browser_type == 'full' ? 100000 : 4096);
         $text = self::toOutput($text);
         return $text;
     }

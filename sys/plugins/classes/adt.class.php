@@ -42,7 +42,7 @@ class adt extends menu {
         global $dcms;
         $return = array();
         if ($this->getNameById($id)) {
-            $target = $dcms->browser_type == 'web' ? ' target="_blank"' : '';
+            $target = $dcms->browser_type == 'full' ? ' target="_blank"' : '';
             $q = DB::me()->prepare("SELECT * FROM `advertising` WHERE `space` = ? AND `" . (IS_MAIN ? 'page_main' : 'page_other') . "` = '1' AND (`time_start` < ? OR `time_start` = '0') AND (`time_end` > ? OR `time_end` = '0') ORDER BY `time_start` ASC");
             $q->execute(Array($id, TIME, TIME));
             while ($adt = $q->fetch()) {

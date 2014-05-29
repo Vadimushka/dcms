@@ -5,9 +5,8 @@ dpanel::check_access();
 $doc = new document(4);
 $doc->title = __('Подозрительные пользователи');
 
-
 if (!empty($_GET['approve'])) {
-    $app = (int) $_GET['approve'];
+    $app = (int)$_GET['approve'];
     $res = $db->prepare("SELECT COUNT(*)AS cnt FROM `users_suspicion` WHERE `id_user` = ?");
     $res->execute(Array($app));
     $k = ($row = $res->fetch()) ? $row['cnt'] : 0;
@@ -19,7 +18,6 @@ if (!empty($_GET['approve'])) {
     }
 }
 
-
 if (isset($_GET['id'])) {
     $ank = new user((int)$_GET['id']);
     if (!$ank->id) {
@@ -28,7 +26,6 @@ if (isset($_GET['id'])) {
         $doc->ret(__('Админка'), '/dpanel/');
         exit;
     }
-
 
     $q = $db->prepare("SELECT *  FROM `users_suspicion` WHERE `id_user` = ?");
     $q->execute(Array($ank->id));
@@ -41,8 +38,6 @@ if (isset($_GET['id'])) {
     $listing = new listing();
 
     $post = $listing->post();
-
-
     $post->title = $ank->nick();
     $post->icon($ank->icon());
     $post2 = __('E-mail: %s', $ank->reg_mail) . "\n";
@@ -53,7 +48,6 @@ if (isset($_GET['id'])) {
     $post->icon('approve');
     $post->title = __('Подтвердить регистрацию');
     $post->url = "?approve=$ank->id";
-
 
     $post = $listing->post();
     $post->icon('shit');
@@ -76,22 +70,18 @@ $res = $db->query("SELECT COUNT(*) AS cnt FROM `users_suspicion`");
 $pages = new pages;
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество постов
 
-$q = $db->query("SELECT *  FROM `users_suspicion` ORDER BY `id_user` ASC LIMIT $pages->limit");
+$q = $db->query("SELECT *  FROM `users_suspicion` ORDER BY `id_user` ASC LIMIT " . $pages->limit);
 if ($arr = $q->fetchAll()) {
     foreach ($arr AS $sus) {
         $ank = new user($sus['id_user']);
 
         $post = $listing->post();
-
         $post->url = '?id=' . $ank->id;
         $post->title = $ank->nick();
         $post->icon($ank->icon());
-
         $post2 = __('E-mail: %s', $ank->reg_mail) . "\n";
         $post2 .= __('Фраза: %s', $sus['text']);
-
-
-        $post->content = text::toOutput($post2);
+        $post->content[] = $post2;
     }
 }
 

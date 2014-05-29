@@ -3,16 +3,16 @@
 defined('DCMS') or die;
 global $user;
 
-
 $dir = new files(FILES . '/.downloads');
 $content = $dir->getNewFiles();
 $files = &$content['files'];
+/** @var $files files_file[] */
 $new_files = count($files);
 
 $listing = new listing();
 
 $post = $listing->post();
-$post->hightlight = true;
+$post->highlight = true;
 $post->icon('downloads');
 $post->url = '/files/.downloads/';
 $post->title = __('Загрузки');

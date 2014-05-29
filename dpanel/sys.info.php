@@ -21,13 +21,13 @@ foreach ($check->notices as $note) {
     $post = $listing->post();
     $post -> icon('notice');
     $post -> title = $note;
-    $post -> hightlight = true;    
+    $post -> highlight = true;
 }
 foreach ($check->errors as $err) {
     $post = $listing->post();
     $post -> icon('error');
     $post -> title = $err;
-    $post -> hightlight = true;  
+    $post -> highlight = true;
 }
 $listing ->display();
 

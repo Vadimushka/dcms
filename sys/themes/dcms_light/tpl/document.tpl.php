@@ -18,7 +18,7 @@
         }
     </style>
 </head>
-<body class="theme_light theme_light_wap">
+<body class="theme_light theme_light_light">
 <div>
     <? $this->display('inc.title.tpl') ?>
     <? $this->display('inc.user.tpl') ?>

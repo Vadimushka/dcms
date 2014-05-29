@@ -6,7 +6,7 @@ $groups = groups::load_ini();
 $doc = new document(4);
 $doc->title = __('Профиль');
 
-$browser_types = array('wap', 'pda', 'itouch', 'web');
+$browser_types = array('light', 'mobile', 'full');
 
 if (isset($_GET ['id_ank']))
     $ank = new user($_GET ['id_ank']);
@@ -168,7 +168,7 @@ foreach ($browser_types as $type) {
 
 foreach ($browser_types as $b_type) {
     $t = 'theme_' . $b_type;
-    $options = array(); // темы оформления для wap браузера    
+    $options = array(); // темы оформления для light браузера
     $themes_list = themes::getList($b_type); // только для определенного типа браузера
     foreach ($themes_list as $theme)
         $options [] = array($theme ['dir'], $theme ['name'], $ank->$t === $theme ['dir']);

@@ -15,12 +15,13 @@ class listing_post extends ui {
     public $title = '';
     public $content = '';
     public $bottom = '';
-    public $hightlight = false;
+    public $highlight = false;
     public $actions = array();
     protected $_old_props = array(
         'post' => 'content',
         'edit' => 'bottom',
         'new' => 'highlight',
+        'highlight' => 'highlight',
     );
 
     /**
@@ -95,7 +96,7 @@ class listing_post extends ui {
         $this->_data['counter'] = $this->counter;
         $this->_data['image'] = $this->image;
         $this->_data['icon'] = $this->icon;
-        $this->_data['hightlight'] = $this->hightlight;
+        $this->_data['highlight'] = $this->highlight;
         $this->_data['bottom'] = $this->bottom;
         $this->_data['actions'] = $this->actions;
         return parent::fetch();

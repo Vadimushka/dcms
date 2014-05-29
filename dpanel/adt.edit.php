@@ -130,7 +130,7 @@ if (isset($_POST['time'])) {
                 // сбрасываем счетчики, если реклама была не активна
                 if ($adt['time_start'] && $adt['time_start'] > TIME || $adt['time_end'] && $adt['time_end'] < TIME) {
                     $doc->msg(__('Счетчики показов и переходов сброшены'));
-                    $clear_counters_sql = "`count_show_wap` =  '0', `count_out_wap` =  '0', `count_show_pda` =  '0', `count_out_pda` =  '0', `count_show_web` =  '0', `count_out_web` =  '0', ";
+                    $clear_counters_sql = "`count_show_light` =  '0', `count_out_light` =  '0', `count_show_full` =  '0', `count_out_full` =  '0', ";
                 }else
                     $clear_counters_sql = '';
 
@@ -165,7 +165,7 @@ $listing = new listing();
 $post = $listing->post();
 $post->icon('adt');
 $post->title = text::toValue($adt['name']);
-$post->hightlight = true;
+$post->highlight = true;
 
 
 if ($adt['time_create']) {
@@ -179,7 +179,7 @@ $post->title = __('Начало показа');
 if (!$adt['time_start']) {
     $post->content = __('Нет данных');
 } elseif ($adt['time_start'] > TIME) {
-    $post->hightlight = true;
+    $post->highlight = true;
     $post->content = misc::when($adt['time_start']);
 } else {
     $post->content = misc::when($adt['time_start']);

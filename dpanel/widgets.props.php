@@ -6,7 +6,7 @@ $doc = new document(5);
 $doc->title = __('Виджеты');
 $doc->ret(__('Админка'), '/dpanel/');
 
-$types = array('wap', 'pda', 'itouch', 'web');
+$types = array('light', 'mobile', 'full');
 
 if (isset($_POST ['save'])) {
     foreach ($types AS $type) {

@@ -11,7 +11,7 @@ $users = ($row = $res->fetch()) ? $row['cnt'] : 0;
 $listing = new listing();
 
 $post = $listing->post();
-$post->hightlight = true;
+$post->highlight = true;
 $post->icon('users');
 $post->url = '/users.php';
 $post->title = __('Последние зарегистрированные');
@@ -34,7 +34,7 @@ if ($dcms->widget_items_count) {
 }
 
 $post = $listing->post();
-$post->hightlight = true;
+$post->highlight = true;
 $post->icon('users');
 $post->title = __('Сейчас на сайте');
 $post->url = '/online.users.php';
@@ -42,7 +42,7 @@ $res = $db->query("SELECT COUNT(*) AS cnt FROM `users_online`");
 $post->counter = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
 $post = $listing->post();
-$post->hightlight = true;
+$post->highlight = true;
 $post->icon('guest');
 $post->title = __('Гости на сайте');
 $post->url = '/online.guest.php';

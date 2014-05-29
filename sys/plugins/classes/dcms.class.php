@@ -18,9 +18,18 @@
  * @property string browser_type Тип браузера
  * @property bool donate_message флаг, указывающий на то, что сообщение о пожертвовании отправлено
  * @property bool censure Проверка на мат
- * @property mixed forum_files_upload_size
+ * @property int forum_files_upload_size
  * @property string title Заголовок сайта
- * @property mixed browser
+ * @property string subdomain_light_enable
+ * @property string subdomain_mobile_enable
+ * @property string subdomain_full_enable
+ * @property string browser_type_auto
+ * @property string subdomain_light
+ * @property string subdomain_mobile
+ * @property string subdomain_full
+ * @property mixed subdomain_replace_url
+ * @property mixed subdomain_main
+ * @property mixed subdomain_theme_redirect
  */
 class dcms {
 
@@ -130,7 +139,7 @@ class dcms {
     }
 
     protected function _subdomain_main() {
-        $domain = preg_replace('/^(wap|pda|web|www|i|touch|itouch)\./ui', '', $_SERVER['HTTP_HOST']);
+        $domain = preg_replace('/^(wap|pda|web|www|i|touch|mobile)\./ui', '', $_SERVER['HTTP_HOST']);
         return $domain;
     }
 
@@ -139,24 +148,19 @@ class dcms {
      * @return string
      */
     protected function _browser_type() {
-        if ($this->subdomain_wap_enable) {
-            if (0 === strpos($_SERVER['HTTP_HOST'], $this->subdomain_wap . '.')) {
-                return 'wap';
+        if ($this->subdomain_light_enable) {
+            if (0 === strpos($_SERVER['HTTP_HOST'], $this->subdomain_light . '.')) {
+                return 'light';
             }
         }
-        if ($this->subdomain_pda_enable) {
-            if (0 === strpos($_SERVER['HTTP_HOST'], $this->subdomain_pda . '.')) {
-                return 'pda';
+        if ($this->subdomain_mobile_enable) {
+            if (0 === strpos($_SERVER['HTTP_HOST'], $this->subdomain_mobile . '.')) {
+                return 'mobile';
             }
         }
-        if ($this->subdomain_itouch_enable) {
-            if (0 === strpos($_SERVER['HTTP_HOST'], $this->subdomain_itouch . '.')) {
-                return 'itouch';
-            }
-        }
-        if ($this->subdomain_web_enable) {
-            if (0 === strpos($_SERVER['HTTP_HOST'], $this->subdomain_web . '.')) {
-                return 'web';
+        if ($this->subdomain_full_enable) {
+            if (0 === strpos($_SERVER['HTTP_HOST'], $this->subdomain_full . '.')) {
+                return 'full';
             }
         }
         return $this->browser_type_auto;

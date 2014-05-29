@@ -20,15 +20,15 @@ $pages = new pages;
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
 
 $listing = new listing();
-$q = $db->query("SELECT * FROM `log_of_visits_for_days` ORDER BY `time_day` DESC LIMIT $pages->limit");
+$q = $db->query("SELECT * FROM `log_of_visits_for_days` ORDER BY `time_day` DESC LIMIT ".$pages->limit);
 while ($st = $q->fetch()) {
     $post = $listing->post();
     $post->title = date('d-m-Y', $st['time_day']);
     $post->icon('statistics');
     $post->content = "<table border='1' style='border-collapse: collapse'>\n";
     $post->content .= "<tr><td></td><td>WAP</td><td>PDA</td><td>iTouch</td><td>WEB</td><td>" . __('В сумме') . "</td></tr>\n";
-    $post->content .= "<tr><td>" . __('Хосты') . "</td><td>$st[hosts_wap]</td><td>$st[hosts_pda]</td><td>$st[hosts_itouch]</td><td>$st[hosts_web]</td><td>" . ($st['hosts_wap'] + $st['hosts_pda'] + $st['hosts_itouch'] + $st['hosts_web']) . "</td></tr>\n";
-    $post->content .= "<tr><td>" . __('Хиты') . "</td><td>$st[hits_wap]</td><td>$st[hits_pda]</td><td>$st[hits_itouch]</td><td>$st[hits_web]</td><td>" . ($st['hits_wap'] + $st['hits_pda'] + $st['hits_itouch'] + $st['hits_web']) . "</td></tr>\n";
+    $post->content .= "<tr><td>" . __('Хосты') . "</td><td>$st[hosts_light]</td><td>$st[hosts_mobile]</td><td>$st[hosts_full]</td><td>" . ($st['hosts_light'] + $st['hosts_mobile'] + $st['hosts_full']) . "</td></tr>\n";
+    $post->content .= "<tr><td>" . __('Хиты') . "</td><td>$st[hits_light]</td><td>$st[hits_mobile]</td><td>$st[hits_full]</td><td>" . ($st['hits_light'] + $st['hits_mobile'] + $st['hits_full']) . "</td></tr>\n";
     $post->content .= "</table>\n";
 }
 $listing->display(__('Сообщения отсутствуют'));

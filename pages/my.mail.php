@@ -101,7 +101,7 @@ LIMIT " . $pages->limit);
             $post->url = '/profile.view.php?id=' . $ank2->id;
             $post->icon($ank2->icon());
             $post->content = text::toOutput($mail ['mess']);
-            $post->hightlight = !$mail ['is_read'];
+            $post->highlight = !$mail ['is_read'];
             $post->time = misc::when($mail ['time']);
 
             if ($doc instanceof document_json)
@@ -174,7 +174,7 @@ if ($arr = $q->fetchAll()) {
         $post->url = '?id=' . $ank->id;
         $post->title = $ank->nick();
         $post->counter = isset($_GET ['only_unreaded']) ? '+' . $mail['count'] : $mail['count'];
-        $post->hightlight = !$mail['is_read'];
+        $post->highlight = !$mail['is_read'];
     }
 }
 

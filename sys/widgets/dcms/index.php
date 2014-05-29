@@ -3,7 +3,6 @@
 defined('DCMS') or die;
 $conf = ini::read(H . '/build/config.ini');
 
-
 $beta_show = false;
 if ($user->group) {
     $conf_beta = ini::read(H . '/build/config.beta.ini');
@@ -17,7 +16,7 @@ $listing = new listing();
 $post = $listing->post();
 $post->icon('cms');
 $post->url = '/build/';
-$post->hightlight = true;
+$post->highlight = true;
 $post->title = __('Скачать') . ' DCMS ' . $conf['version_last'] . (($beta_show && $conf['version_last'] == $conf_beta['version_last']) ? '.' . $conf['build_num'] : '');
 
 $post = $listing->post();

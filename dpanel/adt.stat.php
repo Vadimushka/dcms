@@ -3,7 +3,7 @@
 include_once '../sys/inc/start.php';
 $doc = new document(5);
 $doc->title = __('Статистика по рекламе');
-$browser_types = array('wap', 'pda', 'itouch', 'web');
+$browser_types = array('light', 'mobile', 'full');
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('Refresh: 1; url=adt.settings.php');
@@ -33,7 +33,7 @@ $listing = new listing();
 $post = $listing->post();
 $post->icon('adt');
 $post->title = text::toValue($adt['name']);
-$post->hightlight = true;
+$post->highlight = true;
 
 
 if ($adt['time_create']) {
@@ -47,7 +47,7 @@ $post->title = __('Начало показа');
 if (!$adt['time_start']) {
     $post->content = __('Нет данных');
 } elseif ($adt['time_start'] > TIME) {
-    $post->hightlight = true;
+    $post->highlight = true;
     $post->content = misc::when($adt['time_start']);
 } else {
     $post->content = misc::when($adt['time_start']);
@@ -67,7 +67,7 @@ $listing = new listing();
 $post = $listing->post();
 $post->title = __('Показы (с времени запуска)');
 $post->icon('info');
-$post->hightlight = true;
+$post->highlight = true;
 
 foreach ($browser_types AS $b_type) {
     $key = 'count_show_' . $b_type;
@@ -83,7 +83,7 @@ $listing = new listing();
 $post = $listing->post();
 $post->title = __('Переходы (с времени запуска)');
 $post->icon('info');
-$post->hightlight = true;
+$post->highlight = true;
 
 foreach ($browser_types AS $b_type) {
     $key = 'count_out_' . $b_type;

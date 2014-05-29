@@ -937,7 +937,7 @@ class bbcode
         if (preg_match('#://#', $aturl)) {
             // внешняя ссылка
             $url = 'http://' . $_SERVER ['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($aturl);
-            $new_window = @$dcms->browser_type == 'web' ? ' target="_blank"' : '';
+            $new_window = @$dcms->browser_type == 'full' ? ' target="_blank"' : '';
             if ($parse_url = @parse_url($aturl)) {
                 if (!empty($parse_url['host']) && @$dcms->subdomain_main && strpos($parse_url['host'], '.' . $dcms->subdomain_main) !== false) {
 

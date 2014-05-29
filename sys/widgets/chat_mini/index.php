@@ -11,7 +11,7 @@ $users = ($row = $res->fetch()) ? $row['cnt'] : 0;
 $listing = new listing();
 
 $post = $listing->post();
-$post->hightlight = true;
+$post->highlight = true;
 $post->icon('chat_mini');
 $post->url = '/chat_mini/';
 $post->title = __('Мини чат');
@@ -21,4 +21,3 @@ if ($users)
     $post->bottom = __('%s ' . misc::number($users, 'человек', 'человека', 'человек'), $users);
 
 $listing->display();
-?>

@@ -47,7 +47,7 @@ class menu {
             if (empty($value['razdel'])) {
                 $post->url = text::toValue(@$this->value($value['url']));
             } else {
-                $post->hightlight = true;
+                $post->highlight = true;
             }
 
             $post->title = __($key);
