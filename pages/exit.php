@@ -28,6 +28,6 @@ if (isset($_POST['exit'])){
 }
 
 $form = new form('?');
-$form->bbcode(__("Вы действительно хотите сбросить авторизацию?"), false);
+$form->bbcode(__("Вы действительно хотите сбросить авторизацию?"));
 $form->button(__("Выйти"), 'exit');
 $form->display();
