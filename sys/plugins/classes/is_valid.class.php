@@ -621,13 +621,6 @@ abstract class is_valid {
         return $s;
     }
 
-    static function utf8_lowercase($s) {
-        return utf8_convert_case($s, CASE_LOWER);
-    }
-
-    static function utf8_uppercase($s) {
-        return utf8_convert_case($s, CASE_UPPER);
-    }
 
     static function strip_tags_smart($s, array $allowable_tags = null, $is_format_spaces = false, array $pair_tags = array('script', 'style', 'map', 'iframe', 'frameset', 'object', 'applet', 'comment', 'button'), array $para_tags = array('p', 'td', 'th', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'form', 'title')
     ) {
