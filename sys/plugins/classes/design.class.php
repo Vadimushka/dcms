@@ -3,11 +3,13 @@
 /**
  * Дизайн. Конфигуратор шаблонизатора.
  */
-class design extends native_templating {
+class design extends native_templating
+{
 
     public $theme;
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
         global $dcms, $user_language_pack, $user, $probe_theme;
         static $theme = false;
@@ -48,7 +50,8 @@ class design extends native_templating {
     /**
      * Максимальная ширина изображения в зависимости от типа браузера и параметров темы
      */
-    function img_max_width() {
+    function img_max_width()
+    {
         global $dcms;
         return min($this->theme['img_width_max'], $dcms->img_max_width);
     }
@@ -58,12 +61,13 @@ class design extends native_templating {
      * @param string $name Имя иконки
      * @return string Путь к иконке
      */
-    function getIconPath($name) {
+    function getIconPath($name)
+    {
         if (!$name)
-            return NULL ;
-			$icon = $this->theme['icons'] . '/' . basename($name, '.png') . '.png' ;
-			$icon = is_file(H . $icon) ? $icon : '/sys/images/icons/' . basename($name, '.png') . '.png' ;
-			return $icon ;
+            return NULL;
+        $icon = $this->theme['icons'] . '/' . basename($name, '.png') . '.png';
+        $icon = is_file(H . $icon) ? $icon : '/sys/images/icons/' . basename($name, '.png') . '.png';
+        return $icon;
     }
 
 }
