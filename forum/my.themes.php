@@ -42,7 +42,7 @@ AND `cat`.`group_show` <= ?
 AND `msg`.`group_show` <= ?
 GROUP BY `msg`.`id_theme`
 ORDER BY MAX(`msg`.`time`) DESC LIMIT ".$pages->limit);
-$res->execute(Array($user->id, $user->group, $user->group, $user->group, $user->group));
+$q->execute(Array($user->id, $user->group, $user->group, $user->group, $user->group));
 
 $listing = new listing();
 if ($arr = $q->fetchAll()) {
