@@ -39,7 +39,7 @@ if (isset($_POST['save']) && !empty($_POST['login']) && $_POST['login'] != $ank-
     $res->execute(Array($login));
     if (!is_valid::nick($login)) {
         $doc->err(__('Не корректный Ник'));
-    } elseif ($login != my_esc($login)) {
+    } elseif ($login != htmlspecialchars($login)) {
         $doc->msg(__('В нике содержатся запрещенные символы'));
     } elseif ($res->fetchColumn()) {
         $doc->err(__('Пользователь с таким ником уже зарегистрирован'));

@@ -36,7 +36,7 @@ if ($ank->group >= $user->group) {
 $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
 
 if (isset($_POST['change'])) {
-    $id_new = (int)@$_POST['id_new'];
+    $id_new = (int) @$_POST['id_new'];
     $id_old = $ank->id;
     $res = $db->prepare("SELECT COUNT(*) FROM `users` WHERE `id` = ?");
     $res->execute(Array($id_new));
@@ -53,7 +53,7 @@ if (isset($_POST['change'])) {
     } else {
 
         foreach ($tables AS $d) {
-            $res = $db->prepare("UPDATE `" . my_esc($d['table']) . "` SET `" . my_esc($d['row']) . "` = ? WHERE `" . my_esc($d['row']) . "` = ?");
+            $res = $db->prepare("UPDATE `" . $d['table'] . "` SET `" . $d['row'] . "` = ? WHERE `" . $d['row'] . "` = ?");
             $res->execute(Array($id_new, $id_old));
         }
         $res = $db->prepare("UPDATE `users` SET `id` = ? WHERE `id` = ?");

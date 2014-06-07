@@ -164,7 +164,7 @@ abstract class text {
 
         $logins = array();
         foreach ($m AS $sl) {
-            $logins[] = "'" . my_esc($sl[1]) . "'";
+            $logins[] =DB::me()->quote($sl[1]);
         }
         $logins = array_unique($logins);
 

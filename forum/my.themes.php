@@ -4,7 +4,6 @@ include_once '../sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Мои темы');
 
-$doc = new document(1); // инициализация документа для браузера
 $ank = (empty($_GET['id'])) ? $user : new user((int) $_GET['id']);
 if (!$ank->group)
     $doc->access_denied(__('Нет данных'));

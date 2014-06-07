@@ -58,13 +58,13 @@ class table_structure {
             if ($result['Default'] == '' && $result['Null'] == 'YES')
                 $structure['default_and_null'] = 'DEFAULT NULL';
             elseif ($result['Default'] != '' && $result['Null'] == 'YES')
-                $structure['default_and_null'] = "NULL DEFAULT '" . my_esc($result['Default']) . "'";
+                $structure['default_and_null'] = "NULL DEFAULT " . $this->db->quote($result['Default']) . "";
             elseif ($result['Default'] != '' && $result['Null'] == 'NO')
-                $structure['default_and_null'] = "NOT NULL DEFAULT '" . my_esc($result['Default']) . "'";
+                $structure['default_and_null'] = "NOT NULL DEFAULT " . $this->db->quote($result['Default']) . "";
             else
                 $structure['default_and_null'] = 'NOT NULL';
             $structure['ai'] = $result['Extra'] == 'auto_increment' ? 'AUTO_INCREMENT' : '';
-            $structure['comment'] = $result['Comment'] ? "COMMENT '" . my_esc($result['Comment']) . "'" : '';
+            $structure['comment'] = $result['Comment'] ? "COMMENT " . $this->db->quote($result['Comment']) . "" : '';
             $this->_structure['`' . $result['Field'] . '`'] = $structure;
         }
         // получение ключей таблицы
@@ -74,16 +74,16 @@ class table_structure {
             if ($result['Key_name'] == 'PRIMARY')
                 $structure['type'] = 'PRIMARY KEY';
             elseif ($result['Index_type'] == 'FULLTEXT')
-                $structure['type'] = 'FULLTEXT KEY `' . my_esc($result['Key_name']) . '`';
+                $structure['type'] = 'FULLTEXT KEY ' . $this->db->quote($result['Key_name']) . '';
             elseif (!$result['Non_unique'])
-                $structure['type'] = 'UNIQUE KEY `' . my_esc($result['Key_name']) . '`';
+                $structure['type'] = 'UNIQUE KEY ' . $this->db->quote($result['Key_name']) . '';
             else
-                $structure['type'] = 'KEY `' . my_esc($result['Key_name']) . '`';
+                $structure['type'] = 'KEY ' . $this->db->quote($result['Key_name']) . '';
 
             if (isset($this->_structure[$structure['type']]['fields']))
-                $this->_structure[$structure['type']]['fields'] .= ", `" . my_esc($result['Column_name']) . "`";
+                $this->_structure[$structure['type']]['fields'] .= ", " . $this->db->quote($result['Column_name']) . "";
             else
-                $this->_structure[$structure['type']]['fields'] = "`" . my_esc($result['Column_name']) . "`";
+                $this->_structure[$structure['type']]['fields'] = "" . $this->db->quote($result['Column_name']) . "";
         }
         // получение свойств таблицы
         $q = $this->db->query("SHOW TABLE STATUS LIKE '$table'");
@@ -91,7 +91,7 @@ class table_structure {
         $this->_properties['name'] = $properties['Name'];
         $this->_properties['engine'] = 'ENGINE=' . $properties['Engine'];
         $this->_properties['auto_increment'] = 'AUTO_INCREMENT=' . $properties['Auto_increment'];
-        $this->_properties['comment'] = "COMMENT='" . my_esc($properties['Comment']) . "'";
+        $this->_properties['comment'] = "COMMENT=" . $this->db->quote($properties['Comment']) . "";
     }
 
     /**
@@ -178,7 +178,7 @@ class table_structure {
         // если нет изменений
         if (!$to_add /* && !$to_delete */ && !$to_edit)
             return false;
-        $sql = "ALTER TABLE `" . my_esc($this->_properties['name']) . "` \r\n";
+        $sql = "ALTER TABLE " . $this->db->quote($this->_properties['name']) . " \r\n";
         $structure = array();
 
 

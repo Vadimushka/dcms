@@ -355,7 +355,7 @@ class user
     {
         $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
         foreach ($tables AS $v) {
-            $res = DB::me()->prepare("DELETE FROM `" . my_esc($v['table']) . "` WHERE `" . my_esc($v['row']) . "` = ?");
+            $res = DB::me()->prepare("DELETE FROM " . DB::me()->quote($v['table']) . " WHERE " . DB::me()->quote($v['row']) . " = ?");
             $res->execute(Array($this->id));
         }
         $res = DB::me()->prepare("DELETE FROM `users` WHERE `id` = ?");
@@ -429,7 +429,7 @@ class user
         if ($this->_update) {
             $sql = array();
             foreach ($this->_update as $key => $value) {
-                $sql [] = "`" . my_esc($key) . "` = '" . my_esc($value) . "'";
+                $sql [] = $key. " = " . DB::me()->quote($value);
             }
             $this->db->query("UPDATE `users` SET " . implode(', ', $sql) . " WHERE `id` = '" . $this->_data ['id'] . "' LIMIT 1");
             $this->_update = array();

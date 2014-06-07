@@ -169,15 +169,6 @@ function passgen($len = 32) {
 }
 
 /**
- * Псевдоним mysql_real_escape_string
- * @param string $str
- * @return string
- */
-function my_esc($str) {
-    return mysql_real_escape_string($str);
-}
-
-/**
  * @global \language_pack $user_language_pack Текущий языковой пакет
  */
 $user_language_pack = new language_pack(false);

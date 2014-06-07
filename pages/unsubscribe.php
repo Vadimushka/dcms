@@ -1,4 +1,5 @@
 <?php
+
 include_once '../sys/inc/start.php';
 $doc = new document();
 $doc->title = __('Отписаться от рассылки');
@@ -12,15 +13,16 @@ if (!empty($_GET['code'])) {
 } else
     $doc->access_denied(__('Не передан код'));
 
-$q = mysql_query("SELECT * FROM `mail_unsubscribe` WHERE `code` = '" . my_esc($code) . "' LIMIT 1");
+$res = $db->prepare("SELECT * FROM `mail_unsubscribe` WHERE `code` = ? LIMIT 1");
+$res->execute(Array($code));
 
-if (!mysql_num_rows($q))
+if (!$uns = $res->fetch()) {
     $doc->access_denied(__('Данный код недействителен'));
-
-$uns = mysql_fetch_assoc($q);
+}
 
 if ($unsubscribe) {
-    mysql_query("UPDATE `mail_unsubscribe` SET `code` = '' WHERE `code` = '" . my_esc($code) . "' LIMIT 1");
+    $res = $db->prepare("UPDATE `mail_unsubscribe` SET `code` = '' WHERE `code` = ? LIMIT 1");
+    $res->execute(Array($code));
     $doc->msg(__("E-mail %s успешно отписан от рассылки", $uns['email']));
     exit;
 }

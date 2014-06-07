@@ -22,7 +22,7 @@ if (!$category = $q->fetch()) {
 
 $doc->title .= ' - ' . $category['name'];
 
-$res = $db->prepare("SELECT COUNT(*) FROM `forum_topics` WHERE `id_category` = ? AND `group_show` <= ?");
+$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_topics` WHERE `id_category` = ? AND `group_show` <= ?");
 $res->execute(Array($category['id'], $user->group));
 $pages = new pages;
 $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество категорий форума

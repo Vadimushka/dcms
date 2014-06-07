@@ -44,7 +44,7 @@ if (!empty($_GET['search']))
 if (isset($search) && !$search)
     $doc->err(__('Пустой запрос'));
 elseif (isset($search) && $search) {
-    $where = "WHERE `login` LIKE '%" . my_esc($search) . "%'";
+    $where = "WHERE `login` LIKE " . $db->quote('%' . $search . '%');
     $doc->title = __('Поиск по запросу "%s"', $search);
 }
 

@@ -31,8 +31,8 @@ if (!empty($_POST)) {
                 $sql = $tab->getSQLQueryCreate();
                 // если такая таблица уже существует, то переименовываем ее
                 if (in_array($table, $tables_exists->tables)) {
-                    //Не знаю как это сделать красиво, подозреваю, что my_esc здесь не нужно, раз идёт проверка in_array($table, $tables_exists->tables)
-                    $db->query("ALTER TABLE `" . my_esc($table) . "` RENAME `" . '~' . TIME . '~' . my_esc($table) . "`");
+                    //Не знаю как это сделать красиво
+                    $db->query("ALTER TABLE $table RENAME `" . '~' . TIME . '~$table');
                     $doc->msg(__('Существующая таблица "%s" была переименована', $table));
                 }
 

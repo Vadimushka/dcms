@@ -51,8 +51,7 @@ if ($dcms->subdomain_theme_redirect && empty($subdomain_theme_redirect_disable))
     }
 }
 
-
-if ($_SESSION['language'] && languages::exists($_SESSION['language'])) {
+if (!empty($_SESSION['language']) && languages::exists($_SESSION['language'])) {
     // языковой пакет из сессии
     $user_language_pack = new language_pack($_SESSION['language']);
 } else if ($dcms->language && languages::exists($dcms->language)) {
@@ -76,10 +75,11 @@ if ($dcms->new_time_as_date) {
  * потом убрать обычное подключение через mysql_connect, но оставить возможность
  * такого подключения (галочкой в админке) для совместимости движка со старыми модами
  */
+/*
 @mysql_connect($dcms->mysql_host, $dcms->mysql_user, $dcms->mysql_pass) or die('Нет соединения с MySQL сервером');
 @mysql_select_db($dcms->mysql_base) or die('Нет доступа к выбранной базе данных');
 mysql_query('SET NAMES "utf8"');
-
+*/
 try {
     $db = DB::me($dcms->mysql_host, $dcms->mysql_base, $dcms->mysql_user, $dcms->mysql_pass);
     $db->setAttribute(PDO :: ATTR_DEFAULT_FETCH_MODE, PDO :: FETCH_ASSOC);

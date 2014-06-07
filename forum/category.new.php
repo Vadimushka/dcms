@@ -30,7 +30,7 @@ $form = new form('?' . passgen() . (isset($_GET['return']) ? '&amp;return=' . ur
 $form->text('name', __('Название категории'));
 $form->textarea('description', __('Описание'));
 $res = $db->query("SELECT MAX(`position`) AS max FROM `forum_categories`");
-$k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$k = ($row = $res->fetch()) ? $row['max'] : 0;
 $form->text('position', __('Позиция'), $k + 1);
 $form->button(__('Создать'));
 $form->display();

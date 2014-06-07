@@ -12,7 +12,7 @@ if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int)$_GET['id_theme'];
+$id_theme = (int) $_GET['id_theme'];
 
 $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
 $q->execute(Array($id_theme, $user->group));
@@ -58,7 +58,7 @@ if (!empty($_POST['vote'])) {
             $vv = text::input_text($value);
             if ($vv && preg_match('#^v([0-9]+)$#', $key, $m)) {
                 if ($m[1] > 0 || $m[1] <= 10)
-                    $set[] = "`v$m[1]` = '" . my_esc($vv) . "'";
+                    $set[] = "`v$m[1]` = " . $db->quote($vv);
             }
         }
         $num = count($set);

@@ -24,7 +24,7 @@ class tables {
      */
     function get_create($table, $auto_increment = true) {
         $sql = "/* Структура таблицы `$table` */\r\n";
-        $row = $this->db->query("SHOW CREATE TABLE `" . my_esc($table) . "`")->fetch();
+        $row = $this->db->query("SHOW CREATE TABLE " . $this->db->quote($table) . "")->fetch();
         if (!$auto_increment) {
             $row[1] = preg_replace('#AUTO_INCREMENT\=[0-9]+#ui', '/*\0*/', $row[1]);
         }
@@ -39,13 +39,13 @@ class tables {
      */
     function get_data($table, $c_ins = 2000) {
         $sql = '';
-        $res = $this->db->query("SELECT COUNT(*) AS cnt FROM `" . my_esc($table) . "`");
+        $res = $this->db->query("SELECT COUNT(*) AS cnt FROM " . $this->db->quote($table) . "");
         $num_row_all = ($row = $res->fetch()) ? $row['cnt'] : 0;
         $start = 0;
 
         if ($num_row_all) {
             $sql .= "/* Данные таблицы `$table` */\r\n";
-            $res = $this->db->query("SELECT * FROM `" . my_esc($table) . "` LIMIT 1");
+            $res = $this->db->query("SELECT * FROM " . $this->db->quote($table) . " LIMIT 1");
             $table_keys = @implode("`, `", @array_keys($res->fetch()));
             while ($start < $num_row_all) {
                 $res = $this->db->query("SELECT * FROM `$table` LIMIT $start, $c_ins");
@@ -53,14 +53,14 @@ class tables {
                 if ($num_row_all > $c_ins)
                     $sql .= "/* блок записей $start - " . ($start + $c_ins) . " */\r\n";
 
-                $sql .= "INSERT INTO `" . my_esc($table) . "` (`$table_keys`) VALUES \r\n";
+                $sql .= "INSERT INTO " . $this->db->quote($table) . " (`$table_keys`) VALUES \r\n";
                 $num_row = $res_cnt->fetchColumn();
                 $counter = 0;
                 while (($row = $res->fetch())) {
                     $values = @array_values($row);
 
                     foreach ($values as $k => $v) {
-                        $values[$k] = "'" . preg_replace("#(\n|\r)+#", '\n', my_esc($v)) . "'";
+                        $values[$k] = $this->db->quote(preg_replace("#(\n|\r)+#", '\n', $v));
                     }
                     $values_string = @implode(', ', $values);
                     $counter++;
@@ -97,4 +97,5 @@ class tables {
     }
 
 }
+
 ?>

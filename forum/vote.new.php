@@ -46,7 +46,7 @@ if (!empty($_POST['vote'])) {
         foreach ($_POST as $key => $value) {
             $vv = text::input_text($value);
             if ($vv && preg_match('#^v([0-9]+)$#', $key)) {
-                $v[] = "'" . my_esc($vv) . "'";
+                $v[] = $db->quote($vv);
                 $k[] = '`v' . count($v) . '`';
             }
         }
