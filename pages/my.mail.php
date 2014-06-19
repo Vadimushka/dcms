@@ -37,24 +37,30 @@ if (isset($_GET ['id'])) {
         $doc->err(__('Пользователь не сможет Вам ответить'));
     }
 
-    if ($accept_send && isset($_POST ['post']) && isset($_POST ['mess'])) {
+    if ($accept_send && isset($_POST ['post']) && isset($_POST ['mess']) && isset($_POST ['token'])) {
         $mess = (string)$_POST ['mess'];
         text::nickSearch($mess); // поиск и преобразование @nick
         $mess = text::input_text($mess);
 
-        if (!$mess)
+        if (!antiflood::useToken($_POST['token'], 'mail')) {
+
+        } elseif (!$mess)
             $doc->err(__('Сообщение пусто'));
         else {
             $ank->mess($mess, $user->id);
 
-            if ($doc instanceof document_json)
+            if ($doc instanceof document_json) {
                 $doc->form_value('mess', '');
+                $form->hidden('token', antiflood::getToken('mail'));
+            }
+
 
             $doc->msg(__('Сообщение успешно отправлено'));
             header('Refresh: 1; url=?id=' . $id_kont);
             exit();
         }
-
+        if ($doc instanceof document_json)
+            $form->hidden('token', antiflood::getToken('mail'));
         $doc->ret(__('К сообщениям'), '?id=' . $id_kont);
     }
 
@@ -63,7 +69,7 @@ if (isset($_GET ['id'])) {
     if ($accept_send) {
         $form = new form("/my.mail.php?id=$id_kont&amp;" . passgen());
         $form->textarea('mess', __('Сообщение'));
-
+        $form->hidden('token', antiflood::getToken('mail'));
         $form->button(__('Отправить'), 'post', false);
         $form->refresh_url("/my.mail.php?id=$id_kont&amp;" . passgen());
         $form->setAjaxUrl('/my.mail.php?id=' . $id_kont);
