@@ -50,14 +50,15 @@ $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количеств�
 
 if ($can_write) {
 
-    if (isset($_POST['send']) && isset($_POST['comment']) && $user->group) {
+    if (isset($_POST['send']) && isset($_POST['comment']) && isset($_POST['token']) && $user->group) {
 
         $text = (string)$_POST['comment'];
         $users_in_message = text::nickSearch($text);
         $text = text::input_text($text);
 
-
-        if ($dcms->censure && $mat = is_valid::mat($text))
+        if (!antiflood::useToken($_POST['token'], 'news')) {
+            // нет токена (обычно, повторная отправка формы)
+        } elseif ($dcms->censure && $mat = is_valid::mat($text))
             $doc->err(__('Обнаружен мат: %s', $mat));
         elseif ($text) {
             $user->balls++;
@@ -92,6 +93,7 @@ if ($can_write) {
 
     if ($user->group) {
         $form = new form('?id=' . $id . '&amp;page=' . $pages->this_page . '&amp;' . passgen());
+        $form->hidden('token', antiflood::getToken('news'));
         $form->textarea('comment', __('Комментарий'));
         $form->button(__('Отправить'), 'send', false);
         $form->button(__('Обновить'), 'refresh');

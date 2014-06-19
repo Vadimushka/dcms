@@ -20,12 +20,14 @@ if (!$user->is_writeable) {
 }
 
 if ($can_write && $pages->this_page == 1) {
-    if (isset($_POST['send']) && isset($_POST['message']) && $user->group) {
+    if (isset($_POST['send']) && isset($_POST['message']) && isset($_POST['token']) && $user->group) {
         $message = (string)$_POST['message'];
         $users_in_message = text::nickSearch($message);
         $message = text::input_text($message);
 
-        if ($dcms->censure && $mat = is_valid::mat($message)) {
+        if (!antiflood::useToken($_POST['token'], 'chat_mini')) {
+            // нет токена (обычно, повторная отправка формы)
+        } elseif ($dcms->censure && $mat = is_valid::mat($message)) {
             $doc->err(__('Обнаружен мат: %s', $mat));
         } elseif ($message) {
             $user->balls++;
@@ -35,13 +37,18 @@ if ($can_write && $pages->this_page == 1) {
             $doc->ret(__('Вернуться'), '?' . passgen());
             $doc->msg(__('Сообщение успешно отправлено'));
 
-            if ($doc instanceof document_json)
+            if ($doc instanceof document_json) {
                 $doc->form_value('message', '');
+                $doc->form_value('token', antiflood::getToken('chat_mini'));
+            }
 
             exit;
         } else {
             $doc->err(__('Сообщение пусто'));
         }
+
+        if ($doc instanceof document_json)
+            $doc->form_value('token', antiflood::getToken('chat_mini'));
     }
 
     if ($user->group) {
@@ -63,6 +70,7 @@ if ($can_write && $pages->this_page == 1) {
         $form = new form('?' . passgen());
         $form->refresh_url('?' . passgen());
         $form->setAjaxUrl('?');
+        $form->hidden('token', antiflood::getToken('chat_mini'));
         $form->textarea('message', __('Сообщение'), $message_form);
         $form->button(__('Отправить'), 'send', false);
         $form->display();

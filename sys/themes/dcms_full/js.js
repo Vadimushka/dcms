@@ -115,7 +115,9 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                                     form.showError($data.err);
 
                                 for (var k in $data.form) {
-                                    form.values[k] = $data.form[k];
+                                    if (formNode.elements[k])
+                                        formNode.elements[k].value = $data.form[k];
+                                    //form.values[k] = $data.form[k];
                                 }
 
                                 $rootScope.$broadcast('dcms:form_sended', $element.attr('id')); // Уведомляем о том, что форма была отправлена. Это событие должен слушать листинг

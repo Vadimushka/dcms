@@ -265,15 +265,19 @@ if (!$user->is_writeable) {
     $can_write = false;
 }
 
-// комменты к файлу
-if ($can_write && isset($_POST['send']) && isset($_POST['message']) && $user->group) {
+//region комменты к файлу
+if ($can_write && isset($_POST['send']) && isset($_POST['message']) && isset($_POST['token']) && $user->group) {
     $message = (string)$_POST['message'];
     $users_in_message = text::nickSearch($message);
     $message = text::input_text($message);
 
-    if ($file->id_user && $file->id_user != $user->id && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
+    if (!antiflood::useToken($_POST['token'], 'files')){
+        // повторная отправка формы
+        // вывод сообщений, возможно, будет лишним
+    }
+    else if ($file->id_user && $file->id_user != $user->id && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
         $doc->err(__('Проверочное число введено неверно'));
-    } elseif ($dcms->censure && $mat = is_valid::mat($message)) {
+    }elseif ($dcms->censure && $mat = is_valid::mat($message)) {
         $doc->err(__('Обнаружен мат: %s', $mat));
     } elseif ($message) {
         $user->balls++;
@@ -313,6 +317,7 @@ if (empty($_GET['act'])) {
         $form->textarea('message', __('Комментарий'));
         if ($file->id_user && $file->id_user != $user->id)
             $form->captcha();
+        $form->hidden('token', antiflood::getToken('files'));
         $form->button(__('Отправить'), 'send');
         $form->display();
     }
@@ -363,6 +368,7 @@ if (empty($_GET['act'])) {
 
     $pages->display('?order=' . $order . '&amp;screen_num=' . $query_screen . '&amp;'); // вывод страниц
 }
+//endregion
 
 // переход к рядом лежащим файлам в папке
 $content = $dir->getList($order);
