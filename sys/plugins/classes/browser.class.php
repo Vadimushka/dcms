@@ -70,9 +70,17 @@ abstract class browser {
             $info['type'] = 'full';
         }
 
+        // IE <= 10
         if (preg_match('#MSIE ([0-9]+)#ui', $user_agent, $bv)) {
             $info['name'] = 'Microsoft Internet Explorer';
             $info['type'] = 'full';
+            $info['ie'] = $bv[1];
+        }
+
+        // IE 11
+        if (preg_match('#rv ([0-9]+)#ui', $user_agent, $bv)) {
+            $info['name'] = 'Microsoft Internet Explorer';
+            $info['type'] = 'web';
             $info['ie'] = $bv[1];
         }
 
