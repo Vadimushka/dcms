@@ -69,14 +69,20 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
         ['$rootScope', '$scope', '$element', '$http', '$timeout', '$compile',
             function ($rootScope, $scope, $element, $http, $timeout, $compile) {
                 var form = $scope.form = {
-                    showSmiles: false,
+                    showSmiles: {},
                     smilesLoaded: false,
                     smilesContent: '',
                     msg: '',
                     err: '',
                     sending: false, // происходит отправка сообщения
-                    values: {
-
+                    values: {},
+                    getSmilesShowed: function (id) {
+                        return !!form.showSmiles[id];
+                    },
+                    setSmilesShowed: function (id, value) {
+                        if (!form.smilesLoaded)
+                            form.loadSmiles();
+                        return form.showSmiles[id] = !!value;
                     },
                     onBBcodeClick: function (args) {
                         InputInsert(args.Textarea, args.Code.Prepend, args.Code.Append);
@@ -133,11 +139,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     }
                 };
 
-                $scope.$watch('form.showSmiles', function () {
-                    if (!form.showSmiles)
-                        return;
-                    if (form.smilesLoaded)
-                        return;
+                form.loadSmiles = function () {
                     form.smilesContent = 'Загрузка';
                     $http.get('/ajax/smiles.json.php')
                         .success(function ($data) {
@@ -145,9 +147,9 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                             form.smilesLoaded = true;
                         })
                         .error(function () {
-
+                            form.smilesContent = 'Не удалось загрузить смайлы';
                         });
-                });
+                };
 
                 var codes = [
                     {Text: 'B', Title: translates.bbcode_b, Prepend: '[b]', Append: '[/b]'},
@@ -164,6 +166,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                 var textareas = $element.find('textarea');
                 for (var i = 0; i < textareas.length; i++) {
                     var textareaNode = textareas[i];
+                    var taId = textareaNode.id;
                     var $wrapper = angular.element(textareaNode).parent();
                     var $bbcodes = $wrapper.find('.textarea_bbcode');
                     for (var ii = 0; ii < codes.length; ii++) {
@@ -174,12 +177,11 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                         $bbcodes.append($el);
                     }
 
-                    var $el = angular.element('<span class="smiles" ng-click="form.showSmiles = !form.showSmiles" style="float: right"></span>');
+                    var $el = angular.element('<span class="smiles" ng-click="form.setSmilesShowed(\'' + taId + '\', !form.getSmilesShowed(\'' + taId + '\'))" style="float: right"></span>');
                     $el.text(translates.smiles);
-                    $el.append('<div class="smiles_drop_menu" ng-show="form.showSmiles"><div class="smiles_drop_menu_container">' +
-                        '<div ng-repeat="smile in form.smiles" ng-click="form.pasteSmile(smile.code, \'' + textareaNode.id + '\')"><img ng-src="{{smile.image}}" alt="{{smile.title}}" /></div>' +
-                        '</div></div>')
-                    //$el.on('click', angular.bind($scope, form.onSmilesClick));
+                    $el.append('<div class="smiles_drop_menu" ng-show="form.getSmilesShowed(\'' + taId + '\')"><div class="smiles_drop_menu_container">' +
+                        '<div ng-repeat="smile in form.smiles" ng-click="form.pasteSmile(smile.code, \'' + taId + '\')"><img ng-src="{{smile.image}}" alt="{{smile.title}}" /></div>' +
+                        '</div></div>');
                     $compile($el)($scope);
                     $bbcodes.append($el);
                 }
