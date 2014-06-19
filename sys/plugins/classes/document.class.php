@@ -95,15 +95,9 @@ class document extends design
         if ($this->last_modified)
             header("Last-Modified: " . gmdate("D, d M Y H:i:s", (int)$this->last_modified) . " GMT", true);
 
-        // для осла (IE) как обычно отдельное условие
-        if ($dcms->browser == 'Microsoft Internet Explorer') {
-            $content_type = 'text/html';
-            header('X-UA-Compatible: IE=edge', true); // отключение режима совместимости в осле
-        } else if (!empty($this->theme['content']) && $this->theme['content'] === 'xhtml')
-            $content_type = 'application/xhtml+xml';
-        else
-            $content_type = 'text/html';
-        header('Content-Type: ' . $content_type . '; charset=utf-8', true);
+
+        header('X-UA-Compatible: IE=edge', true); // отключение режима совместимости в осле
+        header('Content-Type: text/html; charset=utf-8', true);
 
         $this->assign('adt', new adt()); // реклама
         $this->assign('description', $this->description ? $this->description : $this->title, 1); // описание страницы (meta)

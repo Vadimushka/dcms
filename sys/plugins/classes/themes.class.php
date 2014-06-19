@@ -147,10 +147,6 @@ abstract class themes {
             $info['browsers'] = preg_split('/[\|\,\:\^]/', $info['browsers']);
         }
 
-        if (empty($info['content'])) {
-            $info['content'] = 'html';
-        }
-
         if (empty($info['icons'])) {
             $info['icons'] = '/sys/images/icons';
         } else {
