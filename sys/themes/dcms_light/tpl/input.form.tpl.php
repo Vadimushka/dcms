@@ -10,9 +10,10 @@
     <?
     foreach ($el AS $element) {
         if ($element['title'])
-            echo $element['title'] . ':<br />';
+           echo '<div class="form_title">' . $element['title'] . ':</div>';
         switch ($element['type']) {
-            case 'text': echo $element['value'];
+            case 'text':
+                echo '<div class="form_text">' . $element['value'] . '</div>';
                 break;
             case 'captcha':
                 ?>
