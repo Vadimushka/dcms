@@ -53,7 +53,7 @@ if (isset($_GET ['id'])) {
 
             if ($doc instanceof document_json) {
                 $doc->form_value('mess', '');
-                $form->hidden('token', antiflood::getToken('mail'));
+                $doc->form_value('token', antiflood::getToken('mail'));
             }
 
 
@@ -62,7 +62,7 @@ if (isset($_GET ['id'])) {
             exit();
         }
         if ($doc instanceof document_json)
-            $form->hidden('token', antiflood::getToken('mail'));
+            $doc->form_value('token', antiflood::getToken('mail'));
         $doc->ret(__('К сообщениям'), '?id=' . $id_kont);
     }
 
