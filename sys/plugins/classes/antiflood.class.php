@@ -34,10 +34,10 @@ abstract class antiflood
 
     private static function prepareTokens($module)
     {
-        if (!is_array($_SESSION[self::SESS_KEY]))
+        if (!isset($_SESSION[self::SESS_KEY]))
             $_SESSION[self::SESS_KEY] = array();
 
-        if (!is_array($_SESSION[self::SESS_KEY][$module]))
+        if (!isset($_SESSION[self::SESS_KEY][$module]))
             $_SESSION[self::SESS_KEY][$module] = array();
     }
 
