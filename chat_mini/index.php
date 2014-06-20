@@ -54,7 +54,7 @@ if ($can_write && $pages->this_page == 1) {
     if ($user->group) {
         $message_form = '';
         if (isset($_GET ['message']) && is_numeric($_GET ['message'])) {
-            $id_message = (int) $_GET ['message'];
+            $id_message = (int)$_GET ['message'];
             $q = $db->prepare("SELECT * FROM `chat_mini` WHERE `id` = ? LIMIT 1");
             $q->execute(Array($id_message));
             if ($message = $q->fetch()) {
@@ -72,7 +72,7 @@ if ($can_write && $pages->this_page == 1) {
             $form->refresh_url('?' . passgen());
             $form->setAjaxUrl('?');
             $form->hidden('token', antiflood::getToken('chat_mini'));
-            $form->textarea('message', __('Сообщение'), $message_form);
+            $form->textarea('message', __('Сообщение'), $message_form, true);
             $form->button(__('Отправить'), 'send', false);
             $form->display();
         }
@@ -86,27 +86,26 @@ if (!empty($form))
     $listing->setForm($form);
 
 
-
 $q = $db->query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
 $after_id = false;
 if ($arr = $q->fetchAll()) {
     foreach ($arr AS $message) {
-       $ank = new user($message['id_user']);
-    $post = $listing->post();
-    $post->id = 'chat_post_' . $message['id'];
-    $post->url = 'actions.php?id=' . $message['id'];
-    $post->time = misc::when($message['time']);
-    $post->title = $ank->nick();
-    $post->post = text::toOutput($message['message']);
-    $post->icon($ank->icon());
+        $ank = new user($message['id_user']);
+        $post = $listing->post();
+        $post->id = 'chat_post_' . $message['id'];
+        $post->url = 'actions.php?id=' . $message['id'];
+        $post->time = misc::when($message['time']);
+        $post->title = $ank->nick();
+        $post->post = text::toOutput($message['message']);
+        $post->icon($ank->icon());
 
-    if (!$doc->last_modified)
-        $doc->last_modified = $message['time'];
+        if (!$doc->last_modified)
+            $doc->last_modified = $message['time'];
 
-    if ($doc instanceof document_json)
-        $doc->add_post($post, $after_id);
+        if ($doc instanceof document_json)
+            $doc->add_post($post, $after_id);
 
-    $after_id = $post->id;
+        $after_id = $post->id;
     }
 }
 $listing->setAjaxUrl('?page=' . $pages->this_page);
