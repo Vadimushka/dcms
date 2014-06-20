@@ -68,7 +68,7 @@ if (isset($_GET ['id'])) {
 
     $doc->title = __('Переписка с "%s"', $ank->login);
 
-    if ($accept_send) {
+    if ($accept_send && !AJAX) {
         $form = new form("/my.mail.php?id=$id_kont&amp;" . passgen());
         $form->textarea('mess', __('Сообщение'), '', true);
         $form->hidden('token', antiflood::getToken('mail'));
