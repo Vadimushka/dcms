@@ -118,7 +118,7 @@ html, body, #main {
     display: inline-block;
 }
 
-.select_bar a:hover{
+.select_bar a:hover {
     box-shadow: 1px 1px 4px -2px #000;
     text-decoration: none;
 }
@@ -230,18 +230,19 @@ html, body, #main {
     border: 1px #E2E2E2 solid;
     padding: 1px;
     border-radius: 4px;
+    position: relative;
 }
 
-.form .textarea_wrapper .textarea_bbcode {
-    opacity: 0.75;
-    transition: all 500ms;
-    -moz-transition: all, 500ms; /* Firefox 4 */
-    -webkit-transition: all 500ms; /* Safari и Chrome */
-    -o-transition: all 500ms; /* Opera */
-}
-
-.form .textarea_wrapper .textarea_bbcode:hover {
-    opacity: 1;
+.form .textarea_wrapper.with_ctrl_enter:after {
+    display: block;
+    content: 'Ctrl + Enter';
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    background: rgba(0, 0, 0, 0.15);
+    color: #fff;
+    padding: 3px;
+    border-radius: 2px;
 }
 
 .form .textarea_wrapper textarea {
@@ -310,6 +311,7 @@ html, body, #main {
     background-color: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.17);
     border-radius: 3px;
+    z-index: 1;
 }
 
 /* внутренний контейнер меню смайлов */

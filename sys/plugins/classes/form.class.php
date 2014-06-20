@@ -170,12 +170,22 @@ class form extends ui
      * @param string $name аттрибут name
      * @param string $title заголовок поля ввода
      * @param string $value введенный текст
+     * @param bool $submit_ctrl_enter отправка формы по Ctrl + Enter
      * @param boolean $br перенос
      * @param boolean $disabled запретить изменение
      */
-    function textarea($name, $title, $value = '', $br = true, $disabled = false)
+    function textarea($name, $title, $value = '', $submit_ctrl_enter = false, $br = true, $disabled = false)
     {
-        $this->input($name, $title, $value, 'textarea', $br, false, $disabled);
+        $this->_data['el'][] = array(
+            'type' => 'textarea',
+            'title' => text::toOutput($title),
+            'br' => (bool)$br,
+            'submit_ctrl_enter' => (bool)$submit_ctrl_enter,
+            'info' => array(
+                'name' => text::toValue($name),
+                'value' => $value, // фильтрация в шаблоне
+                'disabled' => (bool)$disabled
+            ));
     }
 
     /**

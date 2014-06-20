@@ -72,6 +72,9 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
 
                 var $wrapper = $('<div class="textarea_wrapper"><div class="textarea_bbcode"></div></div>');
 
+                if ($templateElement.data('ctrl-enter-submit'))
+                    $wrapper.addClass('with_ctrl_enter');
+
                 $templateElement.after($wrapper);
                 $wrapper.append($templateElement);
 
@@ -138,14 +141,18 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     err: '',
                     sending: false, // происходит отправка сообщения
                     values: {},
-                    onSubmit: function (event, url) {
-                        if (!url)
-                            return;
+                    onSubmit: function (event) {
+
                         event.preventDefault();
                         if (form.sending)
                             return;
                         form.sending = true;
                         var formNode = event.target;
+
+                        var url = $(event.target).data('url');
+                        if (!url)
+                            return;
+
                         var postData = {};
                         for (var i = 0; i < formNode.elements.length; i++) {
                             postData[formNode.elements[i].name ] = formNode.elements[i].value;
@@ -184,6 +191,12 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                         $timeout(function () {
                             form.msg = '';
                         }, 3000);
+                    },
+                    keyDown: function (event) {
+                        if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey) {
+                            if ($(event.target).data('ctrl-enter-submit'))
+                                form.onSubmit($.extend(event, {target: event.target.form}));
+                        }
                     }
                 };
             }])

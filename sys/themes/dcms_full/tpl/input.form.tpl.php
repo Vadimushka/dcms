@@ -1,6 +1,6 @@
 <div class="form">
     <?=
-    '<form id="' . $id . '" ng-controller="FormCtrl" ng-submit="form.onSubmit($event, \'' . $ajax_url . '\')" ng-disabled="form.sending"' .
+    '<form id="' . $id . '" ng-controller="FormCtrl" ng-submit="form.onSubmit($event)" data-url="' . $ajax_url . '" ng-disabled="form.sending"' .
     ($method ? ' method="' . $method . '"' : '') .
     ($action ? ' action="' . $action . '"' : '') .
     ($files ? ' enctype="multipart/form-data"' : '')
@@ -49,7 +49,7 @@
                     ' />';
                 break;
             case 'textarea':
-                echo '<textarea id="' . passgen() . '" data-bbcode="" ng-scope="true" ng-initial="" class="animate msd-elastic: \n;" ng-model="form.values.' . $element['info']['name'] . '" ' .
+                echo '<textarea id="' . passgen() . '" data-bbcode="" data-ctrl-enter-submit="' . ($element['submit_ctrl_enter'] ? 'true' : 'false') . '" ng-keyDown="form.keyDown($event)" ng-scope="true" ng-initial="" class="animate msd-elastic: \n;" ng-model="form.values.' . $element['info']['name'] . '" ' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                     '>' .
@@ -82,7 +82,8 @@
                     if ($option['groupstart'])
                         echo '<optgroup label="' . $option[0] . '">';
                     elseif ($option['groupend'])
-                        echo '</optgroup>'; else
+                        echo '</optgroup>';
+                    else
                         echo '<option' .
                             ($option[2] ? ' selected="selected"' : '') .
                             ' value="' . $option[0] . '"' .

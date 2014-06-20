@@ -70,7 +70,7 @@ if (isset($_GET ['id'])) {
 
     if ($accept_send) {
         $form = new form("/my.mail.php?id=$id_kont&amp;" . passgen());
-        $form->textarea('mess', __('Сообщение'));
+        $form->textarea('mess', __('Сообщение'), '', true);
         $form->hidden('token', antiflood::getToken('mail'));
         $form->button(__('Отправить'), 'post', false);
         $form->refresh_url("/my.mail.php?id=$id_kont&amp;" . passgen());
