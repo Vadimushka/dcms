@@ -41,9 +41,20 @@
             mail: '<?=__("Почта")?>',
             error: '<?=__('Неизвестная ошибка')?>'
         };
+        codes = [
+            {Text: 'B', Title: translates.bbcode_b, Prepend: '[b]', Append: '[/b]'},
+            {Text: 'I', Title: translates.bbcode_i, Prepend: '[i]', Append: '[/i]'},
+            {Text: 'U', Title: translates.bbcode_u, Prepend: '[u]', Append: '[/u]'},
+            {Text: 'BIG', Title: translates.bbcode_big, Prepend: '[big]', Append: '[/big]'},
+            {Text: 'Small', Title: translates.bbcode_small, Prepend: '[small]', Append: '[/small]'},
+            {Text: 'IMG', Title: translates.bbcode_img, Prepend: '[img]', Append: '[/img]'},
+            {Text: 'PHP', Title: translates.bbcode_php, Prepend: '[php]', Append: '[/php]'},
+            {Text: 'SPOILER', Title: translates.bbcode_spoiler, Prepend: '[spoiler title=""]', Append: '[/spoiler]'},
+            {Text: 'HIDE', Title: translates.bbcode_hide, Prepend: '[hide group="0" balls="0"]', Append: '[/hide]'}
+        ];
     </script>
     <style type="text/css">
-        .ng-hide{
+        .ng-hide {
             display: none !important;
         }
     </style>

@@ -273,6 +273,7 @@ html, body, #main {
 
 .smiles {
     position: relative;
+    float: right;
 }
 
 /* обводка стрелочки */

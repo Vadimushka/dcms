@@ -49,13 +49,12 @@
                     ' />';
                 break;
             case 'textarea':
-                echo '<div class="textarea_wrapper"><div class="textarea_bbcode"></div>
-                <textarea id="' . passgen() . '" ng-initial="" class="animate msd-elastic: \n;" ng-model="form.values.' . $element['info']['name'] . '" ' .
+                echo '<textarea id="' . passgen() . '" data-bbcode="" ng-scope="true" ng-initial="" class="animate msd-elastic: \n;" ng-model="form.values.' . $element['info']['name'] . '" ' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                     '>' .
                     ($element['info']['value'] ? text::toValue($element['info']['value']) : '') .
-                    '</textarea></div>';
+                    '</textarea>';
                 break;
             case 'checkbox':
                 echo '<label><input type="checkbox"' .

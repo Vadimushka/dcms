@@ -43,6 +43,7 @@ $(function () {
     }).parent().addClass('collapsed');
 });
 
+
 angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
     .directive('ngInitial', function () { // инициализация модели по значению в инпуте
         return {
@@ -58,6 +59,70 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
             ]
         };
     })
+    .directive('bbcode', function () { // директива, добавляющая панель bbcode для textarea
+        return {
+            scope: true,
+            compile: function ($templateElement, templateAttrs) {
+
+                if ($templateElement.prop("nodeName").toLowerCase() != 'textarea')
+                    return;
+                if ($templateElement.prop("bbcoded"))
+                    return;
+                $templateElement.prop("bbcoded", true);
+
+                var $wrapper = $('<div class="textarea_wrapper"><div class="textarea_bbcode"></div></div>');
+
+                $templateElement.after($wrapper);
+                $wrapper.append($templateElement);
+
+                $wrapper.find('.textarea_bbcode')
+                    .append(
+                        '<span ng-repeat="code in bbcode.codes" ng-click="bbcode.insert(code)" ng-bind="code.Text" title="{{code.Title}}"></span>' +
+                            '<span class="smiles" ng-click="bbcode.showSmiles = !bbcode.showSmiles">{{bbcode.translates.smiles}}' +
+                            '<div ng-show="bbcode.showSmiles" class="smiles_drop_menu">' +
+                            '<div class="smiles_drop_menu_container">{{bbcode.smilesContent}}' +
+                            '<div ng-repeat="smile in bbcode.smiles" ng-click="bbcode.pasteSmile(smile.code)">' +
+                            '<img ng-src="{{smile.image}}" alt="{{smile.title}}" />' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</span>');
+            },
+            controller: function ($rootScope, $scope, $element, $http) {
+                var bbcode = $scope.bbcode = {
+                    smiles: [],
+                    smilesContent: '',
+                    showSmiles: false,
+                    smilesLoaded: false,
+                    codes: codes, // из document.tpl
+                    translates: translates, // из document.tpl
+                    insert: function (code) {
+                        InputInsert($element[0], code.Prepend, code.Append);
+                        $scope.$broadcast('elastic:adjust'); // обновление высоты textarea
+                    },
+                    pasteSmile: function (smile) {
+                        InputInsert($element[0], '', ' ' + smile + ' ', true);
+                        $scope.$broadcast('elastic:adjust'); // обновление высоты textarea
+                    }
+                };
+
+                $scope.$watch('bbcode.showSmiles', function () {
+                    if (bbcode.smilesLoaded)
+                        return;
+                    bbcode.smilesContent = 'Загрузка смайлов';
+                    $http.get('/ajax/smiles.json.php')
+                        .success(function ($data) {
+                            bbcode.smiles = $data;
+                            bbcode.smilesLoaded = true;
+                            bbcode.smilesContent = '';
+                        })
+                        .error(function () {
+                            bbcode.smilesContent = 'Не удалось загрузить смайлы';
+                        });
+                });
+            }
+        };
+    })
     .config(function ($httpProvider) {    // [url]http://habrahabr.ru/post/181009/[/url]
         $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
         $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -65,33 +130,14 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
             return angular.isObject(data) && String(data) !== '[object File]' ? $.param(data) : data;
         };
     })
-    .controller('FormCtrl',
+    .controller('FormCtrl', // контроллер форм. добавляет поддержку отправки AJAX-ом
         ['$rootScope', '$scope', '$element', '$http', '$timeout', '$compile',
             function ($rootScope, $scope, $element, $http, $timeout, $compile) {
                 var form = $scope.form = {
-                    showSmiles: {},
-                    smilesLoaded: false,
-                    smilesContent: '',
                     msg: '',
                     err: '',
                     sending: false, // происходит отправка сообщения
                     values: {},
-                    getSmilesShowed: function (id) {
-                        return !!form.showSmiles[id];
-                    },
-                    setSmilesShowed: function (id, value) {
-                        if (!form.smilesLoaded)
-                            form.loadSmiles();
-                        return form.showSmiles[id] = !!value;
-                    },
-                    onBBcodeClick: function (args) {
-                        InputInsert(args.Textarea, args.Code.Prepend, args.Code.Append);
-                        $scope.$broadcast('elastic:adjust'); // обновление высоты textarea
-                    },
-                    pasteSmile: function (smile, textarea_id) {
-                        InputInsert(document.getElementById(textarea_id), '', ' ' + smile + ' ', true);
-                        $scope.$broadcast('elastic:adjust'); // обновление высоты textarea
-                    },
                     onSubmit: function (event, url) {
                         if (!url)
                             return;
@@ -140,55 +186,8 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                         }, 3000);
                     }
                 };
-
-                form.loadSmiles = function () {
-                    form.smilesContent = 'Загрузка';
-                    $http.get('/ajax/smiles.json.php')
-                        .success(function ($data) {
-                            form.smiles = $data;
-                            form.smilesLoaded = true;
-                        })
-                        .error(function () {
-                            form.smilesContent = 'Не удалось загрузить смайлы';
-                        });
-                };
-
-                var codes = [
-                    {Text: 'B', Title: translates.bbcode_b, Prepend: '[b]', Append: '[/b]'},
-                    {Text: 'I', Title: translates.bbcode_i, Prepend: '[i]', Append: '[/i]'},
-                    {Text: 'U', Title: translates.bbcode_u, Prepend: '[u]', Append: '[/u]'},
-                    {Text: 'BIG', Title: translates.bbcode_big, Prepend: '[big]', Append: '[/big]'},
-                    {Text: 'Small', Title: translates.bbcode_small, Prepend: '[small]', Append: '[/small]'},
-                    {Text: 'IMG', Title: translates.bbcode_img, Prepend: '[img]', Append: '[/img]'},
-                    {Text: 'PHP', Title: translates.bbcode_php, Prepend: '[php]', Append: '[/php]'},
-                    {Text: 'SPOILER', Title: translates.bbcode_spoiler, Prepend: '[spoiler title=""]', Append: '[/spoiler]'},
-                    {Text: 'HIDE', Title: translates.bbcode_hide, Prepend: '[hide group="0" balls="0"]', Append: '[/hide]'}
-                ];
-
-                var textareas = $element.find('textarea');
-                for (var i = 0; i < textareas.length; i++) {
-                    var textareaNode = textareas[i];
-                    var taId = textareaNode.id;
-                    var $wrapper = angular.element(textareaNode).parent();
-                    var $bbcodes = $wrapper.find('.textarea_bbcode');
-                    for (var ii = 0; ii < codes.length; ii++) {
-                        var $el = angular.element('<span></span>');
-                        $el.text(codes[ii].Text);
-                        $el.attr('title', codes[ii].Title);
-                        $el.on('click', angular.bind($scope, form.onBBcodeClick, {Code: codes[ii], Textarea: textareaNode}));
-                        $bbcodes.append($el);
-                    }
-
-                    var $el = angular.element('<span class="smiles" ng-click="form.setSmilesShowed(\'' + taId + '\', !form.getSmilesShowed(\'' + taId + '\'))" style="float: right"></span>');
-                    $el.text(translates.smiles);
-                    $el.append('<div class="smiles_drop_menu" ng-show="form.getSmilesShowed(\'' + taId + '\')"><div class="smiles_drop_menu_container">' +
-                        '<div ng-repeat="smile in form.smiles" ng-click="form.pasteSmile(smile.code, \'' + taId + '\')"><img ng-src="{{smile.image}}" alt="{{smile.title}}" /></div>' +
-                        '</div></div>');
-                    $compile($el)($scope);
-                    $bbcodes.append($el);
-                }
             }])
-    .controller('ListingCtrl',
+    .controller('ListingCtrl', // контроллер для списка постов. Добавляет поддержку автоматического обновления списка
         ['$rootScope', '$scope', '$http', '$interval', '$element', '$animate',
             function ($rootScope, $scope, $http, $interval, $element, $animate) {
                 var listing = $scope.listing = {
@@ -252,7 +251,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
 
                 $interval(angular.bind(listing, listing.update, false), 7000);
             }])
-    .controller('DcmsCtrl',
+    .controller('DcmsCtrl', // общий контроллер DCMS
         ['$scope', '$http', '$timeout', '$rootScope',
             function ($scope, $http, $timeout, $rootScope) {
                 var scope = {
