@@ -30,15 +30,29 @@
  * @property mixed subdomain_replace_url
  * @property mixed subdomain_main
  * @property mixed subdomain_theme_redirect
+ * @property int browser_id
  */
-class dcms {
+class dcms
+{
+    static protected $_instance = null;
 
     protected $_data = array();
     public $db;
 
-    function __construct() {
+    protected function __construct()
+    {
         // загрузка настроек
         $this->_load_settings();
+    }
+
+    /**
+     * @return dcms
+     */
+    public static function getInstance()
+    {
+        if (is_null(self::$_instance))
+            self::$_instance = new self();
+        return self::$_instance;
     }
 
     /**
@@ -46,8 +60,9 @@ class dcms {
      * @param string $mess
      * @param integer $group_min
      */
-    public function distribution($mess, $group_min = 2) {
-        $group_min = (int) $group_min;
+    public function distribution($mess, $group_min = 2)
+    {
+        $group_min = (int)$group_min;
         $q = $this->db->prepare("SELECT `id` FROM `users` WHERE `group` >= ?");
         $q->execute(Array($group_min));
         $users = array();
@@ -70,7 +85,8 @@ class dcms {
      * @param boolean $is_system Если сестемное действие
      * @return resource
      */
-    public function log($module, $description, $is_system = false) {
+    public function log($module, $description, $is_system = false)
+    {
         $id_user = 0;
 
         if (!$is_system) {
@@ -83,7 +99,8 @@ class dcms {
         return true;
     }
 
-    public function __get($name) {
+    public function __get($name)
+    {
         switch ($name) {
             case 'salt_user':
                 return $this->salt . @$_SERVER['HTTP_USER_AGENT'];
@@ -123,22 +140,28 @@ class dcms {
         }
     }
 
-    public function __set($name, $value) {
+    public function __set($name, $value)
+    {
         switch ($name) {
-            case 'items_per_page': $name .= '_' . $this->browser_type;
+            case 'items_per_page':
+                $name .= '_' . $this->browser_type;
                 break;
-            case 'theme': $name .= '_' . $this->browser_type;
+            case 'theme':
+                $name .= '_' . $this->browser_type;
                 break;
-            case 'img_max_width': $name .= '_' . $this->browser_type;
+            case 'img_max_width':
+                $name .= '_' . $this->browser_type;
                 break;
-            case 'widget_items_count': $name .= '_' . $this->browser_type;
+            case 'widget_items_count':
+                $name .= '_' . $this->browser_type;
                 break;
         }
         $this->_data[$name] = $value;
         return true;
     }
 
-    protected function _subdomain_main() {
+    protected function _subdomain_main()
+    {
         $domain = preg_replace('/^(wap|pda|web|www|i|touch|mobile)\./ui', '', $_SERVER['HTTP_HOST']);
         return $domain;
     }
@@ -147,7 +170,8 @@ class dcms {
      * Тип браузера
      * @return string
      */
-    protected function _browser_type() {
+    protected function _browser_type()
+    {
         if ($this->subdomain_light_enable) {
             if (0 === strpos($_SERVER['HTTP_HOST'], $this->subdomain_light . '.')) {
                 return 'light';
@@ -166,7 +190,8 @@ class dcms {
         return $this->browser_type_auto;
     }
 
-    protected function _browser_id() {
+    protected function _browser_id()
+    {
         static $browser_id = false;
 
         if ($browser_id === false) {
@@ -186,15 +211,15 @@ class dcms {
     /**
      * Загрузка настроек
      */
-    protected function _load_settings() {
+    protected function _load_settings()
+    {
         $settings_default = ini::read(H . '/sys/inc/settings.default.ini', true) OR die('Невозможно загрузить файл настроек по-умолчанию');
         if (!$settings = ini::read(H . '/sys/ini/settings.ini')) {
             // если установки небыли загружены, но при этом есть файл установки, то переадресуем на него
             if (file_exists(H . '/install/index.php')) {
                 header("Location: /install/");
                 exit;
-            }
-            else
+            } else
                 exit('Файл настроек не может быть загружен');
         }
         $this->_data = array_merge($settings_default['DEFAULT'], $this->_data, $settings, $settings_default['REPLACE']);
@@ -205,7 +230,8 @@ class dcms {
      * @param \document|boolean $doc
      * @return boolean
      */
-    public function save_settings($doc = false) {
+    public function save_settings($doc = false)
+    {
         $result = ini::save(H . '/sys/ini/settings.ini', $this->_data);
 
         if (is_a($doc, 'document')) {

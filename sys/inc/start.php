@@ -20,7 +20,7 @@ if (cache_events::get('system.update.work')) {
  * загрузка системных параметров
  * @global \dcms $dcms Основной объект системы
  */
-$dcms = new dcms();
+$dcms =  dcms::getInstance();
 
 /**
  *  проверка доступности поддомена.
@@ -68,18 +68,6 @@ if ($dcms->new_time_as_date) {
     define('NEW_TIME', TIME - 86400);
 }
 
-/**
- * Подключение к базе данных
- * Переходим на PDO
- * Предлагаю, сделать двойное подключение, пока двиг не будет переписан под pdo,
- * потом убрать обычное подключение через mysql_connect, но оставить возможность
- * такого подключения (галочкой в админке) для совместимости движка со старыми модами
- */
-/*
-@mysql_connect($dcms->mysql_host, $dcms->mysql_user, $dcms->mysql_pass) or die('Нет соединения с MySQL сервером');
-@mysql_select_db($dcms->mysql_base) or die('Нет доступа к выбранной базе данных');
-mysql_query('SET NAMES "utf8"');
-*/
 try {
     $db = DB::me($dcms->mysql_host, $dcms->mysql_base, $dcms->mysql_user, $dcms->mysql_pass);
     $db->setAttribute(PDO :: ATTR_DEFAULT_FETCH_MODE, PDO :: FETCH_ASSOC);
@@ -118,9 +106,9 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
      */
     if (!empty($_SESSION [SESSION_ID_USER])) {
         // авторизация по сессии
-        $user = new user($_SESSION [SESSION_ID_USER]);
+        $user = current_user::getInstance($_SESSION [SESSION_ID_USER]);
         if ($user->password !== crypt::hash($_SESSION[SESSION_PASSWORD_USER], $dcms->salt)) {
-            $user = new user(false);
+            $user = current_user::getInstance();
             unset($_SESSION[SESSION_ID_USER]);
             unset($_SESSION[SESSION_PASSWORD_USER]);
         }
@@ -130,7 +118,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
         exit;
     } else {
         // пользователь будет являться гостем
-        $user = new user(false);
+        $user = current_user::getInstance();
     }
 
     /**
