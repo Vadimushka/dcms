@@ -97,11 +97,11 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     codes: codes, // из document.tpl
                     translates: translates, // из document.tpl
                     insert: function (code) {
-                        InputInsert($element[0], code.Prepend, code.Append);
+                        InputInsert($element.find('textarea')[0], code.Prepend, code.Append);
                         $scope.$broadcast('elastic:adjust'); // обновление высоты textarea
                     },
                     pasteSmile: function (smile) {
-                        InputInsert($element[0], '', ' ' + smile + ' ', true);
+                        InputInsert($element.find('textarea')[0], '', ' ' + smile + ' ', true);
                         $scope.$broadcast('elastic:adjust'); // обновление высоты textarea
                     }
                 };
