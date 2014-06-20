@@ -64,13 +64,15 @@ if ($can_write && $pages->this_page == 1) {
             }
         }
 
-        $form = new form('?' . passgen());
-        $form->refresh_url('?' . passgen());
-        $form->setAjaxUrl('?');
-        $form->hidden('token', antiflood::getToken('chat_mini'));
-        $form->textarea('message', __('Сообщение'), $message_form);
-        $form->button(__('Отправить'), 'send', false);
-        $form->display();
+        if (!AJAX) {
+            $form = new form('?' . passgen());
+            $form->refresh_url('?' . passgen());
+            $form->setAjaxUrl('?');
+            $form->hidden('token', antiflood::getToken('chat_mini'));
+            $form->textarea('message', __('Сообщение'), $message_form);
+            $form->button(__('Отправить'), 'send', false);
+            $form->display();
+        }
     }
 }
 

@@ -1,1 +1,1 @@
-[fix] Появлялась ошибка Undefined index: antiflood_tokens
+[fix] При запросе страницы AJAX`ом токены устаревали
