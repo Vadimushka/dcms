@@ -14,16 +14,31 @@ $(function () {
         $("#container_overflow, #container_menu, #container_content").toggleClass('menu');
     });
 
-    $('a').on('touchstart touchend', function (event) {
-        switch (event.type){
-            case 'touchstart':
-                $(event.currentTarget).toggleClass('invert');
-                break;
-            case 'touchend':
-                $(event.currentTarget).toggleClass('invert');
-                break;
-        }
-    });
+    (window.addClickEvent = function ($els) {
+        $els.on('touchstart touchend touchleave touchmove mouseleave', function (event) {
+            var $tg = $(event.currentTarget);
+            switch (event.type) {
+                case 'touchstart':
+                    if ($tg.data('pressed'))
+                        return;
+                    $tg.data('pressed', true);
+
+                    $tg.toggleClass('invert');
+                    break;
+                case 'touchend':
+                case 'touchleave':
+                case 'touchmove':
+                case 'mouseleave':
+                    if (!$tg.data('pressed'))
+                        return;
+                    $tg.data('pressed', false);
+
+                    $tg.toggleClass('invert');
+                    break;
+            }
+        });
+    })($('a'));
+
 
     $('form').each(function () {
         var $element = $(this);
@@ -99,11 +114,12 @@ $(function () {
                         for (var i = 0; i < data.add.length; i++) {
                             var after_id = data.add[i].after_id;
                             var $el = $(data.add[i].html).css('opacity', '0');
+
                             if (after_id)
                                 $element.children('#' + after_id).after($el);
                             else
                                 $el.prependTo($element);
-
+                            addClickEvent($el);
                             $el.animate({opacity: 1}, 500);
                         }
 
