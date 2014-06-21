@@ -142,16 +142,14 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     sending: false, // происходит отправка сообщения
                     values: {},
                     onSubmit: function (event) {
-
-                        event.preventDefault();
+                        var formNode = event.target;
+                        var url = $(formNode).data('url');
+                        if (!url)
+                            return;
                         if (form.sending)
                             return;
                         form.sending = true;
-                        var formNode = event.target;
-
-                        var url = $(event.target).data('url');
-                        if (!url)
-                            return;
+                        event.preventDefault();
 
                         var postData = {};
                         for (var i = 0; i < formNode.elements.length; i++) {
