@@ -46,11 +46,11 @@ $(function () {
                             continue;
                         formNode.elements[i].value = data.form[name];
                     }
-                    $element.attr('disabled', '');
+                    $element.attr('disabled', false);
                     $(scope).trigger('form_submit', $element.attr('id')); // Уведомляем о том, что форма была отправлена. Это событие должен слушать листинг
                 })
                 .error(function () {
-                    $element.attr('disabled', '');
+                    $element.attr('disabled', false);
                 });
         });
     });
