@@ -215,7 +215,7 @@ if ($ank->id) {
 // папка альбомов пользователя
     $albums_path = FILES . '/.photos/' . $ank->id;
 
-    if (!@is_dir($albums_path)) {
+    if (!is_dir($albums_path)) {
         if ($albums_dir = $photos->mkdir($ank->login, $ank->id)) {
             $albums_dir->group_show = 0;
             $albums_dir->group_write = min($ank->group, 2);
@@ -382,7 +382,7 @@ $post->content = date('d-m-Y', $ank->reg_date);
 
 $q = $db->prepare("SELECT `id_user` FROM `invations` WHERE `id_invite` = ? LIMIT 1");
 $q->execute(Array($ank->id));
-if ($row = $res->fetch()) {
+if ($row = $q->fetch()) {
     $inv = new user($row['id_user']);
     $post = $listing->post();
     $post->title = text::toOutput(__('По приглашению от %s', '[user]' . $inv->id . '[/user]'));

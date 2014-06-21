@@ -95,7 +95,6 @@ class document extends design
         if ($this->last_modified)
             header("Last-Modified: " . gmdate("D, d M Y H:i:s", (int)$this->last_modified) . " GMT", true);
 
-
         header('X-UA-Compatible: IE=edge', true); // отключение режима совместимости в осле
         header('Content-Type: text/html; charset=utf-8', true);
 
@@ -107,11 +106,8 @@ class document extends design
         $this->assign('err', $this->err); // сообщения об ошибке
         $this->assign('msg', $this->msg); // сообщения
         $this->assign('title', $this->title, 1); // заголовок страницы
-        $this->assign('content', @ob_get_clean()); // то, что попало в буфер обмена при помощи echo (display())
+        $this->assign('content', ob_get_clean()); // то, что попало в буфер обмена при помощи echo (display())
         $this->assign('document_generation_time', round(microtime(true) - TIME_START, 3)); // время генерации страницы
-        $this->assign('sql_count', DB::me()->get_query_count()); // Кол-во sql запросов
-        $this->assign('sql_time', round(DB::me()->get_exec_time_ms(), 3)); // время выполнения sql запросов
-
 
         if ($dcms->align_html) {
             // форматирование HTML кода
@@ -121,6 +117,7 @@ class document extends design
         } else {
             $this->display('document.tpl');
         }
+
     }
 
     /**
@@ -130,7 +127,7 @@ class document extends design
     function clean()
     {
         $this->outputed = true;
-        @ob_clean();
+        ob_clean();
     }
 
     /**
@@ -142,5 +139,3 @@ class document extends design
     }
 
 }
-
-?>

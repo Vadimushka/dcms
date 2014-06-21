@@ -70,10 +70,6 @@ if ($dcms->new_time_as_date) {
 
 try {
     $db = DB::me($dcms->mysql_host, $dcms->mysql_base, $dcms->mysql_user, $dcms->mysql_pass);
-    $db->setAttribute(PDO :: ATTR_DEFAULT_FETCH_MODE, PDO :: FETCH_ASSOC);
-    $db->log_on();
-    $db->query("SET NAMES utf8;");
-    $dcms->db = $db;
 } catch (ExceptionPdoNotExists $e) {
     @mysql_connect($dcms->mysql_host, $dcms->mysql_user, $dcms->mysql_pass) or die('Нет соединения с MySQL сервером');
     @mysql_select_db($dcms->mysql_base) or die('Нет доступа к выбранной базе данных');

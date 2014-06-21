@@ -38,7 +38,6 @@ class dcms
     static protected $_instance = null;
 
     protected $_data = array();
-    public $db;
 
     protected function __construct()
     {
@@ -64,7 +63,7 @@ class dcms
     public function distribution($mess, $group_min = 2)
     {
         $group_min = (int)$group_min;
-        $q = $this->db->prepare("SELECT `id` FROM `users` WHERE `group` >= ?");
+        $q = db::me()->prepare("SELECT `id` FROM `users` WHERE `group` >= ?");
         $q->execute(Array($group_min));
         $users = array();
         while ($ank_ids = $q->fetch()) {
@@ -95,7 +94,7 @@ class dcms
             $id_user = $user->id;
         }
 
-        $res = $this->db->prepare("INSERT INTO `action_list_administrators` (`id_user`, `time`, `module`, `description`) VALUES (?, ?, ?, ?)");
+        $res = db::me()->prepare("INSERT INTO `action_list_administrators` (`id_user`, `time`, `module`, `description`) VALUES (?, ?, ?, ?)");
         $res->execute(Array($id_user, TIME, $module, $description));
         return true;
     }
@@ -196,14 +195,14 @@ class dcms
         static $browser_id = false;
 
         if ($browser_id === false) {
-            $q = $this->db->prepare("SELECT * FROM `browsers` WHERE `name` = ? LIMIT 1");
+            $q = db::me()->prepare("SELECT * FROM `browsers` WHERE `name` = ? LIMIT 1");
             $q->execute(Array(browser::getName()));
             if ($row = $q->fetch()) {
                 $browser_id = $row['id'];
             } else {
-                $q = $this->db->prepare("INSERT INTO `browsers` (`type`, `name`) VALUES (?,?)");
+                $q = db::me()->prepare("INSERT INTO `browsers` (`type`, `name`) VALUES (?,?)");
                 $q->execute(Array(browser::getType(), browser::getName()));
-                $browser_id = $this->db->lastInsertId();
+                $browser_id = db::me()->lastInsertId();
             }
         }
         return $browser_id;

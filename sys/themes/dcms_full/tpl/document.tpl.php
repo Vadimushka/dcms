@@ -21,7 +21,7 @@
         <meta name="keywords" content="<?= $keywords ?>"/>
     <? } ?>
     <script>
-        user = <?=json_encode($user->getCustomData(array('id', 'group', 'mail_new_count', 'friend_new_count', 'login')))?>;
+        user = <?=json_encode(current_user::getInstance()->getCustomData(array('id', 'group', 'mail_new_count', 'friend_new_count', 'login')))?>;
         translates = {
             bbcode_b: '<?= __('Текст жирным шрифтом') ?>',
             bbcode_i: '<?= __('Текст курсивом') ?>',

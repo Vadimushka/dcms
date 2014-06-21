@@ -1,6 +1,6 @@
 <?php
 
-include_once 'sys/inc/start.php';
+include_once '../sys/inc/start.php';
 $doc = new document(); // инициализация документа для браузера
 $doc->title = __('Отзывы');
 

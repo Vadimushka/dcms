@@ -14,13 +14,17 @@ class ExceptionPdoNotExists extends Exception
   $db = DB::me();
  */
 
-Class DB
+class DB
 {
-
-    static protected $db;
+    static protected
+        $pdo,
+        $host,
+        $user,
+        $password,
+        $db_name;
 
     /**
-     * @return DebugPDO
+     * @return PDO
      * @throws ExceptionPdoNotExists
      * @throws Exception
      */
@@ -29,19 +33,29 @@ Class DB
         if (!class_exists('pdo') || array_search('mysql', PDO::getAvailableDrivers()) === false)
             throw new ExceptionPdoNotExists("Отсутствует драйвер PDO");
 
-        if (is_null(self::$db)) {
-            $args = func_get_args();
-            if (!isset($args[3])) {
+        $args = func_get_args();
+        if (count($args) == 4) {
+            self::$host = $args[0];
+            self::$db_name = $args[1];
+            self::$user = $args[2];
+            self::$password = $args[3];
+        }
+
+        if (is_null(self::$pdo)) {
+            if (!self::$db_name) {
                 throw new Exception('Укажите параметры соединения');
             }
-            self::$db = new DebugPDO('mysql:host=' . $args[0] . ';dbname=' . $args[1], $args[2], $args[3]);
+
+            self::$pdo = new PDO('mysql:host=' . self::$host . ';dbname=' . self::$db_name, self::$user, self::$password);
+            self::$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            self::$pdo->query("SET NAMES utf8;");
         }
-        return self::$db;
+        return self::$pdo;
     }
 
     static public function isConnected()
     {
-        return !is_null(self::$db);
+        return !is_null(self::$pdo);
     }
 
     protected function __construct()

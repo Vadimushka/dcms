@@ -429,9 +429,9 @@ class user
         if ($this->_update) {
             $sql = array();
             foreach ($this->_update as $key => $value) {
-                $sql [] = $key. " = " . DB::me()->quote($value);
+                $sql [] = $key . " = " . DB::me()->quote($value);
             }
-            $this->db->query("UPDATE `users` SET " . implode(', ', $sql) . " WHERE `id` = '" . $this->_data ['id'] . "' LIMIT 1");
+            DB::me()->query("UPDATE `users` SET " . implode(', ', $sql) . " WHERE `id` = '" . $this->_data ['id'] . "' LIMIT 1");
             $this->_update = array();
         }
     }

@@ -51,7 +51,6 @@ class native_templating
             @include $tpl_path;
 
         $content = ob_get_clean();
-        //ob_end_clean();
         return $content;
     }
 
