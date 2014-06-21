@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Class ExceptionPdoNotExists
+ */
+class ExceptionPdoNotExists extends Exception
+{
+
+}
+
 /*
   Класс для подключения к БД
   Можно использовать в любом месте движка
@@ -9,11 +17,18 @@
 Class DB
 {
 
-    static protected $db = null;
+    static protected $db;
 
-    //Метод предоставляет доступ к объекту
+    /**
+     * @return DebugPDO
+     * @throws ExceptionPdoNotExists
+     * @throws Exception
+     */
     static public function me()
     {
+        if (!class_exists('pdo') || array_search('mysql', PDO::getAvailableDrivers()) === false)
+            throw new ExceptionPdoNotExists("Отсутствует драйвер PDO");
+
         if (is_null(self::$db)) {
             $args = func_get_args();
             if (!isset($args[3])) {
