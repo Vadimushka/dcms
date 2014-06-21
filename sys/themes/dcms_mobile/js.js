@@ -14,6 +14,17 @@ $(function () {
         $("#container_overflow, #container_menu, #container_content").toggleClass('menu');
     });
 
+    $('a').on('touchstart touchend', function (event) {
+        switch (event.type){
+            case 'touchstart':
+                $(event.currentTarget).toggleClass('invert');
+                break;
+            case 'touchend':
+                $(event.currentTarget).toggleClass('invert');
+                break;
+        }
+    });
+
     $('form').each(function () {
         var $element = $(this);
         var url = $element.attr('data-ajax-url');
