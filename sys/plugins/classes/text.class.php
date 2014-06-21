@@ -49,7 +49,7 @@ abstract class text {
     }
 
     /**
-     * получение кол-ва символов строки 
+     * получение кол-ва символов строки
      * Корректная работа с UTF-8
      * @param string $str
      * @return integer
@@ -152,7 +152,7 @@ abstract class text {
      * @return string[]
      */
     static function nickSearch(&$str, $replace = true) {
-        if (!@mysql_ping()) {
+        if (!db::isConnected()) {
             return false;
         }
         $pattern = '#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31})([\!\.\,\ \)\(]|$)#uim';
@@ -185,7 +185,7 @@ abstract class text {
      * @return string
      */
     static function nick($value) {
-        if (!@mysql_ping()) {
+        if (!db::isConnected()) {
             // сделано для избежания проблем при установке, когда подключение к базе еще не выполнено
             return $value[1] . $value[2];
         }

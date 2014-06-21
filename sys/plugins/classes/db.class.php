@@ -39,6 +39,11 @@ Class DB
         return self::$db;
     }
 
+    static public function isConnected()
+    {
+        return !is_null(self::$db);
+    }
+
     protected function __construct()
     {
 
