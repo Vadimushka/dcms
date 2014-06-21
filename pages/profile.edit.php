@@ -81,8 +81,7 @@ if (isset($_POST ['save'])) {
 
 $form = new form('?' . passgen());
 $form->text('realname', __('Реальное имя'), $user->realname);
-$form->bbcode(__('Дата рождения') . ':');
-$form->input('ank_d_r', '', $user->ank_d_r, 'text', false, 2, false, 2);
+$form->input('ank_d_r', __('Дата рождения'), $user->ank_d_r, 'text', false, 2, false, 2);
 $form->input('ank_m_r', '', $user->ank_m_r, 'text',  false, 2, false, 2);
 $form->input('ank_g_r', '', $user->ank_g_r, 'text',  true, 4, false, 4);
 $form->text('icq', 'ICQ UIN', $user->icq_uin);

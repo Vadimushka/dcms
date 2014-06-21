@@ -402,7 +402,7 @@ html, body, #main {
 .post td.title {
 }
 
-.post.hightlight td.title {
+.post.highlight td.title {
     font-weight: bold;
 }
 

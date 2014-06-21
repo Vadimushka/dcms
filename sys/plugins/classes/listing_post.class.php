@@ -21,7 +21,7 @@ class listing_post extends ui {
         'post' => 'content',
         'edit' => 'bottom',
         'new' => 'highlight',
-        'highlight' => 'highlight',
+        'hightlight' => 'highlight',
     );
 
     /**
