@@ -7,7 +7,7 @@
 }
 
 .theme_light form {
-    display: inline;
+    display: inline-block;
     width: 100%;
 }
 
