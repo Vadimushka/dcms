@@ -10,7 +10,6 @@ $doc->title = __('Мини чат');
 $res = $db->query("SELECT COUNT(*) AS cnt FROM `chat_mini`");
 $cnt = ($row = $res->fetch()) ? $row['cnt'] : 0;
 $pages = new pages($cnt);
-$pages->this_page(); // получаем текущую страницу
 
 $can_write = true;
 /** @var $user \user */
