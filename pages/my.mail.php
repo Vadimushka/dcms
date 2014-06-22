@@ -96,6 +96,9 @@ LIMIT " . $pages->limit);
     $res = $db->prepare("UPDATE `mail` SET `is_read` = '1' WHERE `id_user` = ? AND `id_sender` = ?");
     $res->execute(Array($user->id, $id_kont));
 
+    // уменьшаем кол-во непрочитанных писем на количество помеченных как прочитанные
+    $user->mail_new_count = $user->mail_new_count - $res->rowCount();
+
     $id_after = false;
     $listing = new listing();
 
@@ -103,6 +106,7 @@ LIMIT " . $pages->limit);
         foreach ($arr AS $mail) {
             $ank2 = new user((int)$mail ['id_sender']);
             $post = $listing->post();
+            $post->id = 'mail_post_' . $mail['id'];
             $post->title = $ank2->nick();
             $post->url = '/profile.view.php?id=' . $ank2->id;
             $post->icon($ank2->icon());
