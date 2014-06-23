@@ -240,7 +240,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                                     for (var i = 0; i < $data.add.length; i++) {
                                         var after_id = $data.add[i].after_id;
                                         var $el = angular.element($data.add[i].html);
-                                        $compile($el);
+                                        $el = $compile($el)($scope);
                                         $animate.enter($el, $element, after_id ? $element.children('#' + after_id) : null);
                                     }
                                     if (!forcibly)
