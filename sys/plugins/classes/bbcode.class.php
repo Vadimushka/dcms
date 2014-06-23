@@ -1013,7 +1013,7 @@ class bbcode
     {
         $code = "<?php\n" . trim(preg_replace('#^\<\?(php)?|\?\>$#i', '', @$elem['val'][0]['str'])) . "\n?>";
         $code = highlight_string($code, true);
-        $code = preg_replace('#<code>(.*?)</code>#si', '<div contenteditable="true" disabled="disabled" onclick="return false;" class="DCMS_phpcode">\\1</div>', $code);
+        $code = preg_replace('#<code>(.*?)</code>#si', '<div class="DCMS_phpcode">\\1</div>', $code);
         $code = preg_replace("#[\n\r\t]+#", '', $code);
         return $code;
     }
