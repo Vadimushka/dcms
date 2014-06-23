@@ -448,7 +448,7 @@ html, body, #main {
     word-wrap: break-word;
     text-align: right;
     opacity: 0.6;
-    padding-top: 4px;
+    margin-top: 4px;
     font-size: smaller;
 }
 
