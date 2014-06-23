@@ -1,11 +1,15 @@
 <?
-$iefix = ($url && $dcms->ie_ver && $dcms->ie_ver < 10) ? 'onclick="location.href = \'' . $url . '\'"' : '';
 $post_time = $time ? '<span class="time">' . $time . '</span>' : '';
 $post_counter = $counter ? '<span class="counter gradient_grey invert border">' . $counter . '</span>' : '';
 $post_actions = '<span class="actions">' . $this->section($actions, '<a href="{url}"><img src="{icon}" alt="" /></a>') . '</span>';
+
+$classes = array('post');
+if ($highlight)
+    $classes[] = 'highlight';
+
 ?>
-<?= ($url ? '<a href="' . $url . '" class="' : '<div class="') . 'post' . ($highlight ? ' highlight' : '') . '" id="' . $id . '">' ?>
-    <table <?= $iefix ?> cellspacing="0" cellpadding="0" width="100%">
+<div id="<?= $id ?>" class="<?= implode(' ', $classes) ?>" data-ng-controller="ListingPostCtrl" data-post-url="<?= $url ?>">
+    <table cellspacing="0" cellpadding="0" width="100%">
         <? if ($image) { ?>
             <tr>
                 <td class="image" rowspan="4">
@@ -66,5 +70,4 @@ $post_actions = '<span class="actions">' . $this->section($actions, '<a href="{u
             </tr>
         <? } ?>
     </table>
-<?=
-$url ? '</a>' : '</div>'?>
+</div>

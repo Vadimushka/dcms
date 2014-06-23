@@ -199,8 +199,8 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                 };
             }])
     .controller('ListingCtrl', // контроллер для списка постов. Добавляет поддержку автоматического обновления списка
-        ['$rootScope', '$scope', '$http', '$interval', '$element', '$animate',
-            function ($rootScope, $scope, $http, $interval, $element, $animate) {
+        ['$rootScope', '$scope', '$http', '$interval', '$element', '$animate', '$compile',
+            function ($rootScope, $scope, $http, $interval, $element, $animate, $compile) {
                 var listing = $scope.listing = {
                     counter: 0, // счетчик запросов. необходим при принудительном обновлении данных, чтобы если ответ для более раннего запроса придет последним (маловероятно, но все же), то он не учитывался.
                     url: '',
@@ -240,6 +240,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                                     for (var i = 0; i < $data.add.length; i++) {
                                         var after_id = $data.add[i].after_id;
                                         var $el = angular.element($data.add[i].html);
+                                        $compile($el);
                                         $animate.enter($el, $element, after_id ? $element.children('#' + after_id) : null);
                                     }
                                     if (!forcibly)
@@ -262,6 +263,49 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
 
                 $interval(angular.bind(listing, listing.update, false), 7000);
             }])
+    .controller('ListingPostCtrl', function ($scope, $element) {
+        var post = $scope.post = {
+            diff: 5,
+            selection: true,
+            pageX: null,
+            pageY: null,
+            mdown: false,
+            href: $element.data('postUrl'),
+            mousedown: function (event) {
+                post.pageX = event.pageX;
+                post.pageY = event.pageY;
+                post.selection = false;
+                post.mdown = true;
+            },
+            mouseup: function (event) {
+                post.mdown = false;
+                if (post.selection) {
+                    $element.removeClass('selection');
+                    return;
+                }
+
+                if (event.which == 1)
+                    window.location.href = post.href;
+                if (event.which == 2)
+                    window.open(post.href, '_blank');
+            },
+            mousemove: function (event) {
+                if (!post.mdown)
+                    return;
+
+                if (post.pageX > event.pageX + post.diff ||
+                    post.pageX < event.pageX - post.diff ||
+                    post.pageY > event.pageY + post.diff ||
+                    post.pageY < event.pageY - post.diff) {
+                    post.selection = true;
+                    $element.addClass('selection');
+                }
+            }
+        };
+
+        if (post.href)
+            $element.on({mousedown: post.mousedown, mousemove: post.mousemove, mouseup: post.mouseup});
+    })
     .controller('DcmsCtrl', // общий контроллер DCMS
         ['$scope', '$http', '$timeout', '$rootScope',
             function ($scope, $http, $timeout, $rootScope) {

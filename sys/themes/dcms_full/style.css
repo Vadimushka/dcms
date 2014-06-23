@@ -123,6 +123,8 @@ html, body, #main {
     text-decoration: none;
 }
 
+/*region form*/
+
 .form {
     position: relative;
     background: #FAFAFA;
@@ -272,6 +274,9 @@ html, body, #main {
     border-color: #A8A8A8;
 }
 
+/*endregion*/
+
+/*region smiles*/
 .smiles {
     position: relative;
     float: right;
@@ -348,12 +353,16 @@ html, body, #main {
     vertical-align: middle;
 }
 
+/*endregion*/
+
+/*region listing*/
+
 .listing {
     margin-bottom: 10px;
-    box-shadow: 0 1px 17px -9px black;
+    box-shadow: 1px 1px 2px 1px #F0F0F0;
 }
 
-.listing .post, .listing a.post {
+.listing .post {
     background: #FAFAFA;
     border: 1px #DBDBDB solid;
     color: #686868;
@@ -363,6 +372,16 @@ html, body, #main {
     font-size: 90%;
     box-shadow: 0 0 0 1px #FCFCFC inset;
     overflow: hidden;
+}
+
+.listing .post:hover:not([data-post-url=""]) {
+    text-decoration: none !important;
+    background-color: white;
+    cursor: pointer;
+}
+
+.listing .post.selection:hover:not([data-post-url=""]){
+    cursor: text;
 }
 
 .post:first-child {
@@ -404,11 +423,6 @@ html, body, #main {
 
 .post.highlight td.title {
     font-weight: bold;
-}
-
-a.post:hover {
-    text-decoration: none !important;
-    background-color: white;
 }
 
 .post td.right {
@@ -456,6 +470,8 @@ a.post:hover {
     color: #3F7EFD;
     box-shadow: 0 0 0 1px white, 0px 0px 2px -1px black inset;
 }
+
+/*endregion*/
 
 .pages {
     text-align: center;
