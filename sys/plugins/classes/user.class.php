@@ -93,7 +93,7 @@ class user
      */
     public function guest_init()
     {
-        $this->_save_data();
+        $this->save_data();
         $this->_data = array();
         $this->_data ['id'] = false;
         $this->_data ['sex'] = 1;
@@ -425,12 +425,12 @@ class user
         }
     }
 
-    protected function _save_data()
+    public function save_data()
     {
         if ($this->_update) {
             $sql = array();
             foreach ($this->_update as $key => $value) {
-                $sql [] = $key . " = " . DB::me()->quote($value);
+                $sql[] = "`" . $key . "` = " . DB::me()->quote($value);
             }
             DB::me()->query("UPDATE `users` SET " . implode(', ', $sql) . " WHERE `id` = '" . $this->_data ['id'] . "' LIMIT 1");
             $this->_update = array();
@@ -439,7 +439,7 @@ class user
 
     function __destruct()
     {
-        $this->_save_data();
+        $this->save_data();
     }
 
 }
