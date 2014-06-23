@@ -101,6 +101,7 @@ if ($k_inv > $k) {
 
 
 $res_cnt_inv->execute(Array($user->id));
+$pages = new pages();
 $pages->posts = ($row = $res_cnt_inv->fetch()) ? $row['cnt'] : 0; // количество пригласительных
 
 $q = $db->prepare("SELECT * FROM `invations` WHERE `id_user` = ? ORDER BY (`id_invite` IS NULL) DESC, (`email` IS NULL) ASC, `id` ASC LIMIT $pages->limit");
