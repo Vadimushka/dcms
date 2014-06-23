@@ -162,7 +162,7 @@ class bbcode
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color')
         ),
         'color' => array(
             'handler' => 'color_2html',
