@@ -285,6 +285,9 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     return;
                 }
 
+                if ($(event.target).prop("nodeName").toLowerCase() == 'a')
+                    return;
+
                 if (event.which == 1)
                     window.location.href = post.href;
                 if (event.which == 2)
