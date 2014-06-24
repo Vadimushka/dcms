@@ -276,9 +276,11 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                 post.pageX = event.pageX;
                 post.pageY = event.pageY;
                 post.selection = false;
-                post.mdown = true;
+                post.mdown = !$(event.target).hasClass('DCMS_phpcode');
             },
             mouseup: function (event) {
+                if (!post.mdown)
+                    return;
                 post.mdown = false;
                 if (post.selection) {
                     $element.removeClass('selection');
@@ -309,7 +311,11 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
         };
 
         if (post.href)
-            $element.on({mousedown: post.mousedown, mousemove: post.mousemove, mouseup: post.mouseup});
+            $element.on({
+                mousedown: post.mousedown,
+                mousemove: post.mousemove,
+                mouseup: post.mouseup
+            });
     })
     .controller('DcmsCtrl', // общий контроллер DCMS
         ['$scope', '$http', '$timeout', '$rootScope',
