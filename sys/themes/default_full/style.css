@@ -614,7 +614,14 @@ html, body, #main {
 }
 
 .DCMS_nick_on {
-    text-shadow: 1px 1px 4px #00E900;
+}
+
+.DCMS_nick_on:after{
+    content: '●';
+    margin-left: 2px;
+}
+.DCMS_nick_on:after{
+    color: #07BE07;
 }
 
 .DCMS_nick_off {

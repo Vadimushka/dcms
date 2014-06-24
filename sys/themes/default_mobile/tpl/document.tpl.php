@@ -5,7 +5,7 @@
     <link rel="shortcut icon" href="/favicon.ico"/>
     <link rel="stylesheet" href="/sys/themes/.common/system.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
-    <link rel="stylesheet" href="<?= $path ?>/style.css?2" type="text/css"/>
+    <link rel="stylesheet" href="<?= $path ?>/style.css?3" type="text/css"/>
     <meta http-equiv="content-Type" content="application/xhtml+xml; charset=utf-8"/>
     <meta name="viewport" content="minimum-scale=1.0,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <meta name="generator" content="DCMS <?= $dcms->version ?>"/>
