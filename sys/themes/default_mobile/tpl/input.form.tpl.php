@@ -54,12 +54,15 @@
                     ' />';
                 break;
             case 'textarea':
-                echo '<textarea class="gradient_grey invert border padding"' .
+                echo '<div class="textarea gradient_grey invert border padding"><textarea' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                     '>' .
                     ($element['info']['value'] ? text::toValue($element['info']['value']) : '') .
-                    '</textarea>';
+                    '</textarea>
+                    <div class="smiles"></div>
+                    <div class="smiles_button"></div>
+                    </div>';
                 break;
             case 'checkbox':
                 echo '<label><input type="checkbox"' .
