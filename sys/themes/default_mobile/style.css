@@ -214,7 +214,7 @@ html, body {
 .listing .post td.title {
 }
 
-.listing .post.hightlight td.title {
+.listing .post.highlight td.title {
     font-weight: bold;
     color: #6F6F6F;
 }
