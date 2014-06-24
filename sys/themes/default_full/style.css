@@ -132,7 +132,7 @@ html, body, #main {
     padding: 5px;
     border-radius: 2px;
     margin-bottom: 10px;
-    box-shadow: 0 0 0 1px #FCFCFC inset, 0 1px 17px -9px black;
+    box-shadow: 1px 1px 2px 1px #F0F0F0;
     font-size: 12px;
 }
 
