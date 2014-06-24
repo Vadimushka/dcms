@@ -292,6 +292,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     window.location.href = post.href;
                 if (event.which == 2)
                     window.open(post.href, '_blank');
+                event.stopPropagation();
             },
             mousemove: function (event) {
                 if (!post.mdown)
