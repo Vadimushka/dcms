@@ -111,7 +111,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                 };
 
                 $scope.$watch('bbcode.showSmiles', function () {
-                    if (bbcode.smilesLoaded)
+                    if (!bbcode.showSmiles || bbcode.smilesLoaded)
                         return;
                     bbcode.smilesContent = 'Загрузка смайлов';
                     $http.get('/ajax/smiles.json.php')
