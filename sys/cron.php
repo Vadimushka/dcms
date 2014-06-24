@@ -127,6 +127,20 @@ if ($cron_time && $cron_time > TIME - 10) {
     }
 
     /**
+     * Сборка спрайта
+     */
+    if (!cache_events::get('compile_sprite')) {
+        cache_events::set('compile_sprite', true, mt_rand(82800, 86400));
+        $icons = (array)@glob(H . '/sys/images/icons/*.png');
+        $sprite = new sprite();
+        $sprite->addImages($icons);
+        $sprite->bindIndexes();
+        $sprite->saveSpriteImage(H.'/sys/themes/.common/icons.png');
+        $sprite->saveSpriteCss(H.'/sys/themes/.common/icons.css', '/sys/themes/.common/icons.png', SPRITE_CLASS_PREFIX);
+        unset($icons, $sprite);
+    }
+
+    /**
      * сообщение о донате.
      * отправляется создателю один раз, если он зарегистрирован более месяца
      */

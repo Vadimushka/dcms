@@ -23,7 +23,11 @@ $post_actions = '<span class="actions">' . $this->section($actions, '<a href="{u
         <? } elseif ($icon) { ?>
             <tr>
                 <td class="icon">
-                    <img src="<?= $icon ?>" alt=""/>
+                    <? if ($icon_class) { ?>
+                        <span class="<?= $icon_class ?>"></span>
+                    <? } else { ?>
+                        <img src="<?= $icon ?>" alt=""/>
+                    <? } ?>
                 </td>
                 <td class="title">
                     <?= $title ?>

@@ -4,6 +4,7 @@
     <title><?= $title ?></title>
     <link rel="shortcut icon" href="/favicon.ico"/>
     <link rel="stylesheet" href="/sys/themes/.common/system.css" type="text/css"/>
+    <link rel="stylesheet" href="/sys/themes/.common/icons.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/animate.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?4"/>

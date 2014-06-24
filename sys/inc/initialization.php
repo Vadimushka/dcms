@@ -96,6 +96,10 @@ define('COOKIE_ID_USER', 'DCMS_COOKIE_ID_USER');
  * @const COOKIE_USER_PASSWORD пароль пользователя в COOKIE
  */
 define('COOKIE_USER_PASSWORD', 'DCMS_COOKIE_USER_PASSWORD');
+/**
+ * @const SPRITE_CLASS_PREFIX префикс для css класса со спрайтами иконок
+ */
+define('SPRITE_CLASS_PREFIX', 'DCMS_');
 
 
 if (@function_exists('ini_set')) {
