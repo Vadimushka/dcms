@@ -102,6 +102,7 @@ $(function () {
                     $tg.toggleClass('invert');
                     break;
             }
+            event.stopPropagation();
         });
     })($('a'));
 

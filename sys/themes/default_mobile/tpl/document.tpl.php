@@ -36,7 +36,7 @@
         var URL = "<?=URL?>";
     </script>
     <script src="/sys/themes/.common/jquery-2.1.1.min.js"></script>
-    <script src="<?= $path ?>/js.js?2"></script>
+    <script src="<?= $path ?>/js.js?3"></script>
 </head>
 <body class="theme_light">
 <audio id="audio_notify" preload="auto">
