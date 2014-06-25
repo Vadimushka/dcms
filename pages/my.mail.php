@@ -142,8 +142,12 @@ $res->execute(Array($user->id));
 $user->mail_new_count = ($row = $res->fetch()) ? $row['cnt'] : 0;
 
 $pages = new pages ();
+
 if (isset($_GET ['only_unreaded'])) {
-    $res = $db->prepare("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) AS cnt FROM `mail` WHERE `mail`.`id_user` = ? AND `mail`.`is_read` = '0'");
+    $res = $db->prepare("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) FROM `mail` WHERE `mail`.`id_user` = ? AND `mail`.`is_read` = '0'");
+    $res->execute(Array($user->id));
+    $pages->posts = $res->fetchColumn();
+
     $q = $db->prepare("SELECT `users`.`id`,
         `mail`.`id_sender`,
         MAX(`mail`.`time`) AS `time`,
@@ -157,7 +161,10 @@ if (isset($_GET ['only_unreaded'])) {
         LIMIT " . $pages->limit);
 } else {
 
-    $res = $db->prepare("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) AS cnt FROM `mail` WHERE `mail`.`id_user` = ?");
+    $res = $db->prepare("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) FROM `mail` WHERE `mail`.`id_user` = ?");
+    $res->execute(Array($user->id));
+    $pages->posts = $res->fetchColumn();
+
     $q = $db->prepare("SELECT `users`.`id`,
         `mail`.`id_sender`,
         MAX(`mail`.`time`) AS `time`,
@@ -172,8 +179,8 @@ if (isset($_GET ['only_unreaded'])) {
 }
 
 
-$res->execute(Array($user->id));
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество написавших пользователей
+
+
 $q->execute(Array($user->id));
 $listing = new listing();
 if ($arr = $q->fetchAll()) {
