@@ -96,9 +96,9 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
                 }
                 $ank_in_message = new user($user_id_in_message);
                 if ($ank_in_message->notice_mention) {
-                    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
+                    $res = $db->prepare("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
                     $res->execute(Array($theme['id'], $ank_in_message->group));
-                    $count_posts_for_user = ($row = $res->fetch()) ? $row['cnt'] : 0;
+                    $count_posts_for_user = $res->fetchColumn();
                     $ank_in_message->mess("[user]{$user->id}[/user] упомянул" . ($user->sex ? '' : 'а') . " о Вас на форуме в [url=/forum/message.php?id_message={$id_message}]сообщении[/url] в теме [url=/forum/theme.php?id={$theme['id']}&postnum={$count_posts_for_user}#message{$id_message}]{$theme['name']}[/url]");
                 }
             }
@@ -107,7 +107,7 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
         if ($autor->notification_forum && $user->id != $autor->id) {
             $res = $db->prepare("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
             $res->execute(Array($theme['id'], $autor->group));
-            $count_posts_for_user = ($row = $res->fetch()) ? $row['cnt'] : 0;
+            $count_posts_for_user = $res->fetchColumn();
             $autor->mess("[user]{$user->id}[/user] ответил" . ($user->sex ? '' : 'а') . " Вам на форуме в [url=/forum/message.php?id_message={$id_message}]сообщении[/url] в теме [url=/forum/theme.php?id={$theme['id']}&postnum={$count_posts_for_user}#message{$id_message}]{$theme['name']}[/url]");
         }
 
