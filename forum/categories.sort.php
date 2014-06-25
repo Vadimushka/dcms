@@ -4,9 +4,7 @@ include_once '../sys/inc/start.php';
 $doc = new document();
 $doc->title = __('Изменение порядка категорий');
 
-
 if (isset($_GET['sortable'])) {
-
     $sort = explode(',', $_POST['sortable']);
     $q = $db->prepare("SELECT * FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
     $q->execute(Array($user->group));
@@ -19,43 +17,47 @@ if (isset($_GET['sortable'])) {
 
     $doc->clean();
     header('Content-type: application/json');
-    echo json_encode(array('result' => 1, 'description' => __('Порядок категорий успешно сохранен')));
+    echo json_encode(
+        array(
+        'result' => 1,
+        'description' => __('Порядок категорий успешно сохранен')
+    ));
     exit;
 }
 
 if (!empty($_GET['id']) && !empty($_GET['act'])) {
-    $sort = array();
     $q = $db->prepare("SELECT * FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
     $q->execute(Array($user->group));
+    $sort = array();
     while ($category = $q->fetch()) {
         $sort[$category['id']] = $category['id'];
     }
 
     switch ($_GET['act']) {
         case 'up':
-            if (misc::array_key_move($sort, $_GET['id'], -1)) {
+            if (misc::array_key_move($sort, $_GET['id'], -1))
                 $doc->msg(__('Категория успешно перемещена вверх'));
-            } else
+            else
                 $doc->err(__('Категория уже находится вверху'));
             break;
 
         case 'down':
-            if (misc::array_key_move($sort, $_GET['id'], 1)) {
-
+            if (misc::array_key_move($sort, $_GET['id'], 1))
                 $doc->msg(__('Категория успешно перемещена вниз'));
-            } else
+            else
                 $doc->err(__('Категория уже находится внизу'));
-
             break;
     }
 
-
+    // сбрасываем ключи массива.
+    // Остается порядковый массив с идентификаторами категорий
+    $sort = array_values($sort);
 
     $q = $db->prepare("SELECT * FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
     $q->execute(Array($user->group));
     $res_up = $db->prepare("UPDATE `forum_categories` SET `position` = ? WHERE `id` = ?");
     while ($category = $q->fetch()) {
-        if (($position = array_search('cid' . $category['id'], $sort)) !== false) {
+        if (($position = array_search($category['id'], $sort)) !== false) {
             $res_up->execute(Array($position, $category['id']));
         }
     }
@@ -82,4 +84,3 @@ $listing->sortable = '?sortable';
 $listing->display(__('Доступных Вам категорий нет'));
 
 $doc->ret(__('Форум'), 'index.php');
-?>
