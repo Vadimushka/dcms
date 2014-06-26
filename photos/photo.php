@@ -146,10 +146,10 @@ if ($can_write) {
     }
 }
 if (!empty($_GET ['delete_comm']) && $user->group >= $photo->group_edit) {
-    $delete_comm = (int) $_GET ['delete_comm'];
-    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id` = ? AND `id_file` = ? LIMIT 1");
+    $delete_comm = (int)$_GET ['delete_comm'];
+    $res = $db->prepare("SELECT COUNT(*) FROM `files_comments` WHERE `id` = ? AND `id_file` = ? LIMIT 1");
     $res->execute(Array($delete_comm, $photo->id));
-    $k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+    $k = $res->fetchColumn();
     if ($k) {
         $res = $db->prepare("DELETE FROM `files_comments` WHERE `id` = ? LIMIT 1");
         $res->execute(Array($delete_comm));
@@ -160,10 +160,10 @@ if (!empty($_GET ['delete_comm']) && $user->group >= $photo->group_edit) {
 }
 
 $pages = new pages ();
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id_file` = ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `files_comments` WHERE `id_file` = ?");
 $res->execute(Array($photo->id));
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
-$q = $db->prepare("SELECT * FROM `files_comments` WHERE `id_file` = ? ORDER BY `id` DESC LIMIT $pages->limit");
+$pages->posts = $res->fetchColumn(); // количество сообщений
+$q = $db->prepare("SELECT * FROM `files_comments` WHERE `id_file` = ? ORDER BY `id` DESC LIMIT " . $pages->limit);
 $q->execute(Array($photo->id));
 
 $listing = new listing();

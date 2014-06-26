@@ -25,7 +25,7 @@ class install_reg_admin {
         $this->settings = &$_SESSION['settings'];
 
         $this->users_count = DB::me()->query("SELECT COUNT(*) FROM `users`")->fetchColumn();
-        $this->adm_count = DB::me()->query("SELECT COUNT(*) as cnt FROM `users` WHERE `group` > '1'")->fetchColumn();
+        $this->adm_count = DB::me()->query("SELECT COUNT(*) FROM `users` WHERE `group` > '1'")->fetchColumn();
     }
 
     function actions() {
@@ -38,7 +38,7 @@ class install_reg_admin {
         if (isset($_POST['login']))
             if (is_valid::nick($_POST['login'])) {
                 $this->login = $_POST['login'];
-                $res = DB::me()->prepare("SELECT COUNT(*) AS cnt FROM `users` WHERE `login` = ?");
+                $res = DB::me()->prepare("SELECT COUNT(*) FROM `users` WHERE `login` = ?");
                 $res->execute(Array($this->login));
                 if ($row = $res->fetch() AND !$row['cnt']) {
                     if (empty($_POST['password']))
@@ -97,5 +97,3 @@ class install_reg_admin {
     }
 
 }
-
-?>

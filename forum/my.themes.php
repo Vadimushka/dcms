@@ -9,7 +9,7 @@ if (!$ank->group)
     $doc->access_denied(__('Нет данных'));
 $doc->title = ($ank->id == $user->id) ? __('Мои темы') : __('Темы пользователя "%s"', $ank->login);
 $pages = new pages;
-$res = $db->prepare("SELECT COUNT(DISTINCT(`msg`.`id_theme`)) AS cnt
+$res = $db->prepare("SELECT COUNT(DISTINCT(`msg`.`id_theme`))
 FROM `forum_messages` AS `msg`
 LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
@@ -21,8 +21,7 @@ AND `cat`.`group_show` <= ?
 AND `msg`.`group_show` <= ?");
 $res->execute(Array($user->id, $user->group, $user->group, $user->group, $user->group));
 $pages = new pages;
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество категорий форума
-$pages->this_page(); // получаем текущую страницу
+$pages->posts = $res->fetchColumn();
 
 $q = $db->prepare("SELECT `th`.* ,
         `tp`.`name` AS `topic_name`,
@@ -62,7 +61,6 @@ if ($arr = $q->fetchAll()) {
 }
 
 $listing->display(($ank->id == $user->id) ? __('Созданных Вами тем не найдено') : __('%s еще не создавал' . ($ank->sex ? '' : 'а') . ' тем на форуме', $ank->login));
-
 
 $pages->display("?id=$ank->id&amp;"); // вывод страниц
 $doc->ret(__('Форум'), './');

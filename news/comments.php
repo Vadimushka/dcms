@@ -43,10 +43,10 @@ if (!$user->is_writeable) {
     $can_write = false;
 }
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `news_comments` WHERE `id_news` = ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `news_comments` WHERE `id_news` = ?");
 $res->execute(Array($news['id']));
 $pages = new pages;
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
+$pages->posts = $res->fetchColumn(); // количество сообщений
 
 if ($can_write) {
 

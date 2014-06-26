@@ -31,14 +31,12 @@ $posts = array();
 
 $pages = new pages;
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `friends` WHERE `id_user` = ? AND `confirm` = '1'");
+$res = $db->prepare("SELECT COUNT(*) FROM `friends` WHERE `id_user` = ? AND `confirm` = '1'");
 $res->execute(Array($ank->id));
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество друзей
-$pages->this_page(); // получаем текущую страницу
+$pages->posts = $res->fetchColumn();
 
-$q = $db->prepare("SELECT * FROM `friends` WHERE `id_user` = ? AND `confirm` = '1' ORDER BY `time` DESC LIMIT $pages->limit");
+$q = $db->prepare("SELECT * FROM `friends` WHERE `id_user` = ? AND `confirm` = '1' ORDER BY `time` DESC LIMIT " . $pages->limit);
 $q->execute(Array($ank->id));
-
 
 $listing = new listing();
 while ($arr = $q->fetchAll()) {
@@ -55,4 +53,3 @@ $listing->display(__('У пользователя "%s" еще нет друзе�
 $pages->display('?id=' . $ank->id . '&amp;'); // вывод страниц
 
 $doc->ret(__('Анкета "%s"', $ank->login), '/profile.view.php?id=' . $ank->id);
-?>

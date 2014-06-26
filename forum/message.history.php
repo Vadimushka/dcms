@@ -25,14 +25,11 @@ if ($message['id_user'] != $user->id && $ank2->group >= $user->group) {
     exit;
 }
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_history` WHERE `id_message` = ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `forum_history` WHERE `id_message` = ?");
 $res->execute(Array($message['id']));
 $listing = new listing();
 $pages = new pages;
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений  теме
-$pages->this_page(); // получаем текущую страницу
-
-
+$pages->posts = $res->fetchColumn();
 
 $ank = new user($message['id_user']);
 
@@ -47,7 +44,7 @@ if ($message['edit_id_user']) {
     $post->bottom .= text::toOutput(' ([user]' . $message['edit_id_user'] . '[/user])');
 }
 
-$q = $db->prepare("SELECT * FROM `forum_history` WHERE `id_message` = ? ORDER BY `id` DESC LIMIT $pages->limit");
+$q = $db->prepare("SELECT * FROM `forum_history` WHERE `id_message` = ? ORDER BY `id` DESC LIMIT " . $pages->limit);
 $q->execute(Array($message['id']));
 if ($arr = $q->fetchAll()) {
     foreach ($arr AS $messages) {
@@ -71,4 +68,3 @@ if (isset($_GET['return']))
     $doc->ret(__('В тему'), text::toValue($_GET['return']));
 else
     $doc->ret(__('В тему'), 'theme.php?id=' . $message['id_theme']);
-?>

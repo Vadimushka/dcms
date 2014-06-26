@@ -7,7 +7,7 @@ $doc = new document(5);
 $doc->title = __('Реклама и баннеры');
 
 if (isset($_GET['id'])) {
-    $id_space = (string) $_GET['id'];
+    $id_space = (string)$_GET['id'];
 
     if (!$name = $advertisement->getNameById($id_space)) {
         header('Refresh: 1; url=?');
@@ -19,24 +19,28 @@ if (isset($_GET['id'])) {
     $doc->title = __('Рекламные площадки');
 
     switch (@$_GET['filter']) {
-        case 'new':$filter = 'new';
+        case 'new':
+            $filter = 'new';
             $sql = " AND `time_start` > ? AND (`time_end` > ? OR `time_end` = '0')";
             break;
-        case 'old':$filter = 'old';
+        case 'old':
+            $filter = 'old';
             $sql = " AND (`time_start` < ? OR `time_start` = '0') AND (`time_end` < ? AND `time_end` != '0')";
             break;
-        case 'all':$filter = 'all';
+        case 'all':
+            $filter = 'all';
             $sql = '';
             break;
-        default:$filter = 'active';
+        default:
+            $filter = 'active';
             $sql = " AND (`time_start` < ? OR `time_start` = '0') AND (`time_end` > ? OR `time_end` = '0')";
             break;
     }
 
-    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `advertising` WHERE `space` = ? $sql");
+    $res = $db->prepare("SELECT COUNT(*) FROM `advertising` WHERE `space` = ? " . $sql);
     $res->execute(Array($id_space, TIME, TIME));
     $pages = new pages;
-    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
+    $pages->posts = $res->fetchColumn();
     // меню сортировки
     $ord = array();
     $ord[] = array("?id=$id_space&amp;filter=all&amp;page={$pages->this_page}", __('Все'), $filter == 'all');
@@ -49,7 +53,7 @@ if (isset($_GET['id'])) {
 
     $listing = new listing();
 
-    $q = $db->prepare("SELECT * FROM `advertising` WHERE `space` = ? $sql ORDER BY `time_start` ASC LIMIT $pages->limit");
+    $q = $db->prepare("SELECT * FROM `advertising` WHERE `space` = ? " . $sql . " ORDER BY `time_start` ASC LIMIT ".$pages->limit);
     $q->execute(Array($id_space, TIME, TIME));
     while ($adt = $q->fetch()) {
         $post = $listing->post();

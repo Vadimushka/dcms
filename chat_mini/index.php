@@ -7,9 +7,7 @@ else
     $doc = new document();
 $doc->title = __('Мини чат');
 
-$res = $db->query("SELECT COUNT(*) AS cnt FROM `chat_mini`");
-$cnt = ($row = $res->fetch()) ? $row['cnt'] : 0;
-$pages = new pages($cnt);
+$pages = new pages($db->query("SELECT COUNT(*) FROM `chat_mini`")->fetchColumn());
 
 $can_write = true;
 /** @var $user \user */
@@ -85,7 +83,7 @@ if (!empty($form))
     $listing->setForm($form);
 
 
-$q = $db->query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT $pages->limit");
+$q = $db->query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT ".$pages->limit);
 $after_id = false;
 if ($arr = $q->fetchAll()) {
     foreach ($arr AS $message) {

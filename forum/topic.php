@@ -10,7 +10,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
     exit;
 }
-$id_top = (int) $_GET['id'];
+$id_top = (int)$_GET['id'];
 
 $q = $db->prepare("SELECT `forum_topics`.*, `forum_categories`.`name` AS `category_name` FROM `forum_topics`
 LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_topics`.`id_category`
@@ -23,16 +23,13 @@ if (!$topic = $q->fetch()) {
     exit;
 }
 
-
-
 $doc->title .= ' - ' . $topic['name'];
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_themes` WHERE `id_topic` = ? AND `group_show` <= ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `forum_themes` WHERE `id_topic` = ? AND `group_show` <= ?");
 $res->execute(Array($topic['id'], $user->group));
 $posts = array();
 $pages = new pages;
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество категорий форума
-$pages->this_page(); // получаем текущую страницу
+$pages->posts = $res->fetchColumn();
 
 $q = $db->prepare("SELECT `forum_themes`.* ,
         COUNT(`forum_messages`.`id`) AS `count`,
@@ -42,7 +39,7 @@ LEFT JOIN `forum_messages` ON `forum_messages`.`id_theme` = `forum_themes`.`id`
 
  WHERE `forum_themes`.`id_topic` = ? AND `forum_themes`.`group_show` <= ? AND `forum_messages`.`group_show` <= ?
  GROUP BY `forum_themes`.`id`
- ORDER BY `forum_themes`.`top`, `forum_themes`.`time_last` DESC LIMIT $pages->limit");
+ ORDER BY `forum_themes`.`top`, `forum_themes`.`time_last` DESC LIMIT " . $pages->limit);
 $q->execute(Array($topic['id'], $user->group, $user->group));
 $listing = new listing();
 
@@ -50,13 +47,13 @@ if ($arr = $q->fetchAll()) {
     foreach ($arr AS $themes) {
         $post = $listing->post();
 
-        $is_open = (int) ($themes['group_write'] <= $topic['group_write']);
+        $is_open = (int)($themes['group_write'] <= $topic['group_write']);
 
-    $post->icon("forum.theme.{$themes['top']}.$is_open");
-    $post->title = text::toValue($themes['name']);
-    $post->url = 'theme.php?id=' . $themes['id'];
-    $post->counter = $themes['count'];
-    $post->time = misc::when($themes['time_last']);
+        $post->icon("forum.theme.{$themes['top']}.$is_open");
+        $post->title = text::toValue($themes['name']);
+        $post->url = 'theme.php?id=' . $themes['id'];
+        $post->counter = $themes['count'];
+        $post->time = misc::when($themes['time_last']);
 
 
         $autor = new user($themes['id_autor']);
@@ -82,4 +79,3 @@ if ($topic['group_edit'] <= $user->group) {
 
 $doc->ret($topic['category_name'], 'category.php?id=' . $topic['id_category']);
 $doc->ret(__('Форум'), './');
-?>

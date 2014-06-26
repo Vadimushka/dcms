@@ -31,21 +31,21 @@ if (isset($_POST['clear'])) {
     }
 }
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_themes` WHERE `id_category` = ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `forum_themes` WHERE `id_category` = ?");
 $res->execute(Array($category['id']));
 $form = new form("?id=$category[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-$count['themes_all'] = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$count['themes_all'] = $res->fetchColumn();
 $form->bbcode(__('Всего тем в категории: %s', '[b]' . $count['themes_all'] . '[/b]'));
 
 // темы, в которых была активность более года назад
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_themes` WHERE `id_category` = ? AND `top` = '0' AND `time_last` < ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `forum_themes` WHERE `id_category` = ? AND `top` = '0' AND `time_last` < ?");
 $res->execute(Array($category['id'], (TIME - 31536000)));
-$count['themes_old'] = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$count['themes_old'] = $res->fetchColumn();
 // echo "Не активные более года: $count[themes_old]<br />";
 // темы, закрытые более трех месяцев
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_themes` WHERE `id_category` = ? AND `top` = '0' AND `group_write` > '1' AND `time_last` < ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `forum_themes` WHERE `id_category` = ? AND `top` = '0' AND `group_write` > '1' AND `time_last` < ?");
 $res->execute(Array($category['id'], (TIME - 7884000)));
-$count['themes_old2'] = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$count['themes_old2'] = $res->fetchColumn();
 // echo "Закрытые более трех месяцев: $count[themes_old2]<br />";
 if (!$count['themes_old'] + $count['themes_old2'])
     $form->bbcode(__('[b]' . 'Категория не требует очистки' . '[/b]'));

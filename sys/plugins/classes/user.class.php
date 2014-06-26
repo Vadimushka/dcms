@@ -301,9 +301,9 @@ class user
         if ($this->id && $this->id === $ank->id) {
             return true;
         }
-        $res = DB::me()->prepare("SELECT COUNT(*) AS cnt FROM `friends` WHERE `id_user` = ? AND `id_friend` = ? AND `confirm` = '1' LIMIT 1");
+        $res = DB::me()->prepare("SELECT COUNT(*) FROM `friends` WHERE `id_user` = ? AND `id_friend` = ? AND `confirm` = '1' LIMIT 1");
         $res->execute(Array($this->id, $ank->id));
-        return ($row = $res->fetch()) ? $row['cnt'] : false;
+        return !!$res->fetchColumn();
     }
 
     /**

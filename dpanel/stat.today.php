@@ -13,18 +13,18 @@ if (!$dcms->log_of_visits) {
 
 $hits = array();
 $hosts = array();
-$res_hits = $db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
-$res_hosts = $db->prepare("SELECT COUNT(DISTINCT `iplong` , `id_browser`) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
+$res_hits = $db->prepare("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
+$res_hosts = $db->prepare("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
 foreach ($browser_types AS $val) {
     $res_hits->execute(Array(DAY_TIME, $val));
-    $hits[$val] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
+    $hits[$val] = $res_hits->fetchColumn();
     $res_hosts->execute(Array(DAY_TIME, $val));
-    $hosts[$val] = ($row = $res_hosts->fetch()) ? $row['cnt'] : 0;
+    $hosts[$val] = $res_hosts->fetchColumn();
 }
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_visits_today` WHERE `time` <> ? LIMIT 1");
+$res = $db->prepare("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` <> ? LIMIT 1");
 $res->execute(Array(DAY_TIME));
-$k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$k = $res->fetchColumn();
 if (isset($log_of_visits) && $k) {
     $log_of_visits->tally();
 }

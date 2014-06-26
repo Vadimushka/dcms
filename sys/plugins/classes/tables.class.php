@@ -3,12 +3,14 @@
 /**
  * Работа с таблицами в базе
  */
-class tables {
+class tables
+{
 
     public $tables = array();
     private $db;
 
-    function __construct() {
+    function __construct()
+    {
         $this->db = DB::me();
         $tab = $this->db->query('SHOW TABLES');
         while ($table = $tab->fetch(PDO::FETCH_BOTH)) {
@@ -22,7 +24,8 @@ class tables {
      * @param boolean $auto_increment включать в запрос значение auto increment
      * @return string
      */
-    function get_create($table, $auto_increment = true) {
+    function get_create($table, $auto_increment = true)
+    {
         $sql = "/* Структура таблицы `$table` */\r\n";
         $row = $this->db->query("SHOW CREATE TABLE " . $this->db->quote($table) . "")->fetch();
         if (!$auto_increment) {
@@ -37,10 +40,11 @@ class tables {
      * @param int $c_ins Максимальное кол-во строк в одном INSERT`е
      * @return string
      */
-    function get_data($table, $c_ins = 2000) {
+    function get_data($table, $c_ins = 2000)
+    {
         $sql = '';
-        $res = $this->db->query("SELECT COUNT(*) AS cnt FROM " . $this->db->quote($table) . "");
-        $num_row_all = ($row = $res->fetch()) ? $row['cnt'] : 0;
+        $res = $this->db->query("SELECT COUNT(*) FROM " . $this->db->quote($table) . "");
+        $num_row_all = $res->fetchColumn();
         $start = 0;
 
         if ($num_row_all) {
@@ -48,8 +52,8 @@ class tables {
             $res = $this->db->query("SELECT * FROM " . $this->db->quote($table) . " LIMIT 1");
             $table_keys = @implode("`, `", @array_keys($res->fetch()));
             while ($start < $num_row_all) {
-                $res = $this->db->query("SELECT * FROM `$table` LIMIT $start, $c_ins");
-                $res_cnt = $this->db->query("SELECT COUNT(*) FROM `$table` LIMIT $start, $c_ins");
+                $res = $this->db->query("SELECT * FROM `$table` LIMIT " . $start . ", " . $c_ins);
+                $res_cnt = $this->db->query("SELECT COUNT(*) FROM `$table` LIMIT " . $start . ", " . $c_ins);
                 if ($num_row_all > $c_ins)
                     $sql .= "/* блок записей $start - " . ($start + $c_ins) . " */\r\n";
 
@@ -81,7 +85,8 @@ class tables {
      * @param boolean $ai auto_increment
      * @return boolean
      */
-    function save_create($path, $table, $ai = false) {
+    function save_create($path, $table, $ai = false)
+    {
         return @file_put_contents($path, $this->get_create($table, $ai));
     }
 
@@ -92,10 +97,9 @@ class tables {
      * @param int $c_ins Максимальное кол-во строк в одном INSERT`е
      * @return boolean
      */
-    function save_data($path, $table, $c_ins = 2000) {
+    function save_data($path, $table, $c_ins = 2000)
+    {
         return @file_put_contents($path, $this->get_data($table, $c_ins));
     }
 
 }
-
-?>

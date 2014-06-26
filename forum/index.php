@@ -12,7 +12,7 @@ $post->title = __('Поиск');
 $post->icon('forum.search');
 
 if (false === ($new_themes = cache_counters::get('forum.new_themes.' . $user->group))) {
-    $res = $db->prepare("SELECT COUNT(*)AS cnt
+    $res = $db->prepare("SELECT COUNT(*)
 FROM `forum_themes` AS `th`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
@@ -21,7 +21,7 @@ AND `tp`.`group_show` <= ?
 AND `cat`.`group_show` <= ?
 AND `th`.`time_create` > ?");
     $res->execute(Array($user->group, $user->group, $user->group, NEW_TIME));
-    $new_themes = ($row = $res->fetch()) ? $row['cnt'] : 0;
+    $new_themes = $res->fetchColumn();
     cache_counters::set('forum.new_themes.' . $user->group, $new_themes, 20);
 }
 
@@ -34,7 +34,7 @@ if ($new_themes) {
 $post->icon('forum.lt');
 
 if (false === ($new_posts = cache_counters::get('forum.new_posts.' . $user->group))) {
-    $res = $db->prepare("SELECT COUNT(DISTINCT(`msg`.`id_theme`)) AS cnt
+    $res = $db->prepare("SELECT COUNT(DISTINCT(`msg`.`id_theme`))
 FROM `forum_messages` AS `msg`
 LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
@@ -45,7 +45,7 @@ AND `cat`.`group_show` <= ?
 AND `msg`.`group_show` <= ?
 AND `msg`.`time` > ?");
     $res->execute(Array($user->group, $user->group, $user->group, $user->group, NEW_TIME));
-    $new_posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
+    $new_posts = $res->fetchColumn();
     cache_counters::set('forum.new_posts.' . $user->group, $new_posts, 20);
 }
 
@@ -60,7 +60,7 @@ $post->icon('forum.lp');
 
 if ($user->id) {
     if (false === ($my_themes = cache_counters::get('forum.my_themes.' . $user->id))) {
-        $res = $db->prepare("SELECT COUNT(DISTINCT(`msg`.`id_theme`)) AS cnt
+        $res = $db->prepare("SELECT COUNT(DISTINCT(`msg`.`id_theme`))
 FROM `forum_messages` AS `msg`
 LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
@@ -73,7 +73,7 @@ AND `msg`.`group_show` <= ?
 AND `msg`.`id_user` <> ?
 AND `msg`.`time` > ?");
         $res->execute(Array($user->id, $user->group, $user->group, $user->group, $user->group, $user->id, NEW_TIME));
-        $my_themes = ($row = $res->fetch()) ? $row['cnt'] : 0;
+        $my_themes = $res->fetchColumn();
         cache_counters::set('forum.my_themes.' . $user->id, $my_themes, 20);
     }
 
@@ -87,13 +87,12 @@ AND `msg`.`time` > ?");
     $post->icon('forum.my_themes');
 }
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_categories` WHERE `group_show` <= ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `forum_categories` WHERE `group_show` <= ?");
 $res->execute(Array($user->group));
 $pages = new pages();
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество категорий форума
-$pages->this_page(); // получаем текущую страницу
+$pages->posts = $res->fetchColumn();
 
-$q = $db->prepare("SELECT * FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC LIMIT $pages->limit");
+$q = $db->prepare("SELECT * FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC LIMIT " . $pages->limit);
 $q->execute(Array($user->group));
 while ($category = $q->fetch()) {
     $post = $listing->post();
@@ -105,11 +104,9 @@ while ($category = $q->fetch()) {
 
 $listing->display(__('Доступных Вам категорий нет'));
 
-
 $pages->display('?'); // вывод страниц
 
 if ($user->group >= 5) {
     $doc->act(__('Создать категорию'), 'category.new.php');
     $doc->act(__('Порядок категорий'), 'categories.sort.php');
 }
-?>

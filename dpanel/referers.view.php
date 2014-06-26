@@ -20,12 +20,12 @@ if (isset($_GET['id_site'])) {
 
     $doc->title = __('Рефералы с сайта "%s"', $site['domain']);
 
-    $res = $db->prepare("SELECT COUNT(DISTINCT `full_url`) AS cnt FROM `log_of_referers` WHERE `id_site` = ?");
+    $res = $db->prepare("SELECT COUNT(DISTINCT `full_url`) FROM `log_of_referers` WHERE `id_site` = ?");
     $res->execute(Array($id));
     $listing = new listing();
     $pages = new pages;
-    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-    $q = $db->prepare("SELECT `full_url`, COUNT(*) AS `count`, MAX(`time`) AS `time` FROM `log_of_referers` WHERE `id_site` = ? GROUP BY `full_url` ORDER BY `time` DESC LIMIT $pages->limit");
+    $pages->posts = $res->fetchColumn();
+    $q = $db->prepare("SELECT `full_url`, COUNT(*) AS `count`, MAX(`time`) AS `time` FROM `log_of_referers` WHERE `id_site` = ? GROUP BY `full_url` ORDER BY `time` DESC LIMIT " . $pages->limit);
     $res->execute(Array($id));
     while ($ref = $q->fetch()) {
         $post = $listing->post();
@@ -59,9 +59,9 @@ switch (@$_GET['order']) {
         break;
 }
 
-$res = $db->query("SELECT COUNT(*) AS cnt FROM `log_of_referers_sites`");
+$res = $db->query("SELECT COUNT(*) FROM `log_of_referers_sites`");
 $pages = new pages;
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$pages->posts = $res->fetchColumn();
 
 //
 //
@@ -76,7 +76,7 @@ $or->display('design.order.tpl');
 
 $listing = new listing();
 
-$q = $db->query("SELECT * FROM `log_of_referers_sites` ORDER BY $order LIMIT $pages->limit");
+$q = $db->query("SELECT * FROM `log_of_referers_sites` ORDER BY $order LIMIT " . $pages->limit);
 while ($ref = $q->fetch()) {
     $post = $listing->post();
     $post->title = text::toOutput($ref['domain']);

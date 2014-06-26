@@ -321,9 +321,9 @@ if ($ank->wmid) {
 
 //region Друзья
 if ($ank->is_friend($user) || $ank->vis_friends) {
-    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `friends` WHERE `id_user` = ? AND `confirm` = '1'");
+    $res = $db->prepare("SELECT COUNT(*) FROM `friends` WHERE `id_user` = ? AND `confirm` = '1'");
     $res->execute(Array($ank->id));
-    $k_friends = ($row = $res->fetch()) ? $row['cnt'] : 0;
+    $k_friends = $res->fetchColumn();
 
     $post = $listing->post();
     $post->title = __('Друзья');

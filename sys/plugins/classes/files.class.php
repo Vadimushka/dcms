@@ -376,9 +376,9 @@ class files {
         }
 
         $path_rel_ru = convert::to_utf8($this->path_rel);
-        $res = db::me()->prepare("SELECT COUNT(*) AS cnt FROM `files_cache` WHERE `group_show` <= ? AND `time_add` > ? AND `path_file_rel` LIKE ? AND `path_file_rel` NOT LIKE ?");
+        $res = db::me()->prepare("SELECT COUNT(*) FROM `files_cache` WHERE `group_show` <= ? AND `time_add` > ? AND `path_file_rel` LIKE ? AND `path_file_rel` NOT LIKE ?");
         $res->execute(Array($group, $time, $path_rel_ru . '/%', $path_rel_ru . '/.%'));
-        $count = ($row = $res->fetch()) ? $row['cnt'] : 0;
+        $count = $res->fetchColumn();
 
         cache_counters::set('files.' . $this->path_rel . '.' . (int) $is_new . '.' . $group, $count, 600);
         return $count;

@@ -78,12 +78,11 @@ $or->display('design.order.tpl');
 $listing = new listing();
 
 if ($show == 'part') {
-    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
+    $res = $db->prepare("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
     $res->execute(Array($theme['id'], $user->group));
     $pages = new pages;
-    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений  теме
-    $pages->this_page(); // получаем текущую страницу
-    $q = $db->prepare("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC LIMIT $pages->limit");
+    $pages->posts = $res->fetchColumn();
+    $q = $db->prepare("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC LIMIT " . $pages->limit);
 } else
     $q = $db->prepare("SELECT `id`, `id_user`, `message`, `time` FROM `forum_messages`  WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC");
 
@@ -92,7 +91,7 @@ if ($arr = $q->fetchAll()) {
     foreach ($arr AS $messages) {
         $ch = $listing->checkbox();
 
-        $ank = new user((int) $messages['id_user']);
+        $ank = new user((int)$messages['id_user']);
 
         $ch->title = $ank->nick;
         $ch->time = misc::when($messages['time']);
@@ -115,4 +114,3 @@ $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id'] .
 $doc->ret(__('В раздел'), 'topic.php?id=' . $theme['id_topic']);
 $doc->ret(__('В категорию'), 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
-?>

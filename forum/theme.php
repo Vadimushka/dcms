@@ -41,11 +41,10 @@ $doc->keywords[] = $theme['name'];
 $doc->keywords[] = $theme['topic_name'];
 $doc->keywords[] = $theme['category_name'];
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ?");
 $res->execute(Array($theme['id'], $user->group));
 $pages = new pages;
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений  теме
-$pages->this_page(); // получаем текущую страницу
+$pages->posts = $res->fetchColumn();
 $doc->description = __('Форум') . ' - ' . $theme['name'] . ' - '. __('Страница %s из %s', $pages->this_page, $pages->pages);
 
 if ($theme['id_vote']) {
@@ -54,9 +53,9 @@ if ($theme['id_vote']) {
     if ($vote = $q->fetch()) {
 
         $votes = new votes($vote['name']);
-        $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_vote_votes` WHERE `id_vote` = ? AND `id_user` = ?");
+        $res = $db->prepare("SELECT COUNT(*) FROM `forum_vote_votes` WHERE `id_vote` = ? AND `id_user` = ?");
         $res->execute(Array($theme['id_vote'], $user->id));
-        $vote_accept = (($row = $res->fetch()) ? $row['cnt'] : 0) ? false : true;
+        $vote_accept = ($res->fetchColumn()) ? false : true;
         if (!$vote['active'])
             $vote_accept = false;
         $q = $db->prepare("SELECT `vote`, COUNT(*) as `count` FROM `forum_vote_votes` WHERE `id_vote` = ? GROUP BY `vote`");
@@ -180,4 +179,3 @@ if ($user->group >= 2 || $theme['group_edit'] <= $user->group) {
 $doc->ret($theme['topic_name'], 'topic.php?id=' . $theme['id_topic']);
 $doc->ret($theme['category_name'], 'category.php?id=' . $theme['id_category']);
 $doc->ret(__('Форум'), './');
-?>

@@ -4,8 +4,8 @@ include_once '../sys/inc/start.php';
 $doc = new document();
 
 $pages = new pages;
-$res = $db->query("SELECT COUNT(*) AS cnt FROM `users_online`");
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$res = $db->query("SELECT COUNT(*) FROM `users_online`");
+$pages->posts = $res->fetchColumn();
 
 $doc->title = __('Сейчас на сайте (%s)', $pages->posts);
 

@@ -2,11 +2,13 @@
 
 defined('DCMS') or die;
 $db = DB::me();
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `chat_mini` WHERE `time` > ?");
+
+$res = $db->prepare("SELECT COUNT(*) FROM `chat_mini` WHERE `time` > ?");
 $res->execute(Array(NEW_TIME));
-$new_posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-$res = $db->query("SELECT COUNT(*) AS cnt FROM `users_online` WHERE `request` LIKE '/chat_mini/%'");
-$users = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$new_posts = $res->fetchColumn();
+
+$res = $db->query("SELECT COUNT(*) FROM `users_online` WHERE `request` LIKE '/chat_mini/%'");
+$users = $res->fetchColumn();
 
 $listing = new listing();
 

@@ -26,22 +26,22 @@ class log_of_visits
         // запрашиваем дни, которые есть в базе исключая текущий
         $q = $this->db->prepare("SELECT DISTINCT `time`  FROM `log_of_visits_today` WHERE `time` <> ?");
         $q->execute(Array(DAY_TIME));
-        $res_hits = $this->db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
-        $res_hosts = $this->db->prepare("SELECT COUNT(DISTINCT `iplong` , `id_browser`) AS cnt FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
+        $res_hits = $this->db->prepare("SELECT COUNT(*) FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
+        $res_hosts = $this->db->prepare("SELECT COUNT(DISTINCT `iplong` , `id_browser`) FROM `log_of_visits_today` WHERE `time` = ? AND `browser_type` = ?");
         $res_insert = $this->db->prepare("INSERT INTO `log_of_visits_for_days` (`time_day`, `hits_full`,`hosts_full`,`hits_light`,`hosts_light`,`hits_mobile`,`hosts_mobile`) VALUES (?,?,?,?,?,?,?)");
         while ($day = $q->fetch()) {
             $res_hits->execute(Array($day['time'], 'light'));
-            $hits['light'] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
+            $hits['light'] = $res_hits->fetchColumn();
             $res_hits->execute(Array($day['time'], 'mobile'));
-            $hits['mobile'] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
+            $hits['mobile'] = $res_hits->fetchColumn();
             $res_hits->execute(Array($day['time'], 'full'));
-            $hits['full'] = ($row = $res_hits->fetch()) ? $row['cnt'] : 0;
+            $hits['full'] = $res_hits->fetchColumn();
             $res_hosts->execute(Array($day['time'], 'light'));
-            $hosts['light'] = ($row = $res_hosts->fetch()) ? $row['cnt'] : 0;
+            $hosts['light'] = $res_hosts->fetchColumn();
             $res_hosts->execute(Array($day['time'], 'mobile'));
-            $hosts['mobile'] = ($row = $res_hosts->fetch()) ? $row['cnt'] : 0;
+            $hosts['mobile'] = $res_hosts->fetchColumn();
             $res_hosts->execute(Array($day['time'], 'full'));
-            $hosts['full'] = ($row = $res_hosts->fetch()) ? $row['cnt'] : 0;
+            $hosts['full'] = $res_hosts->fetchColumn();
 
             $res_insert->execute(Array($day['time'], $hits['full'], $hosts['full'], $hits['light'], $hosts['light'], $hits['mobile'], $hosts['mobile']));
         }
@@ -52,5 +52,4 @@ class log_of_visits
         // разблокируем таблицы
         $this->db->query("UNLOCK TABLES");
     }
-
 }

@@ -30,10 +30,6 @@ $doc->title = __('Файл %s - скачать', $file->runame);
 $doc->description = $file->meta_description ? $file->meta_description : $dir->meta_description;
 $doc->keywords = $file->meta_keywords ? explode(',', $file->meta_keywords) : ($dir->meta_keywords ? explode(',', $dir->meta_keywords) : '');
 
-
-
-
-
 if ($access_edit)
     include 'inc/file_act.php';
 
@@ -324,9 +320,9 @@ if (empty($_GET['act'])) {
 
     if (!empty($_GET['delete_comm']) && $user->group >= $file->group_edit) {
         $delete_comm = (int)$_GET['delete_comm'];
-        $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id` = ? AND `id_file` = ?");
+        $res = $db->prepare("SELECT COUNT(*) FROM `files_comments` WHERE `id` = ? AND `id_file` = ?");
         $res->execute(Array($delete_comm, $file->id));
-        $k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+        $k = $res->fetchColumn();
         if ($k) {
             $res = $db->prepare("DELETE FROM `files_comments` WHERE `id` = ? LIMIT 1");
             $res->execute(Array($delete_comm));
@@ -339,13 +335,11 @@ if (empty($_GET['act'])) {
     //$posts = array();
     $listing = new listing();
     $pages = new pages;
-    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `files_comments` WHERE `id_file` = ?");
+    $res = $db->prepare("SELECT COUNT(*) FROM `files_comments` WHERE `id_file` = ?");
     $res->execute(Array($file->id));
-    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
-    $pages->this_page(); // получаем текущую страницу
+    $pages->posts = $res->fetchColumn();
 
-
-    $q = $db->prepare("SELECT * FROM `files_comments` WHERE `id_file` = ? ORDER BY `id` DESC LIMIT $pages->limit");
+    $q = $db->prepare("SELECT * FROM `files_comments` WHERE `id_file` = ? ORDER BY `id` DESC LIMIT " . $pages->limit);
     $q->execute(Array($file->id));
     if ($arr = $q->fetchAll()) {
         foreach ($arr AS $comment) {
@@ -411,4 +405,3 @@ for ($i = 0; $i < count($return); $i++) {
 if ($access_edit)
     include 'inc/file_form.php';
 exit;
-?>

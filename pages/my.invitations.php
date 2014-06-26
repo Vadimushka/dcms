@@ -5,7 +5,7 @@ $doc = new document(1);
 $doc->title = __('Пригласительные');
 
 if (isset($_GET['id'])) {
-    $id_inv = (int) $_GET['id'];
+    $id_inv = (int)$_GET['id'];
     $q = $db->prepare("SELECT * FROM `invations` WHERE `id` = ? AND `id_user` = ? AND `id_invite` IS NULL LIMIT 1");
     $q->execute(Array($id_inv, $user->id));
 
@@ -83,9 +83,9 @@ if (isset($_GET['id'])) {
     exit;
 }
 
-$k_inv = (int) ($user->balls / $dcms->balls_for_invite); // количество пригласительных
+$k_inv = (int)($user->balls / $dcms->balls_for_invite); // количество пригласительных
 $doc->msg(__("У Вас %s пригласительны" . misc::number($k_inv, 'й', 'x', 'х'), $k_inv), 'invations');
-$res_cnt_inv = $db->prepare("SELECT COUNT(*) AS cnt FROM `invations` WHERE `id_user` = ?");
+$res_cnt_inv = $db->prepare("SELECT COUNT(*) FROM `invations` WHERE `id_user` = ?");
 $res_cnt_inv->execute(Array($user->id));
 $k = ($row = $res_cnt_inv->fetch()) ? $row['cnt'] : 0;
 
@@ -104,7 +104,7 @@ $res_cnt_inv->execute(Array($user->id));
 $pages = new pages();
 $pages->posts = ($row = $res_cnt_inv->fetch()) ? $row['cnt'] : 0; // количество пригласительных
 
-$q = $db->prepare("SELECT * FROM `invations` WHERE `id_user` = ? ORDER BY (`id_invite` IS NULL) DESC, (`email` IS NULL) ASC, `id` ASC LIMIT $pages->limit");
+$q = $db->prepare("SELECT * FROM `invations` WHERE `id_user` = ? ORDER BY (`id_invite` IS NULL) DESC, (`email` IS NULL) ASC, `id` ASC LIMIT " . $pages->limit);
 $q->execute(Array($user->id));
 
 $listing = new listing();
@@ -140,4 +140,3 @@ $listing->display(__('Список пригласительных пуст'));
 $pages->display('?'); // вывод страниц
 
 $doc->ret(__('Личное меню'), '/menu.user.php');
-?>

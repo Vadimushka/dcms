@@ -12,7 +12,7 @@ $doc->title = __('Моя почта');
 if (isset($_GET ['id'])) {
     $id_kont = (int)$_GET ['id'];
     $ank = new user($id_kont);
-    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `mail` WHERE `id_user` = ? AND `id_sender` = ?");
+    $res = $db->prepare("SELECT COUNT(*) FROM `mail` WHERE `id_user` = ? AND `id_sender` = ?");
     $res->execute(Array($user->id, $id_kont));
     if (!$ank->group && !$res->fetch()) {
         $doc->err(__('Пользователь не найден'));
@@ -80,9 +80,9 @@ if (isset($_GET ['id'])) {
 
 
     $pages = new pages ();
-    $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `mail` WHERE (`id_user` = ? AND `id_sender` = ?) OR (`id_user` = ? AND `id_sender` = ?)");
+    $res = $db->prepare("SELECT COUNT(*) FROM `mail` WHERE (`id_user` = ? AND `id_sender` = ?) OR (`id_user` = ? AND `id_sender` = ?)");
     $res->execute(Array($user->id, $id_kont, $id_kont, $user->id));
-    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество писем
+    $pages->posts = $res->fetchColumn(); // количество писем
 
 
     $q = $db->prepare("SELECT * FROM `mail`
@@ -137,9 +137,9 @@ LIMIT " . $pages->limit);
     exit();
 }
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `mail` WHERE `id_user` = ? AND `is_read` = '0'");
+$res = $db->prepare("SELECT COUNT(*) FROM `mail` WHERE `id_user` = ? AND `is_read` = '0'");
 $res->execute(Array($user->id));
-$user->mail_new_count = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$user->mail_new_count = $res->fetchColumn();
 
 $pages = new pages ();
 
@@ -147,7 +147,6 @@ if (isset($_GET ['only_unreaded'])) {
     $res = $db->prepare("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) FROM `mail` WHERE `mail`.`id_user` = ? AND `mail`.`is_read` = '0'");
     $res->execute(Array($user->id));
     $pages->posts = $res->fetchColumn();
-
     $q = $db->prepare("SELECT `users`.`id`,
         `mail`.`id_sender`,
         MAX(`mail`.`time`) AS `time`,
@@ -160,11 +159,9 @@ if (isset($_GET ['only_unreaded'])) {
         ORDER BY `time` DESC
         LIMIT " . $pages->limit);
 } else {
-
     $res = $db->prepare("SELECT COUNT(DISTINCT(`mail`.`id_sender`)) FROM `mail` WHERE `mail`.`id_user` = ?");
     $res->execute(Array($user->id));
     $pages->posts = $res->fetchColumn();
-
     $q = $db->prepare("SELECT `users`.`id`,
         `mail`.`id_sender`,
         MAX(`mail`.`time`) AS `time`,
@@ -177,9 +174,6 @@ if (isset($_GET ['only_unreaded'])) {
         ORDER BY `time` DESC
         LIMIT " . $pages->limit);
 }
-
-
-
 
 $q->execute(Array($user->id));
 $listing = new listing();
@@ -194,8 +188,6 @@ if ($arr = $q->fetchAll()) {
         $post->highlight = !$mail['is_read'];
     }
 }
-
-
 $listing->display(__('Почта отсутствует'));
 
 $pages->display('?');

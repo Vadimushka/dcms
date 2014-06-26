@@ -4,14 +4,14 @@ include_once '../sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Мои друзья');
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `friends` WHERE `id_user` = ? AND `confirm` = '0'");
+$res = $db->prepare("SELECT COUNT(*) FROM `friends` WHERE `id_user` = ? AND `confirm` = '0'");
 $res->execute(Array($user->id));
-$user->friend_new_count = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$user->friend_new_count = $res->fetchColumn();
 
 $pages = new pages;
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `friends` WHERE `id_user` = ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `friends` WHERE `id_user` = ?");
 $res->execute(Array($user->id));
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$pages->posts = $res->fetchColumn();
 
 $q = $db->prepare("SELECT * FROM `friends` WHERE `id_user` = ? ORDER BY `confirm` ASC, `time` DESC LIMIT " . $pages->limit . ";");
 $q->execute(Array($user->id));
@@ -31,4 +31,3 @@ $listing->display(__('Друзей нет'));
 $pages->display('?');
 
 $doc->ret(__('Личное меню'), '/menu.user.php');
-?>

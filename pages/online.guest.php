@@ -3,13 +3,12 @@
 include_once '../sys/inc/start.php';
 $doc = new document();
 $pages = new pages;
-$res = $db->query("SELECT COUNT(*) AS cnt FROM `guest_online` WHERE `conversions` >= '5'");
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$res = $db->query("SELECT COUNT(*) FROM `guest_online` WHERE `conversions` >= '5'");
+$pages->posts = $res->fetchColumn();
 
 $doc->title = __('Гости на сайте (%s)', $pages->posts);
 
-$q = $db->query("SELECT * FROM `guest_online` WHERE `conversions` >= '5' ORDER BY `time_start` DESC LIMIT $pages->limit");
-
+$q = $db->query("SELECT * FROM `guest_online` WHERE `conversions` >= '5' ORDER BY `time_start` DESC LIMIT " . $pages->limit);
 
 $listing = new listing();
 while ($ank = $q->fetch()) {
@@ -22,5 +21,4 @@ while ($ank = $q->fetch()) {
 }
 $listing->display(__('Нет гостей'));
 
-$pages->display('?'); // вывод страниц
-?>
+$pages->display('?');

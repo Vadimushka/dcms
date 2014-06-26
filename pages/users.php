@@ -51,9 +51,8 @@ elseif (isset($search) && $search) {
 $posts = array();
 $pages = new pages;
 
-$res = $db->query("SELECT COUNT(*) AS cnt FROM `users` $where");
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
-$pages->this_page(); // получаем текущую страницу
+$res = $db->query("SELECT COUNT(*) FROM `users` $where");
+$pages->posts = $res->fetchColumn();
 // меню сортировки
 $ord = array();
 $ord[] = array("?order=id&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('ID пользователя'), $order == 'id');
@@ -67,7 +66,7 @@ $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
 
-$q = $db->query("SELECT `id` FROM `users` $where ORDER BY `$order` $sort LIMIT $pages->limit");
+$q = $db->query("SELECT `id` FROM `users` $where ORDER BY `$order` " . $sort . " LIMIT $pages->limit");
 
 
 $listing = new listing();
@@ -91,7 +90,7 @@ if ($arr = $q->fetchAll()) {
                 $post->content[] = '[b]' . __('Рейтинг') . ': ' . $p_user->rating . '[/b]';
                 break;
             case 'balls':
-                $post->content[] = '[b]' . __('Баллы') . ': ' . ((int) $p_user->balls) . '[/b]';
+                $post->content[] = '[b]' . __('Баллы') . ': ' . ((int)$p_user->balls) . '[/b]';
                 break;
             case 'donate_rub':
                 $post->content[] = '[b]' . __('Сумма пожертвований: %s руб.', $p_user->donate_rub) . '[/b]';
@@ -111,5 +110,4 @@ $form->display();
 
 $listing->display($order == 'donate_rub' ? __('Нет пользователей, пожертвовавших денег на проект') : __('Нет пользователей'));
 
-$pages->display("?order=$order&amp;" . (isset($search) ? 'search=' . urlencode($search) . '&amp;' : '')); // вывод страниц
-?>
+$pages->display("?order=$order&amp;" . (isset($search) ? 'search=' . urlencode($search) . '&amp;' : ''));

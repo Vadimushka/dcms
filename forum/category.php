@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора категории'));
     exit;
 }
-$id_cat = (int) $_GET['id'];
+$id_cat = (int)$_GET['id'];
 
 $q = $db->prepare("SELECT * FROM `forum_categories` WHERE `id` = ? AND `group_show` <= ?");
 $q->execute(Array($id_cat, $user->group));
@@ -22,13 +22,12 @@ if (!$category = $q->fetch()) {
 
 $doc->title .= ' - ' . $category['name'];
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `forum_topics` WHERE `id_category` = ? AND `group_show` <= ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `forum_topics` WHERE `id_category` = ? AND `group_show` <= ?");
 $res->execute(Array($category['id'], $user->group));
 $pages = new pages;
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество категорий форума
-$pages->this_page(); // получаем текущую страницу
+$pages->posts = $res->fetchColumn(); // количество категорий форума
 
-$q = $db->prepare("SELECT * FROM `forum_topics` WHERE `id_category` = ? AND `group_show` <= ? ORDER BY `time_last` DESC LIMIT $pages->limit");
+$q = $db->prepare("SELECT * FROM `forum_topics` WHERE `id_category` = ? AND `group_show` <= ? ORDER BY `time_last` DESC LIMIT " . $pages->limit);
 $q->execute(Array($category['id'], $user->group));
 $listing = new listing();
 while ($topics = $q->fetch()) {
@@ -49,4 +48,3 @@ if ($category['group_write'] <= $user->group) {
 if ($category['group_edit'] <= $user->group) {
     $doc->act(__('Параметры категории'), 'category.edit.php?id=' . $category['id'] . "&amp;return=" . URL);
 }
-?>

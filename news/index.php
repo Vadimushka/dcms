@@ -6,10 +6,10 @@ $doc = new document();
 $doc->title = __('Наши новости');
 
 $pages = new pages;
-$res = $db->query("SELECT COUNT(*) AS cnt FROM `news`");
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
+$res = $db->query("SELECT COUNT(*) FROM `news`");
+$pages->posts = $res->fetchColumn(); // количество сообщений
 
-$q = $db->query("SELECT * FROM `news` ORDER BY `id` DESC LIMIT $pages->limit");
+$q = $db->query("SELECT * FROM `news` ORDER BY `id` DESC LIMIT ".$pages->limit);
 
 $listing = new listing();
 if ($arr = $q->fetchAll()) {

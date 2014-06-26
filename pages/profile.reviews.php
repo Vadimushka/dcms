@@ -69,10 +69,9 @@ if ($user->group && $can_write && isset($_POST['review']) && $user->id != $ank->
 }
 
 $pages = new pages;
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `reviews_users` WHERE `id_ank` = ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `reviews_users` WHERE `id_ank` = ?");
 $res->execute(Array($ank->id));
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество сообщений
-$pages->this_page(); // получаем текущую страницу
+$pages->posts = $res->fetchColumn();
 
 $q = $db->prepare("SELECT * FROM `reviews_users` WHERE `id_ank` = ? ORDER BY `id` DESC LIMIT $pages->limit");
 $q->execute(Array($ank->id));

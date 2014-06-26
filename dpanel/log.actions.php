@@ -16,15 +16,14 @@ if (isset($_GET['id_user'])) {
     }
 
     if (!empty($_GET['module'])) {
-        $module = (string) $_GET['module'];
+        $module = (string)$_GET['module'];
         // вывод списка действий по модулю
-        $res = $db->prepare("SELECT COUNT(*) AS cnt FROM `action_list_administrators` $sql_where AND `module` = ?");
+        $res = $db->prepare("SELECT COUNT(*) FROM `action_list_administrators` " . $sql_where . " AND `module` = ?");
         $res->execute(Array($module));
         $listing = new listing();
         $pages = new pages;
-        $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество
-        $pages->this_page(); // получаем текущую страницу
-        $q = $db->prepare("SELECT * FROM `action_list_administrators`$sql_where AND `module` = ? ORDER BY `id` DESC LIMIT $pages->limit");
+        $pages->posts = $res->fetchColumn(); // количество
+        $q = $db->prepare("SELECT * FROM `action_list_administrators` " . $sql_where . " AND `module` = ? ORDER BY `id` DESC LIMIT $pages->limit");
         $q->execute(Array($module));
         if ($arr = $q->fetchAll()) {
             foreach ($arr AS $action) {
@@ -48,9 +47,9 @@ if (isset($_GET['id_user'])) {
     $listing = new listing();
 
     $pages = new pages;
-    $res = $db->query("SELECT COUNT(DISTINCT(`module`)) AS cnt FROM `action_list_administrators`$sql_where");
-    $pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество модулей
-    $q = $db->query("SELECT `module` FROM `action_list_administrators`$sql_where GROUP BY `module` LIMIT $pages->limit");
+    $res = $db->query("SELECT COUNT(DISTINCT(`module`)) FROM `action_list_administrators`$sql_where");
+    $pages->posts = $res->fetchColumn(); // количество модулей
+    $q = $db->query("SELECT `module` FROM `action_list_administrators`$sql_where GROUP BY `module` LIMIT " . $pages->limit);
     while ($module = $q->fetch()) {
         $post = $listing->post();
         $post->title = __($module['module']);

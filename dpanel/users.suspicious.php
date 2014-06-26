@@ -9,7 +9,7 @@ if (!empty($_GET['approve'])) {
     $app = (int)$_GET['approve'];
     $res = $db->prepare("SELECT COUNT(*)AS cnt FROM `users_suspicion` WHERE `id_user` = ?");
     $res->execute(Array($app));
-    $k = ($row = $res->fetch()) ? $row['cnt'] : 0;
+    $k = $res->fetchColumn();
     if ($k) {
         $res = $db->prepare("DELETE FROM `users_suspicion` WHERE `id_user` = ? LIMIT 1");
         $res->execute(Array($app));
@@ -66,9 +66,9 @@ if (isset($_GET['id'])) {
 }
 
 $listing = new listing();
-$res = $db->query("SELECT COUNT(*) AS cnt FROM `users_suspicion`");
+$res = $db->query("SELECT COUNT(*) FROM `users_suspicion`");
 $pages = new pages;
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0; // количество постов
+$pages->posts = $res->fetchColumn(); // количество постов
 
 $q = $db->query("SELECT *  FROM `users_suspicion` ORDER BY `id_user` ASC LIMIT " . $pages->limit);
 if ($arr = $q->fetchAll()) {

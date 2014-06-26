@@ -4,11 +4,11 @@ include_once '../sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Журнал авторизаций');
 
-$res = $db->prepare("SELECT COUNT(*) AS cnt FROM `log_of_user_aut` WHERE `id_user` = ?");
+$res = $db->prepare("SELECT COUNT(*) FROM `log_of_user_aut` WHERE `id_user` = ?");
 $res->execute(Array($user->id));
 
 $pages = new pages;
-$pages->posts = ($row = $res->fetch()) ? $row['cnt'] : 0;
+$pages->posts = $res->fetchColumn();
 $q = $db->prepare("SELECT
         `log_of_user_aut`.`time` AS `time`,
         `log_of_user_aut`.`method` AS `method`,
@@ -35,4 +35,3 @@ $listing->display(__('Журнал пуст'));
 $pages->display('?'); // вывод страниц
 
 $doc->ret(__('Личное меню'), '/menu.user.php');
-?>
