@@ -127,11 +127,12 @@ class native_templating
      */
     protected function replace($data, $tpl)
     {
+        $data = (array)$data;
         $keys = array();
         $values = array();
         foreach ($data AS $key => $value) {
             $keys[] = '{' . $key . '}';
-            $values[] = $value;
+            $values[] = text::toValue($value);
         }
         return str_replace($keys, $values, $tpl);
     }

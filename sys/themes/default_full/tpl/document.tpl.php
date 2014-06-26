@@ -75,13 +75,16 @@
                     <? if (!IS_MAIN) { ?>
                         <a class="gradient_blue invert border radius padding" href='/'><?= __("На главную") ?></a>
                     <? } ?>
-                    <?= $this->section($returns, '<a class="gradient_blue invert border radius padding" href="{1}">{0}</a>', true); ?>
+                    <?= $this->section($returns, '<a class="gradient_blue invert border radius padding" href="{url}">{name}</a>', true); ?>
+                </div>
+                <div id="tabs">
+                    <?= $this->section($tabs, '<a class="tab sel{selected}" href="{url}">{name}</a>', true); ?>
                 </div>
             </div>
-            <div id="navigation_user" class="gradient_grey invert">
+            <div id="navigation_user">
                 <div class="body_width_limit">
                     <?
-                    echo $this->section($actions, '<a class="gradient_grey border radius padding" href="{1}">{0}</a>');
+                    echo $this->section($actions, '<a class="gradient_grey border radius padding" href="{url}">{name}</a>');
                     ?>
                     <a ng-show="+user.friend_new_count" class='gradient_grey border radius padding ng-hide'
                        href='/my.friends.php' ng-bind="str.friends"><?= __("Друзья") ?></a>

@@ -41,15 +41,11 @@ if (isset($_GET['id'])) {
     $res->execute(Array($id_space, TIME, TIME));
     $pages = new pages;
     $pages->posts = $res->fetchColumn();
-    // меню сортировки
-    $ord = array();
-    $ord[] = array("?id=$id_space&amp;filter=all&amp;page={$pages->this_page}", __('Все'), $filter == 'all');
-    $ord[] = array("?id=$id_space&amp;filter=active&amp;page={$pages->this_page}", __('Активные'), $filter == 'active');
-    $ord[] = array("?id=$id_space&amp;filter=old&amp;page={$pages->this_page}", __('Завершенные'), $filter == 'old');
-    $ord[] = array("?id=$id_space&amp;filter=new&amp;page={$pages->this_page}", __('В ожидании'), $filter == 'new');
-    $or = new design();
-    $or->assign('order', $ord);
-    $or->display('design.order.tpl');
+
+    $doc->tab(__('Все'), "?id=$id_space&filter=all&page={$pages->this_page}")->selected = $filter == 'all';
+    $doc->tab(__('Активные'), "?id=$id_space&filter=active&page={$pages->this_page}")->selected = $filter == 'active';
+    $doc->tab(__('Завершенные'), "?id=$id_space&filter=old&page={$pages->this_page}")->selected = $filter == 'old';
+    $doc->tab(__('В ожидании'), "?id=$id_space&filter=new&page={$pages->this_page}")->selected = $filter == 'new';
 
     $listing = new listing();
 

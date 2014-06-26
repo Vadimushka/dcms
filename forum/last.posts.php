@@ -86,13 +86,9 @@ $pages = new pages($count_posts);
 $start = $pages->my_start();
 $end = $pages->end();
 
-$ord = array();
-$ord[] = array("?period=default&amp;page={$pages->this_page}", $dcms->new_time_as_date ? __('Сегодня') : __('За сутки'), $period == 'default');
-$ord[] = array("?period=yesterday&amp;page={$pages->this_page}", __('Вчера'), $period == 'yesterday');
-$ord[] = array("?period=week&amp;page={$pages->this_page}", __('За неделю'), $period == 'week');
-$or = new design();
-$or->assign('order', $ord);
-$or->display('design.order.tpl');
+$doc->tab($dcms->new_time_as_date ? __('Сегодня') : __('За сутки'), "?period=default&page={$pages->this_page}", $period == 'default');
+$doc->tab(__('Вчера'), "?period=yesterday&page={$pages->this_page}", $period == 'yesterday');
+$doc->tab(__('За неделю'), "?period=week&page={$pages->this_page}", $period == 'week');
 
 $listing = new listing();
 
@@ -107,7 +103,7 @@ for ($z = $start; $z < $end && $z < $pages->posts; $z++) {
         }
     }
 
-    $is_open = (int) ($themes['group_write'] <= $themes['topic_group_write']);
+    $is_open = (int)($themes['group_write'] <= $themes['topic_group_write']);
 
     $post->icon("forum.theme.{$themes['top']}.$is_open.png");
     $post->time = misc::when($themes['time_last']);

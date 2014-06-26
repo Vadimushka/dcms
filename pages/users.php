@@ -65,9 +65,7 @@ $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
 
-
 $q = $db->query("SELECT `id` FROM `users` $where ORDER BY `$order` " . $sort . " LIMIT $pages->limit");
-
 
 $listing = new listing();
 if ($arr = $q->fetchAll()) {

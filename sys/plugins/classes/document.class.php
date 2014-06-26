@@ -9,11 +9,13 @@ class document extends design
     public $description = '';
     public $keywords = array();
     public $last_modified = null;
+
     protected $err = array();
     protected $msg = array();
     protected $outputed = false;
     protected $actions = array();
     protected $returns = array();
+    protected $tabs = array();
 
     function __construct($group = 0)
     {
@@ -27,41 +29,52 @@ class document extends design
     }
 
     /**
-     * Сообщение об ошибке в верху страницы
-     * @param string $err
+     * @param $name
+     * @param $url
+     * @param bool $selected
+     * @return document_link
      */
-    function err($err)
+    function tab($name, $url, $selected = false)
     {
-        $this->err[] = array('text' => text::filter($err, 1));
+        return $this->tabs[] = new document_link($name, $url, $selected);
     }
 
     /**
-     * Сообщение в верху страницы
-     * @param string $msg
+     * @param $name
+     * @param $url
+     * @return document_link
      */
-    function msg($msg)
+    function ret($name, $url)
     {
-        $this->msg[] = array('text' => text::filter($msg, 1));
+        return $this->returns[] = new document_link($name, $url);
     }
 
     /**
-     * Добавление ссылки на возврат
-     * @param string $name отображаемое название
-     * @param string $link URL ссылки
+     * @param $name
+     * @param $url
+     * @return document_link
      */
-    function ret($name, $link)
+    function act($name, $url)
     {
-        $this->returns[] = array($name, $link);
+        return $this->actions[] = new document_link($name, $url);
     }
 
     /**
-     * Добавление ссылки "Действие"
-     * @param string $name отображаемое название
-     * @param string $link URL ссылки
+     * @param $text
+     * @return document_message
      */
-    function act($name, $link)
+    function err($text)
     {
-        $this->actions[] = array($name, $link);
+        return $this->err[] = new document_message($text, true);
+    }
+
+    /**
+     * @param $text
+     * @return document_message
+     */
+    function msg($text)
+    {
+        return $this->msg[] = new document_message($text);
     }
 
     /**
@@ -101,8 +114,11 @@ class document extends design
         $this->assign('adt', new adt()); // реклама
         $this->assign('description', $this->description ? $this->description : $this->title, 1); // описание страницы (meta)
         $this->assign('keywords', $this->keywords ? implode(',', $this->keywords) : $this->title, 1); // ключевые слова (meta)
+
         $this->assign('actions', $this->actions); // ссылки к действию
         $this->assign('returns', $this->returns); // ссылки для возврата
+        $this->assign('tabs', $this->tabs); // вкладки
+
         $this->assign('err', $this->err); // сообщения об ошибке
         $this->assign('msg', $this->msg); // сообщения
         $this->assign('title', $this->title, 1); // заголовок страницы

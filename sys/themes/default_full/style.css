@@ -27,6 +27,42 @@ html, body, #main {
     text-align: center;
     font-size: 32px;
     font-weight: bold;
+    line-height: 60px;
+}
+
+#tabs {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+#tabs a.tab {
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding: 0px 10px;
+    text-align: center;
+    margin: 0px 3px;
+    border-radius: 8px 8px 0 0;
+    color: #F2F3FD;
+    text-shadow: 0px -1px #9B9B9B;
+    text-decoration: none;
+    border: 1px solid transparent;
+}
+
+#tabs a.tab:hover {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: none;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
+#tabs a.tab.sel1 {
+    border: 1px solid rgba(0, 0, 0, 0.11);
+    border-bottom: none;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.24);
+    color: #fff;
 }
 
 #navigation {
@@ -41,9 +77,11 @@ html, body, #main {
 
 #navigation_user {
     min-height: 33px;
-    padding: 2px 10px;
+    padding: 10px 10px;
     text-align: right;
-    box-shadow: 0 2px 5px -3px black inset;
+    box-shadow: 0 2px 5px -3px #000 inset;
+    background-color: #F0F0F0;
+    border-bottom: 1px solid #E6E6E6;
 }
 
 #navigation_user a {
@@ -430,7 +468,7 @@ html, body, #main {
     padding: 2px;
 }
 
-.post.content .post_head{
+.post.content .post_head {
     border-bottom: 1px solid #F1F1F1;
     padding-bottom: 7px;
 }
@@ -487,15 +525,14 @@ html, body, #main {
     display: inline-block;
 }
 
-.post_actions a{
+.post_actions a {
     opacity: .66;
     margin-left: 2px;
 }
 
-.post_actions a:hover{
+.post_actions a:hover {
     opacity: 1;
 }
-
 
 .post.image .post_image {
     position: absolute;
@@ -616,11 +653,12 @@ html, body, #main {
 .DCMS_nick_on {
 }
 
-.DCMS_nick_on:after{
+.DCMS_nick_on:after {
     content: '●';
     margin-left: 2px;
 }
-.DCMS_nick_on:after{
+
+.DCMS_nick_on:after {
     color: #07BE07;
 }
 

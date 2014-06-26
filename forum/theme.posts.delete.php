@@ -67,13 +67,10 @@ WHERE `forum_messages`.`id_theme` = ? AND (" . implode(' OR ', $delete_posts) . 
         $doc->msg(__('Успешно скрыто %d сообщений', count($delete_posts)));
     }
 }
-// меню сортировки
-$ord = array();
-$ord[] = array("?id=$theme[id]&amp;show=all", __('Все'), $show == 'all');
-$ord[] = array("?id=$theme[id]&amp;show=part", __('Постранично'), $show == 'part');
-$or = new design();
-$or->assign('order', $ord);
-$or->display('design.order.tpl');
+
+$doc->tab(__('Все'), "?id=$theme[id]&show=all", $show == 'all');
+$doc->tab(__('Постранично'), "?id=$theme[id]&show=part", $show == 'part');
+
 
 $listing = new listing();
 

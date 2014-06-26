@@ -71,13 +71,9 @@ WHERE `forum_messages`.`id_theme` = ?");
     $dcms->log('Форум', 'Удаление ' . $deleted . ' тем' . misc::number($deleted, 'ы', '', '') . ' из раздела [url=/forum/topic.php?id=' . $topic['id'] . ']' . $topic['name'] . '[/url]');
     $doc->msg(__('Успешно удален' . misc::number($deleted, 'а', 'ы', 'о') . ' %d тем' . misc::number($deleted, 'а', 'ы', ''), $deleted));
 }
-// меню сортировки
-$ord = array();
-$ord[] = array("?id=$topic[id]&amp;show=all", __('Все'), $show == 'all');
-$ord[] = array("?id=$topic[id]&amp;show=part", __('Постранично'), $show == 'part');
-$or = new design();
-$or->assign('order', $ord);
-$or->display('design.order.tpl');
+
+$doc->tab(__('Все'), "?id=$topic[id]&show=all", $show == 'all');
+$doc->tab(__('Постранично'), "?id=$topic[id]&show=part", $show == 'part');
 
 $listing = new listing();
 if ($show == 'part') {
