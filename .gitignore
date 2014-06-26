@@ -1,3 +1,4 @@
+/.idea/*
 /sys/logs/*
 /sys/tmp/*
 /sys/files/*.!config.dir.ini
