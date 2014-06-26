@@ -1,10 +1,9 @@
 <div id="<?= $id ?>" class="chart"></div>
-<script charset="utf-8" src="/sys/themes/.common/highcharts.js" type="text/javascript"></script>
 <script>
     $(function () {
         $('#<?=$id?>').highcharts({
-            title:{
-              text: <?=json_encode($title)?>
+            title: {
+                text: <?=json_encode($title)?>
             },
             xAxis: {
                 categories: <?=json_encode($categories)?>
@@ -26,5 +25,6 @@
             },
             series: <?=json_encode($series)?>
         });
+
     });
 </script>
