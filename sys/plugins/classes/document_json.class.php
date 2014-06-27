@@ -47,8 +47,8 @@ class document_json extends document
         echo json_encode(array(
             'add' => $this->add,
             'remove' => $this->remove,
-            'msg' => $this->msg ? $this->msg[count($this->msg) - 1]['text'] : array(),
-            'err' => $this->err ? $this->err[count($this->err) - 1]['text'] : array(),
+            'msg' => $this->msg ? $this->msg[count($this->msg) - 1]->text : array(),
+            'err' => $this->err ? $this->err[count($this->err) - 1]->text : array(),
             'form' => $this->form,
             'pages' => $this->pages
         ));
