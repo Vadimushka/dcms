@@ -572,6 +572,10 @@ html, body, #main {
     padding-left: 54px;
 }
 
+.listing .post .post_content img:not([data-origin=""]){
+    cursor: pointer;
+}
+
 /*endregion*/
 
 .pages {

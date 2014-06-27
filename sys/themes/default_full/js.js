@@ -60,6 +60,24 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
             ]
         };
     })
+    .directive('origin', function () {
+        return{
+            compile: function ($templateElement, templateAttrs) {
+                if ($templateElement.prop("nodeName").toLowerCase() != 'img')
+                    return;
+                if (!templateAttrs.origin)
+                    return;
+
+                $templateElement.on('mouseup', function ($event) {
+                    $event.stopPropagation();
+                    $event.preventDefault();
+
+
+                    window.open(templateAttrs.origin, '_blank');
+                });
+            }
+        }
+    })
     .directive('bbcode', function () { // директива, добавляющая панель bbcode для textarea
         return {
             scope: true,
