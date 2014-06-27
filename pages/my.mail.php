@@ -123,7 +123,7 @@ LIMIT " . $pages->limit);
     }
     if (isset($form))
         $listing->setForm($form);
-    $listing->setAjaxUrl('?id=' . $ank->id);
+    $listing->setAjaxUrl('?id=' . $ank->id . '&amp;page=' . $pages->this_page);
 
     $listing->display(__('Переписка отсутствует'));
 
