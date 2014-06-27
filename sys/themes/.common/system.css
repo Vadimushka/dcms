@@ -60,6 +60,10 @@ td {
 
 }
 
+.DCMS_bb_image{
+    max-width: 100%;
+}
+
 .DCMS_phpcode {
     max-width: 600px;
     overflow: auto;

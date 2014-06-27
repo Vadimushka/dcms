@@ -4,7 +4,8 @@
  * Обработка BBCODE во входящих сообщениях перед сохранением.
  * Требуется для работы тега img, который скачивает изображение на сервер перед отображением
  */
-class inputbbcode extends bbcode {
+class inputbbcode extends bbcode
+{
 
     var $info_about_tags = array(
         'img' => array(
@@ -18,24 +19,28 @@ class inputbbcode extends bbcode {
         )
     );
 
-    function __construct($code) {
+    function __construct($code)
+    {
         parent::__construct($code);
     }
 
-    function insert_smiles($text) {
+    function insert_smiles($text)
+    {
         return $text;
     }
 
-    function img_2bb($elem) {
+    function img_2bb($elem)
+    {
         if (empty($elem['val'][0]['str'])) {
             return false;
         }
         if (empty($elem['val'][0]['str'])) {
             return false;
         }
-        
 
-        $http = new http_client($elem['val'][0]['str']);
+        $url = $elem['val'][0]['str'];
+
+        $http = new http_client($url);
         $filename = $http->getFileName();
 
         if (!$filename) {
@@ -60,7 +65,7 @@ class inputbbcode extends bbcode {
         $id = passgen();
         @imagejpeg($img, H . '/sys/files/.bbcode/' . $id . '.jpg', 80);
 
-        return '[localimg file="' . $id . '.jpg"]' . $filename . '[/localimg]';
+        return '[localimg file="' . $id . '.jpg" origin="' . $url . '"]' . $filename . '[/localimg]';
     }
 
 }

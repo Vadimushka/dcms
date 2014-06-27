@@ -1005,7 +1005,7 @@ class bbcode
         $file = new files_file(FILES . '/.bbcode', $file . '.jpg');
 
         if ($screen = $file->getScreen($design->img_max_width())) {
-            return '<img src="' . $screen . '" alt="' . text::toValue($elem['val'][0]['str']) . '" />';
+            return '<img class="DCMS_bb_image" src="' . $screen . '" alt="' . text::toValue($elem['val'][0]['str']) . '" data-origin="' . text::toValue(@$elem['attrib']['origin']) . '" />';
         }
     }
 
