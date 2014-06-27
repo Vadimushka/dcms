@@ -86,9 +86,9 @@ $pages = new pages($count_posts);
 $start = $pages->my_start();
 $end = $pages->end();
 
-$doc->tab($dcms->new_time_as_date ? __('Сегодня') : __('За сутки'), "?period=default&page={$pages->this_page}", $period == 'default');
-$doc->tab(__('Вчера'), "?period=yesterday&page={$pages->this_page}", $period == 'yesterday');
-$doc->tab(__('За неделю'), "?period=week&page={$pages->this_page}", $period == 'week');
+$doc->tab($dcms->new_time_as_date ? __('Сегодня') : __('За сутки'), "?period=default&amp;page={$pages->this_page}", $period == 'default');
+$doc->tab(__('Вчера'), "?period=yesterday&amp;page={$pages->this_page}", $period == 'yesterday');
+$doc->tab(__('За неделю'), "?period=week&amp;page={$pages->this_page}", $period == 'week');
 
 $listing = new listing();
 

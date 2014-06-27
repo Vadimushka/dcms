@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/sys/themes/.common/icons.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/animate.css" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?4"/>
+    <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?8"/>
     <script charset="utf-8" src="/sys/themes/.common/jquery-2.1.1.min.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/highcharts.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/angular.min.js" type="text/javascript"></script>

@@ -132,7 +132,7 @@ class native_templating
         $values = array();
         foreach ($data AS $key => $value) {
             $keys[] = '{' . $key . '}';
-            $values[] = text::toValue($value);
+            $values[] = $value;
         }
         return str_replace($keys, $values, $tpl);
     }

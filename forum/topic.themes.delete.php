@@ -72,8 +72,8 @@ WHERE `forum_messages`.`id_theme` = ?");
     $doc->msg(__('Успешно удален' . misc::number($deleted, 'а', 'ы', 'о') . ' %d тем' . misc::number($deleted, 'а', 'ы', ''), $deleted));
 }
 
-$doc->tab(__('Все'), "?id=$topic[id]&show=all", $show == 'all');
-$doc->tab(__('Постранично'), "?id=$topic[id]&show=part", $show == 'part');
+$doc->tab(__('Все'), "?id=$topic[id]&amp;show=all", $show == 'all');
+$doc->tab(__('Постранично'), "?id=$topic[id]&amp;show=part", $show == 'part');
 
 $listing = new listing();
 if ($show == 'part') {

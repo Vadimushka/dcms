@@ -36,7 +36,7 @@ class document extends design
      */
     function tab($name, $url, $selected = false)
     {
-        return $this->tabs[] = new document_link($name, $url, $selected);
+        return $this->tabs[] = new document_link(text::toValue($name), $url, $selected);
     }
 
     /**
@@ -46,7 +46,7 @@ class document extends design
      */
     function ret($name, $url)
     {
-        return $this->returns[] = new document_link($name, $url);
+        return $this->returns[] = new document_link(text::toValue($name), $url);
     }
 
     /**
@@ -56,7 +56,7 @@ class document extends design
      */
     function act($name, $url)
     {
-        return $this->actions[] = new document_link($name, $url);
+        return $this->actions[] = new document_link(text::toValue($name), $url);
     }
 
     /**

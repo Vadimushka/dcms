@@ -68,8 +68,8 @@ WHERE `forum_messages`.`id_theme` = ? AND (" . implode(' OR ', $delete_posts) . 
     }
 }
 
-$doc->tab(__('Все'), "?id=$theme[id]&show=all", $show == 'all');
-$doc->tab(__('Постранично'), "?id=$theme[id]&show=part", $show == 'part');
+$doc->tab(__('Все'), "?id=$theme[id]&amp;show=all", $show == 'all');
+$doc->tab(__('Постранично'), "?id=$theme[id]&amp;show=part", $show == 'part');
 
 
 $listing = new listing();

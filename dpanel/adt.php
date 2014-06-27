@@ -42,10 +42,10 @@ if (isset($_GET['id'])) {
     $pages = new pages;
     $pages->posts = $res->fetchColumn();
 
-    $doc->tab(__('Все'), "?id=$id_space&filter=all&page={$pages->this_page}")->selected = $filter == 'all';
-    $doc->tab(__('Активные'), "?id=$id_space&filter=active&page={$pages->this_page}")->selected = $filter == 'active';
-    $doc->tab(__('Завершенные'), "?id=$id_space&filter=old&page={$pages->this_page}")->selected = $filter == 'old';
-    $doc->tab(__('В ожидании'), "?id=$id_space&filter=new&page={$pages->this_page}")->selected = $filter == 'new';
+    $doc->tab(__('Все'), "?id=$id_space&filter=all&amp;page={$pages->this_page}")->selected = $filter == 'all';
+    $doc->tab(__('Активные'), "?id=$id_space&filter=active&amp;page={$pages->this_page}")->selected = $filter == 'active';
+    $doc->tab(__('Завершенные'), "?id=$id_space&filter=old&amp;page={$pages->this_page}")->selected = $filter == 'old';
+    $doc->tab(__('В ожидании'), "?id=$id_space&filter=new&amp;page={$pages->this_page}")->selected = $filter == 'new';
 
     $listing = new listing();
 
