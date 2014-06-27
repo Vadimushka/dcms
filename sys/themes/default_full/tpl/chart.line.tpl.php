@@ -1,6 +1,6 @@
 <div id="<?= $id ?>" class="chart"></div>
 <script>
-    $(function () {
+    $(document).on('highchartsLoaded', function () {
         $('#<?=$id?>').highcharts({
             title: {
                 text: <?=json_encode($title)?>
@@ -25,6 +25,15 @@
             },
             series: <?=json_encode($series)?>
         });
+    });
 
+    $(function () {
+        if ($.fn.highcharts || window.highchartsLoading)
+            return;
+        window.highchartsLoading = true;
+        $.getScript('/sys/themes/.common/highcharts.js', function () {
+            delete window.highchartsLoading;
+            $(document).trigger('highchartsLoaded');
+        });
     });
 </script>
