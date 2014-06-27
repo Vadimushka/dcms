@@ -15,6 +15,22 @@
     color: #38599E;
 }
 
+#tabs{
+    text-align: center;
+    background-color: #DADADA;
+    border-bottom: 1px solid #CBCBCB;
+}
+
+#tabs .tab{
+    margin: 2px 3px;
+    display: inline-block;
+}
+
+#tabs .tab.sel1{
+    color: #000;
+    text-decoration: none;
+}
+
 #adt_top, #adt_bottom{
     text-align: center;
     margin-bottom: 10px;

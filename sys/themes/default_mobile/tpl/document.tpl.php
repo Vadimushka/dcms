@@ -47,7 +47,9 @@
         <span id="icon_menu"></span>
         <span><?= $title ?></span>
     </h1>
-
+    <div id="tabs">
+        <?= $this->section($tabs, '<a class="gradient_grey border tab sel{selected}" href="{url}">{name}</a>', true); ?>
+    </div>
     <div id="content">
         <? $this->display('inc.adt.top.tpl') ?>
         <div id="messages">

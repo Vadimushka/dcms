@@ -2,7 +2,7 @@ html, body {
     height: 100%;
 }
 
-#container_overflow{
+#container_overflow {
     background-color: rgba(255, 255, 255, 0);
     -webkit-transition: background-color 0.5s ease-in-out;
     -moz-transition: background-color 0.5s ease-in-out;
@@ -30,7 +30,7 @@ html, body {
     background-color: rgba(255, 255, 255, 0.9);
     height: 100%;
     border-right: 1px solid #ccc;
-    box-shadow: 0 1px 14px -5px rgba(0,0,0,0);
+    box-shadow: 0 1px 14px -5px rgba(0, 0, 0, 0);
     -webkit-transition: all 0.5s ease-in-out;
     -moz-transition: all 0.5s ease-in-out;
     -o-transition: all 0.5s ease-in-out;
@@ -103,10 +103,10 @@ html, body {
 }
 
 @-webkit-keyframes blink {
-    from{
+    from {
         opacity: 1;
     }
-    to{
+    to {
         opacity: 0.1;
     }
 }
@@ -119,6 +119,40 @@ html, body {
 #title #icon_menu.friends {
     background-image: url("img/friend.png");
     -webkit-animation: blink 1s linear infinite;
+}
+
+#tabs {
+    text-align: center;
+    border-top: 1px solid #B6B6B6;
+    background-color: #EEE;
+    border-bottom: 1px solid #DFDFDF;
+    margin-bottom: 8px;
+}
+
+#tabs .tab {
+    margin: 2px 0;
+    line-height: 40px;
+    display: inline-block;
+    border-left-width: 0;
+    padding: 0px 5px;
+    box-shadow: inset 1px 1px 0 #FFF;
+}
+
+#tabs .tab.sel1{
+    background: #C7C7C7;
+    box-shadow: inset 1px 1px #BDBDBD;
+    color: #FFF;
+    text-shadow: 0 1px #B0B0B0;
+    border-bottom-color: #9F9F9F;
+}
+
+#tabs .tab:first-child {
+    border-radius: 5px 0 0 5px;
+    border-left-width: 1px;
+}
+
+#tabs .tab:last-child {
+    border-radius: 0 5px 5px 0;
 }
 
 #adt_top, #adt_bottom {
@@ -169,19 +203,19 @@ html, body {
     margin: 5px;
 }
 
-.form form[disabled="disabled"] input[type="submit"]{
+.form form[disabled="disabled"] input[type="submit"] {
     background: #ccc;
     border-color: #bbb;
     text-shadow: none;
 }
 
-.form .textarea{
+.form .textarea {
     width: 100%;
     height: 70px;
     position: relative;
 }
 
-.form .textarea .smiles{
+.form .textarea .smiles {
     display: none;
     width: 100%;
     height: 100%;
@@ -190,15 +224,15 @@ html, body {
     overflow-y: scroll;
 }
 
-.form .textarea.smiles .smiles{
+.form .textarea.smiles .smiles {
     display: inline-block;
 }
 
-.form .textarea.smiles .smiles .smile{
+.form .textarea.smiles .smiles .smile {
     margin: 3px;
 }
 
-.form .textarea .smiles_button{
+.form .textarea .smiles_button {
     position: absolute;
     bottom: 2px;
     right: 2px;
@@ -209,32 +243,26 @@ html, body {
     opacity: .5;
 }
 
-@media only screen and (min--moz-device-pixel-ratio: 1.5),
-only screen and (-o-min-device-pixel-ratio: 1.5/1),
-only screen and (-webkit-min-device-pixel-ratio: 1.5),
-only screen and (min-device-pixel-ratio: 1.5) {
-    .form .textarea .smiles_button{
+@media only screen and (min--moz-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 1.5/1), only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5) {
+    .form .textarea .smiles_button {
         background-image: url("img/smiles16x1.5.png");
     }
 }
 
-@media only screen and (min--moz-device-pixel-ratio: 2),
-only screen and (-o-min-device-pixel-ratio: 2/1),
-only screen and (-webkit-min-device-pixel-ratio: 2),
-only screen and (min-device-pixel-ratio: 2) {
-    .form .textarea .smiles_button{
+@media only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+    .form .textarea .smiles_button {
         background-image: url("img/smiles16x2.png");
     }
 }
 
-.form .textarea textarea{
+.form .textarea textarea {
     background: transparent;
     resize: none;
     width: 100%;
     height: 100%;
 }
 
-.form .textarea.smiles textarea{
+.form .textarea.smiles textarea {
     display: none;
 }
 
@@ -382,12 +410,12 @@ only screen and (min-device-pixel-ratio: 2) {
 
 }
 
-.DCMS_nick_on:after{
+.DCMS_nick_on:after {
     content: '●';
     margin-left: 2px;
 }
 
-.DCMS_nick_on:after{
+.DCMS_nick_on:after {
     color: #07BE07;
 }
 

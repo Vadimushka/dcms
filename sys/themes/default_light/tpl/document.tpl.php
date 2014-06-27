@@ -21,6 +21,9 @@
 <body class="theme_light theme_light_light">
 <div>
     <? $this->display('inc.title.tpl') ?>
+    <div id="tabs">
+        <?= $this->section($tabs, '<a class="tab sel{selected}" href="{url}">{name}</a>', true); ?>
+    </div>
     <? $this->display('inc.user.tpl') ?>
     <div id="content">
         <? $this->display('inc.adt.top.tpl') ?>
