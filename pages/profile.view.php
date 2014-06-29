@@ -40,7 +40,7 @@ if ($user->group && $ank->id && $user->id != $ank->id && isset($_GET ['friend'])
                 // не принимаем предложение дружбы
                 $res = $db->prepare("DELETE FROM `friends` WHERE `id_user` = ? AND `id_friend` = ? OR `id_user` = ? AND `id_friend` = ?");
                 $res->execute(Array($user->id, $ank->id, $ank->id, $user->id));
-                $db->prepare("UPDATE `users` SET `friend_new_count` = `friend_new_count` - '1' WHERE `id` = ? LIMIT 1");
+                $res = $db->prepare("UPDATE `users` SET `friend_new_count` = `friend_new_count` - '1' WHERE `id` = ? LIMIT 1");
                 $res->execute(Array($user->id));
 
                 $doc->msg(__('Предложение дружбы отклонено'));
