@@ -11,8 +11,9 @@
     <script charset="utf-8" src="/sys/themes/.common/jquery-2.1.1.min.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/angular.min.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/angular-animate.min.js" type="text/javascript"></script>
+    <script charset="utf-8" src="/sys/themes/.common/dcmsApi.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/elastic.js" type="text/javascript"></script>
-    <script charset="utf-8" src="<?= $path ?>/js.js?5" type="text/javascript"></script>
+    <script charset="utf-8" src="<?= $path ?>/js.js?6" type="text/javascript"></script>
     <meta http-equiv="Сontent-Type" content="application/xhtml+xml; charset=utf-8"/>
     <meta name="generator" content="DCMS <?= $dcms->version ?>"/>
     <? if ($description) { ?>

@@ -45,7 +45,7 @@ $(function () {
 });
 
 
-angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
+angular.module('Dcms', ['monospaced.elastic', 'ngAnimate', 'dcmsApi'])
     .directive('ngInitial', function () { // инициализация модели по значению в инпуте
         return {
             restrict: 'A',
@@ -110,7 +110,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                             '</div>' +
                             '</span>');
             },
-            controller: function ($rootScope, $scope, $element, $http) {
+            controller: function ($rootScope, $scope, $element, dcmsApi) {
                 var bbcode = $scope.bbcode = {
                     smiles: [],
                     smilesContent: '',
@@ -132,13 +132,14 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     if (!bbcode.showSmiles || bbcode.smilesLoaded)
                         return;
                     bbcode.smilesContent = 'Загрузка смайлов';
-                    $http.get('/ajax/smiles.json.php')
-                        .success(function ($data) {
-                            bbcode.smiles = $data;
+                    dcmsApi.request('api_smiles', 'get', null)
+                        .then(
+                        function (data) {
+                            bbcode.smiles = data;
                             bbcode.smilesLoaded = true;
                             bbcode.smilesContent = '';
-                        })
-                        .error(function () {
+                        },
+                        function () {
                             bbcode.smilesContent = 'Не удалось загрузить смайлы';
                         });
                 });
@@ -336,8 +337,8 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
             });
     })
     .controller('DcmsCtrl', // общий контроллер DCMS
-        ['$scope', '$http', '$timeout', '$rootScope',
-            function ($scope, $http, $timeout, $rootScope) {
+        ['$scope', '$http', '$timeout', '$rootScope', 'dcmsApi',
+            function ($scope, $http, $timeout, $rootScope, dcmsApi) {
                 var scope = {
                     online: true,
                     interval: null,
@@ -376,14 +377,15 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate'])
                     if (scope.requesting)
                         return;
                     scope.requesting = true;
-                    $http.get('/ajax/user.json.php?' + Object.keys(scope.user).join('&'))
-                        .success(function ($data) {
+                    dcmsApi.request('api_user', 'get', Object.keys(scope.user))
+                        .then(
+                        function ($data) {
                             scope.online = true;
                             scope.setUserData($data);
                             scope.requesting = false;
                             $timeout(scope.requestUserData, +scope.user.id ? 7000 : 60000);
-                        })
-                        .error(function () {
+                        }
+                        , function () {
                             scope.online = false;
                             scope.requesting = false;
                             $timeout(scope.requestUserData, 30000);

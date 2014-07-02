@@ -64,7 +64,7 @@ $(function () {
                 return;
 
             var $smiles = $p.find('.smiles');
-            $.getJSON('/ajax/smiles.json.php', {}, function (data) {
+            $().dcmsApi.request('api_smiles', 'get', null, function (data) {
                 for (var i = 0; i < data.length; i++) {
                     var $smile = $('<img class="smile" src="' + data[i].image + '" />');
                     $smile.data(data[i]);
@@ -250,16 +250,17 @@ $(function () {
     });
 
     $(scope).on('userRefresh', function () {
-        $.get(user_ajax_url, user)
-            .success(function (data) {
+        $().dcmsApi.request('api_user', 'get', Object.keys(user),
+            function (data) {
                 if (!data)
                     return;
                 ajax_timeout = 7000;
                 $(scope).trigger('userRefreshed', data);
-            }).error(function () {
+            }, function () {
                 ajax_timeout = 60000;
                 $(scope).trigger('userRefreshed');
-            });
+            }
+        );
     });
 
     $(scope).trigger('userRefreshed');
