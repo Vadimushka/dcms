@@ -1,6 +1,0 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine on
-    RewriteBase /build/
-    RewriteCond %{SCRIPT_FILENAME} !-f
-    RewriteRule download/(.*) download.php?path=$1 [L,QSA]
-</IfModule>
