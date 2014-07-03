@@ -37,7 +37,5 @@ $post->title = __('Репозиторий');
 $post->content[] = " - [url=https://bitbucket.org/DESURE/dcms/issues]" . __("В планах") . "[/url]";
 $post->content[] = " - [url=https://bitbucket.org/DESURE/dcms/commits/all]" . __("Последние изменения") . "[/url]";
 $post->content[] = " - [url=https://bitbucket.org/DESURE/dcms/issues/new]" . __("Сообщить о баге") . "[/url]";
-if ($user->group)
-    $post->content[] = " - [url=https://bitbucket.org/DESURE/dcms/get/dev.zip]" . __("Самая последняя версия") . "[/url]";
 
 $listing->display();
