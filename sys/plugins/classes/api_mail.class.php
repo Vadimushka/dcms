@@ -10,11 +10,11 @@ class api_mail implements api_controller
     {
         $user = current_user::getInstance();
         if (!$user->id)
-            throw new Exception(__("Необходима авторизация"));
+            throw new ApiAuthRequiredException($request_data);
 
         $ank = new user((int)@$request_data['id_user']);
         if (!$ank->id)
-            throw new Exception(__("Не указан контакт (id_user)"));
+            throw new ApiException($request_data, __("Не указан контакт (id_user)"));
 
         // только непрочитанные
         $only_unreaded = !empty($request_data['only_unreaded']);

@@ -33,6 +33,8 @@ foreach ($requests AS $key => $request_param) {
         $reflection->getMethod($method);
 
         $response->data = $module::$method($request->data);
+    } catch (ApiException $e) {
+        $response->error = $e;
     } catch (Exception $e) {
         $response->error = $e->getMessage();
     }
