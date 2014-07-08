@@ -49,7 +49,7 @@ class inputbbcode extends bbcode
 
         $tmp_file = H . '/sys/tmp/bbcode.' . passgen() . '.tmp';
 
-        if (!$http->save_content($tmp_file, 1048576)) {
+        if (!$http->save_content($tmp_file, 2048576)) {
             @unlink($tmp_file);
             return false;
         }
@@ -59,7 +59,7 @@ class inputbbcode extends bbcode
             return false;
         }
         @unlink($tmp_file);
-        $img = imaging::to_screen($img, 640);
+        $img = imaging::to_screen($img, 1024);
 
 
         $id = passgen();
