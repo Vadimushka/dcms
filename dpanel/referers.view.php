@@ -17,7 +17,6 @@ if (isset($_GET['id_site'])) {
         exit;
     }
 
-
     $doc->title = __('Рефералы с сайта "%s"', $site['domain']);
 
     $res = $db->prepare("SELECT COUNT(DISTINCT `full_url`) FROM `log_of_referers` WHERE `id_site` = ?");
@@ -25,9 +24,9 @@ if (isset($_GET['id_site'])) {
     $listing = new listing();
     $pages = new pages;
     $pages->posts = $res->fetchColumn();
-    $q = $db->prepare("SELECT `full_url`, COUNT(*) AS `count`, MAX(`time`) AS `time` FROM `log_of_referers` WHERE `id_site` = ? GROUP BY `full_url` ORDER BY `time` DESC LIMIT " . $pages->limit);
+    $res = $db->prepare("SELECT `full_url`, COUNT(*) AS `count`, MAX(`time`) AS `time` FROM `log_of_referers` WHERE `id_site` = ? GROUP BY `full_url` ORDER BY `time` DESC LIMIT " . $pages->limit);
     $res->execute(Array($id));
-    while ($ref = $q->fetch()) {
+    while ($ref = $res->fetch()) {
         $post = $listing->post();
         $post->title = misc::when($ref['time']);
         $post->content[] = $ref['full_url'];
@@ -63,8 +62,6 @@ $res = $db->query("SELECT COUNT(*) FROM `log_of_referers_sites`");
 $pages = new pages;
 $pages->posts = $res->fetchColumn();
 
-//
-//
 // меню сортировки
 $ord = array();
 $ord[] = array("?order=time&amp;page={$pages->this_page}", __('Последние'), $filter == 'time');
