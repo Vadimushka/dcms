@@ -12,7 +12,7 @@ class api_chat_mini implements api_controller
         // кол-во писем
         $count = !isset($request_data['count']) ? 30 : (int)@$request_data['count'];
 
-        $messages = db::me()->query("SELECT * FROM `chat_mini` LIMIT $offset, $count")->fetchAll();
+        $messages = db::me()->query("SELECT * FROM `chat_mini` LIMIT "."$offset, $count")->fetchAll();
 
         return array('messages' => $messages);
     }
