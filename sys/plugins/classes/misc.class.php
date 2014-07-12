@@ -14,8 +14,8 @@ abstract class misc
     {
         $id = (int)$id;
         $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
-        $res = DB::me()->prepare("DELETE FROM `" . $v['table'] . "` WHERE " . DB::me()->quote($v['row']) . " = ?");
         foreach ($tables AS $v) {
+            $res = DB::me()->prepare("DELETE FROM `" . $v['table'] . "` WHERE `" . $v['row'] . "` = ?");
             $res->execute(Array($id));
         }
         $res = DB::me()->prepare("DELETE FROM `users` WHERE `id` = ?");
