@@ -2,7 +2,7 @@
 
 /**
  * Class line_chart_series
- * @property integer[] points
+ * @property int[] data
  */
 class line_chart_series
 {
@@ -18,7 +18,7 @@ class line_chart_series
 /**
  * Class line_chart
  * @property line_chart_series series
- * @property integer[] categories
+ * @property string[] categories
  */
 class line_chart extends ui
 {

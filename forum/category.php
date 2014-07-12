@@ -48,3 +48,6 @@ if ($category['group_write'] <= $user->group) {
 if ($category['group_edit'] <= $user->group) {
     $doc->act(__('Параметры категории'), 'category.edit.php?id=' . $category['id'] . "&amp;return=" . URL);
 }
+if ($user->group >= 5) {
+    $doc->act(__('Статистика'), 'category.stat.php?id=' . $category['id'] . "&amp;return=" . URL);
+}

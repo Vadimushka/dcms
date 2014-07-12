@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int) $_GET['id'];
+$id_theme = (int)$_GET['id'];
 $q = $db->prepare("SELECT `forum_themes`.* , `forum_categories`.`name` AS `category_name` , `forum_topics`.`name` AS `topic_name`
 FROM `forum_themes`
 LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_themes`.`id_category`
@@ -23,13 +23,15 @@ if (!$theme = $q->fetch()) {
 }
 
 if ($user->group) {
-    $q = $db->prepare("SELECT * FROM `forum_views` WHERE `id_theme` = ? AND `id_user` = ?");
-    $q->execute(Array($theme['id'], $user->id));
+    $q = $db->prepare("SELECT * FROM `forum_views` WHERE `id_theme` = ? AND `id_user` = ? AND `time` > ?");
+    $q->execute(Array($theme['id'], $user->id, DAY_TIME));
     if (!$q->fetch()) {
+        // если пользователь сегодня еще не заходил в тему, то добавляем запись
         $res = $db->prepare("INSERT INTO `forum_views` (`id_theme`, `id_user`, `time`) VALUES (?, ?, ?)");
         $res->execute(Array($theme['id'], $user->id, (TIME + 1)));
     } else {
-        $res = $db->prepare("UPDATE `forum_views` SET `time` = ? WHERE `id_user` = ? AND `id_theme` = ?");
+        // если пользователь уже сегодня заходил в тему, то обновляем время у существующей записи
+        $res = $db->prepare("UPDATE `forum_views` SET `time` = ? WHERE `id_theme` = ? AND `id_user` = ? ORDER BY `time` DESC LIMIT 1");
         $res->execute(Array((TIME + 1), $user->id, $theme['id']));
     }
 }
@@ -45,7 +47,7 @@ $res = $db->prepare("SELECT COUNT(*) FROM `forum_messages` WHERE `id_theme` = ? 
 $res->execute(Array($theme['id'], $user->group));
 $pages = new pages;
 $pages->posts = $res->fetchColumn();
-$doc->description = __('Форум') . ' - ' . $theme['name'] . ' - '. __('Страница %s из %s', $pages->this_page, $pages->pages);
+$doc->description = __('Форум') . ' - ' . $theme['name'] . ' - ' . __('Страница %s из %s', $pages->this_page, $pages->pages);
 
 if ($theme['id_vote']) {
     $q = $db->prepare("SELECT * FROM `forum_vote` WHERE `id` = ? AND `group_view` <= ?");
@@ -58,7 +60,7 @@ if ($theme['id_vote']) {
         $vote_accept = ($res->fetchColumn()) ? false : true;
         if (!$vote['active'])
             $vote_accept = false;
-        $q = $db->prepare("SELECT `vote`, COUNT(*) as `count` FROM `forum_vote_votes` WHERE `id_vote` = ? GROUP BY `vote`");
+        $q = $db->prepare("SELECT `vote`, COUNT(*) AS `count` FROM `forum_vote_votes` WHERE `id_vote` = ? GROUP BY `vote`");
         $q->execute(Array($theme['id_vote']));
         $countets = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0);
         while ($r = $q->fetch()) {
@@ -87,7 +89,7 @@ if ($theme['id_vote']) {
     }
 }
 
-$q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC LIMIT $pages->limit");
+$q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC LIMIT " . $pages->limit);
 $q->execute(Array($theme['id'], $user->group));
 $users_preload = array();
 $messages = array();

@@ -109,4 +109,5 @@ $pages->display('?'); // вывод страниц
 if ($user->group >= 5) {
     $doc->act(__('Создать категорию'), 'category.new.php');
     $doc->act(__('Порядок категорий'), 'categories.sort.php');
+    $doc->act(__('Статистика'), 'stat.php');
 }
