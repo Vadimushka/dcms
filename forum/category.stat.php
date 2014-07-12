@@ -1,6 +1,6 @@
 <?php
 include_once '../sys/inc/start.php';
-$doc = new document();
+$doc = new document(5);
 $doc->title = __('Форум');
 $doc->ret(__('К категориям'), './');
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
