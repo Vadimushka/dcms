@@ -61,7 +61,7 @@ if (isset($_POST ['ban'])) {
     $time_1 = abs((int) @$_POST ['time']);
     switch (@$_POST ['timem']) {
         case 'forever':
-            $time_ban_end = 'NULL';
+            $time_ban_end = null;
             break;
         case 'm' :
             $time_ban_end = $time_1 * 60 + TIME;
