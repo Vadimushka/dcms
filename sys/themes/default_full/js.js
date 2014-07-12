@@ -296,6 +296,8 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate', 'dcmsApi'])
                 post.pageY = event.pageY;
                 post.selection = false;
                 post.mdown = !$(event.target).hasClass('DCMS_phpcode');
+                if (event.which == 2)
+                    event.preventDefault();
             },
             mouseup: function (event) {
                 if (!post.mdown)
