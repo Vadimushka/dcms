@@ -32,7 +32,7 @@ if ($user->group) {
     } else {
         // если пользователь уже сегодня заходил в тему, то обновляем время у существующей записи
         $res = $db->prepare("UPDATE `forum_views` SET `time` = ? WHERE `id_theme` = ? AND `id_user` = ? ORDER BY `time` DESC LIMIT 1");
-        $res->execute(Array((TIME + 1), $user->id, $theme['id']));
+        $res->execute(Array((TIME + 1), $theme['id'], $user->id));
     }
 }
 
