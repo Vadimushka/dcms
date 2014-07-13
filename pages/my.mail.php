@@ -125,6 +125,12 @@ LIMIT " . $pages->limit);
         $listing->setForm($form);
     $listing->setAjaxUrl('?id=' . $ank->id . '&amp;page=' . $pages->this_page);
 
+    if ($doc instanceof document_json && !$arr){
+        $post = new listing_post(__('Переписка отсутствует'));
+        $post->icon('empty');
+        $doc->add_post($post);
+    }
+
     $listing->display(__('Переписка отсутствует'));
 
     if ($doc instanceof document_json)

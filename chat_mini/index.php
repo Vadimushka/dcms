@@ -105,6 +105,13 @@ if ($arr = $q->fetchAll()) {
         $after_id = $post->id;
     }
 }
+
+if ($doc instanceof document_json && !$arr){
+    $post = new listing_post(__('Сообщения отсутствуют'));
+    $post->icon('empty');
+    $doc->add_post($post);
+}
+
 $listing->setAjaxUrl('?page=' . $pages->this_page);
 $listing->display(__('Сообщения отсутствуют'));
 $pages->display('?'); // вывод страниц
