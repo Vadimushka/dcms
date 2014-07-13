@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/animate.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?9"/>
+    <noscript>
+        <meta http-equiv="refresh" content="0; URL=/pages/bad_browser.html">
+    </noscript>
     <script charset="utf-8" src="/sys/themes/.common/jquery-2.1.1.min.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/angular.min.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/angular-animate.min.js" type="text/javascript"></script>
