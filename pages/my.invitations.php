@@ -87,7 +87,7 @@ $k_inv = (int)($user->balls / $dcms->balls_for_invite); // количество 
 $doc->msg(__("У Вас %s пригласительны" . misc::number($k_inv, 'й', 'x', 'х'), $k_inv), 'invations');
 $res_cnt_inv = $db->prepare("SELECT COUNT(*) FROM `invations` WHERE `id_user` = ?");
 $res_cnt_inv->execute(Array($user->id));
-$k = ($row = $res_cnt_inv->fetch()) ? $row['cnt'] : 0;
+$k = $res->fetchColumn();
 
 if ($k_inv > $k) {
     // пополняем список пригластельных
@@ -102,7 +102,7 @@ if ($k_inv > $k) {
 
 $res_cnt_inv->execute(Array($user->id));
 $pages = new pages();
-$pages->posts = ($row = $res_cnt_inv->fetch()) ? $row['cnt'] : 0; // количество пригласительных
+$pages->posts = $res->fetchColumn(); // количество пригласительных
 
 $q = $db->prepare("SELECT * FROM `invations` WHERE `id_user` = ? ORDER BY (`id_invite` IS NULL) DESC, (`email` IS NULL) ASC, `id` ASC LIMIT " . $pages->limit);
 $q->execute(Array($user->id));
