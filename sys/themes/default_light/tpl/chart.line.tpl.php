@@ -1,4 +1,7 @@
 <div id="<?= $id ?>" class="chart"></div>
+<noscript>
+    Для отображения графика необходим JavaScript
+</noscript>
 <script>
     $(document).on('highchartsLoaded', function () {
         $('#<?=$id?>').highcharts({

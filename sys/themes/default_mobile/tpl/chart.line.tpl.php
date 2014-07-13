@@ -31,9 +31,15 @@
         if ($.fn.highcharts || window.highchartsLoading)
             return;
         window.highchartsLoading = true;
-        $.getScript('/sys/themes/.common/highcharts.js', function () {
-            delete window.highchartsLoading;
-            $(document).trigger('highchartsLoaded');
+        $.ajax({
+            url: '/sys/themes/.common/highcharts.js',
+            dataType: "script",
+            cache: true,
+            ifModified: true,
+            success: function () {
+                delete window.highchartsLoading;
+                $(document).trigger('highchartsLoaded');
+            }
         });
     });
 </script>
