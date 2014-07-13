@@ -191,6 +191,7 @@ angular.module('Dcms', ['monospaced.elastic', 'ngAnimate', 'dcmsApi'])
                                     //form.values[k] = $data.form[k];
                                 }
 
+                                $scope.$broadcast('elastic:adjust'); // обновление высоты textarea
                                 $rootScope.$broadcast('dcms:form_sended', $element.attr('id')); // Уведомляем о том, что форма была отправлена. Это событие должен слушать листинг
                             })
                             .error(function () {
