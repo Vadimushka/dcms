@@ -6,7 +6,7 @@ $doc->title = __('Отправка статистики');
 
 if (isset($_POST)){
     $dcms->send_stat_agree = !empty($_POST['send_stat_agree']);
-    $dcms->save_settings();
+    $dcms->save_settings($doc);
 }
 
 $bb = new bb(H . '/sys/docs/send_stat.txt');
