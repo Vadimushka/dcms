@@ -20,7 +20,7 @@ class document_json extends document
     function set_pages($pages)
     {
         if ($pages instanceof pages)
-            $this->pages = pages;
+            $this->pages = $pages;
     }
 
     /**
