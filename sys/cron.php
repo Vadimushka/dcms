@@ -106,7 +106,6 @@ if ($cron_time && $cron_time > TIME - 10) {
     }
 
     misc::log('Очистка пользователей, не подтвердивших регистрацию', 'cron');
-    misc::log('finish' . "\r\n", 'cron');
 
     /**
      * Архивация log файлов объемом более 1MB
@@ -131,12 +130,13 @@ if ($cron_time && $cron_time > TIME - 10) {
      */
     if (!cache_events::get('compile_sprite')) {
         cache_events::set('compile_sprite', true, mt_rand(82800, 86400));
+        misc::log('Сборка спрайта', 'cron');
         $icons = (array)@glob(H . '/sys/images/icons/*.png');
         $sprite = new sprite();
         $sprite->addImages($icons);
         $sprite->bindIndexes();
-        $sprite->saveSpriteImage(H.'/sys/themes/.common/icons.png');
-        $sprite->saveSpriteCss(H.'/sys/themes/.common/icons.css', '/sys/themes/.common/icons.png', SPRITE_CLASS_PREFIX);
+        $sprite->saveSpriteImage(H . '/sys/themes/.common/icons.png');
+        $sprite->saveSpriteCss(H . '/sys/themes/.common/icons.css', '/sys/themes/.common/icons.png', SPRITE_CLASS_PREFIX);
         unset($icons, $sprite);
     }
 
@@ -146,6 +146,7 @@ if ($cron_time && $cron_time > TIME - 10) {
      */
     if (!$dcms->donate_message && !cache_events::get('donate_message')) {
         cache_events::set('donate_message', true, mt_rand(82800, 86400));
+        misc::log('Сообщение о донате', 'cron');
         $bb = new bb(H . '/sys/docs/donate.txt');
         $sended = false;
         $month = mktime(0, 0, 0, date('n'), -30);
@@ -163,6 +164,35 @@ if ($cron_time && $cron_time > TIME - 10) {
         }
         unset($bb, $users, $ank, $sended, $month);
     }
+
+    /**
+     * сообщение о разрешение отправлять статистику использования движка
+     * отправляется создателю один раз
+     */
+    if (!$dcms->send_stat_agree_message && !$dcms->send_stat_agree) {
+        misc::log('Сообщение об отправке статистики', 'cron');
+        $dcms->send_stat_agree_message = true;
+        $dcms->save_settings();
+
+        $bb = new bb(H . '/sys/docs/send_stat.txt');
+        $users = groups::getAdmins();
+        /** @var $ank \user */
+        foreach ($users AS $ank) {
+            $ank->mess($bb->getText() . "\n" . '[url=/dpanel/sys.stat.php]' . __('Разрешить отправку статистики') . '[/url]');
+        }
+        unset($bb, $users, $ank);
+    }
+
+    /**
+     * отправка статистики о использовании DCMS
+     */
+    if ($dcms->send_stat_agree && !cache_events::get('send_stat')) {
+        cache_events::set('send_stat', true, mt_rand(82800, 86400));
+        misc::log('Отправка статистики', 'cron');
+        stat::send();
+    }
+
+    misc::log('finish' . "\r\n", 'cron');
 }
 
 unset($cron_time);

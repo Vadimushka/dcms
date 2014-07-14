@@ -32,6 +32,7 @@
  * @property mixed subdomain_theme_redirect
  * @property int browser_id
  * @property int update_auto Параметр, отвечающий за автоматическую установку обновлений (0 - выключено, 1 - только проверка, 2 - автоматическое обновление)
+ * @property string version Версия DCMS
  */
 class dcms
 {
