@@ -24,7 +24,7 @@ if (isset($_GET['info'])) {
     $bb->display();
     $doc->ret(__('Все bbcode'), '?');
 } else {
-    $menu = new menu_code('bbcode'); // загружаем меню кодекса
+    $menu = new menu_code('bbcode'); // загружаем меню 
     $menu->display();
 }
 $doc->ret(__('Личное меню'), '/menu.user.php');
