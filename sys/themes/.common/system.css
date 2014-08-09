@@ -23,8 +23,13 @@ td {
     padding: 0;
 }
 
-.DCMS_mark {
+.mark {
+background:#FFEB90;
+}
 
+.desc{
+border-bottom:1px solid #5A7F97;
+padding-top:15px;
 }
 
 .DCMS_nick_on {
