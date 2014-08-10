@@ -840,7 +840,7 @@ class bbcode
     {
         $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
         $text = nl2br($text);
-        //$text = str_replace('  ', '&nbsp;&nbsp;', $text);
+        //$text = str_replace('  ', '  ', $text);
         foreach ($this->mnemonics as $mnemonic => $value) {
             $text = str_replace($mnemonic, $value, $text);
         }
@@ -951,7 +951,7 @@ class bbcode
 
     function mark_2html($elem)
     {
-        return '<span class="mark">' . $this->get_html($elem['val']) . '</span>';
+        return '<span class="DCMS_mark">' . $this->get_html($elem['val']) . '</span>';
     }
 
     function big_2html($elem)
