@@ -36,7 +36,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
         ),
         'no' => array(
             'handler' => 'no_2html',
@@ -45,7 +45,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
         ),
         'i' => array(
             'handler' => 'i_2html',
@@ -54,7 +54,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
         ),
         'b' => array(
             'handler' => 'b_2html',
@@ -63,7 +63,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
         ),
         'big' => array(
             'handler' => 'big_2html',
@@ -72,7 +72,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font')
         ),
         'mark' => array(
             'handler' => 'mark_2html',
@@ -81,7 +81,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'font', 'left', 'center', 'right')
         ),
         'small' => array(
             'handler' => 'small_2html',
@@ -90,7 +90,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
         ),
         'user' => array(
             'handler' => 'user_2html',
@@ -117,7 +117,7 @@ class bbcode
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'when', 'no', 'php', 'hide', 'spoiler', 'color', 'red', 'green', 'blue', 'yellow', 'localimg', 'gradient', 'youtube')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'when', 'no', 'php', 'hide', 'spoiler', 'color', 'red', 'green', 'blue', 'yellow', 'localimg', 'gradient', 'youtube', 'font', 'mark')
         ),
         'youtube' => array(
             'handler' => 'youtube_2html',
@@ -144,7 +144,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'localimg')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'localimg', 'font', 'mark')
         ),
         'php' => array(
             'handler' => 'php_2html',
@@ -162,7 +162,7 @@ class bbcode
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark', 'nobb')
         ),
         'color' => array(
             'handler' => 'color_2html',
@@ -171,7 +171,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url', 'font')
         ),
         'gradient' => array(
             'handler' => 'gradient_2html',
@@ -180,7 +180,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array('user', 'smile', 'url', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'font', 'mark')
         ),
         'red' => array(
             'handler' => 'color_2html',
@@ -189,7 +189,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url', 'font')
         ),
         'green' => array(
             'handler' => 'color_2html',
@@ -198,7 +198,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url', 'font')
         ),
         'blue' => array(
             'handler' => 'color_2html',
@@ -207,7 +207,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url', 'font')
         ),
         'yellow' => array(
             'handler' => 'color_2html',
@@ -216,7 +216,7 @@ class bbcode
             'rbr' => 0,
             'ends' => array('user', 'smile', 'quote'),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url')
+            'children' => array('big', 'u', 'i', 'b', 'small', 'when', 'no', 'url', 'font')
         ),
         'when' => array(
             'handler' => 'vremja_2html',
@@ -226,6 +226,60 @@ class bbcode
             'ends' => array(),
             'permission_top_level' => true,
             'children' => array()
+        ),
+		'font' => array(
+            'handler' => 'font_2html',
+            'is_close' => false,
+            'lbr' => 0,
+            'rbr' => 0,
+            'ends' => array(),
+            'permission_top_level' => true,
+            'children' => array()
+        ),
+		'hr' => array(
+            'handler' => 'hr_2html',
+            'is_close' => true,
+            'lbr' => 0,
+            'rbr' => 0,
+            'ends' => array(),
+            'permission_top_level' => true,
+            'children' => array()
+        ),
+		'left' => array(
+            'handler' => 'left_2html',
+            'is_close' => false,
+            'lbr' => 1,
+            'rbr' => 1,
+            'ends' => array(),
+            'permission_top_level' => true,
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark')
+        ),
+		'center' => array(
+            'handler' => 'center_2html',
+            'is_close' => false,
+            'lbr' => 1,
+            'rbr' => 1,
+            'ends' => array(),
+            'permission_top_level' => true,
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark')
+        ),
+		'right' => array(
+            'handler' => 'right_2html',
+            'is_close' => false,
+            'lbr' => 1,
+            'rbr' => 1,
+            'ends' => array(),
+            'permission_top_level' => true,
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark')
+        ),
+			'indent' => array(
+            'handler' => 'indent_2html',
+            'is_close' => false,
+            'lbr' => 1,
+            'rbr' => 1,
+            'ends' => array(),
+            'permission_top_level' => true,
+            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark')
         ),
     );
     var $mnemonics = array();
@@ -786,7 +840,7 @@ class bbcode
     {
         $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
         $text = nl2br($text);
-        //$text = str_replace('  ', '&nbsp;&nbsp;', $text);
+        //$text = str_replace('  ', '  ', $text);
         foreach ($this->mnemonics as $mnemonic => $value) {
             $text = str_replace($mnemonic, $value, $text);
         }
@@ -837,6 +891,43 @@ class bbcode
     {
         return '<div class="DCMS_youtube"><iframe src="http://www.youtube.com/embed/' . text::toValue($elem['val'][0]['str']) . '" frameborder="0" allowfullscreen></iframe></div>';
     }
+	
+	function font_2html($elem)
+    {
+
+        if (!empty($elem['attrib']['name'])) {
+            $name = $elem['attrib']['name'];
+        } elseif (!empty($elem['attrib']['font'])) {
+            $name = $elem['attrib']['font'];
+        } else {
+            $name = __('Arial');
+        }
+        return '<span style="font-family:' . text::toValue($name) . ';">' . $this->get_html($elem['val']) . '</span>';
+    }
+	
+	function left_2html($elem)
+    {
+        return '<div align="left">' . $this->get_html($elem['val']) . '</div>';
+    }
+	
+	function hr_2html($elem)
+    {
+        return '<div class="desc"></div>';
+    }
+	
+	function center_2html($elem)
+    {
+        return '<div align="center">' . $this->get_html($elem['val']) . '</div>';
+    }
+	
+	function right_2html($elem)
+    {
+        return '<div align="right">' . $this->get_html($elem['val']) . '</div>';
+    }
+	function indent_2html($elem)
+    {
+        return '<div style="margin:1em;">' . $this->get_html($elem['val']) . '</div>';
+    }
 
     function u_2html($elem)
     {
@@ -860,7 +951,7 @@ class bbcode
 
     function mark_2html($elem)
     {
-        return '<span class="mark">' . $this->get_html($elem['val']) . '</span>';
+        return '<span class="DCMS_mark">' . $this->get_html($elem['val']) . '</span>';
     }
 
     function big_2html($elem)
