@@ -339,7 +339,6 @@ class user
      */
     function getAvatar($max_width = 48)
     {
-        return ''; // TODO: временно, так как остается ссылка на объект files, что приводит к ошибке в деструкторе
         $avatar_file_name = $this->id . '.jpg';
         $avatars_path = FILES . '/.avatars'; // папка с аватарами
         $avatars_dir = new files($avatars_path);
