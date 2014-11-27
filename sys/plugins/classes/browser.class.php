@@ -235,6 +235,16 @@ abstract class browser {
             $info['type'] = 'full';
         }
 
+        if (preg_match('#YaBrowser/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
+            $info['name'] = 'Yandex Browser ' . $v[1];
+            $info['type'] = 'full';
+        }
+
+        if (preg_match('#OPR/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
+            $info['name'] = 'Opera ' . $v[1];
+            $info['type'] = 'full';
+        }
+
         if (preg_match('#SONY/COM#i', $user_agent)) {
             $info['name'] = 'Sony mylo';
             $info['type'] = 'light';
