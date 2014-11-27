@@ -116,6 +116,18 @@ if (@function_exists('ini_set')) {
     ini_set('display_errors', true);
 }
 
+if (version_compare(PHP_VERSION, '5.4', '<=')){
+    // Исправлет ошибку php с удалением объектов, содержащих перекрестные ссылки. (Fatal error :  Exception thrown without a stack frame Unknown on line 0)
+    function shutdown()
+    {
+        if (@function_exists('ini_set')) {
+            // Выключаем отображение ошибок перед завершением работы скрипта.
+            ini_set('display_errors', false);
+        }
+    }
+    register_shutdown_function('shutdown');
+}
+
 /**
  * @const URL текущая страница.
  */
