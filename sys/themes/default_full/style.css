@@ -725,3 +725,11 @@ html, body, #main {
 .DCMS_spoiler > .DCMS_spoiler_content {
     overflow-y: hidden;
 }
+
+.DCMS_mark{
+    box-shadow: 0 0 0 2px #0077FF;
+    background-color: #E2E8FF;
+    border-radius: 2px;
+    padding: 0 3px;
+    margin: 0 2px;
+}
