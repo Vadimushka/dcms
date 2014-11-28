@@ -3,13 +3,15 @@
 /**
  * Информация о браузере
  */
-abstract class browser {
+abstract class browser
+{
 
     /**
      * Возвращает версию IE или false
      * @return integer|false
      */
-    static function getIEver() {
+    static function getIEver()
+    {
         $info = self::getBrowserInfo();
         return $info['ie'];
     }
@@ -18,7 +20,8 @@ abstract class browser {
      * Возвращает тип браузера
      * @return string light|mobile|full
      */
-    static function getType() {
+    static function getType()
+    {
         $info = self::getBrowserInfo();
         return $info['type'];
     }
@@ -27,7 +30,8 @@ abstract class browser {
      * Возвращает название браузера и его мажорную версию
      * @return string
      */
-    static function getName() {
+    static function getName()
+    {
         $info = self::getBrowserInfo();
         return $info['name'];
     }
@@ -37,7 +41,8 @@ abstract class browser {
      * @staticvar boolean|string $ipLong
      * @return string
      */
-    static function getIpLong() {
+    static function getIpLong()
+    {
         static $ipLong = false;
         if ($ipLong === false)
             $ipLong = sprintf("%u", ip2long($_SERVER['REMOTE_ADDR']));
@@ -49,14 +54,16 @@ abstract class browser {
      * @staticvar boolean|array $info
      * @return array
      */
-    static function getBrowserInfo() {
+    static function getBrowserInfo()
+    {
         static $info = false;
         if ($info === false)
             $info = self::_getBrowserinfo();
         return $info;
     }
 
-    static protected function _getBrowserinfo() {
+    static protected function _getBrowserinfo()
+    {
         $user_agent = @$_SERVER['HTTP_USER_AGENT'];
         $info = array(
             'name' => 'Нет данных',
@@ -211,7 +218,8 @@ abstract class browser {
         }
 
         if (preg_match('#Safari#i', $user_agent)) {
-            $info['name'] = 'Safari';
+            $ver = self::_browser_version($user_agent);
+            $info['name'] = 'Safari' . ($ver ? ' ' . $ver : '');
             $info['type'] = 'full';
         }
 
@@ -327,13 +335,15 @@ abstract class browser {
         return $info;
     }
 
-    static protected function _browser_version($user_agent) {
+    static protected function _browser_version($user_agent)
+    {
         // определение версии браузера
         if (preg_match('#Version/([0-9]+(\.[0-9]+)?)#i', $user_agent, $v))
             return $v[1];
     }
 
-    static protected function _phone_model($ua) {
+    static protected function _phone_model($ua)
+    {
         // определение модели устройства
         if (preg_match('#SonyEricsson([0-9a-z]+)#i', $ua, $b)) {
             return array('SonyEricsson ' . $b[1], 'light');
