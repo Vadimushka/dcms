@@ -260,10 +260,12 @@ class user
         if ($this->donate_rub)
             $ret[] = '<span class="DCMS_nick_donate"></span>';
 
-        $today_date = date('m-d', mktime(0, 0, 0, date("m"), date("d"), 0));
-        $birthday_date = date('m-d', mktime(0, 0, 0, $this->ank_m_r, $this->ank_d_r, 0));
-        if ($today_date == $birthday_date)
-            $ret[] = '<span class="DCMS_nick_birthday"></span>';
+        if ($this->ank_m_r && $this->ank_d_r){
+            $today_date = date('m-d', mktime(0, 0, 0, date("m"), date("d"), 0));
+            $birthday_date = date('m-d', mktime(0, 0, 0, $this->ank_m_r, $this->ank_d_r, 0));
+            if ($today_date == $birthday_date)
+                $ret[] = '<span class="DCMS_nick_birthday"></span>';
+        }
 
         return join('', $ret);
     }
