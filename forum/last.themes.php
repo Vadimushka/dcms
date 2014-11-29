@@ -42,14 +42,15 @@ for ($i = 0; $i < $count; $i++) {
     $posts_for_view[] = $posts_all[$i];
 }
 
+$themes = array();
 $views = array();
 $count_posts = count($posts_for_view);
 if ($count_posts && $user->id) {
     for ($i = 0; $i < $count_posts; $i++) {
-        $theme[] = $posts_for_view[$i]['id'];
+        $themes[] = $posts_for_view[$i]['id'];
     }
 
-    $q = $db->prepare("SELECT `id_theme`, MAX(`time`) AS `time` FROM `forum_views`  WHERE `id_user` = ? AND (`id_theme` = '" . implode("' OR `id_theme` = '", $theme) . "') GROUP BY `id_theme`");
+    $q = $db->prepare("SELECT `id_theme`, MAX(`time`) AS `time` FROM `forum_views`  WHERE `id_user` = ? AND `id_theme` IN (" . implode(',', $themes) . ") GROUP BY `id_theme`");
     $q->execute(Array($user->id));
     while ($view = $q->fetch()) {
         $views[$view['id_theme']] = $view['time'];
