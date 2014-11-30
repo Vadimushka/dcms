@@ -41,7 +41,15 @@ switch (@$_GET['change']) {
         $rating = 1;
         break;
     case 'down':
+        if ($user->balls - $dcms->forum_rating_down_balls < 0) {
+            $doc->err(__('Недостаточно баллов для понижения рейтинга'));
+            exit;
+        }
+        $user->balls -= $dcms->forum_rating_down_balls;
         $rating = -1;
+        if ($dcms->forum_rating_down_balls) {
+            $user->mess(__("На понижение рейтинга сообщения пользователя %s потрачено баллов: %s", '[user]' . $message['id_user'] . '[/user]', $dcms->forum_rating_down_balls));
+        }
         break;
     default:
         exit;
@@ -58,14 +66,12 @@ SET `fm`.`rating` = (SELECT SUM(`rating`) FROM `forum_rating` AS `fr` WHERE `fr`
 $res->execute(array(':id_msg' => $id_message));
 
 /** @var dcms $dcms */
-if ($dcms->forum_rating_coefficient){
+if ($dcms->forum_rating_coefficient) {
     $res = $db->prepare("INSERT INTO `reviews_users` (`id_user`, `id_ank`, `time`, `forum_message_id`, `rating`) VALUES (?, ?, ?, ?, ?)");
     $res->execute(Array(0, $message['id_user'], TIME, $id_message, $rating * $dcms->forum_rating_coefficient));
 
     $res = $db->prepare("UPDATE `users` AS `u` SET `u`.`rating` = (SELECT SUM(`rating`) FROM `reviews_users` AS `ru` WHERE `ru`.`id_ank` = :id_user) WHERE `u`.`id` = :id_user LIMIT 1");
+    $res->execute(Array(':id_user' => $message['id_user']));
 }
-
-$res->execute(Array(':id_user' =>$message['id_user']));
-
 
 $doc->msg(__('Ваш голос успешно учтен'));

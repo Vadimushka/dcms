@@ -143,8 +143,10 @@ if ($user->group && $user->id != $autor->id) {
     $q->execute(array(':id_user' => $user->id, ':id_msg' => $message['id']));
     $my_rating = $q->fetchColumn();
     if (!$my_rating) $my_rating = 0;
-    if ($my_rating == 0)
+    if ($my_rating == 0 && $user->balls - $dcms->forum_rating_down_balls >= 0){
         $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=down&amp;return=' . URL, $img_thumb_down);
+    }
+
     if ($my_rating == 0) {
         $post->bottom .= ' ' . __('Рейтинг: %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
     } else {

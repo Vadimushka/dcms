@@ -127,8 +127,10 @@ foreach ($messages AS $message) {
 
     if ($user->group && $user->id != $ank->id) {
         $my_rating = array_key_exists($message['id'], $ratings) ? $ratings[$message['id']] : 0;
-        if ($my_rating === 0)
-            $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=down&amp;return=' . URL, $img_thumb_down);
+        if ($my_rating === 0 && $user->balls - $dcms->forum_rating_down_balls >= 0) {
+            $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=down&amp;return=' . URL . urlencode('#' . $post->id), $img_thumb_down);
+        }
+
 
         if ($my_rating === 0) {
             $post->bottom .= ' ' . __('Рейтинг: %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
@@ -138,7 +140,7 @@ foreach ($messages AS $message) {
 
 
         if ($my_rating === 0)
-            $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=up&amp;return=' . URL, $img_thumb_up);
+            $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=up&amp;return=' . URL . urlencode('#' . $post->id), $img_thumb_up);
     } else {
         $post->bottom .= ' ' . __('Рейтинг: %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
     }

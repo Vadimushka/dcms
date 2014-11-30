@@ -33,7 +33,8 @@
  * @property int browser_id
  * @property int update_auto Параметр, отвечающий за автоматическую установку обновлений (0 - выключено, 1 - только проверка, 2 - автоматическое обновление)
  * @property string version Версия DCMS
- * @property int forum_rating_coefficient Соотношение рейтинга поста с рейтингом пользователя
+ * @property float forum_rating_coefficient Соотношение рейтинга поста с рейтингом пользователя
+ * @property int forum_rating_down_balls Стоимость понижения рейтинга поста в форуме
  */
 class dcms
 {
