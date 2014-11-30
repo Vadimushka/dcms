@@ -49,56 +49,34 @@ $pages = new pages;
 $pages->posts = $res->fetchColumn();
 $doc->description = __('Форум') . ' - ' . $theme['name'] . ' - ' . __('Страница %s из %s', $pages->this_page, $pages->pages);
 
-if ($theme['id_vote']) {
-    $q = $db->prepare("SELECT * FROM `forum_vote` WHERE `id` = ? AND `group_view` <= ?");
-    $q->execute(Array($theme['id_vote'], $user->group));
-    if ($vote = $q->fetch()) {
+include 'inc/theme.votes.php';
 
-        $votes = new votes($vote['name']);
-        $res = $db->prepare("SELECT COUNT(*) FROM `forum_vote_votes` WHERE `id_vote` = ? AND `id_user` = ?");
-        $res->execute(Array($theme['id_vote'], $user->id));
-        $vote_accept = ($res->fetchColumn()) ? false : true;
-        if (!$vote['active'])
-            $vote_accept = false;
-        $q = $db->prepare("SELECT `vote`, COUNT(*) AS `count` FROM `forum_vote_votes` WHERE `id_vote` = ? GROUP BY `vote`");
-        $q->execute(Array($theme['id_vote']));
-        $countets = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0);
-        while ($r = $q->fetch()) {
-            $countets[$r['vote']] = $r['count'];
-        }
 
-        for ($i = 1; $i <= 10; $i++) {
-            if ($vote['v' . $i]) {
-                $votes->vote($vote['v' . $i], $countets[$i], 'theme.php?id=' . $theme['id'] . '&amp;page=' . $pages->this_page . '&amp;vote=' . $i);
-            }
-        }
-
-        if (!empty($_GET['vote']) && $user->group >= $vote['group_vote'] && $vote_accept) {
-            $vote_add = (int)$_GET['vote'];
-            if ($vote['v' . $vote_add]) {
-                $res = $db->prepare("INSERT INTO `forum_vote_votes` (`id_vote`, `id_theme`, `id_user`, `vote`) VALUES (?,?,?,?)");
-                $res->execute(Array($vote['id'], $theme['id'], $user->id, $vote_add));
-                $doc->msg(__('Ваш голос успешно засчитан'));
-                header('Refresh: 1; url=theme.php?id=' . $theme['id'] . '&page=' . $pages->this_page);
-                $doc->ret(__('Вернуться в тему'), 'theme.php?id=' . $theme['id'] . '&amp;page=' . $pages->this_page);
-                exit;
-            }
-        }
-
-        $votes->display($user->group >= $vote['group_vote'] && $vote_accept);
-    }
-}
+$img_thumb_down = '<a href="{url}" class="' . implode(' ', sprite::getClassName('thumb_down', SPRITE_CLASS_PREFIX)) . '"></a>';
+$img_thumb_up = '<a href="{url}" href="" class="' . implode(' ', sprite::getClassName('thumb_up', SPRITE_CLASS_PREFIX)) . '"></a>';
 
 $q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC LIMIT " . $pages->limit);
 $q->execute(Array($theme['id'], $user->group));
 $users_preload = array();
 $messages = array();
+$msg_ids = array();
 while ($message = $q->fetch()) {
+    $msg_ids[] = $message['id'];
     $messages[] = $message;
     $users_preload[] = $message['id_user'];
 }
 
 new user($users_preload); // предзагрузка данных пользователей одним запросом
+
+$ratings = array();
+if ($user->group) {
+    $q = $db->prepare("SELECT * FROM `forum_rating` WHERE `id_user` = :id_user AND `id_message` IN (" . implode(',', $msg_ids) . ")");
+    $q->execute(array(':id_user' => $user->id));
+    $forum_rating_result = $q->fetchAll();
+    foreach ($forum_rating_result AS $rating) {
+        $ratings[$rating['id_message']] = $rating['rating'];
+    }
+}
 
 $listing = new listing();
 foreach ($messages AS $message) {
@@ -147,12 +125,30 @@ foreach ($messages AS $message) {
         $post->bottom .= ' <a href="message.history.php?id=' . $message['id'] . '&amp;return=' . URL . '">' . __('Изменено') . '(' . $message['edit_count'] . ')</a> ' . $ank_edit->login . ' (' . misc::when($message['edit_time']) . ')<br />';
     }
 
+    if ($user->group && $user->id != $ank->id) {
+        $my_rating = array_key_exists($message['id'], $ratings) ? $ratings[$message['id']] : 0;
+        if ($my_rating === 0)
+            $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=down&amp;return=' . URL, $img_thumb_down);
+
+        if ($my_rating === 0) {
+            $post->bottom .= ' ' . __('Рейтинг: %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
+        } else {
+            $post->bottom .= ' ' . __('Рейтинг: %s / %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', $my_rating, '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
+        }
+
+
+        if ($my_rating === 0)
+            $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=up&amp;return=' . URL, $img_thumb_up);
+    } else {
+        $post->bottom .= ' ' . __('Рейтинг: %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
+    }
+
     $post_dir_path = H . '/sys/files/.forum/' . $theme['id'] . '/' . $message['id'];
     if (@is_dir($post_dir_path)) {
         $listing_files = new listing();
         $dir = new files($post_dir_path);
         $content = $dir->getList('time_add:asc');
-        $files = & $content['files'];
+        $files = &$content['files'];
         $count = count($files);
         for ($i = 0; $i < $count; $i++) {
             $file = $listing_files->post();

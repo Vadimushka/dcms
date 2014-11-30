@@ -24,12 +24,12 @@ td {
 }
 
 .mark {
-background:#FFEB90;
+    background: #FFEB90;
 }
 
-.desc{
-border-bottom:1px solid #5A7F97;
-padding-top:15px;
+.desc {
+    border-bottom: 1px solid #5A7F97;
+    padding-top: 15px;
 }
 
 .DCMS_nick_on {
@@ -65,7 +65,7 @@ padding-top:15px;
 
 }
 
-.DCMS_bb_image{
+.DCMS_bb_image {
     max-width: 100%;
 }
 
@@ -105,4 +105,12 @@ padding-top:15px;
     height: 360px;
     display: inline-block;
     max-width: 100%;
+}
+
+.DCMS_rating_up {
+    color: #00711B;
+}
+
+.DCMS_rating_down {
+    color: #96000E;
 }

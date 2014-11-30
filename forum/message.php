@@ -50,7 +50,7 @@ if (!$user->is_writeable) {
 }
 
 
-$autor = new user((int) $message['id_user']);
+$autor = new user((int)$message['id_user']);
 
 if (!$autor->id) {
     $can_write = false;
@@ -133,6 +133,31 @@ $post->time = misc::when($message['edit_time'] ? $message['edit_time'] : $messag
 $post->url = '/profile.view.php?id=' . $autor->id;
 $post->icon($autor->icon());
 $post->content = text::toOutput($message['message']);
+
+
+if ($user->group && $user->id != $autor->id) {
+    $img_thumb_down = '<a href="{url}" class="' . implode(' ', sprite::getClassName('thumb_down', SPRITE_CLASS_PREFIX)) . '"></a>';
+    $img_thumb_up = '<a href="{url}" href="" class="' . implode(' ', sprite::getClassName('thumb_up', SPRITE_CLASS_PREFIX)) . '"></a>';
+
+    $q = $db->prepare("SELECT `rating` FROM `forum_rating` WHERE `id_user` = :id_user AND `id_message` = :id_msg LIMIT 1");
+    $q->execute(array(':id_user' => $user->id, ':id_msg' => $message['id']));
+    $my_rating = $q->fetchColumn();
+    if (!$my_rating) $my_rating = 0;
+    if ($my_rating == 0)
+        $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=down&amp;return=' . URL, $img_thumb_down);
+    if ($my_rating == 0) {
+        $post->bottom .= ' ' . __('Рейтинг: %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
+    } else {
+        $post->bottom .= ' ' . __('Рейтинг: %s / %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', $my_rating, '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
+    }
+
+    if ($my_rating == 0)
+        $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=up&amp;return=' . URL, $img_thumb_up);
+} else {
+    $post->bottom .= ' ' . __('Рейтинг: %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
+}
+
+
 $listing->display();
 
 
