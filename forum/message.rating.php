@@ -57,11 +57,15 @@ SET `fm`.`rating` = (SELECT SUM(`rating`) FROM `forum_rating` AS `fr` WHERE `fr`
  WHERE `fm`.`id` = :id_msg LIMIT 1");
 $res->execute(array(':id_msg' => $id_message));
 
+/** @var dcms $dcms */
+if ($dcms->forum_rating_coefficient){
+    $res = $db->prepare("INSERT INTO `reviews_users` (`id_user`, `id_ank`, `time`, `forum_message_id`, `rating`) VALUES (?, ?, ?, ?, ?)");
+    $res->execute(Array(0, $message['id_user'], TIME, $id_message, $rating * $dcms->forum_rating_coefficient));
 
-$res = $db->prepare("INSERT INTO `reviews_users` (`id_user`, `id_ank`, `time`, `forum_message_id`, `rating`) VALUES (?, ?, ?, ?, ?)");
-$res->execute(Array(0, $message['id_user'], TIME, $id_message, $rating * 0.1));
+    $res = $db->prepare("UPDATE `users` AS `u` SET `u`.`rating` = (SELECT SUM(`rating`) FROM `reviews_users` AS `ru` WHERE `ru`.`id_ank` = :id_user) WHERE `u`.`id` = :id_user LIMIT 1");
+}
 
-$res = $db->prepare("UPDATE `users` AS `u` SET `u`.`rating` = (SELECT SUM(`rating`) FROM `reviews_users` AS `ru` WHERE `ru`.`id_ank` = :id_user) WHERE `u`.`id` = :id_user LIMIT 1");
 $res->execute(Array(':id_user' =>$message['id_user']));
+
 
 $doc->msg(__('Ваш голос успешно учтен'));
