@@ -30,7 +30,7 @@ ORDER BY `th`.`id` DESC");
 
     $posts_all = $q->fetchAll();
 
-    cache::set($cache_id, $posts_all, $cache_time);
+    cache::set($cache_id, $posts_all, 20);
 }
 
 $count = count($posts_all);
