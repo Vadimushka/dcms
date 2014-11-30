@@ -136,8 +136,8 @@ $post->content = text::toOutput($message['message']);
 
 
 if ($user->group && $user->id != $autor->id) {
-    $img_thumb_down = '<a href="{url}" class="' . implode(' ', sprite::getClassName('thumb_down', SPRITE_CLASS_PREFIX)) . '"></a>';
-    $img_thumb_up = '<a href="{url}" href="" class="' . implode(' ', sprite::getClassName('thumb_up', SPRITE_CLASS_PREFIX)) . '"></a>';
+    $img_thumb_down = '<a href="{url}" class="DCMS_thumb_down ' . implode(' ', sprite::getClassName('thumb_down', SPRITE_CLASS_PREFIX)) . '"></a>';
+    $img_thumb_up = '<a href="{url}" href="" class="DCMS_thumb_up ' . implode(' ', sprite::getClassName('thumb_up', SPRITE_CLASS_PREFIX)) . '"></a>';
 
     $q = $db->prepare("SELECT `rating` FROM `forum_rating` WHERE `id_user` = :id_user AND `id_message` = :id_msg LIMIT 1");
     $q->execute(array(':id_user' => $user->id, ':id_msg' => $message['id']));

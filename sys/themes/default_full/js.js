@@ -44,6 +44,14 @@ $(function () {
     }).parent().addClass('collapsed');
 });
 
+$(function () {
+    $(document).on('click', '.DCMS_thumb_down', function (event) {
+        if (!confirm(translates.rating_down_message)){
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+});
 
 angular.module('Dcms', ['monospaced.elastic', 'ngAnimate', 'dcmsApi'])
     .directive('ngInitial', function () { // инициализация модели по значению в инпуте

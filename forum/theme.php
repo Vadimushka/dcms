@@ -52,8 +52,8 @@ $doc->description = __('Форум') . ' - ' . $theme['name'] . ' - ' . __('Ст
 include 'inc/theme.votes.php';
 
 
-$img_thumb_down = '<a href="{url}" class="' . implode(' ', sprite::getClassName('thumb_down', SPRITE_CLASS_PREFIX)) . '"></a>';
-$img_thumb_up = '<a href="{url}" href="" class="' . implode(' ', sprite::getClassName('thumb_up', SPRITE_CLASS_PREFIX)) . '"></a>';
+$img_thumb_down = '<a href="{url}" class="DCMS_thumb_down ' . implode(' ', sprite::getClassName('thumb_down', SPRITE_CLASS_PREFIX)) . '"></a>';
+$img_thumb_up = '<a href="{url}" href="" class="DCMS_thumb_up ' . implode(' ', sprite::getClassName('thumb_up', SPRITE_CLASS_PREFIX)) . '"></a>';
 
 $q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id_theme` = ? AND `group_show` <= ? ORDER BY `id` ASC LIMIT " . $pages->limit);
 $q->execute(Array($theme['id'], $user->group));
@@ -81,6 +81,7 @@ if ($user->group) {
 $listing = new listing();
 foreach ($messages AS $message) {
     $post = $listing->post();
+    $post->id = 'message' . $message['id'];
     $ank = new user((int)$message['id_user']);
 
     if ($user->group) {

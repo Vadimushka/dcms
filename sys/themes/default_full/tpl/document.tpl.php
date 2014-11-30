@@ -44,7 +44,8 @@
             reg: '<?= __("Регистрация") ?>',
             friends: '<?=__("Друзья")?>',
             mail: '<?=__("Почта")?>',
-            error: '<?=__('Неизвестная ошибка')?>'
+            error: '<?=__('Неизвестная ошибка')?>',
+            rating_down_message: '<?=__('Подтвердите понижение рейтинга сообщения.').($dcms->forum_rating_down_balls?"\\n".__('Будет списано баллов: %s',$dcms->forum_rating_down_balls):'')?>'
         };
         codes = [
             {Text: 'B', Title: translates.bbcode_b, Prepend: '[b]', Append: '[/b]'},

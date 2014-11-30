@@ -36,6 +36,16 @@ function InputInsert(node, Open, Close, CursorEnd) {
     return false;
 }
 
+
+$(function () {
+    $(document).on('click', '.DCMS_thumb_down', function (event) {
+        if (!confirm(translate.rating_down_message)){
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+});
+
 $(function () {
     var $user = $("#user"),
         $reg = $("#reg"),
