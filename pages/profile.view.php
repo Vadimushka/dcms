@@ -14,9 +14,9 @@ $ank = (empty($_GET ['id'])) ? $user : new user((int)$_GET ['id']);
 if (!$ank->group)
     $doc->access_denied(__('Нет данных'));
 
-$doc->title = ($user->id && $ank->id == $user->id)? __('Моя анкета') : __('Анкета "%s"', $ank->login);
+$doc->title = ($user->id && $ank->id == $user->id)? __('Моя анкета') : __('Анкета "%s"', $ank->nick);
 
-$doc->description = __('Анкета "%s"', $ank->login);
+$doc->description = __('Анкета "%s"', $ank->nick);
 $doc->keywords [] = $ank->login;
 
 //region Предложение дружбы
