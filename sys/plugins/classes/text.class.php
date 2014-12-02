@@ -155,7 +155,7 @@ abstract class text {
         if (!db::isConnected()) {
             return false;
         }
-        $pattern = '#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31})([\!\.\,\ \)\(]|$)#uim';
+        $pattern = '#@([a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31}|\$vk\.[0-9]+)([\!\.\,\ \)\(]|$)#uim';
 
         $m = array();
         preg_match_all($pattern, $str, $m, PREG_SET_ORDER);

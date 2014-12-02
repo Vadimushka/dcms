@@ -250,15 +250,25 @@ class user
     }
 
     /**
+     * @param bool $html
      * @return string Ник пользователя в HTML
      */
-    function nick()
+    function nick($html = true)
     {
         if ($this->id === false) {
             return '[' . __('Пользователь удален') . ']';
         }
 
-        $ret = array('<span class="' . ($this->online ? 'DCMS_nick_on' : 'DCMS_nick_off') . '">' . $this->login . '</span>');
+        if ($this->vk_id){
+            $login = $this->vk_first_name.' '.$this->vk_last_name;
+        }else{
+            $login = $this->login;
+        }
+
+        if (!$html)
+            return $login;
+
+        $ret = array('<span class="' . ($this->online ? 'DCMS_nick_on' : 'DCMS_nick_off') . '">' . $login . '</span>');
 
         if ($this->donate_rub)
             $ret[] = '<span class="DCMS_nick_donate"></span>';
@@ -397,9 +407,7 @@ class user
             case 'theme' :
                 return @$this->_data ['theme_' . $dcms->browser_type];
             case 'nick' :
-                return @$this->nick();
-            case 'login':
-                return $this->login();
+                return @$this->nick(false);
             default :
                 return !isset($this->_data [$n]) ? false : $this->_data [$n];
         }
@@ -452,15 +460,6 @@ class user
     function __destruct()
     {
         $this->save_data();
-    }
-
-    public function login()
-    {
-        if ($this->vk_id){
-            return $this->vk_first_name.' '.$this->vk_last_name;
-
-        }
-        return $this->_data['login'];
     }
 
 }

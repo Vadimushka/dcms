@@ -26,7 +26,7 @@
         <meta name="keywords" content="<?= $keywords ?>"/>
     <? } ?>
     <script>
-        user = <?=json_encode(current_user::getInstance()->getCustomData(array('id', 'group', 'mail_new_count', 'friend_new_count', 'login')))?>;
+        user = <?=json_encode(current_user::getInstance()->getCustomData(array('id', 'group', 'mail_new_count', 'friend_new_count', 'nick')))?>;
         translates = {
             bbcode_b: '<?= __('Текст жирным шрифтом') ?>',
             bbcode_i: '<?= __('Текст курсивом') ?>',
@@ -95,7 +95,7 @@
                     <a ng-show="+user.mail_new_count" class='gradient_grey border radius padding ng-hide'
                        href='/my.mail.php?only_unreaded' ng-bind="str.mail"><?= __("Почта") ?></a>
                     <a ng-show="+user.group" class="gradient_grey border radius padding ng-hide"
-                       href="/menu.user.php" ng-bind="user.login"><?= $user->login ?></a>
+                       href="/menu.user.php" ng-bind="user.nick"><?= $user->nick ?></a>
                     <a ng-hide="+user.group" class="gradient_grey border radius padding ng-hide"
                        href="/login.php?return={{URL}}" ng-bind="translates.auth"><?= __("Авторизация") ?></a>
                     <a ng-hide="+user.group" class="gradient_grey border radius padding ng-hide"
