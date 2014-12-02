@@ -39,6 +39,7 @@
  * @property bool vk_reg_enable
  * @property int vk_app_id
  * @property string vk_app_secret
+ * @property bool vk_auth_email_enable
  */
 class dcms
 {

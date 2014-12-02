@@ -38,6 +38,19 @@ $vk_user_id = $data['user_id'];
 $vk_access_token = $data['access_token'];
 $vk_email = $data['email'];
 
+if ($vk_email && $dcms->vk_auth_email_enable){
+    $q = $db->prepare("SELECT * FROM `users` WHERE `reg_mail` = :email LIMIT 1");
+    $q->execute(array(':email' => $vk_email));
+    if ($q->rowCount()) {
+        $user_data = $q->fetch();
+        $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'vk',?,?,?,'1')");
+        $res->execute(Array($user_data['id'], $dcms->ip_long, TIME, $dcms->browser_id));
+        $_SESSION [SESSION_ID_USER] = $user_data['id'];
+        $doc->msg("Авторизация прошла успешно");
+        exit;
+    }
+}
+
 $q = $db->prepare("SELECT * FROM `users` WHERE `vk_id` = :id_vk LIMIT 1");
 $q->execute(array(':id_vk' => $vk_user_id));
 if ($q->rowCount()) {
@@ -71,7 +84,7 @@ $res->execute(Array(
     ':login' => '$vk.' . $data['uid'],
     ':pass' => $vk_access_token,
     ':sex' => ($data['sex'] == 0 || $data['sex'] == 2) ? 1 : 0,
-    ':reg_mail' => '',
+    ':reg_mail' => $vk_email,
     ':vk_id' => $vk_user_id,
     ':vk_first_name' => $data['first_name'],
     ':vk_last_name' => $data['last_name']
