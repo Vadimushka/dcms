@@ -77,13 +77,6 @@ $res->execute(Array(
     ':vk_last_name' => $data['last_name']
 ));
 
-if ($error = $res->errorInfo()){
-//    echo "<!--".$json_content.'-->';
-    $doc->err(__('Ошибка при добавлении пользователя в базу'));
-    exit(print_r($error, true));
-    exit;
-}
-
 $id = $db->lastInsertId();
 $_SESSION [SESSION_ID_USER] = $id;
 $doc->msg("Авторизация прошла успешно");
