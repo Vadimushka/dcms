@@ -20,6 +20,16 @@ if (!$ank->group) {
     exit;
 }
 
+if (!$ank->vk_id) {
+    if (isset($_GET['return']))
+        header('Refresh: 1; url=' . $_GET['return']);
+    else
+        header('Refresh: 1; url=/');
+
+    $doc->err(__('Нельзя переименовать пользователя vk.com'));
+    exit;
+}
+
 $doc->title .= ' "' . $ank->login . '"';
 
 if ($ank->group >= $user->group) {

@@ -35,6 +35,10 @@
  * @property string version Версия DCMS
  * @property float forum_rating_coefficient Соотношение рейтинга поста с рейтингом пользователя
  * @property int forum_rating_down_balls Стоимость понижения рейтинга поста в форуме
+ * @property bool vk_auth_enable
+ * @property bool vk_reg_enable
+ * @property int vk_app_id
+ * @property string vk_app_secret
  */
 class dcms
 {

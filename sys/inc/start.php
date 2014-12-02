@@ -150,11 +150,6 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
     if (!empty($_SESSION [SESSION_ID_USER])) {
         // авторизация по сессии
         $user = current_user::getInstance($_SESSION [SESSION_ID_USER]);
-        if ($user->password !== crypt::hash($_SESSION[SESSION_PASSWORD_USER], $dcms->salt)) {
-            $user = current_user::getInstance();
-            unset($_SESSION[SESSION_ID_USER]);
-            unset($_SESSION[SESSION_PASSWORD_USER]);
-        }
     } elseif (!empty($_COOKIE [COOKIE_ID_USER]) && !empty($_COOKIE [COOKIE_USER_PASSWORD]) && !isset($_GET['login_from_cookie']) && $_SERVER ['SCRIPT_NAME'] !== '/pages/login.php' && $_SERVER ['SCRIPT_NAME'] !== '/pages/captcha.php') {
         // авторизация по COOKIE (получение сессии, по которой пользователь авторизуется)
         header('Location: /login.php?login_from_cookie&return=' . URL);

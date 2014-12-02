@@ -76,7 +76,6 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
                     $user->recovery_password = '';
                 }
                 $_SESSION[SESSION_ID_USER] = $user->id;
-                $_SESSION[SESSION_PASSWORD_USER] = $password;
                 if (isset($_POST['save_to_cookie']) && $_POST['save_to_cookie']) {
                     setcookie(COOKIE_ID_USER, $user->id, TIME + 60 * 60 * 24 * 365);
                     setcookie(COOKIE_USER_PASSWORD, crypt::encrypt($password, $dcms->salt_user), TIME + 60 * 60 * 24 * 365);
@@ -95,7 +94,6 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
         $res->execute(Array($tmp_user->id, $dcms->ip_long, TIME, $dcms->browser_id));
         $user = $tmp_user;
         $_SESSION[SESSION_ID_USER] = $user->id;
-        $_SESSION[SESSION_PASSWORD_USER] = crypt::decrypt($_COOKIE[COOKIE_USER_PASSWORD], $dcms->salt_user);
     } else {
         $need_of_captcha = true;
         cache_aut_failture::set($dcms->ip_long, true, 600); // при ошибке заставляем пользователя проходить капчу
@@ -133,3 +131,15 @@ if ($need_of_captcha)
     $form->captcha();
 $form->button(__('Авторизация'));
 $form->display();
+
+if ($dcms->vk_auth_enable){
+    $form = new form('https://oauth.vk.com/authorize', 'get');
+    $form->hidden('client_id', $dcms->vk_app_id);
+    $form->hidden('scope', 'email');
+    $form->hidden('response_type', 'code');
+    $form->hidden('v', '5.27');
+    $form->hidden('redirect_uri', 'http://'.$_SERVER['HTTP_HOST'].'/vk.php');
+
+    $form->button(__('Авторизация через vk.com'));
+    $form->display();
+}

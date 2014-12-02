@@ -26,6 +26,9 @@
  * @property int ank_m_r Месяц рождения
  * @property int ank_d_r День рождения
  * @property mixed reg_mail
+ * @property int vk_id
+ * @property string vk_first_name
+ * @property string vk_last_name
  */
 class user
 {
@@ -328,6 +331,8 @@ class user
         }
         // пользователь
         if ($this->group) {
+            if ($this->vk_id)
+                return 'user.vk';
             return 'user.' . $this->sex;
         }
         // гость
@@ -393,6 +398,8 @@ class user
                 return @$this->_data ['theme_' . $dcms->browser_type];
             case 'nick' :
                 return @$this->nick();
+            case 'login':
+                return $this->login();
             default :
                 return !isset($this->_data [$n]) ? false : $this->_data [$n];
         }
@@ -415,6 +422,10 @@ class user
                 break;
             case 'items_per_page' :
                 $n .= '_' . $dcms->browser_type;
+                break;
+            case 'login':
+                if ($this->vk_id)
+                    return;
                 break;
         }
 
@@ -441,6 +452,15 @@ class user
     function __destruct()
     {
         $this->save_data();
+    }
+
+    public function login()
+    {
+        if ($this->vk_id){
+            return $this->vk_first_name.' '.$this->vk_last_name;
+
+        }
+        return $this->_data['login'];
     }
 
 }

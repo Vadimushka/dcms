@@ -285,6 +285,18 @@ if ($step == 0) {
     $form->button(__('Принимаю'), 'ok', false);
     $form->button(__('Не принимаю'), 'no');
     $form->display();
+
+
+    if ($dcms->vk_auth_enable){
+        $form = new form('https://oauth.vk.com/authorize', 'get');
+        $form->hidden('client_id', $dcms->vk_app_id);
+        $form->hidden('scope', 'email');
+        $form->hidden('response_type', 'code');
+        $form->hidden('v', '5.27');
+        $form->hidden('redirect_uri', 'http://'.$_SERVER['HTTP_HOST'].'/vk.php');
+
+        $form->button(__('Вход через vk.com'));
+        $form->display();
+    }
     exit;
 }
-?>
