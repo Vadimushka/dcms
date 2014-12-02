@@ -133,12 +133,12 @@ $form->button(__('Авторизация'));
 $form->display();
 
 if ($dcms->vk_auth_enable){
-    $form = new form('https://oauth.vk.com/authorize', 'get');
+    $form = new form('https://oauth.vk.com/authorize', false);
     $form->hidden('client_id', $dcms->vk_app_id);
     $form->hidden('scope', 'email');
+    $form->hidden('redirect_uri', 'http://'.$_SERVER['HTTP_HOST'].'/vk.php');
     $form->hidden('response_type', 'code');
     $form->hidden('v', '5.27');
-    $form->hidden('redirect_uri', 'http://'.$_SERVER['HTTP_HOST'].'/vk.php');
 
     $form->button(__('Авторизация через vk.com'));
     $form->display();

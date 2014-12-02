@@ -25,11 +25,12 @@ if (empty($_GET['code'])) {
 $code = $_GET['code'];
 
 /** @var dcms $dcms */
-$http_client = new http_client('https://oauth.vk.com/access_token?client_id' . $dcms->vk_app_id . '&client_secret=' . $dcms->vk_app_secret . '&code=' . $_GET['code'] . '&redirect_uri=' . urlencode('http://' . $_SERVER['HTTP_HOST'] . '/vk.php'));
+$http_client = new http_client('https://oauth.vk.com/access_token?client_id=' . $dcms->vk_app_id . '&client_secret=' . $dcms->vk_app_secret . '&code=' . $_GET['code'] . '&redirect_uri=' . urlencode('http://' . $_SERVER['HTTP_HOST'] . '/vk.php'));
 $json_content = $http_client->getContent();
 
 if (false === ($data = json_decode($json_content, true)) || empty($data['access_token'])) {
     $doc->err(__('Не удалось авторизоваться: %s', __('Не получен access_token')));
+    //echo "<!--".$json_content.'-->';
     exit;
 }
 
@@ -51,19 +52,23 @@ if ($q->rowCount()) {
     exit;
 }
 
-$http_client = new http_client("https://api.vk.com/method/account.getProfileInfo?access_token=" . $vk_access_token);
+$http_client = new http_client("https://api.vk.com/method/users.get?access_token=" . $vk_access_token);
 $json_content = $http_client->getContent();
 
-if (false === ($data = json_decode($json_content, true))) {
+if (false === ($data = json_decode($json_content, true)) || empty($data['response'])) {
+    echo "<!--".$json_content.'-->';
     $doc->err(__('Не удалось авторизоваться: %s', __('Не получены данные пользователя')));
     exit;
 }
+
+$data = $data['response'][0];
+
 
 $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `reg_mail`, `vk_id`, `vk_first_name`, `vk_last_name`)
 VALUES (:reg_date, :login, :pass, :sex, :reg_mail, :vk_id, :vk_first_name, :vk_last_name)");
 $res->execute(Array(
     ':reg_date' => TIME,
-    ':login' => '$vk.' . $vk_user_id,
+    ':login' => '$vk.' . $data['uid'],
     ':pass' => $vk_access_token,
     ':sex' => ($data['sex'] == 0 || $data['sex'] == 2) ? 1 : 0,
     ':reg_mail' => '',
@@ -71,3 +76,14 @@ $res->execute(Array(
     ':vk_first_name' => $data['first_name'],
     ':vk_last_name' => $data['last_name']
 ));
+
+if ($error = $res->errorInfo()){
+//    echo "<!--".$json_content.'-->';
+    $doc->err(__('Ошибка при добавлении пользователя в базу'));
+    exit(print_r($error, true));
+    exit;
+}
+
+$id = $db->lastInsertId();
+$_SESSION [SESSION_ID_USER] = $id;
+$doc->msg("Авторизация прошла успешно");

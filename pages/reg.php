@@ -288,7 +288,7 @@ if ($step == 0) {
 
 
     if ($dcms->vk_auth_enable){
-        $form = new form('https://oauth.vk.com/authorize', 'get');
+        $form = new form('https://oauth.vk.com/authorize', false);
         $form->hidden('client_id', $dcms->vk_app_id);
         $form->hidden('scope', 'email');
         $form->hidden('response_type', 'code');
