@@ -8,6 +8,7 @@ if (defined('DCMS')) {
 
 function execute_cron_file($path)
 {
+    global $db, $dcms;
     require $path;
 }
 
