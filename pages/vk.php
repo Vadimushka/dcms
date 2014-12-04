@@ -30,7 +30,6 @@ $json_content = $http_client->getContent();
 
 if (false === ($data = json_decode($json_content, true)) || empty($data['access_token'])) {
     $doc->err(__('Не удалось авторизоваться: %s', __('Не получен access_token')));
-    //echo "<!--".$json_content.'-->';
     exit;
 }
 
@@ -38,7 +37,7 @@ $vk_user_id = $data['user_id'];
 $vk_access_token = $data['access_token'];
 $vk_email = $data['email'];
 
-if ($vk_email && $dcms->vk_auth_email_enable){
+if ($vk_email && $dcms->vk_auth_email_enable) {
     $q = $db->prepare("SELECT * FROM `users` WHERE `reg_mail` = :email LIMIT 1");
     $q->execute(array(':email' => $vk_email));
     if ($q->rowCount()) {
@@ -69,7 +68,6 @@ $http_client = new http_client("https://api.vk.com/method/users.get?access_token
 $json_content = $http_client->getContent();
 
 if (false === ($data = json_decode($json_content, true)) || empty($data['response'])) {
-    echo "<!--".$json_content.'-->';
     $doc->err(__('Не удалось авторизоваться: %s', __('Не получены данные пользователя')));
     exit;
 }

@@ -11,6 +11,25 @@
     <noscript>
         <meta http-equiv="refresh" content="0; URL=/pages/bad_browser.html">
     </noscript>
+    <script>
+        (function () {
+            var getIeVer = function () {
+                var rv = -1; // Return value assumes failure.
+                if (navigator.appName == 'Microsoft Internet Explorer') {
+                    var ua = navigator.userAgent;
+                    var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+                    if (re.exec(ua) != null)
+                        rv = parseFloat(RegExp.$1);
+                }
+                return rv;
+            };
+            var ver = getIeVer();
+            if (ver != -1 &amp;&amp; ver &lt; 9) {
+                window.location.href = "/pages/bad_browser.html";
+            }
+        })();
+
+    </script>
     <script charset="utf-8" src="/sys/themes/.common/jquery-2.1.1.min.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/angular.min.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/angular-animate.min.js" type="text/javascript"></script>
