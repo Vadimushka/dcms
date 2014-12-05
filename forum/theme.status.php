@@ -50,7 +50,7 @@ if (!empty($_POST['open'])) {
         if ($reason = text::input_text($_POST['reason'])) {
             $message .= "\n" . __('Причина: %s', $reason);
         }
-        $dcms->log('Форум', 'Закрытие темы [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]' . ($reason ? "\nПричина: $reason" : ''));
+        $dcms->log('Форум', 'Открытие темы [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]' . ($reason ? "\nПричина: $reason" : ''));
 
         $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`) VALUES (?,?,?,'0',?,?,?,?)");
         $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], TIME, $message, $theme['group_show'], $theme['group_edit']));
@@ -71,7 +71,7 @@ if (!empty($_POST['close'])) {
         if ($reason = text::input_text($_POST['reason'])) {
             $message .= "\n" . __('Причина: %s', $reason);
         }
-        $dcms->log('Форум', 'Открытие темы [url=/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]' . ($reason ? "\nПричина: $reason" : ''));
+        $dcms->log('Форум', 'Закрытие темы [url=/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]' . ($reason ? "\nПричина: $reason" : ''));
         $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`) VALUES (?,?,?,'0',?,?,?,?)");
         $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], TIME, $message, $theme['group_show'], $theme['group_edit']));
         $doc->msg(__('Тема успешно закрыта для обсуждения'));
