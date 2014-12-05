@@ -72,7 +72,7 @@ if (isset($_POST['save'])) {
                 $message .= "\n" . __('Причина: %s', $reason);
             }
 
-            $dcms->log('Форум', __('Перемещение темы %s из раздела %s в раздел %s', '[url=/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]', '[url=/forum/category.php?id=' . $theme['id_category_old'] . ']' . $theme['category_name_old'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic_old'] . ']' . $theme['topic_name_old'] . '[/url]', '[url=/forum/category.php?id=' . $theme['id_category'] . ']' . $theme['category_name'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic'] . ']' . $theme['topic_name'] . '[/url]' . ($reason ? "\nПричина: $reason" : '')));
+            $dcms->log('Форум', __('Перемещение темы %s из раздела %s в раздел %s', '[url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]', '[url=/forum/category.php?id=' . $theme['id_category_old'] . ']' . $theme['category_name_old'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic_old'] . ']' . $theme['topic_name_old'] . '[/url]', '[url=/forum/category.php?id=' . $theme['id_category'] . ']' . $theme['category_name'] . '[/url]/[url=/forum/topic.php?id=' . $theme['id_topic'] . ']' . $theme['topic_name'] . '[/url]' . ($reason ? "\nПричина: $reason" : '')));
 
             $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
  VALUES (?,?,?,'0',?,?,?,?)");
