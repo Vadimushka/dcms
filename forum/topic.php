@@ -60,7 +60,7 @@ if ($arr = $q->fetchAll()) {
         $last_msg = new user($themes['id_last']);
 
         $post->content = ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick) . '<br />';
-        $post->content .= __('Просмотров: %s', $themes['views']);
+        $post->bottom = __('Просмотров: %s', $themes['views']);
     }
 }
 
