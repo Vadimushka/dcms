@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= $lang->xml_lang ?>" ng-app="Dcms">
+<!DOCTYPE html>
+<html ng-app="Dcms">
 <head>
     <title><?= $title ?></title>
     <link rel="shortcut icon" href="/favicon.ico"/>
@@ -9,26 +9,25 @@
     <link rel="stylesheet" href="/sys/themes/.common/animate.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?9"/>
     <noscript>
-        <meta http-equiv="refresh" content="0; URL=/pages/bad_browser.html">
+        <meta http-equiv="refresh" content="0; URL=/pages/bad_browser.html" />
     </noscript>
     <script>
         (function () {
             var getIeVer = function () {
                 var rv = -1; // Return value assumes failure.
-                if (navigator.appName == 'Microsoft Internet Explorer') {
+                if (navigator.appName === 'Microsoft Internet Explorer') {
                     var ua = navigator.userAgent;
                     var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-                    if (re.exec(ua) != null)
+                    if (re.exec(ua) !== null)
                         rv = parseFloat(RegExp.$1);
                 }
                 return rv;
             };
             var ver = getIeVer();
-            if (ver != -1 &amp;&amp; ver &lt; 9) {
+            if (ver !== -1 && ver < 9) {
                 window.location.href = "/pages/bad_browser.html";
             }
         })();
-
     </script>
     <script charset="utf-8" src="/sys/themes/.common/jquery-2.1.1.min.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/angular.min.js" type="text/javascript"></script>
@@ -36,7 +35,6 @@
     <script charset="utf-8" src="/sys/themes/.common/dcmsApi.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/elastic.js" type="text/javascript"></script>
     <script charset="utf-8" src="<?= $path ?>/js.js?6" type="text/javascript"></script>
-    <meta http-equiv="Сontent-Type" content="application/xhtml+xml; charset=utf-8"/>
     <meta name="generator" content="DCMS <?= $dcms->version ?>"/>
     <? if ($description) { ?>
         <meta name="description" content="<?= $description ?>"/>
