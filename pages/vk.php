@@ -22,24 +22,34 @@ if (empty($_GET['code'])) {
     exit;
 }
 
-$code = $_GET['code'];
-
-/** @var dcms $dcms */
-$http_client = new http_client('https://oauth.vk.com/access_token?client_id=' . $dcms->vk_app_id . '&client_secret=' . $dcms->vk_app_secret . '&code=' . $_GET['code'] . '&redirect_uri=' . urlencode('http://' . $_SERVER['HTTP_HOST'] . '/vk.php'));
-$json_content = $http_client->getContent();
-
-if (false === ($data = json_decode($json_content, true)) || empty($data['access_token'])) {
-    $doc->err(__('Не удалось авторизоваться: %s', __('Не получен access_token')));
+if (!$dcms->vk_app_id || !$dcms->vk_app_secret){
+    header("Location: /");
     exit;
 }
 
-$vk_user_id = $data['user_id'];
-$vk_access_token = $data['access_token'];
-$vk_email = $data['email'];
+$vk = new vk($dcms->vk_app_id, $dcms->vk_app_secret);
 
-if ($vk_email && $dcms->vk_auth_email_enable) {
-    $q = $db->prepare("SELECT * FROM `users` WHERE `reg_mail` = :email LIMIT 1");
-    $q->execute(array(':email' => $vk_email));
+try{
+    $vk->getAccessToken('http://' . $_SERVER['HTTP_HOST'] . '/vk.php', $_GET['code']);
+    $vk_user = $vk->getCurrentUser();
+
+    echo '<!--'.json_encode($vk_user).'-->';
+
+    if ($vk->getEmail() && $dcms->vk_auth_email_enable) {
+        $q = $db->prepare("SELECT * FROM `users` WHERE `reg_mail` = :email LIMIT 1");
+        $q->execute(array(':email' => $vk->getEmail()));
+        if ($q->rowCount()) {
+            $user_data = $q->fetch();
+            $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'vk',?,?,?,'1')");
+            $res->execute(Array($user_data['id'], $dcms->ip_long, TIME, $dcms->browser_id));
+            $_SESSION [SESSION_ID_USER] = $user_data['id'];
+            $doc->msg("Авторизация прошла успешно");
+            exit;
+        }
+    }
+
+    $q = $db->prepare("SELECT * FROM `users` WHERE `vk_id` = :id_vk LIMIT 1");
+    $q->execute(array(':id_vk' => $vk_user['uid']));
     if ($q->rowCount()) {
         $user_data = $q->fetch();
         $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'vk',?,?,?,'1')");
@@ -47,47 +57,27 @@ if ($vk_email && $dcms->vk_auth_email_enable) {
         $_SESSION [SESSION_ID_USER] = $user_data['id'];
         $doc->msg("Авторизация прошла успешно");
         exit;
+    } else if (!$dcms->vk_reg_enable) {
+        throw new Exception(__('Регистрация через vk.com запрещена'));
     }
-}
 
-$q = $db->prepare("SELECT * FROM `users` WHERE `vk_id` = :id_vk LIMIT 1");
-$q->execute(array(':id_vk' => $vk_user_id));
-if ($q->rowCount()) {
-    $user_data = $q->fetch();
-    $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'vk',?,?,?,'1')");
-    $res->execute(Array($user_data['id'], $dcms->ip_long, TIME, $dcms->browser_id));
-    $_SESSION [SESSION_ID_USER] = $user_data['id'];
-    $doc->msg("Авторизация прошла успешно");
-    exit;
-} else if (!$dcms->vk_reg_enable) {
-    $doc->err(__('Регистрация через vk.com не доступна'));
-    exit;
-}
-
-$http_client = new http_client("https://api.vk.com/method/users.get?access_token=" . $vk_access_token);
-$json_content = $http_client->getContent();
-
-if (false === ($data = json_decode($json_content, true)) || empty($data['response'])) {
-    $doc->err(__('Не удалось авторизоваться: %s', __('Не получены данные пользователя')));
-    exit;
-}
-
-$data = $data['response'][0];
-
-
-$res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `reg_mail`, `vk_id`, `vk_first_name`, `vk_last_name`)
+    $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `reg_mail`, `vk_id`, `vk_first_name`, `vk_last_name`)
 VALUES (:reg_date, :login, :pass, :sex, :reg_mail, :vk_id, :vk_first_name, :vk_last_name)");
-$res->execute(Array(
-    ':reg_date' => TIME,
-    ':login' => '$vk.' . $data['uid'],
-    ':pass' => $vk_access_token,
-    ':sex' => ($data['sex'] == 0 || $data['sex'] == 2) ? 1 : 0,
-    ':reg_mail' => $vk_email,
-    ':vk_id' => $vk_user_id,
-    ':vk_first_name' => $data['first_name'],
-    ':vk_last_name' => $data['last_name']
-));
+    $res->execute(Array(
+        ':reg_date' => TIME,
+        ':login' => '$vk.' . $vk_user['uid'],
+        ':pass' => $vk->getAccessToken(),
+        ':sex' => ($vk_user['sex'] == 0 || $vk_user['sex'] == 2) ? 1 : 0,
+        ':reg_mail' => $vk->getEmail(),
+        ':vk_id' => $vk_user['uid'],
+        ':vk_first_name' => $vk_user['first_name'],
+        ':vk_last_name' => $vk_user['last_name']
+    ));
 
-$id = $db->lastInsertId();
-$_SESSION [SESSION_ID_USER] = $id;
-$doc->msg("Авторизация прошла успешно");
+    $id = $db->lastInsertId();
+    $_SESSION [SESSION_ID_USER] = $id;
+    $doc->msg("Регистрация прошла успешно");
+}catch (Exception $e){
+    $doc->err(__('Не удалось авторизоваться: %s', $e->getMessage()));
+    exit;
+}

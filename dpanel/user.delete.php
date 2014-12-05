@@ -21,7 +21,7 @@ if (!$ank->group) {
     exit;
 }
 
-$doc->title .= ' "' . $ank->login . '"';
+$doc->title .= ' "' . $ank->nick . '"';
 
 if ($ank->group >= $user->group) {
     if (isset($_GET['return']))
@@ -40,7 +40,7 @@ if (isset($_POST['delete'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
         misc::user_delete($ank->id);
-        $dcms->log('Пользователи', 'Удаление пользователя ' . $ank->login . ' (ID ' . $ank->id . ')');
+        $dcms->log('Пользователи', 'Удаление пользователя ' . $ank->nick . ' (ID ' . $ank->id . ')');
         $doc->msg(__('Пользователь успешно удален'));
         $doc->ret(__('Админка'), '/dpanel/');
         exit;
@@ -60,7 +60,7 @@ $listing->display();
 
 $form = new form("?id_ank=$ank->id&amp;" . passgen());
 $form->captcha();
-$form->bbcode(__('Пользователь будет удален без возможности восстановления. Подтвердите удаление пользователя "%s".', $ank->login));
+$form->bbcode(__('Пользователь будет удален без возможности восстановления. Подтвердите удаление пользователя "%s".', $ank->nick));
 $form->button(__('Удалить'), 'delete');
 $form->display();
 
