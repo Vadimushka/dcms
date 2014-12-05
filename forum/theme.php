@@ -161,7 +161,9 @@ foreach ($messages AS $message) {
             $file->icon($files[$i]->icon());
             $file->image = $files[$i]->image();
         }
-        $post->content .= $listing_files->fetch();
+        if ($count){
+            $post->content .= $listing_files->fetch();
+        }
     }
 }
 
