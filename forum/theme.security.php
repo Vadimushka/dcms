@@ -27,10 +27,14 @@ if (isset($_POST['save'])) {
         $theme['top'] = $t['top'];
         $res = $db->prepare("UPDATE `forum_themes` SET `top` = ? WHERE `id` = ? LIMIT 1");
         $res->execute(Array($theme['top'], $theme['id']));
-        if ($theme['top'])
+        if ($theme['top']){
+            $dcms->log('Форум', 'Прикрепление темы [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
             $doc->msg(__('Тема успешно закреплена'));
-        else
+        }
+        else{
+            $dcms->log('Форум', 'Открепление темы [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
             $doc->msg(__('Тема успешно откреплена'));
+        }
     }
 
     if (isset($_POST['group_show'])) { // просмотр
