@@ -62,7 +62,9 @@ class widget
      */
     function display()
     {
+        echo "<!-- Start Widget ".$this->getName()." -->";
         echo $this->fetch();
+        echo "<!-- End Widget ".$this->getName()." -->";
     }
 
     /**

@@ -4,7 +4,8 @@
  * Работа со структурами таблиц.
  * Используется для выявления изменений в структурах таблиц при обновлении движка и формирования соответствующих SQL запросов.
  */
-class table_structure {
+class table_structure
+{
 
     protected $_structure = array(); // поля и индексы таблицы
     protected $_properties = array();
@@ -14,16 +15,19 @@ class table_structure {
      * загрузка структуры из INI файла
      * @param bool|string $path Путь к файлу со структурой таблицы
      */
-    function __construct($path = false) {
+    function __construct($path = false)
+    {
         $this->db = DB::me();
-        if ($path)
+        if ($path) {
             $this->loadFromIniFile($path);
+        }
     }
 
     /**
      * Очистка данных о структуре загруженной таблицы
      */
-    public function clear() {
+    public function clear()
+    {
         $this->_structure = array();
         $this->_properties = array();
     }
@@ -32,14 +36,16 @@ class table_structure {
      * загрузка структуры из INI файла
      * @param string $path Путь к файлу со структурой таблицы
      */
-    function loadFromIniFile($path) {
+    function loadFromIniFile($path)
+    {
         $this->clear();
         $ini = ini::read($path, 1);
         foreach ($ini as $key => $value) {
-            if ($key == '~TABLE~PROPERTIES~')
+            if ($key == '~TABLE~PROPERTIES~') {
                 $this->_properties = $value;
-            else
+            } else {
                 $this->_structure[$key] = $value;
+            }
         }
     }
 
@@ -47,50 +53,60 @@ class table_structure {
      * получение структуры таблицы из подключенной базы
      * @param string $table Имя таблицы
      */
-    function loadFromBase($table) {
+    function loadFromBase($table)
+    {
         $this->clear();
         // получение полей таблицы
         $q = $this->db->query("SHOW FULL COLUMNS FROM `$table`");
-        while ($result = $q->fetch()) {
-            $structure = array();
-            $structure['type'] = $result['Type'];
-            if ($result['Default'] == '' && $result['Null'] == 'YES')
-                $structure['default_and_null'] = 'DEFAULT NULL';
-            elseif ($result['Default'] != '' && $result['Null'] == 'YES')
-                $structure['default_and_null'] = "NULL DEFAULT '" . $result['Default']. "'";
-            elseif ($result['Default'] != '' && $result['Null'] == 'NO')
-                $structure['default_and_null'] = "NOT NULL DEFAULT '" . $result['Default'] . "'";
-            else
-                $structure['default_and_null'] = 'NOT NULL';
-            $structure['ai'] = $result['Extra'] == 'auto_increment' ? 'AUTO_INCREMENT' : '';
-            $structure['comment'] = $result['Comment'] ? "COMMENT '" . $result['Comment'] . "'" : '';
-            $this->_structure['`' . $result['Field'] . '`'] = $structure;
+        if ($q) {
+            while ($result = $q->fetch()) {
+                $structure = array();
+                $structure['type'] = $result['Type'];
+                if ($result['Default'] == '' && $result['Null'] == 'YES') {
+                    $structure['default_and_null'] = 'DEFAULT NULL';
+                } elseif ($result['Default'] != '' && $result['Null'] == 'YES') {
+                    $structure['default_and_null'] = "NULL DEFAULT '" . $result['Default'] . "'";
+                } elseif ($result['Default'] != '' && $result['Null'] == 'NO') {
+                    $structure['default_and_null'] = "NOT NULL DEFAULT '" . $result['Default'] . "'";
+                } else {
+                    $structure['default_and_null'] = 'NOT NULL';
+                }
+                $structure['ai'] = $result['Extra'] == 'auto_increment' ? 'AUTO_INCREMENT' : '';
+                $structure['comment'] = $result['Comment'] ? "COMMENT '" . $result['Comment'] . "'" : '';
+                $this->_structure['`' . $result['Field'] . '`'] = $structure;
+            }
         }
         // получение ключей таблицы
         $q = $this->db->query("SHOW KEYS FROM `$table`");
-        while ($result = $q->fetch()) {
-            $structure = array();
-            if ($result['Key_name'] == 'PRIMARY')
-                $structure['type'] = 'PRIMARY KEY';
-            elseif ($result['Index_type'] == 'FULLTEXT')
-                $structure['type'] = 'FULLTEXT KEY `' . $result['Key_name'] . '`';
-            elseif (!$result['Non_unique'])
-                $structure['type'] = 'UNIQUE KEY `' . $result['Key_name'] . '`';
-            else
-                $structure['type'] = 'KEY `' . $result['Key_name'] . '`';
+        if ($q) {
+            while ($result = $q->fetch()) {
+                $structure = array();
+                if ($result['Key_name'] == 'PRIMARY') {
+                    $structure['type'] = 'PRIMARY KEY';
+                } elseif ($result['Index_type'] == 'FULLTEXT') {
+                    $structure['type'] = 'FULLTEXT KEY `' . $result['Key_name'] . '`';
+                } elseif (!$result['Non_unique']) {
+                    $structure['type'] = 'UNIQUE KEY `' . $result['Key_name'] . '`';
+                } else {
+                    $structure['type'] = 'KEY `' . $result['Key_name'] . '`';
+                }
 
-            if (isset($this->_structure[$structure['type']]['fields']))
-                $this->_structure[$structure['type']]['fields'] .= ", `" . $result['Column_name'] . "`";
-            else
-                $this->_structure[$structure['type']]['fields'] = "`" . $result['Column_name'] . "`";
+                if (isset($this->_structure[$structure['type']]['fields'])) {
+                    $this->_structure[$structure['type']]['fields'] .= ", `" . $result['Column_name'] . "`";
+                } else {
+                    $this->_structure[$structure['type']]['fields'] = "`" . $result['Column_name'] . "`";
+                }
+            }
         }
         // получение свойств таблицы
         $q = $this->db->query("SHOW TABLE STATUS LIKE '$table'");
-        $properties = $q->fetch();
-        $this->_properties['name'] = $properties['Name'];
-        $this->_properties['engine'] = 'ENGINE=' . $properties['Engine'];
-        $this->_properties['auto_increment'] = 'AUTO_INCREMENT=' . $properties['Auto_increment'];
-        $this->_properties['comment'] = "COMMENT=" . $this->db->quote($properties['Comment']) . "";
+        if ($q){
+            $properties = $q->fetch();
+            $this->_properties['name'] = $properties['Name'];
+            $this->_properties['engine'] = 'ENGINE=' . $properties['Engine'];
+            $this->_properties['auto_increment'] = 'AUTO_INCREMENT=' . $properties['Auto_increment'];
+            $this->_properties['comment'] = "COMMENT=" . $this->db->quote($properties['Comment']) . "";
+        }
     }
 
     /**
@@ -98,15 +114,18 @@ class table_structure {
      * @param string $path
      * @return boolean
      */
-    function saveToIniFile($path) {
-        return ini::save($path, array_merge($this->_structure, array('~TABLE~PROPERTIES~' => $this->_properties)), true);
+    function saveToIniFile($path)
+    {
+        return ini::save($path, array_merge($this->_structure, array('~TABLE~PROPERTIES~' => $this->_properties)),
+            true);
     }
 
     /**
      * получение SQL запроса на создание таблицы
      * @return string SQL запрос на создание таблицы
      */
-    function getSQLQueryCreate() {
+    function getSQLQueryCreate()
+    {
         $sql = "CREATE TABLE `" . $this->_properties['name'] . "` (\r\n";
         $structure = array();
         foreach ($this->_structure as $name => $struct) {
@@ -116,14 +135,18 @@ class table_structure {
             if (isset($struct['fields'])) {
                 $struct_tmp[] = '(' . $struct['fields'] . ')';
             } else {
-                if ($struct['type'])
+                if ($struct['type']) {
                     $struct_tmp[] = $struct['type'];
-                if ($struct['default_and_null'])
+                }
+                if ($struct['default_and_null']) {
                     $struct_tmp[] = $struct['default_and_null'];
-                if ($struct['ai'])
+                }
+                if ($struct['ai']) {
                     $struct_tmp[] = $struct['ai'];
-                if ($struct['comment'])
+                }
+                if ($struct['comment']) {
                     $struct_tmp[] = $struct['comment'];
+                }
             }
             $structure[] = implode(' ', $struct_tmp);
         }
@@ -132,12 +155,14 @@ class table_structure {
 
         $sql .= "\r\n) ";
         $prop_tmp = array();
-        if ($this->_properties['engine'])
+        if ($this->_properties['engine']) {
             $prop_tmp[] = $this->_properties['engine'];
+        }
         $prop_tmp[] = 'DEFAULT CHARSET=utf8';
         // $prop_tmp[] = $this -> _properties['auto_increment'];
-        if ($this->_properties['comment'])
+        if ($this->_properties['comment']) {
             $prop_tmp[] = $this->_properties['comment'];
+        }
 
         $sql .= implode(' ', $prop_tmp);
         return $sql;
@@ -148,7 +173,8 @@ class table_structure {
      * @param \table_structure $tStruct_obj Структура целевой таблицы
      * @return string SQL запрос для приведения структуры таблицы к $tStruct_obj
      */
-    function getSQLQueryChange($tStruct_obj) {
+    function getSQLQueryChange($tStruct_obj)
+    {
         $to_add = array(); // добавляем поля (индексы)
         $to_delete = array(); // удаляем поля (индексы)
         $to_edit = array(); // изменяем поля (индексы)
@@ -175,8 +201,9 @@ class table_structure {
             }
         }
         // если нет изменений
-        if (!$to_add /* && !$to_delete */ && !$to_edit)
+        if (!$to_add /* && !$to_delete */ && !$to_edit) {
             return false;
+        }
         $sql = "ALTER TABLE `" . $this->_properties['name'] . "` \r\n";
         $structure = array();
 
@@ -207,21 +234,26 @@ class table_structure {
             $struct_tmp[] = $name;
             // индексы мы менять не можем, но зато мы можем удалить и создать заново
             if (isset($struct['fields'])) {
-                if (strpos($name, 'PRIMARY') === 0)
+                if (strpos($name, 'PRIMARY') === 0) {
                     $structure[] = 'DROP PRIMARY KEY';
-                elseif (preg_match('#`(.+?)`#', $name, $m))
+                } elseif (preg_match('#`(.+?)`#', $name, $m)) {
                     $structure[] = 'DROP INDEX ' . $m[1];
+                }
                 $structure[] = 'ADD ' . $name . ' (' . $struct['fields'] . ')';
                 continue;
             }
-            if ($struct['type'])
+            if ($struct['type']) {
                 $struct_tmp[] = $struct['type'];
-            if ($struct['default_and_null'])
+            }
+            if ($struct['default_and_null']) {
                 $struct_tmp[] = $struct['default_and_null'];
-            if ($struct['ai'])
+            }
+            if ($struct['ai']) {
                 $struct_tmp[] = $struct['ai'];
-            if ($struct['comment'])
+            }
+            if ($struct['comment']) {
                 $struct_tmp[] = $struct['comment'];
+            }
             $structure[] = implode(' ', $struct_tmp);
         }
         // обработка добавляемых полей (индексов)
@@ -233,14 +265,18 @@ class table_structure {
             if (isset($struct['fields'])) {
                 $struct_tmp[] = '(' . $struct['fields'] . ')';
             } else {
-                if ($struct['type'])
+                if ($struct['type']) {
                     $struct_tmp[] = $struct['type'];
-                if ($struct['default_and_null'])
+                }
+                if ($struct['default_and_null']) {
                     $struct_tmp[] = $struct['default_and_null'];
-                if ($struct['ai'])
+                }
+                if ($struct['ai']) {
                     $struct_tmp[] = $struct['ai'];
-                if ($struct['comment'])
+                }
+                if ($struct['comment']) {
                     $struct_tmp[] = $struct['comment'];
+                }
             }
             $structure[] = implode(' ', $struct_tmp);
         }
