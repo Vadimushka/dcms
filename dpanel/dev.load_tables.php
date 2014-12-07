@@ -16,11 +16,13 @@ foreach ($table_files as $table_file) {
 if (!empty($_POST)) {
     foreach ($_POST as $table => $val) {
         // echo $table."<br />";
-        if (!$val)
+        if (!$val) {
             continue;
+        }
         if (in_array($table, $tables)) {
-            if (function_exists('set_time_limit'))
+            if (function_exists('set_time_limit')) {
                 set_time_limit(600);
+            }
 
             if (!empty($_POST['load'])) {
                 if (!is_file(H . '/sys/preinstall/base.create.' . $table . '.ini')) {
@@ -32,17 +34,18 @@ if (!empty($_POST)) {
                 // если такая таблица уже существует, то переименовываем ее
                 if (in_array($table, $tables_exists->tables)) {
                     //Не знаю как это сделать красиво
-                    $db->query("ALTER TABLE $table RENAME `" . '~' . TIME . '~' . $table);
+                    $db->query("ALTER TABLE `$table` RENAME `" . '~' . TIME . '~' . $table . '`');
                     $doc->msg(__('Существующая таблица "%s" была переименована', $table));
                 }
 
                 if ($db->query($sql)) {
                     $doc->msg(__('Запрос на создание таблицы "%s" успешно выполнен', $table));
                     $tables_exists = new tables();
-                    if (in_array($table, $tables_exists->tables))
+                    if (in_array($table, $tables_exists->tables)) {
                         $doc->msg(__('Таблица "%s" успешно создана', $table));
-                    else
+                    } else {
                         $doc->err(__('Таблица "%s" не создана', $table));
+                    }
                 }
             }
         }
