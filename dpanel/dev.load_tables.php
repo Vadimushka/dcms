@@ -32,7 +32,7 @@ if (!empty($_POST)) {
                 // если такая таблица уже существует, то переименовываем ее
                 if (in_array($table, $tables_exists->tables)) {
                     //Не знаю как это сделать красиво
-                    $db->query("ALTER TABLE $table RENAME `" . '~' . TIME . '~$table');
+                    $db->query("ALTER TABLE $table RENAME `" . '~' . TIME . '~' . $table);
                     $doc->msg(__('Существующая таблица "%s" была переименована', $table));
                 }
 
