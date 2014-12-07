@@ -2,6 +2,7 @@
 include_once '../sys/inc/start.php';
 dpanel::check_access();
 $doc = new document(6);
+$doc->ret(__('Админка'), '/dpanel/');
 $doc->title = __('Темы оформления');
 $dcms = dcms::getInstance();
 $themes = themes::getAllThemes();
