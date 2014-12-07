@@ -40,6 +40,9 @@
  * @property int vk_app_id
  * @property string vk_app_secret
  * @property bool vk_auth_email_enable
+ * @property int img_max_width максимальная ширина изображений на странице
+ * @property int theme_version Версия тем оформления
+ *
  */
 class dcms
 {
@@ -58,8 +61,9 @@ class dcms
      */
     public static function getInstance()
     {
-        if (is_null(self::$_instance))
+        if (is_null(self::$_instance)) {
             self::$_instance = new self();
+        }
         return self::$_instance;
     }
 
@@ -221,14 +225,16 @@ class dcms
      */
     protected function _load_settings()
     {
-        $settings_default = ini::read(H . '/sys/inc/settings.default.ini', true) OR die('Невозможно загрузить файл настроек по-умолчанию');
+        $settings_default = ini::read(H . '/sys/inc/settings.default.ini',
+            true) OR die('Невозможно загрузить файл настроек по-умолчанию');
         if (!$settings = ini::read(H . '/sys/ini/settings.ini')) {
             // если установки небыли загружены, но при этом есть файл установки, то переадресуем на него
             if (file_exists(H . '/install/index.php')) {
                 header("Location: /install/");
                 exit;
-            } else
+            } else {
                 exit('Файл настроек не может быть загружен');
+            }
         }
         $this->_data = array_merge($settings_default['DEFAULT'], $this->_data, $settings, $settings_default['REPLACE']);
     }
@@ -243,10 +249,11 @@ class dcms
         $result = ini::save(H . '/sys/ini/settings.ini', $this->_data);
 
         if (is_a($doc, 'document')) {
-            if ($result)
+            if ($result) {
                 $doc->msg(__('Настройки успешно сохранены'));
-            else
+            } else {
                 $doc->err(__('Нет прав на запись в файл настроек'));
+            }
         }
 
         return $result;

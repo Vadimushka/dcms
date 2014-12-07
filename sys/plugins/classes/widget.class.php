@@ -44,9 +44,9 @@ class widget
             return;
         }
         if (($content = $this->getContent()) !== false) {
-            if (!$this->_data ['skin'])
+            if (!$this->_data ['skin']) {
                 echo $content;
-            else {
+            } else {
                 $widget = new design ();
                 $widget->assign('content', $content);
                 $widget->assign('name', $this->_data ['runame']);
@@ -102,7 +102,7 @@ class widget
         $cache_id [] = 'wt-' . $this->_data ['name'];
 
         $design = new design();
-        $cache_id [] = 'tm-' . $design->theme['dir'];
+        $cache_id [] = 'tm-' . $design->theme->getName();
 
         $cache_id [] = 'lp-' . $user_language_pack->code;
 
@@ -142,11 +142,13 @@ class widget
 
     function __set($n, $v)
     {
-        if (!$this->_isset)
+        if (!$this->_isset) {
             return;
+        }
 
-        if (!isset($this->_data [$n]))
+        if (!isset($this->_data [$n])) {
             return;
+        }
 
         $this->_data [$n] = $v;
     }
@@ -157,8 +159,9 @@ class widget
      */
     function saveData()
     {
-        if (!$this->_isset)
+        if (!$this->_isset) {
             return false;
+        }
 
         return ini::save($this->_data ['path_abs'] . '/config.ini', $this->_data);
     }

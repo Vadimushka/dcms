@@ -8,10 +8,11 @@ $doc->title = __('Профиль');
 
 $browser_types = array('light', 'mobile', 'full');
 
-if (isset($_GET ['id_ank']))
+if (isset($_GET ['id_ank'])) {
     $ank = new user($_GET ['id_ank']);
-else
+} else {
     $ank = $user;
+}
 
 if (!$ank->group) {
     if (isset($_GET ['return'])) {
@@ -43,9 +44,9 @@ if (isset($_POST ['save'])) {
     $ank->balls = abs((int)@$_POST ['balls']);
 
     if (isset($_POST ['ank_d_r'])) {
-        if ($_POST ['ank_d_r'] == null)
+        if ($_POST ['ank_d_r'] == null) {
             $ank->ank_d_r = null;
-        else {
+        } else {
             $ank_d_r = (int)$_POST ['ank_d_r'];
             if ($ank_d_r >= 1 && $ank_d_r <= 31) {
                 $ank->ank_d_r = $ank_d_r;
@@ -56,9 +57,9 @@ if (isset($_POST ['save'])) {
     }
 
     if (isset($_POST ['ank_m_r'])) {
-        if ($_POST ['ank_m_r'] == null)
+        if ($_POST ['ank_m_r'] == null) {
             $ank->ank_m_r = null;
-        else {
+        } else {
             $ank_m_r = (int)$_POST ['ank_m_r'];
             if ($ank_m_r >= 1 && $ank_m_r <= 12) {
                 $ank->ank_m_r = $ank_m_r;
@@ -69,9 +70,9 @@ if (isset($_POST ['save'])) {
     }
 
     if (isset($_POST ['ank_g_r'])) {
-        if ($_POST ['ank_g_r'] == null)
+        if ($_POST ['ank_g_r'] == null) {
             $ank->ank_g_r = null;
-        else {
+        } else {
             $ank_g_r = (int)$_POST ['ank_g_r'];
             if ($ank_g_r >= date('Y') - 100 && $ank_g_r <= date('Y')) {
                 $ank->ank_g_r = $ank_g_r;
@@ -97,9 +98,9 @@ if (isset($_POST ['save'])) {
         }
     }
     if (isset($_POST ['wmid'])) {
-        if (empty($_POST ['wmid']))
+        if (empty($_POST ['wmid'])) {
             $ank->wmid = '';
-        elseif (!is_valid::wmid($_POST ['wmid'])) {
+        } elseif (!is_valid::wmid($_POST ['wmid'])) {
             $doc->err(__('Указан не корректный %s', 'WMID'));
         } else {
             $ank->wmid = $_POST ['wmid'];
@@ -153,7 +154,8 @@ if (isset($_POST ['save'])) {
 
     $ank->donate_rub = floatval($_POST ['donate_rub']);
 
-    $dcms->log('Пользователи', 'Изменение профиля пользователя [url=/profile.view.php?id=' . $ank->id . ']' . $ank->login . '[/url]');
+    $dcms->log('Пользователи',
+        'Изменение профиля пользователя [url=/profile.view.php?id=' . $ank->id . ']' . $ank->login . '[/url]');
 
     $doc->msg(__('Профиль успешно изменен'));
 }
@@ -169,15 +171,17 @@ foreach ($browser_types as $type) {
 foreach ($browser_types as $b_type) {
     $t = 'theme_' . $b_type;
     $options = array(); // темы оформления для light браузера
-    $themes_list = themes::getList($b_type); // только для определенного типа браузера
-    foreach ($themes_list as $theme)
-        $options [] = array($theme ['dir'], $theme ['name'], $ank->$t === $theme ['dir']);
+    $themes_list = themes::getThemesByType($b_type); // только для определенного типа браузера
+    foreach ($themes_list as $theme) {
+        $options [] = array($theme->getName(), $theme->getViewName(), $ank->$t === $theme->getName());
+    }
     $form->select($t, __('Тема оформления') . ' (' . strtoupper($b_type) . ')', $options);
 }
 
 $options = array(); // Врменной сдвиг
-for ($i = -12; $i < 12; $i++)
+for ($i = -12; $i < 12; $i++) {
     $options [] = array($i, date('G:i', TIME + $i * 60 * 60), $ank->time_shift == $i);
+}
 $form->select('time_shift', __('Время'), $options);
 
 $form->text('realname', __('Реальное имя'), $ank->realname);

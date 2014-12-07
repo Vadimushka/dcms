@@ -43,9 +43,9 @@ $form->text('system_nick', __('Системный ник') . ' *', $dcms->system
 foreach ($browser_types as $b_types) {
     $key = 'theme_' . $b_types;
     $options = array();
-    $themes_list = themes::getList($b_types);
+    $themes_list = themes::getThemesByType($b_types);
     foreach ($themes_list as $theme)
-        $options [] = array($theme ['dir'], $theme ['name'], $dcms->$key === $theme ['dir']);
+        $options [] = array($theme->getName(), $theme->getViewName(), $dcms->$key === $theme->getName());
     $form->select($key, __('Тема оформления') . ' (' . $b_types . ')', $options);
 }
 

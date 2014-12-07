@@ -15,19 +15,19 @@ class design extends native_templating
         static $theme = false;
         if ($theme === false) {
             if (!empty($probe_theme) && themes::exists($probe_theme)) {
-                $theme = themes::getConfig($probe_theme);
+                $theme = themes::getThemeByName($probe_theme);
             } elseif (themes::exists($user->theme)) {
                 // пользовательская тема оформления
-                $theme = themes::getConfig($user->theme);
+                $theme = themes::getThemeByName($user->theme);
             } elseif (themes::exists($dcms->theme)) {
                 // системная тема оформления
-                $theme = themes::getConfig($dcms->theme);
-            } elseif (($themes = themes::getList($dcms->browser_type))) {
+                $theme = themes::getThemeByName($dcms->theme);
+            } elseif (($themes = themes::getThemesByType($dcms->browser_type))) {
                 // тема оформления для типа браузера
                 $theme = current($themes);
             } else {
                 // любая тема оформления
-                $theme = current(themes::getList());
+                $theme = current(themes::getAllThemes());
                 if (!$theme)
                     die('Не найдено ни одной совместимой темы оформления');
             }
@@ -36,7 +36,7 @@ class design extends native_templating
         $this->theme = $theme;
 
         // папка шаблонов
-        $this->_dir_template = H . '/sys/themes/' . $theme['dir'] . '/tpl/';
+        $this->_dir_templates = H . '/sys/themes/' . $theme->getName() . '/tpl/';
 
         // системные переменные
         $this->assign('theme', $theme);
@@ -44,7 +44,7 @@ class design extends native_templating
         $this->assign('copyright', $dcms->copyright, 2);
         $this->assign('lang', $user_language_pack);
         $this->assign('user', $user);
-        $this->assign('path', '/sys/themes/' . $theme['dir']);
+        $this->assign('path', '/sys/themes/' . $theme->getName());
     }
 
     /**
@@ -52,8 +52,7 @@ class design extends native_templating
      */
     function img_max_width()
     {
-        global $dcms;
-        return min($this->theme['img_width_max'], $dcms->img_max_width);
+        return $this->theme->getImgWidthMax();
     }
 
     /**
@@ -63,11 +62,6 @@ class design extends native_templating
      */
     function getIconPath($name)
     {
-        if (!$name)
-            return NULL;
-        $icon = $this->theme['icons'] . '/' . basename($name, '.png') . '.png';
-        $icon = is_file(H . $icon) ? $icon : '/sys/images/icons/' . basename($name, '.png') . '.png';
-        return $icon;
+        return '/sys/images/icons/' . basename($name, '.png') . '.png';
     }
-
 }

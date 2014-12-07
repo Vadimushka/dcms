@@ -4,24 +4,22 @@ dpanel::check_access();
 $doc = new document(6);
 $doc->title = __('Темы оформления');
 
-$themes = themes::getList();
+$themes = themes::getAllThemes();
 
 $list = new listing();
-foreach ($themes AS $config) {
-    $settings_path = H . '/sys/themes/' . $config['dir'] . '/settings.php';
+foreach ($themes AS $theme) {
+    $settings_path = H . '/sys/themes/' . $theme->getName() . '/settings.php';
 
     $post = $list->post();
-    $post->title = $config['name'];
+    $post->title = $theme->getViewName();
     $post->icon('theme');
     if (is_file($settings_path)) {
-        $post->url = 'theme.settings.php?theme=' . urlencode($config['dir']);
-        $post->action('settings', $post->url);
-    }
-    if ($config['browsers']) {
-        $post->content[] = __('Поддерживаемые типы браузеров: %s', implode(', ', $config['browsers']));
+        $post->action('settings', 'theme.settings.php?theme=' . urlencode($theme->getName()));
     }
 
-    switch ($config['dir']) {
+    $post->content[] = __('Поддерживаемые типы браузеров: %s', implode(', ', $theme->getBrowsers()));
+
+    switch ($theme->getName()) {
         case $dcms->theme_light:
             $post->content[] = __("По умолчанию для браузеров мобильных телефонов");
             break;

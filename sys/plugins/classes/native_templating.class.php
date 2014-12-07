@@ -7,7 +7,7 @@ class native_templating
 {
 
     public $cache_template = true; // кэширование шаблона в памяти. Используется eval вместо include
-    protected $_dir_template = ''; // папка с файлами шаблонов
+    protected $_dir_templates = ''; // папка с файлами шаблонов
     protected $_assigned = array(); // переменные, которые будут переданы в шаблон
 
     function __construct()
@@ -73,8 +73,8 @@ class native_templating
         if (strpos($tpl_name, 'file:') === 0) {
             $abs_path = text::substr($tpl_name, 256, 5, '');
             $tpl_path = dirname($abs_path) . '/' . basename($abs_path, '.tpl') . '.tpl.php';
-        } elseif ($this->_dir_template) {
-            $tpl_path = $this->_dir_template . '/' . basename($tpl_name, '.tpl') . '.tpl.php';
+        } elseif ($this->_dir_templates) {
+            $tpl_path = $this->_dir_templates . '/' . basename($tpl_name, '.tpl') . '.tpl.php';
         } else {
             $tpl_path = $tpl_name;
         }

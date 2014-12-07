@@ -3,164 +3,98 @@
 /**
  * Список тем оформления
  */
-abstract class themes {
+abstract class themes
+{
 
     /**
      * Проверка на существование темы оформления
-     * @param string $code имя темы оформления (название папки с темой)
-     * @param string $type тип темы оформления
+     * @param string $name имя темы оформления (название папки с темой)
+     * @param string $type
      * @return boolean
      */
-    static public function exists($code, $type = 'all') {
-        $list = self::getList($type);
-        return isset($list[$code]);
+    static public function exists($name, $type = 'all')
+    {
+        return !!self::getThemeByName($name, $type);
     }
 
     /**
-     * Получение конфига темы оформления
-     * @param string $code имя темы оформления (название папки с темой)
-     * @return array
+     * @param bool $nocache
+     * @return theme[]
      */
-    static public function getConfig($code) {
-        if (!self::exists($code)) {
-            return false;
-        }
-        $list = self::getList();
-        return $list[$code];
-    }
-
-    /**
-     * Возвращает список тем оформления
-     * @staticvar boolean|array $list
-     * @param string $type тип тем
-     * @return array
-     */
-    static public function getList($type = 'all') {
-        static $list = false;
-
-        if ($list !== false) {
-            return self::filterType($list, $type);
+    static public function getAllThemes($nocache = false)
+    {
+        static $themes = false;
+        if (!$themes && !$nocache) {
+            $themes = cache::get('themes_obj');
         }
 
-        // получение списка языковых пакетов
-        if ($list = cache::get('themes'))           
-            return self::filterType($list, $type);        
-
-        $list = self::getRealList();
-        cache::set('themes', $list, 60);
-
-        return self::filterType($list, $type);
-    }
-
-    /**
-     * Фильтр тем оформления по типу
-     * @param array $list список тем
-     * @param string $type тип тем
-     * @return array
-     */
-    static protected function filterType($list, $type = 'all') {
-        if ($type != 'all') {
-            foreach ($list as $dir => $conf) {
-                if ($conf['browsers'] && !in_array($type, $conf['browsers'])) {
-                    unset($list[$dir]);
+        if (!$themes) {
+            $themes = array();
+            $themes_path = H . '/sys/themes';
+            $od = opendir($themes_path);
+            while ($el_name = readdir($od)) {
+                if ($el_name{0} === '.') {
+                    continue;
                 }
+                if (!is_dir($themes_path . '/' . $el_name)) {
+                    continue;
+                }
+                try {
+                    $theme = new theme($themes_path . '/' . $el_name);
+                    if ($theme->getVersion() != dcms::getInstance()->theme_version) {
+                        continue;
+                    }
+                    $themes[] = $theme;
+                } catch (Exception $e) {
+
+                }
+            }
+            closedir($od);
+            cache::set('themes_obj', $themes, 60);
+        }
+        return $themes;
+    }
+
+    /**
+     * @param string $type
+     * @return theme[]
+     */
+    static public function getThemesByType($type)
+    {
+        $themes_all = self::getAllThemes();
+        $themes = array();
+
+        foreach ($themes_all as $theme) {
+            if ($type === 'all' || $theme->browserSupport($type)) {
+                $themes[] = $theme;
             }
         }
 
-        return $list;
+        return $themes;
     }
 
     /**
-     * Получение списка тем без кэширования
-     * @global \dcms $dcms
-     * @return array
+     * @param string $name
+     * @param string $type
+     * @return null|theme
      */
-    static public function getRealList() {
-        global $dcms;
-        $list = array();
-
-        // получение списка тем оформления минуя кэш
-        $lpath = H . '/sys/themes';
-        $od = opendir($lpath);
-        while ($rd = readdir($od)) {
-
-            if ($rd {0} == '.') {
-                continue; // все файлы и папки начинающиеся с точки пропускаем
-            }
-            if (is_dir($lpath . '/' . $rd)) {
-                if (!file_exists($lpath . '/' . $rd . '/config.ini')) {
-                    // если нет конфига, то тему оформления тоже пропускаем
-                    continue;
-                }
-
-                $config = ini::read($lpath . '/' . $rd . '/config.ini', true);
-
-                if (empty($config['CONFIG'])) {
-                    // нет конфигурации
-                    continue;
-                }
-
-                if (empty($config['CONFIG']['version']) || $config['CONFIG']['version'] != $dcms->theme_version) {
-                    // тема оформления не соответствует версии
-                    continue;
-                }
-
-                $list[$rd] = self::properties($config, $rd);
+    static public function getThemeByName($name, $type = 'all')
+    {
+        $themes_all = self::getThemesByType($type);
+        foreach ($themes_all as $theme) {
+            if ($theme->getName() === $name) {
+                return $theme;
             }
         }
-        closedir($od);
-
-        ksort($list);
-        reset($list);
-
-        return $list;
-    }
-
-    /**
-     * Свойства темы оформления из конфига
-     * @param array $config
-     * @param string $dir
-     * @return array
-     */
-    static protected function properties($config, $dir) {
-        if (empty($config['VARS'])) {
-            $vars = array();
-        } else {
-            $vars = $config['VARS'];
-        }
-
-        $info = $config['CONFIG'];
-        $info['vars'] = &$vars;
-        $info['dir'] = $dir;
-
-        if (empty($info['name'])) {
-            $info['name'] = $dir;
-        }
-
-        if (empty($info['img_width_max'])) {
-            $info['img_width_max'] = 300;
-        }
-
-        if (empty($info['browsers'])) {
-            $info['browsers'] = array();
-        } else {
-            $info['browsers'] = preg_split('/[\|\,\:\^]/', $info['browsers']);
-        }
-
-        if (empty($info['icons'])) {
-            $info['icons'] = '/sys/images/icons';
-        } else {
-            $info['icons'] = '/sys/themes/' . $dir . '/' . $info['icons'];
-        }
-
-        return $info;
+        return null;
     }
 
     /**
      * очистка кэша списка тем
      */
-    static public function clearCache() {
-        cache::set('themes', false);
+    static public function clearCache()
+    {
+        cache::set('themes_obj', false);
     }
 
 }

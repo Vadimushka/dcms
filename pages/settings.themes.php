@@ -14,7 +14,7 @@ if (!empty($probe_theme)) {
     $doc->ret(__('Список тем оформления'), '?');
     $doc->ret(__('Личное меню'), '/menu.user.php');
 
-    $theme = themes::getConfig($probe_theme);
+    $theme = themes::getThemeByName($probe_theme);
 
     if (isset($_POST['save'])) {
         $user->theme = $probe_theme;
@@ -28,7 +28,7 @@ if (!empty($probe_theme)) {
     }
 
     $form = new form('?theme=' . urlencode($probe_theme) . '&amp;' . passgen());
-    $form->bbcode(__('Вы действительно хотите применить тему оформления "%s" для браузеров типа "%s"?', $theme['name'], $dcms->browser_type));
+    $form->bbcode(__('Вы действительно хотите применить тему оформления "%s" для браузеров типа "%s"?', $theme->getName(), $dcms->browser_type));
     $form->button(__('Применить'), 'save', false);
     $form->button(__('Отмена'), 'cancel');
     $form->display();
@@ -36,16 +36,16 @@ if (!empty($probe_theme)) {
 }
 
 
-$themes_list = themes::getList();
+$themes_list = themes::getAllThemes();
 $listing = new listing();
 foreach ($themes_list as $theme) {
     $post = $listing->post();
     $post->icon('theme');
-    $post->title = $theme['name'];
-    $post->highlight = $user->theme == $theme['dir'];
-    $post->url = '?theme=' . urlencode($theme['dir']);
-    $supported = in_array($dcms->browser_type, $theme['browsers']);
-    if ($theme['browsers']) $post->content[] = __('Поддерживаемые типы браузеров: %s', implode(', ', $theme['browsers']));
+    $post->title = $theme->getViewName();
+    $post->highlight = $user->theme == $theme->getName();
+    $post->url = '?theme=' . urlencode($theme->getName());
+    $supported = $theme->browserSupport($dcms->browser_type);
+    $post->content[] = __('Поддерживаемые типы браузеров: %s', implode(', ', $theme->getBrowsers()));
     if (!$supported)
         $post->content[] = '[b]' . __('Тема может некорректно отображаться на Вашем устройстве') . '[/b]';
 }
