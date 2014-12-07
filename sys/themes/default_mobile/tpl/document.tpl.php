@@ -1,4 +1,8 @@
-<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<?php
+/**
+ * @var $this document
+ */
+?><!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= $lang->xml_lang ?>">
 <head>
     <title><?= $title ?></title>
@@ -47,19 +51,20 @@
         <span id="icon_menu"></span>
         <span><?= $title ?></span>
     </h1>
+    <? $this->displaySection('after_title')?>
     <div id="tabs">
         <?= $this->section($tabs, '<a class="gradient_grey border tab sel{selected}" href="{url}">{name}</a>', true); ?>
     </div>
+    <? $this->displaySection('before_content')?>
     <div id="content">
-        <? $this->display('inc.adt.top.tpl') ?>
         <div id="messages">
             <?= $this->section($err, '<div class="gradient_red border radius">{text}</div>'); ?>
             <?= $this->section($msg, '<div class="gradient_green border radius">{text}</div>'); ?>
         </div>
-        <?= $content ?>
+        <?php $this->displaySection('content') ?>
     </div>
+    <? $this->displaySection('after_content')?>
     <? $this->display('inc.foot.tpl') ?>
-    <? $this->display('inc.adt.bottom.tpl') ?>
     <div id="foot">
         <?= __("Время генерации страницы: %s сек", $document_generation_time) ?><br/>
         <?= $copyright ?>
@@ -67,12 +72,8 @@
 </div>
 <div id="container_overflow"></div>
 <div id="container_menu">
-    <span id="user" class="gradient_blue"><?= $user->login ?></span>
-    <a id="menu_user" class="gradient_grey" href="/menu.user.php"></a>
-    <a id="my_friends" class="gradient_grey" href='/my.friends.php'></a>
-    <a id="my_mail" class="gradient_grey" href='/my.mail.php?only_unreaded'></a>
-    <a id="login" class="gradient_grey" href="/login.php?return=<?= URL ?>"></a>
-    <a id="reg" class="gradient_grey" href="/reg.php?return=<?= URL ?>"></a>
+    <span id="user" class="gradient_blue"><?= $user->nick ?></span>
+    <? $this->displaySection('menu')?>
 </div>
 </body>
 </html>

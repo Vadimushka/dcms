@@ -46,7 +46,7 @@ abstract class themes
                     }
                     $themes[] = $theme;
                 } catch (Exception $e) {
-
+                    throw $e;
                 }
             }
             closedir($od);

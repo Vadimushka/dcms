@@ -11,7 +11,7 @@ $doc->title = __('Настройки темы оформления');
 $doc->ret(__('Темы оформления'), 'themes.php');
 
 
-if (empty($_GET['theme']) || !themes::exists($_GET['theme'])){
+if (empty($_GET['theme']) || !themes::exists($_GET['theme'])) {
     $doc->err(__('Тема оформления не найдена'));
     exit;
 }
@@ -20,12 +20,9 @@ $theme = themes::getThemeByName($_GET['theme']);
 
 $doc->title = __('Настройки темы оформления "%s"', $theme->getViewName());
 
-$settings_path = H . '/sys/themes/' . $theme->getName() . '/settings.php';
-
-if (!is_file($settings_path)){
-    $doc->err(__('У темы оформления нет настроек'));
+if (!is_file(H . '/sys/themes/' . $theme->getName() . '/settings.php')) {
+    $doc->err(__('Файл настроек темы оформления не найден'));
     exit;
 }
 
-
-include $settings_path;
+include H . '/sys/themes/' . $theme->getName() . '/settings.php';

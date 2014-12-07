@@ -2,6 +2,7 @@
 
 /**
  * Работа с виджетами
+ * @property mixed name
  */
 class widget
 {
@@ -36,23 +37,32 @@ class widget
     }
 
     /**
-     * Выводим сформированный HTML код виджета в браузер
+     * @return string
      */
-    function display()
+    function fetch()
     {
         if (!$this->_isset) {
-            return;
+            return '';
         }
         if (($content = $this->getContent()) !== false) {
             if (!$this->_data ['skin']) {
-                echo $content;
+                return $content;
             } else {
                 $widget = new design ();
                 $widget->assign('content', $content);
                 $widget->assign('name', $this->_data ['runame']);
-                $widget->display('widget.tpl');
+                return $widget->fetch('widget.tpl');
             }
         }
+        return '';
+    }
+
+    /**
+     * Выводим сформированный HTML код виджета в браузер
+     */
+    function display()
+    {
+        echo $this->fetch();
     }
 
     /**
@@ -64,7 +74,7 @@ class widget
     function getContent()
     {
         if (!$this->_isset) {
-            return;
+            return '';
         }
 
         if ($cache_content = cache_widgets::get($this->_getCacheId())) {
@@ -166,4 +176,13 @@ class widget
         return ini::save($this->_data ['path_abs'] . '/config.ini', $this->_data);
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getViewName()
+    {
+        return $this->runame;
+    }
 }

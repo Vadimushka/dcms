@@ -10,6 +10,8 @@ class theme
         $_abs_path,
         $_name,
         $_config,
+        $_sections,
+        $_widgets,
         $_params_default,
         $_params;
 
@@ -38,7 +40,7 @@ class theme
 
     protected function _parseConfig($config)
     {
-        $required_keys = array('name', 'browsers', 'version');
+        $required_keys = array('name', 'browsers', 'version', 'echo_section');
 
         if (empty($config)) {
             throw new Exception(__('Конфиг отсутствует'));
@@ -46,8 +48,16 @@ class theme
         if (empty($config['CONFIG']) || !is_array($config['CONFIG'])) {
             throw new Exception(__('Параметр %s отсутствует', 'CONFIG'));
         }
+        if (empty($config['SECTIONS']) || !is_array($config['SECTIONS'])) {
+            throw new Exception(__('Параметр %s отсутствует', 'SECTIONS'));
+        }
+        if (!isset($config['WIDGETS']) || !is_array($config['WIDGETS'])) {
+            throw new Exception(__('Параметр %s отсутствует', 'WIDGETS'));
+        }
 
         $this->_config = $config['CONFIG'];
+        $this->_sections = $config['SECTIONS'];
+        $this->_widgets = $config['WIDGETS'];
 
         foreach ($required_keys AS $key) {
             if (!array_key_exists($key, $this->_config)) {
@@ -111,6 +121,8 @@ class theme
     {
         ini::save($this->_abs_path . '/config.ini', array(
             'CONFIG' => $this->_config,
+            'SECTIONS' => $this->_sections,
+            'WIDGETS' => $this->_widgets,
             'PARAMS_DEFAULT' => $this->_params_default,
             'PARAMS' => $this->_params
         ), true);
@@ -162,10 +174,52 @@ class theme
         return $this->getConfigValue('img_width_max', dcms::getInstance()->img_max_width);
     }
 
-
-    public function getIconPath($icon_name)
+    public function getSections()
     {
+        return $this->_sections;
+    }
 
+    public function getEchoSectionKey()
+    {
+        return $this->getConfigValue('echo_section');
+    }
+
+    /**
+     * @param $section
+     * @return array
+     */
+    public function getWidgets($section)
+    {
+        if (!array_key_exists($section, $this->_widgets)) {
+            return array();
+        }
+        return explode(',', $this->_widgets[$section]);
+    }
+
+    /**
+     * @param $section
+     * @param array $widgets
+     */
+    public function setWidgets($section, $widgets = array())
+    {
+        $this->_widgets[$section] = join(',', $widgets);
+        $this->_saveConfig();
+    }
+
+    public function addWidget($section_key, $widget_name)
+    {
+        $widgets = $this->getWidgets($section_key);
+        $widgets[] = $widget_name;
+        $this->setWidgets($section_key, $widgets);
+    }
+
+    public function removeWidget($section_key, $widget_name)
+    {
+        $widgets = $this->getWidgets($section_key);
+        if (($key = array_search($widget_name, $widgets)) !== false) {
+            unset($widgets[$key]);
+            $this->setWidgets($section_key, $widgets);
+        }
     }
 
     /**

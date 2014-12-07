@@ -42,6 +42,9 @@
  * @property bool vk_auth_email_enable
  * @property int img_max_width максимальная ширина изображений на странице
  * @property int theme_version Версия тем оформления
+ * @property string theme_light
+ * @property string theme_mobile
+ * @property string theme_full
  *
  */
 class dcms

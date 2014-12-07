@@ -17,6 +17,8 @@ class document extends design
     protected $returns = array();
     protected $tabs = array();
 
+    protected $_echo_content = '';
+
     function __construct($group = 0)
     {
         parent::__construct();
@@ -105,15 +107,17 @@ class document extends design
         $this->outputed = true;
         header('Cache-Control: no-store, no-cache, must-revalidate', true);
         header('Expires: ' . date('r'), true);
-        if ($this->last_modified)
+        if ($this->last_modified) {
             header("Last-Modified: " . gmdate("D, d M Y H:i:s", (int)$this->last_modified) . " GMT", true);
+        }
 
         header('X-UA-Compatible: IE=edge', true); // отключение режима совместимости в осле
         header('Content-Type: text/html; charset=utf-8', true);
 
-        $this->assign('adt', new adt()); // реклама
-        $this->assign('description', $this->description ? $this->description : $this->title, 1); // описание страницы (meta)
-        $this->assign('keywords', $this->keywords ? implode(',', $this->keywords) : $this->title, 1); // ключевые слова (meta)
+        $this->assign('description', $this->description ? $this->description : $this->title,
+            1); // описание страницы (meta)
+        $this->assign('keywords', $this->keywords ? implode(',', $this->keywords) : $this->title,
+            1); // ключевые слова (meta)
 
         $this->assign('actions', $this->actions); // ссылки к действию
         $this->assign('returns', $this->returns); // ссылки для возврата
@@ -122,7 +126,9 @@ class document extends design
         $this->assign('err', $this->err); // сообщения об ошибке
         $this->assign('msg', $this->msg); // сообщения
         $this->assign('title', $this->title, 1); // заголовок страницы
-        $this->assign('content', ob_get_clean()); // то, что попало в буфер обмена при помощи echo (display())
+
+        $this->_echo_content = ob_get_clean(); // то, что попало в буфер обмена при помощи echo (display())
+
         $this->assign('document_generation_time', round(microtime(true) - TIME_START, 3)); // время генерации страницы
 
         if ($dcms->align_html) {
@@ -134,6 +140,22 @@ class document extends design
             $this->display('document.tpl');
         }
 
+    }
+
+    /**
+     * отображение содержимого блока темы
+     * @param string $section
+     */
+    public function displaySection($section)
+    {
+        if ($section === $this->theme->getEchoSectionKey()) {
+            echo $this->_echo_content;
+        }
+        $widgets = $this->theme->getWidgets($section);
+        foreach ($widgets as $widget_name) {
+            $widget = new widget(H . '/sys/widgets/' . $widget_name); // открываем
+            $widget->display(); // отображаем
+        }
     }
 
     /**

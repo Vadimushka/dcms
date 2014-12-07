@@ -4,7 +4,7 @@ include_once '../sys/inc/start.php';
 dpanel::check_access();
 $smiles = smiles::get_ini();
 $doc = new document(5);
-$doc->title = __('Виджеты');
+$doc->title = __('Виджеты главной страницы');
 $doc->ret(__('Админка'), '/dpanel/');
 // загружаем список виджетов из конфигурации
 $widgets_conf = (array) ini::read(H . '/sys/ini/widgets.ini');

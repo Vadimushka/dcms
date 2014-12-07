@@ -115,21 +115,7 @@ html, body, #main {
     text-align: center;
 }
 
-#adt_top, #adt_bottom {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-#adt_top a, #adt_bottom a {
-    display: block;
-    margin: 5px;
-}
-
-#adt_top {
-    border-radius: 2px;
-}
-
-#menu {
+#left_column {
     display: inline-block;
     width: 28%;
     padding: 0 10px;

@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+<?php
+/**
+ * @var $this document
+ */
+?><!DOCTYPE html>
 <html ng-app="Dcms">
 <head>
     <title><?= $title ?></title>
@@ -9,7 +13,7 @@
     <link rel="stylesheet" href="/sys/themes/.common/animate.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?9"/>
     <noscript>
-        <meta http-equiv="refresh" content="0; URL=/pages/bad_browser.html" />
+        <meta http-equiv="refresh" content="0; URL=/pages/bad_browser.html"/>
     </noscript>
     <script>
         (function () {
@@ -35,7 +39,7 @@
     <script charset="utf-8" src="/sys/themes/.common/dcmsApi.js" type="text/javascript"></script>
     <script charset="utf-8" src="/sys/themes/.common/elastic.js" type="text/javascript"></script>
     <script charset="utf-8" src="<?= $path ?>/js.js?6" type="text/javascript"></script>
-    <meta name="generator" content="DCMS <?= $dcms->version ?>"/>
+    <meta name="generator" content="DCMS <?= dcms::getInstance()->version ?>"/>
     <? if ($description) { ?>
         <meta name="description" content="<?= $description ?>"/>
     <? } ?>
@@ -62,7 +66,7 @@
             friends: '<?=__("Друзья")?>',
             mail: '<?=__("Почта")?>',
             error: '<?=__('Неизвестная ошибка')?>',
-            rating_down_message: '<?=__('Подтвердите понижение рейтинга сообщения.').($dcms->forum_rating_down_balls?"\\n".__('Будет списано баллов: %s',$dcms->forum_rating_down_balls):'')?>'
+            rating_down_message: '<?=__('Подтвердите понижение рейтинга сообщения.').(dcms::getInstance()->forum_rating_down_balls?"\\n".__('Будет списано баллов: %s',dcms::getInstance()->forum_rating_down_balls):'')?>'
         };
         codes = [
             {Text: 'B', Title: translates.bbcode_b, Prepend: '[b]', Append: '[/b]'},
@@ -96,7 +100,8 @@
                     <? if (!IS_MAIN) { ?>
                         <a class="gradient_blue invert border radius padding" href='/'><?= __("На главную") ?></a>
                     <? } ?>
-                    <?= $this->section($returns, '<a class="gradient_blue invert border radius padding" href="{url}">{name}</a>', true); ?>
+                    <?= $this->section($returns,
+                        '<a class="gradient_blue invert border radius padding" href="{url}">{name}</a>', true); ?>
                 </div>
                 <div id="tabs">
                     <?= $this->section($tabs, '<a class="tab sel{selected}" href="{url}">{name}</a>', true); ?>
@@ -105,7 +110,8 @@
             <div id="navigation_user">
                 <div class="body_width_limit">
                     <?
-                    echo $this->section($actions, '<a class="gradient_grey border radius padding" href="{url}">{name}</a>');
+                    echo $this->section($actions,
+                        '<a class="gradient_grey border radius padding" href="{url}">{name}</a>');
                     ?>
                     <a ng-show="+user.friend_new_count" class='gradient_grey border radius padding ng-hide'
                        href='/my.friends.php' ng-bind="str.friends"><?= __("Друзья") ?></a>
@@ -119,32 +125,18 @@
                        href="/reg.php?return={{URL}}" ng-bind="translates.reg"><?= __("Регистрация") ?></a>
                 </div>
             </div>
+            <?php $this->displaySection('header'); ?>
         </div>
         <div class="body_width_limit">
-            <div id="menu">
-                <? if ($adt->top) { ?>
-                    <div class="listing">
-                        <div id="adt_top" class="post">
-                            <?= $this->section($adt->top, '{0}') ?>
-                        </div>
-                    </div>
-                <? } ?>
-                <?
-                $menu = new menu('main');
-                $menu->display();
-                ?>
-                <? if ($adt->bottom) { ?>
-                    <div id="adt_bottom">
-                        <?= $this->section($adt->bottom, '{0}') ?>
-                    </div>
-                <? } ?>
+            <div id="left_column">
+                <?php $this->displaySection('left_column'); ?>
             </div>
             <div id="content">
                 <div id="messages">
                     <?= $this->section($err, '<div class="gradient_red border radius">{text}</div>'); ?>
                     <?= $this->section($msg, '<div class="gradient_green border radius">{text}</div>'); ?>
                 </div>
-                <?= $content ?>
+                <?php $this->displaySection('content'); ?>
             </div>
         </div>
         <div id="empty"></div>

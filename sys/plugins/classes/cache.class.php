@@ -207,7 +207,7 @@ abstract class cache_counters extends cacher {
  */
 abstract class cache_widgets extends cacher {
 
-    const cache_name = 'widgets';
+    const cache_name = 'widgets_content';
 
     public static function get($name) {
         return parent::get(self::cache_name, $name);

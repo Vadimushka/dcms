@@ -1,4 +1,8 @@
-<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<?php
+/**
+ * @var $this document
+ */
+?><!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= $lang->xml_lang ?>">
 <head>
     <title><?= $title ?></title>
@@ -21,20 +25,21 @@
 <body class="theme_light theme_light_light">
 <div>
     <? $this->display('inc.title.tpl') ?>
+    <? $this->displaySection('after_title')?>
     <div id="tabs">
         <?= $this->section($tabs, '<a class="tab sel{selected}" href="{url}">{name}</a>', true); ?>
     </div>
     <? $this->display('inc.user.tpl') ?>
+    <? $this->displaySection('before_content')?>
     <div id="content">
-        <? $this->display('inc.adt.top.tpl') ?>
         <div id="messages">
             <?= $this->section($err, '<div class="err">{text}</div>'); ?>
             <?= $this->section($msg, '<div class="msg">{text}</div>'); ?>
         </div>
-        <?= $content ?>
+        <?php $this->displaySection('content') ?>
     </div>
+    <? $this->displaySection('after_content')?>
     <? $this->display('inc.foot.tpl') ?>
-    <? $this->display('inc.adt.bottom.tpl') ?>
     <div id="foot">
         <?= __("Время генерации страницы: %s сек", $document_generation_time) ?><br/>
         <?= $copyright ?>
