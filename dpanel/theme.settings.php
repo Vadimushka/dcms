@@ -8,8 +8,9 @@ if (!empty($_GET['theme']) && themes::exists($_GET['theme'])) {
 
 $doc = new document(6);
 $doc->title = __('Настройки темы оформления');
-$doc->ret(__('Админка'), '/dpanel/');
+
 $doc->ret(__('Темы оформления'), 'themes.php');
+$doc->ret(__('Админка'), '/dpanel/');
 
 
 if (empty($_GET['theme']) || !themes::exists($_GET['theme'])) {
