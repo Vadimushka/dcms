@@ -44,10 +44,13 @@ for ($i = 0; $i < $count; $i++) {
 
 $themes = array();
 $views = array();
+$users_for_preload = array();
 $count_posts = count($posts_for_view);
 if ($count_posts && $user->id) {
     for ($i = 0; $i < $count_posts; $i++) {
         $themes[] = $posts_for_view[$i]['id'];
+        $users_for_preload[] = $posts_for_view[$i]['id_autor'];
+        $users_for_preload[] = $posts_for_view[$i]['id_last'];
     }
 
     $q = $db->prepare("SELECT `id_theme`, MAX(`time`) AS `time` FROM `forum_views`  WHERE `id_user` = ? AND `id_theme` IN (" . implode(',', $themes) . ") GROUP BY `id_theme`");
@@ -56,6 +59,8 @@ if ($count_posts && $user->id) {
         $views[$view['id_theme']] = $view['time'];
     }
 }
+
+new user($users_for_preload); // предзагрузка всех возможных пользователей одним SQL запросом
 
 $pages = new pages($count_posts);
 $start = $pages->my_start();
