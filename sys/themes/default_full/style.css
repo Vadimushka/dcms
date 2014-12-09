@@ -275,6 +275,7 @@ html, body, #main {
     padding: 1px;
     border-radius: 4px;
     position: relative;
+    margin-bottom: 10px;
 }
 
 .form .textarea_wrapper.with_ctrl_enter:after {
