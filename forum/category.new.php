@@ -7,7 +7,7 @@ $doc->title = __('Новая категория');
 if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['position'])) {
     $name = text::for_name($_POST['name']);
     $description = text::input_text($_POST['description']);
-    $position = (int) $_POST['position'];
+    $position = (int)$_POST['position'];
     if (!$name) {
         $doc->err(__('Введите название категории'));
     } else {
@@ -17,8 +17,7 @@ if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['posit
         $id_category = $db->lastInsertId();
         $dcms->log('Форум', 'Создание категории "' . $name . '"');
         $doc->msg(__('Категория успешно создана'));
-        // header('Refresh: 1; url=category.php?id='.$id_category);
-        // header('Refresh: 1; url=?'.passgen());
+        $doc->toReturn('?');
         $doc->act(__('Создать еще'), '?' . passgen());
         $doc->ret(__('В категорию'), 'category.php?id=' . $id_category);
         $doc->ret(__('Форум'), './');

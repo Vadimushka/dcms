@@ -118,7 +118,7 @@ class url
         if ($this->_params) {
             $params_query = array();
             foreach ($this->_params AS $key => $value) {
-                $params_query[] = urlencode($key) . (is_null($value) ? : '=' . urlencode($value));
+                $params_query[] = urlencode($key) . (is_null($value) ? '' : '=' . urlencode($value));
             }
             $url .= '?' . implode('&', $params_query);
         }
