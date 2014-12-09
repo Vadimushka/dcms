@@ -1,7 +1,7 @@
 <?php
 include_once '../sys/inc/start.php';
 $doc = new document(1);
-$doc->theme = __('Редактирование сообщения');
+$doc->title = __('Редактирование сообщения');
 
 if (isset($_GET['return']))
     header('Refresh: 2; url=' . $_GET['return']);
