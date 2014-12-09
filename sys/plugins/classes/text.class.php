@@ -119,8 +119,11 @@ abstract class text {
         // обработка старых цитат с числом в теге
         $str = preg_replace('#\[(/?)quote_([0-9]+)(\]|\=)#ui', '[\1quote\3', $str);
 
-        // преобразование ссылки на youtube ролик в ИИсщву
+        // преобразование ссылки на youtube ролик в BBCode
         $str = preg_replace('#(^|\s|\(|\])((https?://)?www\.youtube\.com/watch\?(.*?&)*v=([^ \r\n\t`\'"<]+))(,|\[|<|\s|$)#iuU', '\1[youtube]\5[/youtube]\6', $str);
+
+        // видео vk.com
+        $str = preg_replace('#<iframe src="http://vk\.com/video_ext\.php\?oid=([0-9]+)&id=([0-9]+)&hash=([a-z0-9]+)&hd=([0-9])" width="([0-9]+)" height="([0-9]+)" frameborder="0"></iframe>#iuU', '[vk_video oid=\1 id=\2 hash=\3 hd=\4]', $str);
 
         // преобразование ссылок в тег URL
         $str = preg_replace('#(^|\s|\(|\])([a-z]+://([^ \r\n\t`\'"<]+))(,|\[|<|\s|$)#iuU', '\1[url="\2"]\2[/url]\4', $str);

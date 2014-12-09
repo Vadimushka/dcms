@@ -36,7 +36,26 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'url',
+                'when',
+                'user',
+                'no',
+                'smile',
+                'color',
+                'red',
+                'green',
+                'blue',
+                'yellow',
+                'gradient',
+                'font',
+                'mark'
+            )
         ),
         'no' => array(
             'handler' => 'no_2html',
@@ -45,7 +64,25 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'url',
+                'when',
+                'user',
+                'smile',
+                'color',
+                'red',
+                'green',
+                'blue',
+                'yellow',
+                'gradient',
+                'font',
+                'mark'
+            )
         ),
         'i' => array(
             'handler' => 'i_2html',
@@ -54,7 +91,26 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'url',
+                'when',
+                'user',
+                'no',
+                'smile',
+                'color',
+                'red',
+                'green',
+                'blue',
+                'yellow',
+                'gradient',
+                'font',
+                'mark'
+            )
         ),
         'b' => array(
             'handler' => 'b_2html',
@@ -63,7 +119,26 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'url',
+                'when',
+                'user',
+                'no',
+                'smile',
+                'color',
+                'red',
+                'green',
+                'blue',
+                'yellow',
+                'gradient',
+                'font',
+                'mark'
+            )
         ),
         'big' => array(
             'handler' => 'big_2html',
@@ -72,7 +147,25 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'url',
+                'when',
+                'user',
+                'no',
+                'smile',
+                'color',
+                'red',
+                'green',
+                'blue',
+                'yellow',
+                'gradient',
+                'font'
+            )
         ),
         'mark' => array(
             'handler' => 'mark_2html',
@@ -81,7 +174,22 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'font', 'left', 'center', 'right')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'url',
+                'when',
+                'user',
+                'no',
+                'smile',
+                'font',
+                'left',
+                'center',
+                'right'
+            )
         ),
         'small' => array(
             'handler' => 'small_2html',
@@ -90,7 +198,26 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'url', 'when', 'user', 'no', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'url',
+                'when',
+                'user',
+                'no',
+                'smile',
+                'color',
+                'red',
+                'green',
+                'blue',
+                'yellow',
+                'gradient',
+                'font',
+                'mark'
+            )
         ),
         'user' => array(
             'handler' => 'user_2html',
@@ -117,11 +244,44 @@ class bbcode
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'when', 'no', 'php', 'hide', 'spoiler', 'color', 'red', 'green', 'blue', 'yellow', 'localimg', 'gradient', 'youtube', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'user',
+                'smile',
+                'url',
+                'when',
+                'no',
+                'php',
+                'hide',
+                'spoiler',
+                'color',
+                'red',
+                'green',
+                'blue',
+                'yellow',
+                'localimg',
+                'gradient',
+                'youtube',
+                'font',
+                'mark'
+            )
         ),
         'youtube' => array(
             'handler' => 'youtube_2html',
             'is_close' => false,
+            'lbr' => 1,
+            'rbr' => 1,
+            'ends' => array(),
+            'permission_top_level' => true,
+            'children' => array()
+        ),
+        'vk_video' => array(
+            'handler' => 'vk_video_2html',
+            'is_close' => true,
             'lbr' => 1,
             'rbr' => 1,
             'ends' => array(),
@@ -144,7 +304,23 @@ class bbcode
             'rbr' => 0,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'smile', 'color', 'red', 'green', 'blue', 'yellow', 'gradient', 'localimg', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'smile',
+                'color',
+                'red',
+                'green',
+                'blue',
+                'yellow',
+                'gradient',
+                'localimg',
+                'font',
+                'mark'
+            )
         ),
         'php' => array(
             'handler' => 'php_2html',
@@ -162,7 +338,31 @@ class bbcode
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark', 'nobb', 'red', 'green', 'blue', 'yellow')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'user',
+                'smile',
+                'url',
+                'quote',
+                'when',
+                'no',
+                'php',
+                'gradient',
+                'localimg',
+                'spoiler',
+                'color',
+                'font',
+                'mark',
+                'nobb',
+                'red',
+                'green',
+                'blue',
+                'yellow'
+            )
         ),
         'color' => array(
             'handler' => 'color_2html',
@@ -227,7 +427,7 @@ class bbcode
             'permission_top_level' => true,
             'children' => array()
         ),
-		'font' => array(
+        'font' => array(
             'handler' => 'font_2html',
             'is_close' => false,
             'lbr' => 0,
@@ -236,7 +436,7 @@ class bbcode
             'permission_top_level' => true,
             'children' => array()
         ),
-		'hr' => array(
+        'hr' => array(
             'handler' => 'hr_2html',
             'is_close' => true,
             'lbr' => 0,
@@ -245,41 +445,117 @@ class bbcode
             'permission_top_level' => true,
             'children' => array()
         ),
-		'left' => array(
+        'left' => array(
             'handler' => 'left_2html',
             'is_close' => false,
             'lbr' => 1,
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'user',
+                'smile',
+                'url',
+                'quote',
+                'when',
+                'no',
+                'php',
+                'gradient',
+                'localimg',
+                'spoiler',
+                'color',
+                'font',
+                'mark'
+            )
         ),
-		'center' => array(
+        'center' => array(
             'handler' => 'center_2html',
             'is_close' => false,
             'lbr' => 1,
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'user',
+                'smile',
+                'url',
+                'quote',
+                'when',
+                'no',
+                'php',
+                'gradient',
+                'localimg',
+                'spoiler',
+                'color',
+                'font',
+                'mark'
+            )
         ),
-		'right' => array(
+        'right' => array(
             'handler' => 'right_2html',
             'is_close' => false,
             'lbr' => 1,
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'user',
+                'smile',
+                'url',
+                'quote',
+                'when',
+                'no',
+                'php',
+                'gradient',
+                'localimg',
+                'spoiler',
+                'color',
+                'font',
+                'mark'
+            )
         ),
-			'indent' => array(
+        'indent' => array(
             'handler' => 'indent_2html',
             'is_close' => false,
             'lbr' => 1,
             'rbr' => 1,
             'ends' => array(),
             'permission_top_level' => true,
-            'children' => array('big', 'u', 'i', 'b', 'small', 'user', 'smile', 'url', 'quote', 'when', 'no', 'php', 'gradient', 'localimg', 'spoiler', 'color', 'font', 'mark')
+            'children' => array(
+                'big',
+                'u',
+                'i',
+                'b',
+                'small',
+                'user',
+                'smile',
+                'url',
+                'quote',
+                'when',
+                'no',
+                'php',
+                'gradient',
+                'localimg',
+                'spoiler',
+                'color',
+                'font',
+                'mark'
+            )
         ),
     );
     var $mnemonics = array();
@@ -368,26 +644,46 @@ class bbcode
             // Предыдущие |   Состояния для текущих событий (лексем)   |
             //  состояния |  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |
             0 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
-        , 1 => array(2, 3, 3, 3, 3, 4, 3, 3, 5)
-        , 2 => array(2, 3, 3, 3, 3, 4, 3, 3, 5)
-        , 3 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
-        , 4 => array(2, 6, 3, 3, 3, 3, 3, 3, 7)
-        , 5 => array(2, 6, 3, 3, 8, 9, 10, 3, 3)
-        , 6 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
-        , 7 => array(2, 6, 3, 3, 3, 3, 3, 3, 3)
-        , 8 => array(13, 13, 11, 12, 13, 13, 14, 13, 13)
-        , 9 => array(2, 6, 3, 3, 3, 3, 3, 3, 3)
-        , 10 => array(2, 6, 3, 3, 8, 9, 3, 15, 15)
-        , 11 => array(16, 16, 17, 16, 16, 16, 16, 16, 16)
-        , 12 => array(18, 18, 18, 17, 18, 18, 18, 18, 18)
-        , 13 => array(19, 6, 19, 19, 19, 19, 17, 19, 19)
-        , 14 => array(2, 3, 11, 12, 13, 13, 3, 13, 13)
-        , 15 => array(2, 6, 3, 3, 8, 9, 10, 3, 3)
-        , 16 => array(16, 16, 17, 16, 16, 16, 16, 16, 16)
-        , 17 => array(2, 6, 3, 3, 3, 9, 20, 15, 15)
-        , 18 => array(18, 18, 18, 17, 18, 18, 18, 18, 18)
-        , 19 => array(19, 6, 19, 19, 19, 19, 20, 19, 19)
-        , 20 => array(2, 6, 3, 3, 3, 9, 3, 15, 15)
+        ,
+            1 => array(2, 3, 3, 3, 3, 4, 3, 3, 5)
+        ,
+            2 => array(2, 3, 3, 3, 3, 4, 3, 3, 5)
+        ,
+            3 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
+        ,
+            4 => array(2, 6, 3, 3, 3, 3, 3, 3, 7)
+        ,
+            5 => array(2, 6, 3, 3, 8, 9, 10, 3, 3)
+        ,
+            6 => array(1, 0, 0, 0, 0, 0, 0, 0, 0)
+        ,
+            7 => array(2, 6, 3, 3, 3, 3, 3, 3, 3)
+        ,
+            8 => array(13, 13, 11, 12, 13, 13, 14, 13, 13)
+        ,
+            9 => array(2, 6, 3, 3, 3, 3, 3, 3, 3)
+        ,
+            10 => array(2, 6, 3, 3, 8, 9, 3, 15, 15)
+        ,
+            11 => array(16, 16, 17, 16, 16, 16, 16, 16, 16)
+        ,
+            12 => array(18, 18, 18, 17, 18, 18, 18, 18, 18)
+        ,
+            13 => array(19, 6, 19, 19, 19, 19, 17, 19, 19)
+        ,
+            14 => array(2, 3, 11, 12, 13, 13, 3, 13, 13)
+        ,
+            15 => array(2, 6, 3, 3, 8, 9, 10, 3, 3)
+        ,
+            16 => array(16, 16, 17, 16, 16, 16, 16, 16, 16)
+        ,
+            17 => array(2, 6, 3, 3, 3, 9, 20, 15, 15)
+        ,
+            18 => array(18, 18, 18, 17, 18, 18, 18, 18, 18)
+        ,
+            19 => array(19, 6, 19, 19, 19, 19, 20, 19, 19)
+        ,
+            20 => array(2, 6, 3, 3, 3, 9, 3, 15, 15)
         );
         // Получаем массив лексем:
         $array_of_tokens = $this->get_array_of_tokens($code);
@@ -891,8 +1187,22 @@ class bbcode
     {
         return '<div class="DCMS_youtube"><iframe src="http://www.youtube.com/embed/' . text::toValue($elem['val'][0]['str']) . '" frameborder="0" allowfullscreen></iframe></div>';
     }
-	
-	function font_2html($elem)
+
+    function vk_video_2html($elem)
+    {
+        $allow_params = array('oid', 'id', 'hash', 'hd');
+        $params = array();
+        foreach ($elem['attrib'] AS $key => $value) {
+            if (!in_array($key, $allow_params)) {
+                continue;
+            }
+            $params[] = $key . '=' . $value;
+        }
+        return '<div class="DCMS_vk_video"><iframe src="http://vk.com/video_ext.php?' . text::toValue(join('&',
+                $params)) . '"  frameborder="0"></iframe></div>';
+    }
+
+    function font_2html($elem)
     {
 
         if (!empty($elem['attrib']['name'])) {
@@ -904,27 +1214,28 @@ class bbcode
         }
         return '<span style="font-family:' . text::toValue($name) . ';">' . $this->get_html($elem['val']) . '</span>';
     }
-	
-	function left_2html($elem)
+
+    function left_2html($elem)
     {
         return '<div align="left">' . $this->get_html($elem['val']) . '</div>';
     }
-	
-	function hr_2html($elem)
+
+    function hr_2html($elem)
     {
         return '<div class="desc"></div>';
     }
-	
-	function center_2html($elem)
+
+    function center_2html($elem)
     {
         return '<div align="center">' . $this->get_html($elem['val']) . '</div>';
     }
-	
-	function right_2html($elem)
+
+    function right_2html($elem)
     {
         return '<div align="right">' . $this->get_html($elem['val']) . '</div>';
     }
-	function indent_2html($elem)
+
+    function indent_2html($elem)
     {
         return '<div style="margin:1em;">' . $this->get_html($elem['val']) . '</div>';
     }
@@ -1022,15 +1333,18 @@ class bbcode
         global $dcms;
         $aturl = str_replace(array("\n", "\r", "\t"), '', $aturl);
 
-        if (preg_match('#^ *(javascript|data)#', $aturl))
+        if (preg_match('#^ *(javascript|data)#', $aturl)) {
             return '!!! Javascript запрещен !!!';
+        }
 
         if (preg_match('#://#', $aturl)) {
             // внешняя ссылка
             $url = 'http://' . $_SERVER ['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($aturl);
             $new_window = @$dcms->browser_type == 'full' ? ' target="_blank"' : '';
             if ($parse_url = @parse_url($aturl)) {
-                if (!empty($parse_url['host']) && @$dcms->subdomain_main && strpos($parse_url['host'], '.' . $dcms->subdomain_main) !== false) {
+                if (!empty($parse_url['host']) && @$dcms->subdomain_main && strpos($parse_url['host'],
+                            '.' . $dcms->subdomain_main) !== false
+                ) {
 
                     if (@$dcms->subdomain_replace_url) {
                         // вырезаем поддомен из локальных ссылок
@@ -1078,8 +1392,9 @@ class bbcode
     function img_2html($elem)
     {
         static $design = false;
-        if ($design === false)
+        if ($design === false) {
             $design = new design ();
+        }
 
         if (empty($elem['attrib']['file'])) {
             return false;
@@ -1146,7 +1461,9 @@ class bbcode
         $from = $elem['attrib']['from'];
         $to = $elem['attrib']['to'];
 
-        if (!preg_match('/^#([0-9a-f]{6}|[0-9a-f]{3})$/ui', $from) || !preg_match('/^#([0-9a-f]{6}|[0-9a-f]{3})$/ui', $to)) {
+        if (!preg_match('/^#([0-9a-f]{6}|[0-9a-f]{3})$/ui', $from) || !preg_match('/^#([0-9a-f]{6}|[0-9a-f]{3})$/ui',
+                $to)
+        ) {
             return '[gradient="' . __('Один из цветов указан не корректно') . '"]' . $this->get_html($elem['val']) . '[/gradient]';
         }
 
@@ -1160,7 +1477,8 @@ class bbcode
         $from2 = array();
         $to2 = array();
         for ($i = 0; $i < 3; $i++) {
-            $from2[] = hexdec(str_repeat(text::substr($from, $from_col_len, $from_col_len * $i, ''), 2 / $from_col_len));
+            $from2[] = hexdec(str_repeat(text::substr($from, $from_col_len, $from_col_len * $i, ''),
+                2 / $from_col_len));
             $to2[] = hexdec(str_repeat(text::substr($to, $to_col_len, $to_col_len * $i, ''), 2 / $to_col_len));
         }
 
@@ -1176,7 +1494,8 @@ class bbcode
 
         $return = '';
         for ($i = 0; $i < $str_len; $i++) {
-            $return .= '<span style="color:#' . implode('', $colors[$i]) . '">' . text::substr($str, 1, $i, '') . '</span>';
+            $return .= '<span style="color:#' . implode('', $colors[$i]) . '">' . text::substr($str, 1, $i,
+                    '') . '</span>';
         }
         return $return;
     }
