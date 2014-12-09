@@ -1,22 +1,15 @@
 <?php
-
 include_once '../sys/inc/start.php';
 dpanel::check_access();
 $groups = groups::load_ini();
 $doc = new document(4);
 $doc->title = __('Изменение статуса');
 
-if (isset($_GET['id_ank']))
-    $ank = new user($_GET['id_ank']);
-else
-    $ank = $user;
+if (isset($_GET['id_ank'])) $ank = new user($_GET['id_ank']);
+else $ank = $user;
 
 if (!$ank->group) {
-    if (isset($_GET['return']))
-        header('Refresh: 1; url=' . $_GET['return']);
-    else
-        header('Refresh: 1; url=/');
-
+    $doc->toReturn();
     $doc->err(__('Нет данных'));
     exit;
 }
@@ -24,11 +17,7 @@ if (!$ank->group) {
 $doc->title .= ' "' . $ank->login . '"';
 
 if ($ank->group >= $user->group) {
-    if (isset($_GET['return']))
-        header('Refresh: 1; url=' . $_GET['return']);
-    else
-        header('Refresh: 1; url=/');
-
+    $doc->toReturn();
     $doc->err(__('Ваш статус не позволяет производить действия с данным пользователем'));
     exit;
 }
@@ -36,7 +25,7 @@ if ($ank->group >= $user->group) {
 if (isset($_POST['save']) && !empty($_POST['group'])) {
     $group_now = (int) $_POST['group'];
     if ($group_now >= $user->group)
-        $doc->err(__('Вы не можете дать пользователю статус эквивалентный своему или выше'));
+            $doc->err(__('Вы не можете дать пользователю статус эквивалентный своему или выше'));
     else {
         $group_last = $ank->group;
         if ($group_last != $group_now) {
@@ -44,18 +33,18 @@ if (isset($_POST['save']) && !empty($_POST['group'])) {
             $res->execute(Array($ank->id, $user->id, TIME, $group_last, $group_now));
             $ank->group = $group_now;
 
-            $dcms->log('Пользователи', 'Изменение группы пользователя [url=/profile.view.php?id=' . $ank->id . ']' . $ank->login . '[/url] с ' . groups::name($group_last) . ' на ' . groups::name($ank->group));
+            $dcms->log('Пользователи',
+                'Изменение группы пользователя [url=/profile.view.php?id=' . $ank->id . ']' . $ank->login . '[/url] с ' . groups::name($group_last) . ' на ' . groups::name($ank->group));
 
             $doc->msg(__('Пользователь "%s" теперь "%s"', $ank->login, groups::name($ank->group)));
         }
     }
 }
 
-$form = new form("?id_ank=$ank->id&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form = new form(new url());
 $options = array();
 foreach ($groups as $group => $value) {
-    if ($group && $user->group > $group)
-        $options[] = array($group, __($value['name']), $group == $ank->group);
+    if ($group && $user->group > $group) $options[] = array($group, __($value['name']), $group == $ank->group);
 }
 $form->select('group', __('Статус'), $options);
 $form->button(__('Применить'), 'save');

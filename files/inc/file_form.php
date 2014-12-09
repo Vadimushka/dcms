@@ -5,7 +5,7 @@ switch (@$_GET['act']) {
     {
         $groups = groups::load_ini(); // загружаем массив групп
 
-        $form = new form('?order=' . $order . '&amp;' . passgen());
+        $form = new form(new url);
         $form->text('name', __('Название файла') . ' *', $file->runame);
         $form->textarea('description', __('Описание'), $file->description);
         $form->textarea('description_small', __('Краткое описание'), $file->description_small);
@@ -69,7 +69,7 @@ switch (@$_GET['act']) {
             }
         }
 
-        $form = new form('?order=' . $order . '&amp;' . passgen());
+        $form = new form(new url());
         $form->select('path_rel_new', __('Новый путь'), $options);
         $form->button(__('Применить'), 'edit_path');
         $form->display();
@@ -77,7 +77,7 @@ switch (@$_GET['act']) {
         break;
     case 'edit_unlink':
     {
-        $form = new form('?order=' . $order . '&amp;' . passgen());
+        $form = new form(new url());
         if ($file->id_user && $file->id_user != $user->id)
             $form->textarea('reason', __('Причина удаления'));
         $form->bbcode(__('Подтвердите удаление файла'));

@@ -62,7 +62,7 @@ WHERE `forum_topics`.`id_category` = ?");
     }
 }
 
-$form = new form("?id=$category[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form = new form(new url());
 $form->captcha();
 $form->bbcode('* ' . __('Все данные, относящиеся к данной категории будут безвозвратно удалены.'));
 $form->button(__('Удалить'), 'delete');

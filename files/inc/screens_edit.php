@@ -62,7 +62,7 @@ for ($i = 0; $i < $screens_count; $i++) {
 }
 $listing->display(__('Скриншоты отсутствуют'));
 
-$form = new form('?order=' . $order . '&amp;act=edit_screens&amp;' . passgen());
+$form = new form(new url());
 $form->file('file', __('Скриншот'));
 $form->button(__('Добавить'));
 $form->display();

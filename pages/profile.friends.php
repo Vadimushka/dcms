@@ -7,21 +7,13 @@ $doc->title = __('Друзья');
 $ank = new user(@$_GET['id']);
 
 if (!$ank->id) {
-    if (isset($_GET['return'])) {
-        header('Refresh: 1; url=' . $_GET['return']);
-    } else {
-        header('Refresh: 1; url=/');
-    }
+    $doc->toReturn();
     $doc->err(__('Нет данных'));
     exit;
 }
 
 if (!$ank->is_friend($user) && !$ank->vis_friends) {
-    if (isset($_GET['return'])) {
-        header('Refresh: 1; url=' . $_GET['return']);
-    } else {
-        header('Refresh: 1; url=/');
-    }
+    $doc->toReturn();
     $doc->err(__('Доступ к данной странице ограничен'));
     exit;
 }

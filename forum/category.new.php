@@ -26,7 +26,7 @@ if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['posit
     }
 }
 
-$form = new form('?' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form = new form(new url());
 $form->text('name', __('Название категории'));
 $form->textarea('description', __('Описание'));
 $res = $db->query("SELECT MAX(`position`) AS max FROM `forum_categories`");

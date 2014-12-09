@@ -5,7 +5,7 @@ $doc = new document(2);
 $doc->title = __('Удаление темы');
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header('Refresh: 1; url=./');
+    $doc->toReturn();
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
@@ -60,7 +60,7 @@ WHERE `forum_messages`.`id_theme` = ?");
     }
 }
 
-$form = new form("?id=$theme[id]&amp;" . passgen());
+$form = new form(new url());
 $form->captcha();
 $form->bbcode('* ' . __('Все данные, относящиеся к данной теме будут безвозвратно удалены.'));
 $form->button(__('Удалить'), 'delete');

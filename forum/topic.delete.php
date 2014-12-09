@@ -1,5 +1,4 @@
 <?php
-
 include_once '../sys/inc/start.php';
 $doc = new document();
 
@@ -24,7 +23,8 @@ $q->execute(Array($topic['id_category']));
 $category = $q->fetch();
 
 if (isset($_POST['delete'])) {
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'],
+            $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
         $q = $db->prepare("SELECT `id` FROM `forum_themes` WHERE `id_topic` = ?");
@@ -50,7 +50,8 @@ WHERE `forum_themes`.`id_topic` = ?");
         $res->execute(Array($topic['id']));
         header('Refresh: 1; url=category.php?id=' . $topic['id_category']);
 
-        $dcms->log('Форум', 'Удаление раздела из категории [url=/forum/category.php?id=' . $category['id'] . ']' . $category['name'] . '[/url]');
+        $dcms->log('Форум',
+            'Удаление раздела из категории [url=/forum/category.php?id=' . $category['id'] . ']' . $category['name'] . '[/url]');
 
         $doc->msg(__('Рездел успешно удален'));
         exit;
@@ -60,7 +61,7 @@ WHERE `forum_themes`.`id_topic` = ?");
 
 $doc->title = __('Удаление раздела "%s"', $topic['name']);
 
-$form = new form("?id=$topic[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form = new form(new url());
 $form->captcha();
 $form->bbcode('* ' . __('Все данные, относящиеся к данному разделу будут безвозвратно удалены.'));
 $form->button(__('Удалить'), 'delete');

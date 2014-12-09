@@ -84,7 +84,7 @@ if (isset($_POST['save'])) {
 
 $doc->title = __('Перемещение темы %s', $theme['name']);
 
-$form = new form("?id=$theme[id]&amp;" . passgen());
+$form = new form(new url());
 $options = array();
 $q = $db->prepare("SELECT `id`,`name` FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
 $q->execute(Array($user->group));

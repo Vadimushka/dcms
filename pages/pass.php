@@ -43,7 +43,7 @@ if (!empty($_GET['id']) && !empty($_GET['code'])) {
         }
     }
 
-    $form = new form('?id=' . $id . '&amp;code=' . $code . '&amp;' . passgen());
+    $form = new form(new url());
     $form->password('password1', __('Новый пароль'));
     $form->password('password2', __('Подтвердите пароль'));
     $form->button(__('Применить'), 'save');

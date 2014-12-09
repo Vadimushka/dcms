@@ -3,11 +3,7 @@ include_once '../sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Редактирование сообщения');
 
-if (isset($_GET['return']))
-    header('Refresh: 2; url=' . $_GET['return']);
-else
-    header('Refresh: 2; url=./');
-
+$doc->toReturn();
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $doc->err(__('Ошибка выбора сообщения'));

@@ -92,7 +92,7 @@ if (isset($_POST['send'])) {
     }
 }
 
-$form = new form('?id=' . $id . '&amp;' . passgen());
+$form = new form(new url());
 $form->checkbox('sendToAnkMail', __('Задействовать анкетный email') . '*', true);
 $form->bbcode('* ' . __('По-умолчанию рассылка производится только по регистрационным e-mail'));
 $form->captcha();

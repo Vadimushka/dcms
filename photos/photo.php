@@ -1,11 +1,10 @@
 <?php
-
 include_once '../sys/inc/start.php';
 $doc = new document ();
 $doc->title = __('Фотоальбомы');
 
 if (!empty($_GET ['id'])) {
-    $ank = new user((int)$_GET ['id']);
+    $ank = new user((int) $_GET ['id']);
 } else {
     $ank = $user;
 }
@@ -21,7 +20,7 @@ $albums_path = FILES . '/.photos/' . $ank->id;
 
 if (!@is_dir($albums_path)) {
     if (!$albums_dir = $photos->mkdir($ank->login, $ank->id))
-        $doc->access_denied(__('Не удалось создать папку под фотоальбомы пользователя'));
+            $doc->access_denied(__('Не удалось создать папку под фотоальбомы пользователя'));
 
     $albums_dir->id_user = $ank->id;
     $albums_dir->group_show = 0;
@@ -39,7 +38,7 @@ if (empty($_GET ['album']) || !$albums_dir->is_dir($_GET ['album'])) {
     exit();
 }
 
-$album_name = (string)$_GET ['album'];
+$album_name = (string) $_GET ['album'];
 $album = new files($albums_path . '/' . $album_name);
 $doc->title = $album->runame;
 
@@ -66,37 +65,42 @@ if ($photo->id_user && $photo->id_user == $user->id) {
     if (!empty($_GET ['act']) && $_GET ['act'] === 'delete') {
 
         if (!empty($_POST ['delete'])) {
-            if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session']))
-                $doc->err(__('Проверочное число введено неверно'));
+            if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'],
+                    $_POST ['captcha_session'])) $doc->err(__('Проверочное число введено неверно'));
             elseif ($photo->delete()) {
                 $doc->msg(__('Фото успешно удалено'));
-                $doc->ret(__('Альбом %s', $album->name), 'photos.php?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
+                $doc->ret(__('Альбом %s', $album->name),
+                    'photos.php?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
                 $doc->ret(__('Альбомы %s', $ank->nick), 'albums.php?id=' . $ank->id);
                 header('Refresh: 1; url=photos.php?id=' . $ank->id . '&album=' . urlencode($album->name) . '&' . passgen());
                 exit();
             } else {
 
                 $doc->err(__('Не удалось удалить фото'));
-                $doc->ret(__('К фото'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name));
-                $doc->ret(__('Альбом %s', $album->name), 'photos.php?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
+                $doc->ret(__('К фото'),
+                    '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name));
+                $doc->ret(__('Альбом %s', $album->name),
+                    'photos.php?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
                 $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
                 header('Refresh: 1; url=?id=' . $ank->id . '&album=' . urlencode($album->name) . '&photo=' . urlencode($photo->name) . '&' . passgen());
             }
             exit();
         }
 
-        $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;act=delete&amp;' . passgen());
+        $form = new form(new url(null, array('id' => $ank->id, 'album' => $album->name, 'photo' => $photo->name)));
         $form->captcha();
         $form->button(__('Удалить фото'), 'delete');
         $form->display();
 
-        $doc->ret(__('К фото'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name));
+        $doc->ret(__('К фото'),
+            '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name));
         $doc->ret(__('Альбом %s', $album->name), 'photos.php?id=' . $ank->id . '&amp;album=' . urlencode($album->name));
         $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
         exit();
     }
 
-    $doc->act(__('Удалить фото'), '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;act=delete');
+    $doc->act(__('Удалить фото'),
+        '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;act=delete');
 }
 
 if ($screen = $photo->getScreen($doc->img_max_width(), 0)) {
@@ -105,7 +109,8 @@ if ($screen = $photo->getScreen($doc->img_max_width(), 0)) {
 
 $can_write = true;
 if (!$user->is_writeable) {
-    $doc->err(__('Новым пользователям разрешено писать только через %s часа пребывания на сайте', $dcms->user_write_limit_hour));
+    $doc->err(__('Новым пользователям разрешено писать только через %s часа пребывания на сайте',
+            $dcms->user_write_limit_hour));
     $can_write = false;
 }
 
@@ -116,10 +121,10 @@ if ($can_write) {
     if (isset($_POST ['send']) && isset($_POST ['message']) && $user->group) {
         $message = text::input_text($_POST ['message']);
 
-        if ($photo->id_user && $photo->id_user != $user->id && (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session'])))
-            $doc->err(__('Проверочное число введено неверно'));
-        elseif ($dcms->censure && $mat = is_valid::mat($message))
-            $doc->err(__('Обнаружен мат: %s', $mat));
+        if ($photo->id_user && $photo->id_user != $user->id && (empty($_POST ['captcha']) || empty($_POST ['captcha_session'])
+            || !captcha::check($_POST ['captcha'], $_POST ['captcha_session'])))
+                $doc->err(__('Проверочное число введено неверно'));
+        elseif ($dcms->censure && $mat = is_valid::mat($message)) $doc->err(__('Обнаружен мат: %s', $mat));
         elseif ($message) {
             $user->balls++;
             $res = $db->prepare("INSERT INTO `files_comments` (`id_file`, `id_user`, `time`, `text`) VALUES (?,?,?,?)");
@@ -137,16 +142,15 @@ if ($can_write) {
 
 // форма добавления комментария
     if ($user->group) {
-        $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;' . passgen());
+        $form = new form(new url(null, array('id' => $ank->id, 'album' => $album->name, 'photo' => $photo)));
         $form->textarea('message', __('Комментарий'));
-        if ($photo->id_user && $photo->id_user != $user->id)
-            $form->captcha();
+        if ($photo->id_user && $photo->id_user != $user->id) $form->captcha();
         $form->button(__('Отправить'), 'send');
         $form->display();
     }
 }
 if (!empty($_GET ['delete_comm']) && $user->group >= $photo->group_edit) {
-    $delete_comm = (int)$_GET ['delete_comm'];
+    $delete_comm = (int) $_GET ['delete_comm'];
     $res = $db->prepare("SELECT COUNT(*) FROM `files_comments` WHERE `id` = ? AND `id_file` = ? LIMIT 1");
     $res->execute(Array($delete_comm, $photo->id));
     $k = $res->fetchColumn();
@@ -155,8 +159,7 @@ if (!empty($_GET ['delete_comm']) && $user->group >= $photo->group_edit) {
         $res->execute(Array($delete_comm));
         $photo->comments--;
         $doc->msg(__('Комментарий успешно удален'));
-    } else
-        $doc->err(__('Комментарий уже удален'));
+    } else $doc->err(__('Комментарий уже удален'));
 }
 
 $pages = new pages ();
@@ -178,7 +181,8 @@ if ($arr = $q->fetchAll()) {
         $post->content = text::toOutput($comment ['text']);
 
         if ($user->group >= $photo->group_edit) {
-            $post->action('delete', '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;delete_comm=' . $comment ['id']);
+            $post->action('delete',
+                '?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;photo=' . urlencode($photo->name) . '&amp;delete_comm=' . $comment ['id']);
         }
     }
 }

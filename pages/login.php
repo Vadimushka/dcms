@@ -1,5 +1,4 @@
 <?php
-
 $subdomain_theme_redirect_disable = true; // принудительное отключение редиректа на поддомены, соответствующие типу браузера
 include_once '../sys/inc/start.php';
 $doc = new document();
@@ -36,13 +35,12 @@ if ($user->group) {
 
 $need_of_captcha = cache_aut_failture::get($dcms->ip_long);
 
-if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
+if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'],
+        $_POST['captcha_session']))) {
     $doc->err(__('Проверочное число введено неверно'));
 } elseif (isset($_POST['login']) && isset($_POST['password'])) {
-    if (!$_POST['login'])
-        $doc->err(__('Введите логин'));
-    elseif (!$_POST['password'])
-        $doc->err(__('Введите пароль'));
+    if (!$_POST['login']) $doc->err(__('Введите логин'));
+    elseif (!$_POST['password']) $doc->err(__('Введите пароль'));
     else {
         $login = (string) $_POST['login'];
         $password = (string) $_POST['password'];
@@ -78,7 +76,8 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
                 $_SESSION[SESSION_ID_USER] = $user->id;
                 if (isset($_POST['save_to_cookie']) && $_POST['save_to_cookie']) {
                     setcookie(COOKIE_ID_USER, $user->id, TIME + 60 * 60 * 24 * 365);
-                    setcookie(COOKIE_USER_PASSWORD, crypt::encrypt($password, $dcms->salt_user), TIME + 60 * 60 * 24 * 365);
+                    setcookie(COOKIE_USER_PASSWORD, crypt::encrypt($password, $dcms->salt_user),
+                        TIME + 60 * 60 * 24 * 365);
                 }
             }
         }
@@ -88,8 +87,7 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
 
     if (crypt::hash(crypt::decrypt($_COOKIE[COOKIE_USER_PASSWORD], $dcms->salt_user), $dcms->salt) === $tmp_user->password) {
         // если пользователь авторизовался, то ключ для восстановления ему больше не нужен
-        if ($user->recovery_password)
-            $user->recovery_password = '';
+        if ($user->recovery_password) $user->recovery_password = '';
         $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`, `method`, `iplong`, `time`, `id_browser`, `status`) VALUES (?,'cookie',?,?,?,'1')");
         $res->execute(Array($tmp_user->id, $dcms->ip_long, TIME, $dcms->browser_id));
         $user = $tmp_user;
@@ -123,18 +121,17 @@ if (isset($_GET['return'])) {
     $doc->ret('Вернуться', text::toValue($return));
 }
 
-$form = new form('?' . passgen() . '&amp;return=' . text::toValue($return));
+$form = new form(new url(null, array('return' => $return)));
 $form->input('login', __('Логин'));
 $form->password('password', __('Пароль') . ' [' . '[url=/pass.php]' . __('забыли') . '[/url]]');
 $form->checkbox('save_to_cookie', __('Запомнить меня'));
-if ($need_of_captcha)
-    $form->captcha();
+if ($need_of_captcha) $form->captcha();
 $form->button(__('Авторизация'));
 $form->display();
 
-if ($dcms->vk_auth_enable){
+if ($dcms->vk_auth_enable) {
     $vk = new vk($dcms->vk_app_id, $dcms->vk_app_secret);
-    $form = new form(htmlspecialchars($vk->getAuthorizationUri('http://'.$_SERVER['HTTP_HOST'].'/vk.php', 'email')));
+    $form = new form($vk->getAuthorizationUri('http://' . $_SERVER['HTTP_HOST'] . '/vk.php', 'email'));
     $form->button(__('Вход через vk.com'));
     $form->display();
 }

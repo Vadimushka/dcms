@@ -63,7 +63,7 @@ if (isset($_GET['id'])) {
 
         if ($inv['time_reg'] < TIME - 86400) {
             if (isset($_GET['delete'])) {
-                $form = new form("?id=$inv[id]");
+                $form = new form(new url());
                 $form->bbcode(__('Подтвердите удаление пригласительного'));
                 $form->bbcode(__('Его место займет новый пригласительный'));
                 $form->button(__('Удалить'), 'delete');
@@ -75,7 +75,7 @@ if (isset($_GET['id'])) {
             echo __("В случае ошибки или отказа от пригласительного его можно будет удалить по истечению суток с момента отправки");
         }
     } else {
-        $form = new form("?id=$inv[id]");
+        $form = new form(new url());
         $form->input('email', __('Email'));
         $form->button(__('Отправить'));
         $form->display();

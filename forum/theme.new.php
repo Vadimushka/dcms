@@ -89,7 +89,7 @@ if ($can_write && isset($_POST ['message']) && isset($_POST ['name'])) {
 $doc->title = $topic ['name'] . ' - ' . __('Новая тема');
 
 if ($can_write) {
-    $form = new form("?id_topic=$topic[id]&amp;" . passgen() . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
+    $form = new form(new url());
     $form->text('name', __('Название темы'));
     $form->bbcode('* ' . __('Название темы должно быть информативным, четко выделяя ее среди других тем. [b]Названия вида "помогите", "как сделать" и т.д. строго запрещены.[/b]'));
     $form->textarea('message', __('Сообщение'));

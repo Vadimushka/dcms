@@ -120,7 +120,7 @@ $listing->display(__('Отзывы отсутствуют'));
 $pages->display('?id=' . $ank->id . '&amp;from=' . $from . '&amp;'); // вывод страниц
 
 if ($user->group && $can_write && $user->id != $ank->id && $add) {
-    $form = new form('?id=' . $ank->id . '&amp;' . passgen());
+    $form = new form(new url());
     $form->textarea('review', __('Отзыв о пользователе') . ' *');
     $form->bbcode('* ' . __('Разрешается оставлять только положительные отзывы. Кроме того каждый отзыв увеличивает пользователю рейтинг.'));
     $form->button(__('Отправить'));

@@ -12,19 +12,11 @@ if (!dpanel::is_access() && (empty($_POST['captcha_session']) || empty($_POST['c
     dpanel::access(); // разрешаем доступ к админке
 
     $doc->msg(__('Отлично, переходим в админку'));
-
-    if (!empty($_GET['return'])) {
-        header('Refresh: 1; url=' . $_GET['return']);
-        $doc->ret(__('Вернуться'), text::toValue($_GET['return']));
-    } else {
-        header('Refresh: 1; url=./?' . SID);
-        $doc->ret(__('В админку'), '/dpanel/');
-    }
-
+    $doc->toReturn('/dpanel/', 2);
     exit;
 }
 
-$form = new form('?' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form = new form(new url());
 $form->captcha();
 if (preg_match('#Opera mobile#ui', $dcms->browser))
     $form->bbcode('[notice] '.__('Функция Turbo должна быть отключена'));

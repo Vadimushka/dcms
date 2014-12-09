@@ -1,5 +1,4 @@
 <?php
-
 $subdomain_theme_redirect_disable = true; // принудительное отключение редиректа на поддомены, соответствующие типу браузера
 include_once '../sys/inc/start.php';
 $doc = new document();
@@ -31,8 +30,7 @@ if (!$inv && isset($_GET['invite']) && $_GET['invite']) {
     }
 }
 
-if (!isset($inv))
-    $inv = false;
+if (!isset($inv)) $inv = false;
 
 if (!$inv && $dcms->reg_with_invite) {
     $doc->access_denied(__('Регистрация возможна только по приглашению'));
@@ -43,8 +41,9 @@ if (!isset($step)) {
     $step = $dcms->reg_with_rules ? 0 : 1;
 }
 $login = &$_SESSION['reg']['login'];
+$step_name = isset($_GET['rules']) ? $_GET['rules'] : null;
 // принимаем правила
-if ($step == 0 && isset($_GET['rules'])) {
+if ($step == 0 && $step_name === 'rules') {
     if ($_POST['ok']) {
         $step = 1;
         $doc->msg(__('Очень хорошо, надеемся на их соблюдение'));
@@ -53,7 +52,7 @@ if ($step == 0 && isset($_GET['rules'])) {
     }
 }
 // выбираем ник
-if ($step == 1 && isset($_GET['nick']) && isset($_POST['login'])) {
+if ($step == 1 && $step_name === 'nick' && isset($_POST['login'])) {
     if (is_valid::nick($_POST['login'])) {
         $login = $_POST['login'];
         $res = $db->prepare("SELECT * FROM `users` WHERE login =?;");
@@ -75,10 +74,11 @@ if ($step == 1 && isset($_GET['nick']) && isset($_POST['login'])) {
     }
 }
 // выбираем ник
-if ($step == 2 && isset($_GET['final']) && isset($_POST['sex'])) {
+if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
     $sex = $_POST['sex'] ? 1 : 0;
 
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'],
+            $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
         $error = true;
     }
@@ -122,7 +122,8 @@ if ($step == 2 && isset($_GET['final']) && isset($_POST['sex'])) {
             $a_code = md5(passgen());
 
             $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `a_code`, `reg_mail`) VALUES (?, ?, ?, ?, ?, ?)");
-            $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code, $_POST['mail']));
+            $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code,
+                $_POST['mail']));
             $id_user = $db->lastInsertId();
 
             if ($id_user && is_numeric($id_user)) {
@@ -132,7 +133,8 @@ if ($step == 2 && isset($_GET['final']) && isset($_POST['sex'])) {
                     // подозрительный e-mail или логин
                     $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
                     $res->execute(Array($id_user, $susp));
-                    $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике или адресе email была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]", 4);
+                    $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике или адресе email была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]",
+                        4);
                 }
 
 
@@ -141,12 +143,14 @@ if ($step == 2 && isset($_GET['final']) && isset($_POST['sex'])) {
                 $t->assign('login', $_SESSION['reg']['login']);
                 $t->assign('password', $_POST['password']);
                 $t->assign('site', $dcms->sitename);
-                $t->assign('url', 'http://' . $_SERVER['HTTP_HOST'] . '/activation.php?id=' . $id_user . '&amp;code=' . $a_code . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
-                if (mail::send($_POST['mail'], 'Регистрация', $t->fetch('file:' . H . '/sys/templates/mail.activation.tpl'))) {
+                $t->assign('url',
+                    'http://' . $_SERVER['HTTP_HOST'] . '/activation.php?id=' . $id_user . '&amp;code=' . $a_code . (isset($_GET['return'])
+                            ? '&amp;return=' . urlencode($_GET['return']) : null));
+                if (mail::send($_POST['mail'], 'Регистрация',
+                        $t->fetch('file:' . H . '/sys/templates/mail.activation.tpl'))) {
                     $step = 3;
                     //$doc->msg(__('На Ваш E-mail отправлено письмо с ссылкой для активации аккаунта'));
-                } else
-                    $doc->err(__('Ошибка при отправке email, попробуйте позже'));
+                } else $doc->err(__('Ошибка при отправке email, попробуйте позже'));
             } else {
                 $doc->err(__('Ошибка при регистрации. Попробуйте позже'));
                 $step = 1;
@@ -181,11 +185,6 @@ if ($step == 2 && isset($_GET['final']) && isset($_POST['sex'])) {
 
         //Если нет ошибок
         if (!$error) {
-
-
-
-
-
             $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `reg_mail`) VALUES(?, ?, ?, ?, ?)");
             $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $inv['email']));
             $id_user = $db->lastInsertId();
@@ -196,7 +195,8 @@ if ($step == 2 && isset($_GET['final']) && isset($_POST['sex'])) {
                     // подозрительный e-mail или логин
                     $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
                     $res->execute(Array($id_user, $susp));
-                    $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике или адресе email была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]", 4);
+                    $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике или адресе email была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]",
+                        4);
                 }
 
 
@@ -220,7 +220,8 @@ if ($step == 2 && isset($_GET['final']) && isset($_POST['sex'])) {
                 // подозрительный логин
                 $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
                 $res->execute(Array($id_user, $susp));
-                $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]", 4);
+                $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]",
+                    4);
             }
 
 
@@ -238,7 +239,8 @@ if ($step == 3) {
     if ($dcms->reg_with_mail && !$inv) {
         echo __("На ваш E-mail отправлено письмо с ссылкой для активации аккаунта");
     } else {
-        echo __("Теперь Вы можете <a href='%s'>Авторизоваться</a>", '/login.php' . (isset($_GET['return']) ? '?return=' . urlencode($_GET['return']) : null));
+        echo __("Теперь Вы можете <a href='%s'>Авторизоваться</a>",
+            '/login.php' . (isset($_GET['return']) ? '?return=' . urlencode($_GET['return']) : null));
     }
 
     unset($_SESSION['reg']);
@@ -248,8 +250,7 @@ if ($step == 3) {
 if ($step == 2) {
     $doc->title = __('Завершение регистрации'); // заголовок страницы
 
-
-    $form = new form('/reg.php?final&amp;' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+    $form = new form(new url(null, array('step' => 'final')));
     $form->bbcode(__('Ваш ник: %s', '[b]' . $login . '[/b]'));
     $form->password('password', __('Пароль') . ' [6-32]');
     $form->password('password_retry', __('Повторите пароль'));
@@ -267,7 +268,7 @@ if ($step == 2) {
 if ($step == 1) {
     $doc->title = __('Подбор ника'); // заголовок страницы
 
-    $form = new form('/reg.php?nick&amp;' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+    $form = new form(new url(null, array('step' => 'nick')));
     $form->text('login', __('Выберите ник') . ' [A-zА-я0-9 -_]');
     $form->bbcode('- ' . __('Сочетание русского и английского алфавитов запрещено'));
     $form->bbcode('- ' . __('Использование пробелов вначале и конце строк запрещено'));
@@ -279,17 +280,16 @@ if ($step == 1) {
 
 if ($step == 0) {
     $doc->title = __('Соглашение'); // заголовок страницы
-
-    $form = new form('/reg.php?rules&amp;' . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+    $form = new form(new url(null, array('step' => 'rules')));
     $form->bbcode(@file_get_contents(H . '/sys/docs/rules.txt'));
     $form->button(__('Принимаю'), 'ok', false);
     $form->button(__('Не принимаю'), 'no');
     $form->display();
 
 
-    if ($dcms->vk_auth_enable){
+    if ($dcms->vk_auth_enable) {
         $vk = new vk($dcms->vk_app_id, $dcms->vk_app_secret);
-        $form = new form(htmlspecialchars($vk->getAuthorizationUri('http://'.$_SERVER['HTTP_HOST'].'/vk.php', 'email')));
+        $form = new form($vk->getAuthorizationUri('http://' . $_SERVER['HTTP_HOST'] . '/vk.php', 'email'));
         $form->button(__('Вход через vk.com'));
         $form->display();
     }

@@ -12,11 +12,7 @@ else
     $ank = $user;
 
 if (!$ank->group) {
-    if (isset($_GET['return']))
-        header('Refresh: 1; url=' . $_GET['return']);
-    else
-        header('Refresh: 1; url=/');
-
+    $doc->toReturn();
     $doc->err(__('Нет данных'));
     exit;
 }
@@ -24,11 +20,7 @@ if (!$ank->group) {
 $doc->title .= ' "' . $ank->login . '"';
 
 if ($ank->group >= $user->group) {
-    if (isset($_GET['return']))
-        header('Refresh: 1; url=' . $_GET['return']);
-    else
-        header('Refresh: 1; url=/');
-
+    $doc->toReturn();
     $doc->err(__('Ваш статус не позволяет производить действия с данным пользователем'));
     exit;
 }
@@ -66,7 +58,7 @@ if (isset($_POST['change'])) {
     }
 }
 
-$form = new form("?id_ank=$ank->id&amp;" . passgen());
+$form = new form();
 $form->text('id_new', __('Новый ID'), $ank->id);
 $form->captcha();
 $form->bbcode('[notice] ' . __('Изменение ID пользователя может повлечь ошибки в сторонних модулях.'));

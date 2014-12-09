@@ -1,22 +1,15 @@
 <?php
-
 include_once '../sys/inc/start.php';
 dpanel::check_access();
 $groups = groups::load_ini();
 $doc = new document(4);
 $doc->title = __('Удаление пользователя');
 
-if (isset($_GET['id_ank']))
-    $ank = new user($_GET['id_ank']);
-else
-    $ank = $user;
+if (isset($_GET['id_ank'])) $ank = new user($_GET['id_ank']);
+else $ank = $user;
 
 if (!$ank->group) {
-    if (isset($_GET['return']))
-        header('Refresh: 1; url=' . $_GET['return']);
-    else
-        header('Refresh: 1; url=/');
-
+    $doc->toReturn();
     $doc->err(__('Нет данных'));
     exit;
 }
@@ -24,11 +17,7 @@ if (!$ank->group) {
 $doc->title .= ' "' . $ank->nick . '"';
 
 if ($ank->group >= $user->group) {
-    if (isset($_GET['return']))
-        header('Refresh: 1; url=' . $_GET['return']);
-    else
-        header('Refresh: 1; url=/');
-
+    $doc->toReturn();
     $doc->err(__('Ваш статус не позволяет производить действия с данным пользователем'));
     exit;
 }
@@ -36,7 +25,8 @@ if ($ank->group >= $user->group) {
 $tables = ini::read(H . '/sys/ini/user.tables.ini', true);
 
 if (isset($_POST['delete'])) {
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'],
+            $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
         misc::user_delete($ank->id);
@@ -58,9 +48,10 @@ foreach ($tables AS $name => $v) {
 }
 $listing->display();
 
-$form = new form("?id_ank=$ank->id&amp;" . passgen());
+$form = new form(new url());
 $form->captcha();
-$form->bbcode(__('Пользователь будет удален без возможности восстановления. Подтвердите удаление пользователя "%s".', $ank->nick));
+$form->bbcode(__('Пользователь будет удален без возможности восстановления. Подтвердите удаление пользователя "%s".',
+        $ank->nick));
 $form->button(__('Удалить'), 'delete');
 $form->display();
 

@@ -27,10 +27,13 @@ class http_client
     public $errs;
 
     /**
-     * @param string $url
+     * @param string|url $url
      */
     function __construct($url)
     {
+        if ($url instanceof url) {
+            $url = $url->getUrl();
+        }
         $this->_url = $url;
         $this->dataReset();
     }
@@ -77,7 +80,8 @@ class http_client
             if ($this->_socks_proxy) {
                 $spurl = @parse_url($this->_socks_proxy);
                 $sport = empty($spurl['port']) ? 9050 : $spurl['port'];
-                if (!$this->_sock = @fsockopen('tcp://' . $spurl['host'], $sport, $this->errn, $this->errs, $this->timeout)) {
+                if (!$this->_sock = @fsockopen('tcp://' . $spurl['host'], $sport, $this->errn, $this->errs,
+                        $this->timeout)) {
                     misc::log($spurl['host'] . ' (Прокси-сервер) - Не удалось подключиться', 'http_client');
                 } else {
 
@@ -85,7 +89,8 @@ class http_client
                     fwrite($this->_sock, $packet, strlen($packet));
                     $response = fread($this->_sock, 3);
 
-                    fwrite($this->_sock, "\x05\x01\x00\x03" . chr(strlen($purl['host'])) . $purl['host'] . pack("n", $port));
+                    fwrite($this->_sock,
+                        "\x05\x01\x00\x03" . chr(strlen($purl['host'])) . $purl['host'] . pack("n", $port));
 
                     $response = fread($this->_sock, 2048);
 
@@ -106,11 +111,13 @@ class http_client
             }
 
             if (!$this->_sock = @fsockopen($scheme . $purl['host'], $port, $this->errn, $this->errs, $this->timeout)) {
-                misc::log($scheme . $purl['host'] . ($this->_http_proxy ? ' (Прокси-сервер)' : '') . ' - Не удалось подключиться', 'http_client');
+                misc::log($scheme . $purl['host'] . ($this->_http_proxy ? ' (Прокси-сервер)' : '') . ' - Не удалось подключиться',
+                    'http_client');
                 return false;
             } else {
                 stream_set_timeout($this->_sock, $this->timeout);
-                misc::log($scheme . $purl['host'] . ($this->_http_proxy ? ' (Прокси-сервер)' : '') . ' - Успешно подключились', 'http_client');
+                misc::log($scheme . $purl['host'] . ($this->_http_proxy ? ' (Прокси-сервер)' : '') . ' - Успешно подключились',
+                    'http_client');
 
                 return true;
             }
@@ -247,7 +254,7 @@ class http_client
 
         fclose($fo);
         $this->_disconnect();
-        return (bool)$size;
+        return (bool) $size;
     }
 
     /**
@@ -387,29 +394,20 @@ class http_client
         $scheme = empty($purl['scheme']) ? 'http' : $purl['scheme'];
         $host = empty($purl['host']) ? '' : $purl['host'];
 
-        if ($this->_http_proxy)
-            $path = $scheme . '://' . $host . (empty($purl['path']) ? '/' : $purl['path']);
-        else
-            $path = empty($purl['path']) ? '/' : $purl['path'];
+        if ($this->_http_proxy) $path = $scheme . '://' . $host . (empty($purl['path']) ? '/' : $purl['path']);
+        else $path = empty($purl['path']) ? '/' : $purl['path'];
 
         $query = empty($purl['query']) ? '' : '?' . $purl['query'];
         $headers[] = ($this->_post ? 'POST' : 'GET') . ' ' . $path . $query . ' HTTP/1.0';
         $headers[] = 'Host: ' . $host;
 
-        if ($this->accept)
-            $headers[] = 'Accept: ' . $this->accept;
-        if ($this->accept_charset)
-            $headers[] = 'Accept-Charset: ' . $this->accept_charset;
-        if ($this->accept_encoding)
-            $headers[] = 'Accept-Encoding: ' . $this->accept_encoding;
-        if ($this->accept_language)
-            $headers[] = 'Accept-Language: ' . $this->accept_language;
-        if ($this->referer)
-            $headers[] = 'Referer: ' . $this->referer;
-        if ($this->_cookie)
-            $headers[] = 'Cookie: ' . implode(';', $this->_cookie);
-        if ($this->ua)
-            $headers[] = 'User-Agent: ' . $this->ua;
+        if ($this->accept) $headers[] = 'Accept: ' . $this->accept;
+        if ($this->accept_charset) $headers[] = 'Accept-Charset: ' . $this->accept_charset;
+        if ($this->accept_encoding) $headers[] = 'Accept-Encoding: ' . $this->accept_encoding;
+        if ($this->accept_language) $headers[] = 'Accept-Language: ' . $this->accept_language;
+        if ($this->referer) $headers[] = 'Referer: ' . $this->referer;
+        if ($this->_cookie) $headers[] = 'Cookie: ' . implode(';', $this->_cookie);
+        if ($this->ua) $headers[] = 'User-Agent: ' . $this->ua;
 
         if ($this->_files || $this->_post) {
             $post_data = $this->_multipart();
@@ -418,14 +416,13 @@ class http_client
         }
 
         if (isset($purl['user']) && isset($purl['pass']))
-            $headers[] = 'Authorization: Basic ' . base64_encode($purl['user'] . ':' . $purl['pass']);
+                $headers[] = 'Authorization: Basic ' . base64_encode($purl['user'] . ':' . $purl['pass']);
 
         $headers[] = 'Connection: Close';
 
         $header = implode("\r\n", $headers) . "\r\n\r\n";
 
-        if (!empty($post_data))
-            $header .= $post_data;
+        if (!empty($post_data)) $header .= $post_data;
 
         return $header;
     }

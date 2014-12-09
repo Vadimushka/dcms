@@ -8,7 +8,7 @@ class form extends ui
 
     /**
      * Создание формы
-     * @param string $url Путь (атрибут action в форме)
+     * @param string|url $url Путь (атрибут action в форме)
      * @param boolean $post true-отправлять post`ом, false - get`ом
      */
     public function __construct($url = '', $post = true)
@@ -245,11 +245,11 @@ class form extends ui
 
     /**
      * Установка URL (атрибут action формы)
-     * @param string $url
+     * @param string|url $url
      */
     function set_url($url)
     {
-        $this->_data['action'] = $url;
+        $this->_data['action'] = (string)$url;
     }
 
     /**

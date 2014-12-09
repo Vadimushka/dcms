@@ -1,5 +1,4 @@
 <?php
-
 include_once '../sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Жалоба на пользователя');
@@ -20,11 +19,7 @@ if (!$user->is_writeable) {
 $ank = new user(@$_GET['id']);
 
 if (!$ank->group || $ank->group > $user->group) {
-    if (isset($_GET['return'])) {
-        header('Refresh: 1; url=' . $_GET['return']);
-    } else {
-        header('Refresh: 1; url=/');
-    }
+    $doc->toReturn();
     $doc->err(__('Пользователь не найден'));
     exit;
 }
@@ -45,18 +40,13 @@ if (isset($_POST['complaint'])) {
         $doc->err(__('Не выбрано нарушение'));
     } elseif (!$comm) {
         $doc->err(__('Необходимо прокомментировать жалобу'));
-    } elseif ($res->fetch())
-        $doc->err(__('Вы уже жаловались сегодня на этого пользователя'));
+    } elseif ($res->fetch()) $doc->err(__('Вы уже жаловались сегодня на этого пользователя'));
     else {
-        if (isset($_GET['return'])) {
-            header('Refresh: 1; url=' . $_GET['return']);
-        }
+        $doc->toReturn();
 
-        $res=$db->prepare("INSERT INTO `complaints` (`time`, `id_user`, `id_ank`, `link`, `code`, `comment`) VALUES (?, ?, ?, ?, ?, ?)");
-        $res->execute(Array(TIME,$user->id,$ank->id,$link,$code,$comm));
+        $res = $db->prepare("INSERT INTO `complaints` (`time`, `id_user`, `id_ank`, `link`, `code`, `comment`) VALUES (?, ?, ?, ?, ?, ?)");
+        $res->execute(Array(TIME, $user->id, $ank->id, $link, $code, $comm));
         $doc->msg(__('Жалоба будет рассмотрена модератором'));
-
-        
 
         $mess = "Поступила [url=/dpanel/user.complaints.php]жалоба[/url] на пользователя [user]$ank->id[/user] от [user]$user->id[/user]";
         $admins = groups::getAdmins(2);
@@ -76,7 +66,7 @@ if (isset($_POST['complaint'])) {
 
 $link = !empty($_GET['link']) ? $_GET['link'] : (!empty($_POST['link']) ? $_POST['link'] : false);
 
-$form = new form('?' . passgen() . '&amp;id=' . $ank->id . (!empty($_GET['return']) ? '&amp;return=' . text::toValue($_GET['return']) : null));
+$form = new form(new url());
 $form->text('link', __('Ссылка'), $link);
 $form->select('code', __('Нарушение'), $menu->options());
 $form->textarea('comment', __('Комментарий'));

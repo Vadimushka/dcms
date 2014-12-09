@@ -79,7 +79,7 @@ if (!empty($_POST['close'])) {
     }
 }
 
-$form = new form("?id=$theme[id]&amp;" . passgen());
+$form = new form(new url());
 $form->textarea('reason', $is_open ? __('Причина закрытия') : __('Причина открытия'));
 if ($is_open)
     $form->button(__('Закрыть для обсуждения'), 'close');

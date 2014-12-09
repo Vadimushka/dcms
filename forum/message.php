@@ -1,5 +1,4 @@
 <?php
-
 include_once '../sys/inc/start.php';
 $doc = new document();
 $doc->title = 'Просмотр сообщения';
@@ -9,7 +8,7 @@ if (!isset($_GET['id_message']) || !is_numeric($_GET['id_message'])) {
     $doc->err(__('Ошибка выбора сообщения'));
     exit;
 }
-$id_message = (int)$_GET['id_message'];
+$id_message = (int) $_GET['id_message'];
 
 $q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id` = ? AND `group_show` <= ?");
 $q->execute(Array($id_message, $user->group));
@@ -24,11 +23,7 @@ $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ?");
 $q->execute(Array($message['id_theme']));
 
 if (!$theme = $q->fetch()) {
-    if (isset($_GET['return'])) {
-        header('Refresh: 1; url=' . $_GET['return']);
-    } else {
-        header('Refresh: 1; url=./');
-    }
+    $doc->toReturn();
     $doc->err(__('Тема не найдена'));
     exit;
 }
@@ -50,7 +45,7 @@ if (!$user->is_writeable) {
 }
 
 
-$autor = new user((int)$message['id_user']);
+$autor = new user((int) $message['id_user']);
 
 if (!$autor->id) {
     $can_write = false;
@@ -63,11 +58,12 @@ if (isset($_GET['quote'])) {
 }
 
 if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->group) {
-    $message = (string)$_POST['message'];
+    $message = (string) $_POST['message'];
     $users_in_message = text::nickSearch($message);
     $message_re = text::input_text($message);
 
-    if ($dcms->forum_message_captcha && $user->group < 2 && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
+    if ($dcms->forum_message_captcha && $user->group < 2 && (empty($_POST['captcha']) || empty($_POST['captcha_session'])
+        || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($dcms->censure && $mat = is_valid::mat($message_re)) {
         $doc->err(__('Обнаружен мат: %', $mat));
@@ -76,7 +72,8 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
 
         $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
  VALUES (?,?,?,?,?,?,?,?)");
-        $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], $user->id, TIME, $message_re, $theme['group_show'], $theme['group_edit']));
+        $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], $user->id, TIME, $message_re, $theme['group_show'],
+            $theme['group_edit']));
         $id_message = $db->lastInsertId();
 
         header('Refresh: 1; url=theme.php?id=' . $theme['id'] . '&page=end#message' . $id_message);
@@ -136,27 +133,37 @@ $post->content = text::toOutput($message['message']);
 
 
 if ($user->group && $user->id != $autor->id) {
-    $img_thumb_down = '<a href="{url}" class="DCMS_thumb_down ' . implode(' ', sprite::getClassName('thumb_down', SPRITE_CLASS_PREFIX)) . '"></a>';
-    $img_thumb_up = '<a href="{url}" href="" class="DCMS_thumb_up ' . implode(' ', sprite::getClassName('thumb_up', SPRITE_CLASS_PREFIX)) . '"></a>';
+    $img_thumb_down = '<a href="{url}" class="DCMS_thumb_down ' . implode(' ',
+            sprite::getClassName('thumb_down', SPRITE_CLASS_PREFIX)) . '"></a>';
+    $img_thumb_up = '<a href="{url}" href="" class="DCMS_thumb_up ' . implode(' ',
+            sprite::getClassName('thumb_up', SPRITE_CLASS_PREFIX)) . '"></a>';
 
     $q = $db->prepare("SELECT `rating` FROM `forum_rating` WHERE `id_user` = :id_user AND `id_message` = :id_msg LIMIT 1");
     $q->execute(array(':id_user' => $user->id, ':id_msg' => $message['id']));
     $my_rating = $q->fetchColumn();
     if (!$my_rating) $my_rating = 0;
-    if ($my_rating == 0 && $user->balls - $dcms->forum_rating_down_balls >= 0){
-        $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=down&amp;return=' . URL, $img_thumb_down);
+    if ($my_rating == 0 && $user->balls - $dcms->forum_rating_down_balls >= 0) {
+        $post->bottom .= str_replace('{url}',
+            'message.rating.php?id=' . $message['id'] . '&amp;change=down&amp;return=' . URL, $img_thumb_down);
     }
 
     if ($my_rating == 0) {
-        $post->bottom .= ' ' . __('Рейтинг: %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
+        $post->bottom .= ' ' . __('Рейтинг: %s / %s',
+                '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>',
+                '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
     } else {
-        $post->bottom .= ' ' . __('Рейтинг: %s / %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', $my_rating, '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
+        $post->bottom .= ' ' . __('Рейтинг: %s / %s / %s',
+                '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', $my_rating,
+                '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
     }
 
     if ($my_rating == 0)
-        $post->bottom .= str_replace('{url}', 'message.rating.php?id=' . $message['id'] . '&amp;change=up&amp;return=' . URL, $img_thumb_up);
+            $post->bottom .= str_replace('{url}',
+            'message.rating.php?id=' . $message['id'] . '&amp;change=up&amp;return=' . URL, $img_thumb_up);
 } else {
-    $post->bottom .= ' ' . __('Рейтинг: %s / %s', '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>', '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
+    $post->bottom .= ' ' . __('Рейтинг: %s / %s',
+            '<span class="DCMS_rating_down">' . $message['rating_down'] . '</span>',
+            '<span class="DCMS_rating_up">' . $message['rating_up'] . '</span>') . ' ';
 }
 
 
@@ -165,10 +172,9 @@ $listing->display();
 
 if (!isset($_GET['files'])) {
     if ($can_write && $theme['group_write'] <= $user->group) {
-        $form = new form("?id_theme=$theme[id]&amp;id_message=$message[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+        $form = new form(new url());
         $form->textarea('message', __('Ответ'), $re);
-        if ($dcms->forum_message_captcha && $user->group < 2)
-            $form->captcha();
+        if ($dcms->forum_message_captcha && $user->group < 2) $form->captcha();
         $form->button(__('Отправить'));
         $form->display();
     }

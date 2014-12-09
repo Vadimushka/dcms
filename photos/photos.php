@@ -1,12 +1,11 @@
 <?php
-
 include_once '../sys/inc/start.php';
 $doc = new document ();
 $doc->title = __('Фотоальбомы');
 
 
 if (!empty($_GET ['id'])) {
-    $ank = new user((int)$_GET ['id']);
+    $ank = new user((int) $_GET ['id']);
 } else {
     $ank = $user;
 }
@@ -40,7 +39,7 @@ if (empty($_GET ['album']) || !$albums_dir->is_dir($_GET ['album'])) {
     exit();
 }
 
-$album_name = (string)$_GET ['album'];
+$album_name = (string) $_GET ['album'];
 $album = new files($albums_path . '/' . $album_name);
 $doc->title = $album->runame;
 
@@ -71,7 +70,7 @@ if (!empty($_GET ['act']) && $ank->id == $user->id) {
                 }
             }
 
-            $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=prop');
+            $form = new form(new url(null, array('act' => 'prop')));
             $form->text('name', 'Название', $album->runame);
             $form->textarea('description', 'Описание', $album->description);
             $options = array();
@@ -112,7 +111,7 @@ if (!empty($_GET ['act']) && $ank->id == $user->id) {
                 }
             }
 
-            $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=photo_add&amp;' . passgen());
+            $form = new form(new url(null, array('act' => 'photo_add')));
             $form->file('file', __('Фотография') . ' (*.jpg)');
             $form->button(__('Выгрузить'));
             $form->display();
@@ -124,8 +123,8 @@ if (!empty($_GET ['act']) && $ank->id == $user->id) {
 
             if (!empty($_POST ['delete'])) {
 
-                if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session']))
-                    $doc->err(__('Проверочное число введено неверно'));
+                if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'],
+                        $_POST ['captcha_session'])) $doc->err(__('Проверочное число введено неверно'));
                 elseif ($album->delete()) {
                     $doc->msg(__('Альбом успешно удален'));
                     $doc->ret(__('Альбомы %s', $ank->login), 'albums.php?id=' . $ank->id);
@@ -140,7 +139,7 @@ if (!empty($_GET ['act']) && $ank->id == $user->id) {
                 exit();
             }
 
-            $form = new form('?id=' . $ank->id . '&amp;album=' . urlencode($album->name) . '&amp;act=delete&amp;' . passgen());
+            $form = new form(new url(null, array('act' => 'delete')));
             $form->captcha();
             $form->button(__('Удалить альбом'), 'delete');
             $form->display();

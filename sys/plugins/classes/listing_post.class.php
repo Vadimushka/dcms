@@ -59,14 +59,21 @@ class listing_post extends ui
     }
 
     /**
+     * @param string|url $url
+     */
+    public function setUrl($url){
+        $this->url = (string)$url;
+    }
+
+    /**
      * иконка действия
      * @param string $icon имя системной иконки
-     * @param string $url путь
+     * @param string|url $url путь
      */
     public function action($icon, $url)
     {
         $design = new design();
-        $this->actions[] = array('icon' => $design->getIconPath($icon), 'url' => $url);
+        $this->actions[] = array('icon' => $design->getIconPath($icon), 'url' => (string)$url);
     }
 
     /**

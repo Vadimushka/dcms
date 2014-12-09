@@ -27,7 +27,7 @@ if (!empty($probe_theme)) {
         exit;
     }
 
-    $form = new form('?theme=' . urlencode($probe_theme) . '&amp;' . passgen());
+    $form = new form(new url());
     $form->bbcode(__('Вы действительно хотите применить тему оформления "%s" для браузеров типа "%s"?', $theme->getName(), $dcms->browser_type));
     $form->button(__('Применить'), 'save', false);
     $form->button(__('Отмена'), 'cancel');

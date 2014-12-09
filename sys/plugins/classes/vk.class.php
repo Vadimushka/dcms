@@ -24,11 +24,11 @@ class vk
      * Получение ссылки на авторизацию через vk.com
      * @param string $redirect_uri
      * @param string|array $scope запрашиваемые права доступа
-     * @return string
+     * @return url
      */
     public function getAuthorizationUri($redirect_uri, $scope = '')
     {
-        return $this->_paramsToUri(
+        return new url(
             'https://oauth.vk.com/authorize',
             array(
                 'client_id' => $this->_app_id,
@@ -55,7 +55,7 @@ class vk
                 throw new Exception(__('Для получения access_token необходимо указать request_uri и code'));
             }
 
-            $uri = $this->_paramsToUri(
+            $uri = new url(
                 'https://oauth.vk.com/access_token',
                 array(
                     'client_id' => $this->_app_id,
@@ -141,7 +141,7 @@ class vk
             throw new Exception('access token не установлен');
         }
         $params['access_token'] = $this->_access_token;
-        $http_client = new http_client($this->_paramsToUri('https://api.vk.com/method/' . $method, $params));
+        $http_client = new http_client(new url('https://api.vk.com/method/' . $method, $params));
         $json_content = $http_client->getContent();
         if (false === ($data = json_decode($json_content, true))) {
             throw new Exception("Не удалось распарсить данные");
@@ -151,15 +151,6 @@ class vk
             throw new Exception($data['error_description']);
         }
         return $data['response'];
-    }
-
-    protected function _paramsToUri($uri, $params)
-    {
-        $p_el = array();
-        foreach ($params AS $key => $value) {
-            $p_el[] = $key . '=' . $value;
-        }
-        return $uri . '?' . join('&', $p_el);
     }
 
     /**

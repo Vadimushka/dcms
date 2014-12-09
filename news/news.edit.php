@@ -64,7 +64,7 @@ if (isset($_POST['next'])) {
         $news_e['checked'] = 1;
 }
 
-$form = new form('?id=' . $id . '&amp;' . passgen());
+$form = new form(new url());
 $form->text('title', __('Заголовок новости'), $news_e['title'], true, false, $news_e['checked']);
 $form->textarea('text', __('Текст новости'), $news_e['text'], true, $news_e['checked']);
 

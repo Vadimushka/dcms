@@ -32,7 +32,7 @@ if (isset($_POST['delete'])) {
     }
 }
 
-$form = new form('?id=' . $id . '&amp;' . passgen());
+$form = new form(new url());
 $form->captcha();
 $form->bbcode(__('Новость "%s" будет удалена без возможности восстановления', $news['title']));
 $form->button(__('Удалить'), 'delete');

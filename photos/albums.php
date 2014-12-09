@@ -1,5 +1,4 @@
 <?php
-
 include_once '../sys/inc/start.php';
 $doc = new document ();
 $doc->title = __('Фотоальбомы');
@@ -32,7 +31,7 @@ $albums_path = FILES . '/.photos/' . $ank->id;
 
 if (!@is_dir($albums_path)) {
     if (!$albums_dir = $photos->mkdir($ank->login, $ank->id))
-        $doc->access_denied(__('Не удалось создать папку под фотоальбомы пользователя'));
+            $doc->access_denied(__('Не удалось создать папку под фотоальбомы пользователя'));
     $albums_dir->group_show = 0;
     $albums_dir->group_write = max($ank->group, 2);
     $albums_dir->group_edit = max($ank->group, 4);
@@ -49,10 +48,8 @@ if ($ank->id == $user->id && !empty($_GET ['act']) && $_GET ['act'] == 'create')
     if (!empty($_POST ['name'])) {
         $name = text::for_name($_POST ['name']);
 
-        if (!$name)
-            $doc->err(__('Название состоит из запрещенных символов'));
-        elseif (!$album = $albums_dir->mkdir($name))
-            $doc->err(__('Не удалось создать альбом'));
+        if (!$name) $doc->err(__('Название состоит из запрещенных символов'));
+        elseif (!$album = $albums_dir->mkdir($name)) $doc->err(__('Не удалось создать альбом'));
         else {
             $doc->ret(__('К альбому %s', $name), 'photos.php?id=' . $ank->id . '&mp;album=' . urlencode($album->name));
             $doc->ret(__('К альбомам'), '?id=' . $ank->id);
@@ -62,7 +59,7 @@ if ($ank->id == $user->id && !empty($_GET ['act']) && $_GET ['act'] == 'create')
         }
     }
 
-    $form = new form('?id=' . $ank->id . '&amp;act=create&amp;' . passgen());
+    $form = new form(new url(null, array('act' => 'create')));
     $form->text('name', __('Название альбома'));
     $form->button(__('Создать'));
     $form->display();

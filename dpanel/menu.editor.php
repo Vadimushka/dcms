@@ -1,5 +1,4 @@
 <?php
-
 include_once '../sys/inc/start.php';
 dpanel::check_access();
 $doc = new document(6);
@@ -9,8 +8,7 @@ $doc->title = __('Редактор меню');
 $menu_files = (array) glob(H . '/sys/ini/menu.*.ini');
 $menus = array();
 foreach ($menu_files as $menu_path) {
-    if (!preg_match('#menu\.(.+?)\.ini$#ui', $menu_path, $m))
-        continue;
+    if (!preg_match('#menu\.(.+?)\.ini$#ui', $menu_path, $m)) continue;
     $menus[] = $m[1];
 }
 
@@ -33,7 +31,8 @@ if (!empty($_GET['menu'])) {
         $item = $m_obj->menu_arr[$item_name];
         $doc->title = __('Меню "%s" - %s', $menu, $item_name);
         if (!empty($_POST['delete'])) {
-            if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+            if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'],
+                    $_POST['captcha_session'])) {
                 $doc->err(__('Проверочное число введено неверно'));
             } else {
                 $ini = ini::read(H . '/sys/ini/menu.' . $menu . '.ini', true);
@@ -94,13 +93,13 @@ if (!empty($_GET['menu'])) {
 
         if (isset($_GET['act']) && $_GET['act'] == 'delete') {
             $doc->title = __('Удаление пункта %s', $item_name);
-            $form = new form('?menu=' . urlencode($menu) . '&amp;item=' . urlencode($item_name) . '&amp;' . passgen());
+            $form = new form(new url(null, array('menu' => $menu, 'item' => $item_name)));
             $form->captcha();
             $form->button(__('Удалить'), 'delete');
             $form->display();
         } else {
 
-            $form = new form('?menu=' . urlencode($menu) . '&amp;item=' . urlencode($item_name) . '&amp;' . passgen());
+            $form = new form(new url(null, array('menu' => $menu, 'item' => $item_name)));
 
             $form->text('name', __('Название'), $item_name);
             $form->text('position', __('Позиция'), arraypos::getPosition($m_obj->menu_arr, $item_name));
@@ -172,7 +171,7 @@ if (!empty($_GET['menu'])) {
             }
         }
 
-        $form = new form('?menu=' . urlencode($menu) . '&amp;item_add&amp;' . passgen());
+        $form = new form(new url(null, array('menu' => $menu, 'item_add' => null)));
         $form->text('name', __('Название'));
         $form->text('position', __('Позиция'), count($m_obj->menu_arr) + 1);
         $form->text('url', __('Ссылка'), 'http://');
@@ -276,7 +275,8 @@ if (!empty($_GET['menu'])) {
 
         $post->action('up', '?menu=' . urlencode($menu) . '&amp;up=' . urlencode($name) . '&amp;' . passgen());
         $post->action('down', '?menu=' . urlencode($menu) . '&amp;down=' . urlencode($name) . '&amp;' . passgen());
-        $post->action('delete', '?menu=' . urlencode($menu) . '&amp;item=' . urlencode($name) . '&amp;act=delete&amp;' . passgen());
+        $post->action('delete',
+            '?menu=' . urlencode($menu) . '&amp;item=' . urlencode($name) . '&amp;act=delete&amp;' . passgen());
 
 
 

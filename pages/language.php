@@ -1,5 +1,4 @@
 <?php
-
 include_once '../sys/inc/start.php';
 $doc = new document(); // инициализация документа для браузера
 $doc->title = __('Настройки языка');
@@ -18,11 +17,8 @@ if (!empty($_GET['set_lang'])) {
         }
 
         $doc->msg(__('Языковой пакет %s (%s) успешно выбран', $user_language_pack->name, $user_language_pack->enname));
-
-        if (!empty($_GET['return'])) {
-            header('Refresh: 1; url=' . $_GET['return']);
-            exit;
-        }
+        $doc->toReturn();
+        exit;
     }
 }
 
@@ -32,7 +28,7 @@ $languages = languages::getList();
 $listing = new listing();
 foreach ($languages as $key => $l) {
     $post = $listing->post();
-    $post->url = '?set_lang=' . urlencode($key) . (!empty($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : '');
+    $post->setUrl(new url(null, array('set_lang' => $key)));
     $post->title = $user_language_pack->code == $key ? $l['name'] : $l['enname'];
     $post->icon = empty($l['icon']) ? false : $l['icon'];
 }

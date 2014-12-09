@@ -27,7 +27,7 @@ $widgets = widgets::getAllWidgets();
 
 $changed = false;
 
-$form = new form('?theme=' . $theme->getName() . '&amp;' . passgen());
+$form = new form(new url());
 foreach ($sections AS $section_key => $section_name) {
     if ($section_key === $echo_section_key) {
         continue;

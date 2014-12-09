@@ -8,10 +8,7 @@ if (isset($_GET['info'])) {
     $faq = preg_replace('#[^a-z0-9_\-]+#ui', '', $_GET['info']);
     $bb = new bb(H . '/sys/docs/code/' . $faq . '.txt');
     if ($bb->err) {
-        if (isset($_GET['return']))
-            header('Refresh: 1; url=' . $_GET['return']);
-        else
-            header('Refresh: 1; url=?');
+        $doc->toReturn('?');
         $doc->err(__('Запрошенная информация не найдена'));
         exit;
     }

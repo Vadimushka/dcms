@@ -97,7 +97,7 @@ if ($arr = $q->fetchAll()) {
     }
 }
 
-$form = new form('?id=' . $theme['id']);
+$form = new form(new url());
 $form->html($listing->fetch(__('Сообщения отсутствуют')));
 $form->button(__('Удалить'), 'delete', false);
 $form->button(__('Скрыть'), 'hide', false);

@@ -100,7 +100,7 @@ if (isset($_POST['save'])) {
 
 $doc->title = __('Редактирование категории "%s"', $category['name']); // шапка страницы
 
-$form = new form("?id=$category[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+$form = new form(new url());
 $form->text('name', __('Название'), $category['name']);
 $form->textarea('description', __('Описание'), $category['description']);
 $form->text('position', __('Позиция'), $category['position']);

@@ -1,5 +1,4 @@
 <?php
-
 include_once '../sys/inc/start.php';
 dpanel::check_access();
 $doc = new document(2);
@@ -8,20 +7,16 @@ $doc->title = __('Бан пользователя');
 $ank = new user(@$_GET ['id_ank']);
 
 if (!$ank->group) {
-    if (isset($_GET ['return']))
-        header('Refresh: 1; url=' . $_GET ['return']);
-    else
-        header('Refresh: 1; url=/');
+    if (isset($_GET ['return'])) header('Refresh: 1; url=' . $_GET ['return']);
+    else header('Refresh: 1; url=/');
 
     $doc->err(__('Нет данных о пользователе'));
     exit;
 }
 
 if ($ank->group >= $user->group) {
-    if (isset($_GET ['return']))
-        header('Refresh: 1; url=' . $_GET ['return']);
-    else
-        header('Refresh: 1; url=/');
+    if (isset($_GET ['return'])) header('Refresh: 1; url=' . $_GET ['return']);
+    else header('Refresh: 1; url=/');
 
     $doc->err(__('Недостаточно привилегий'));
     exit;
@@ -36,10 +31,9 @@ $codes = new menu_code('code');
 
 if (!$code && !isset($_GET ['skip'])) {
 
-    $form = new form('?id_ank=' . $ank->id . '&amp;link=' . urlencode($link) . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
+    $form = new form(new url());
     $form->text('link', __('Ссылка'), $link);
-    if ($link)
-        $form->bbcode('[url="' . $link . '"]' . __('Перейти к нарушению') . '[/url]');
+    if ($link) $form->bbcode('[url="' . $link . '"]' . __('Перейти к нарушению') . '[/url]');
     $form->select('code', __('Нарушение'), $codes->options());
     $form->button(__('Далее'));
     $form->display();
@@ -98,7 +92,8 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
         $res = $db->prepare("UPDATE `users` SET `is_ban` = '1' WHERE `id` = ?");
         $res->execute(Array($ank->id));
 
-        $dcms->log('Пользователи', 'Бан пользователя [user]' . $ank->id . '[/user] на' . ($time_ban_end == 'NULL' ? 'всегда' : (' ' . misc::when($time_ban_end) )) . "\nПричина: $comm");
+        $dcms->log('Пользователи',
+            'Бан пользователя [user]' . $ank->id . '[/user] на' . ($time_ban_end == 'NULL' ? 'всегда' : (' ' . misc::when($time_ban_end) )) . "\nПричина: $comm");
 
         if ($time_ban_end == 'NULL') {
             $doc->msg(__('Пользователь успешно забанен навсегда'));
@@ -143,25 +138,20 @@ if ($arr = $q->fetchAll()) {
         $post->content[] = __('Нарушение: %s', $c['code']);
 
         if ($c ['time_start'] && TIME < $c ['time_start'])
-            $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . misc::when($c ['time_start']);
+                $post->content[] = '[b]' . __('Начало действия') . ':[/b]' . misc::when($c ['time_start']);
 
-        if ($c['time_end'] === NULL)
-            $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]";
-        elseif (TIME < $c['time_end'])
-            $post->content[] = __('Осталось: %s', misc::when($c['time_end']));
+        if ($c['time_end'] === NULL) $post->content[] = '[b]' . __('Пожизненная блокировка') . "[/b]";
+        elseif (TIME < $c['time_end']) $post->content[] = __('Осталось: %s', misc::when($c['time_end']));
 
-        if ($c['link'])
-            $post->content[] = __('Ссылка на нарушение: %s', $c['link']);
+        if ($c['link']) $post->content[] = __('Ссылка на нарушение: %s', $c['link']);
         $post->content[] = __('Комментарий: %s', $c['comment']);
     }
 }
 
 $listing->display(__('Нарушения отсутствуют'));
-
-$form = new form('?id_ank=' . $ank->id . '&amp;code=' . urlencode($code) . '&amp;link=' . urlencode($link) . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
+$form = new form(new url());
 $form->text('link', __('Ссылка'), $link);
-if ($link)
-    $form->bbcode('[url="' . $link . '"]' . __('Перейти к нарушению') . '[/url]');
+if ($link) $form->bbcode('[url="' . $link . '"]' . __('Перейти к нарушению') . '[/url]');
 $form->select('code', __('Нарушение'), $codes->options($code));
 
 if (!$min || $min < 3600) {

@@ -1,5 +1,4 @@
 <?php
-
 defined('DCMS') or die;
 $pathinfo = pathinfo($abs_path);
 $dir = new files($pathinfo['dirname']);
@@ -10,31 +9,27 @@ if ($dir->group_show > $user->group) {
 $access_write_dir = $dir->group_write <= $user->group || ($dir->id_user && $user->id == $dir->id_user);
 
 $order_keys = $dir->getKeys();
-if (!empty($_GET['order']) && isset($order_keys[$_GET['order']]))
-    $order = $_GET['order'];
-else
-    $order = 'runame:asc';
+if (!empty($_GET['order']) && isset($order_keys[$_GET['order']])) $order = $_GET['order'];
+else $order = 'runame:asc';
 
 $file = new files_file($pathinfo['dirname'], $pathinfo['basename']);
 
-if ($file->group_show > $user->group)
-    $doc->access_denied(__('У Вас нет прав для просмотра данного файла'));
+if ($file->group_show > $user->group) $doc->access_denied(__('У Вас нет прав для просмотра данного файла'));
 
 $access_edit = $file->group_edit <= $user->group || ($file->id_user && $file->id_user == $user->id);
 
-if ($access_edit && isset($_GET['act']) && $_GET['act'] == 'edit_screens')
-    include 'inc/screens_edit.php';
+if ($access_edit && isset($_GET['act']) && $_GET['act'] == 'edit_screens') include 'inc/screens_edit.php';
 
 
 $doc->title = __('Файл %s - скачать', $file->runame);
 $doc->description = $file->meta_description ? $file->meta_description : $dir->meta_description;
-$doc->keywords = $file->meta_keywords ? explode(',', $file->meta_keywords) : ($dir->meta_keywords ? explode(',', $dir->meta_keywords) : '');
+$doc->keywords = $file->meta_keywords ? explode(',', $file->meta_keywords) : ($dir->meta_keywords ? explode(',',
+            $dir->meta_keywords) : '');
 
-if ($access_edit)
-    include 'inc/file_act.php';
+if ($access_edit) include 'inc/file_act.php';
 
 if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
-    $my_rating = (int)$_POST['rating'];
+    $my_rating = (int) $_POST['rating'];
     if (isset($file->ratings[$my_rating])) {
         $file->rating_my($my_rating);
         $doc->msg(__('Ваша оценка файла успешно принята'));
@@ -49,10 +44,9 @@ if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
 
 if (empty($_GET['act'])) {
     $screens_count = $file->getScreensCount();
-    $query_screen = (int)@$_GET['screen_num'];
+    $query_screen = (int) @$_GET['screen_num'];
     if ($screens_count) {
-        if ($query_screen < 0 || $query_screen >= $screens_count)
-            $query_screen = 0;
+        if ($query_screen < 0 || $query_screen >= $screens_count) $query_screen = 0;
 
         if ($screen = $file->getScreen($doc->img_max_width(), $query_screen)) {
             echo "<img class='DCMS_photo' src='" . $screen . "' alt='" . __('Скриншот') . " $query_screen' /><br />\n";
@@ -125,7 +119,7 @@ if (empty($_GET['act'])) {
         $post->content[] = $comment;
     }
 
-    if ($track_number = (int)$file->track_number) {
+    if ($track_number = (int) $file->track_number) {
         $post = $listing->post();
         $post->title = __('Номер трека');
         $post->content[] = $track_number;
@@ -155,13 +149,13 @@ if (empty($_GET['act'])) {
         $post->content[] = $vendor;
     }
 
-    if (($width = (int)$file->width) && ($height = (int)$file->height)) {
+    if (($width = (int) $file->width) && ($height = (int) $file->height)) {
         $post = $listing->post();
         $post->title = __('Разрешение');
         $post->content[] = $width . 'x' . $height;
     }
 
-    if ($frames = (int)$file->frames) {
+    if ($frames = (int) $file->frames) {
         $post = $listing->post();
         $post->title = __('Кол-во кадров');
         $post->content[] = $frames;
@@ -173,7 +167,7 @@ if (empty($_GET['act'])) {
         $post->content[] = $playtime_string;
     }
 
-    if (($video_bitrate = (int)$file->video_bitrate) && ($video_bitrate_mode = $file->video_bitrate_mode)) {
+    if (($video_bitrate = (int) $file->video_bitrate) && ($video_bitrate_mode = $file->video_bitrate_mode)) {
         $post = $listing->post();
         $post->title = __('Видео битрейт');
         $post->content[] = misc::getDataCapacity($video_bitrate) . "/s (" . $video_bitrate_mode . ")";
@@ -191,7 +185,7 @@ if (empty($_GET['act'])) {
         $post->content[] = __('%s кадров в секунду', round($video_frame_rate / 60));
     }
 
-    if (($audio_bitrate = (int)$file->audio_bitrate) && ($audio_bitrate_mode = $file->audio_bitrate_mode)) {
+    if (($audio_bitrate = (int) $file->audio_bitrate) && ($audio_bitrate_mode = $file->audio_bitrate_mode)) {
         $post = $listing->post();
         $post->title = __('Аудио битрейт');
         $post->content[] = misc::getDataCapacity($audio_bitrate) . "/s (" . $audio_bitrate_mode . ")";
@@ -207,7 +201,7 @@ if (empty($_GET['act'])) {
         $ank = new user($file->id_user);
 
         $post = $listing->post();
-        $post->title = __('Добавил' . $ank->sex? '':'а');
+        $post->title = __('Добавил' . $ank->sex ? '' : 'а');
 
         $post->content = $ank->nick;
         $post->url = '/profile.view.php?id=' . $ank->id;
@@ -239,7 +233,8 @@ if (empty($_GET['act'])) {
         foreach ($file->ratings AS $rating => $rating_name) {
             $options[] = array($rating, $rating_name, $rating == $my_rating);
         }
-        $elements[] = array('type' => 'select', 'title' => __('Оценка файла'), 'br' => 1, 'info' => array('name' => 'rating', 'options' => $options));
+        $elements[] = array('type' => 'select', 'title' => __('Оценка файла'), 'br' => 1, 'info' => array('name' => 'rating',
+                'options' => $options));
         $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Оценить'))); // кнопка
         $form->assign('el', $elements);
         $form->display('input.form.tpl');
@@ -263,17 +258,17 @@ if (!$user->is_writeable) {
 
 //region комменты к файлу
 if ($can_write && isset($_POST['send']) && isset($_POST['message']) && isset($_POST['token']) && $user->group) {
-    $message = (string)$_POST['message'];
+    $message = (string) $_POST['message'];
     $users_in_message = text::nickSearch($message);
     $message = text::input_text($message);
 
-    if (!antiflood::useToken($_POST['token'], 'files')){
+    if (!antiflood::useToken($_POST['token'], 'files')) {
         // повторная отправка формы
         // вывод сообщений, возможно, будет лишним
-    }
-    else if ($file->id_user && $file->id_user != $user->id && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
+    } else if ($file->id_user && $file->id_user != $user->id && (empty($_POST['captcha']) || empty($_POST['captcha_session'])
+        || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
         $doc->err(__('Проверочное число введено неверно'));
-    }elseif ($dcms->censure && $mat = is_valid::mat($message)) {
+    } elseif ($dcms->censure && $mat = is_valid::mat($message)) {
         $doc->err(__('Обнаружен мат: %s', $mat));
     } elseif ($message) {
         $user->balls++;
@@ -309,17 +304,16 @@ if ($can_write && isset($_POST['send']) && isset($_POST['message']) && isset($_P
 if (empty($_GET['act'])) {
     // комменты будут отображаться только когда над файлом не производится никаких действий
     if ($can_write && $user->group) {
-        $form = new form('?order=' . $order . '&amp;screen_num=' . $query_screen . '&amp;' . passgen());
+        $form = new form(new url(null, array('screen_num' => $query_screen)));
         $form->textarea('message', __('Комментарий'));
-        if ($file->id_user && $file->id_user != $user->id)
-            $form->captcha();
+        if ($file->id_user && $file->id_user != $user->id) $form->captcha();
         $form->hidden('token', antiflood::getToken('files'));
         $form->button(__('Отправить'), 'send');
         $form->display();
     }
 
     if (!empty($_GET['delete_comm']) && $user->group >= $file->group_edit) {
-        $delete_comm = (int)$_GET['delete_comm'];
+        $delete_comm = (int) $_GET['delete_comm'];
         $res = $db->prepare("SELECT COUNT(*) FROM `files_comments` WHERE `id` = ? AND `id_file` = ?");
         $res->execute(Array($delete_comm, $file->id));
         $k = $res->fetchColumn();
@@ -328,8 +322,7 @@ if (empty($_GET['act'])) {
             $res->execute(Array($delete_comm));
             $file->comments--;
             $doc->msg(__('Комментарий успешно удален'));
-        }else
-            $doc->err(__('Комментарий уже удален'));
+        } else $doc->err(__('Комментарий уже удален'));
     }
 
     //$posts = array();
@@ -354,7 +347,8 @@ if (empty($_GET['act'])) {
             $post->icon($ank->icon());
 
             if ($user->group >= $file->group_edit) {
-                $post->action('delete', '?order=' . $order . '&amp;screen_num=' . $query_screen . '&amp;delete_comm=' . $comment['id']);
+                $post->action('delete',
+                    '?order=' . $order . '&amp;screen_num=' . $query_screen . '&amp;delete_comm=' . $comment['id']);
             }
         }
     }
@@ -363,7 +357,6 @@ if (empty($_GET['act'])) {
     $pages->display('?order=' . $order . '&amp;screen_num=' . $query_screen . '&amp;'); // вывод страниц
 }
 //endregion
-
 // переход к рядом лежащим файлам в папке
 $content = $dir->getList($order);
 $files = & $content['files'];
@@ -371,8 +364,7 @@ $count = count($files);
 
 if ($count > 1) {
     for ($i = 0; $i < $count; $i++) {
-        if ($file->name == $files[$i]->name)
-            $fileindex = $i;
+        if ($file->name == $files[$i]->name) $fileindex = $i;
     }
 
     if (isset($fileindex)) {
@@ -402,6 +394,5 @@ for ($i = 0; $i < count($return); $i++) {
     $doc->ret($return[$i]['runame'], '/files' . $return[$i]['path']);
 }
 
-if ($access_edit)
-    include 'inc/file_form.php';
+if ($access_edit) include 'inc/file_form.php';
 exit;

@@ -1,27 +1,20 @@
 <?php
-
 include_once '../sys/inc/start.php';
 $doc = new document(1);
 $doc->title = __('Новое сообщение');
 
 if (!isset($_GET['id_theme']) || !is_numeric($_GET['id_theme'])) {
-    if (isset($_GET['return']))
-        header('Refresh: 1; url=' . $_GET['return']);
-    else
-        header('Refresh: 1; url=./');
+    $doc->toReturn();
     $doc->err(__('Ошибка выбора темы'));
     exit;
 }
-$id_theme = (int)$_GET['id_theme'];
+$id_theme = (int) $_GET['id_theme'];
 
 $q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_write` <= ? LIMIT 1");
 $q->execute(Array($id_theme, $user->group));
 
 if (!$theme = $q->fetch()) {
-    if (isset($_GET['return']))
-        header('Refresh: 1; url=' . $_GET['return']);
-    else
-        header('Refresh: 1; url=./');
+    $doc->toReturn();
     $doc->err(__('В выбранную тему писать нельзя'));
     exit;
 }
@@ -38,7 +31,7 @@ if (!$user->is_writeable) {
 if ($can_write) {
 
     if (isset($_POST['message'])) {
-        $message = (string)$_POST['message'];
+        $message = (string) $_POST['message'];
         $users_in_message = text::nickSearch($message);
         $message = text::input_text($message);
 
@@ -48,11 +41,12 @@ if ($can_write) {
         if ($dcms->censure && $mat = is_valid::mat($message)) {
             $doc->err(__('Обнаружен мат: %', $mat));
         } elseif (!empty($af) && $af > TIME - 600 || $theme['id_last'] == $user->id && $theme['time_last'] > TIME - 10) {
-            header('Refresh: 4; url=theme.php?id=' . $theme['id'] . '&page=end&' . SID);
+            $doc->toReturn(new url('theme.php', array('id' => $theme['id'], 'page' => 'end')));
             $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id'] . '&amp;page=end');
             $doc->err(__('Сообщение уже отправлено или вы пытаетесь ответить сами себе'));
             exit;
-        } elseif ($dcms->forum_message_captcha && $user->group < 2 && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
+        } elseif ($dcms->forum_message_captcha && $user->group < 2 && (empty($_POST['captcha']) || empty($_POST['captcha_session'])
+            || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
             $doc->err(__('Проверочное число введено неверно'));
         } elseif ($message) {
             $user->balls++;
@@ -76,15 +70,32 @@ if ($can_write) {
             } else {
                 $res = $db->prepare("INSERT INTO `forum_messages` (`id_category`, `id_topic`, `id_theme`, `id_user`, `time`, `message`, `group_show`, `group_edit`)
  VALUES (?,?,?,?,?,?,?,?)");
-                $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], $user->id, TIME, $message, $theme['group_show'], $theme['group_edit']));
+                $res->execute(Array($theme['id_category'], $theme['id_topic'], $theme['id'], $user->id, TIME, $message, $theme['group_show'],
+                    $theme['group_edit']));
 
                 $id_message = $db->lastInsertId();
             }
             if (isset($_POST['add_file'])) {
-                header('Refresh: 1; url=message.files.php?id=' . $id_message . '&return=' . urlencode('theme.php?id=' . $theme['id'] . '&page=end'));
-                $doc->ret(__('Добавить файлы'), 'message.files.php?id=' . $id_message . '&amp;return=' . urlencode('theme.php?id=' . $theme['id'] . '&page=end'));
+                $doc->toReturn(new url('message.files.php',
+                    array('id' => $id_message,
+                    'return' =>
+                    new url('theme.php',
+                        array(
+                        'id' => $theme['id'],
+                        'page' => 'end'
+                        )
+                    )))
+                );
+                $doc->ret(__('Добавить файлы'),
+                    'message.files.php?id=' . $id_message . '&amp;return=' . urlencode('theme.php?id=' . $theme['id'] . '&page=end'));
             } else {
-                header('Refresh: 1; url=theme.php?id=' . $theme['id'] . '&page=end&' . SID);
+                $doc->toReturn(new url('theme.php',
+                    array(
+                    'id' => $theme['id'],
+                    'page' => 'end'
+                    )
+                    )
+                );
                 $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id'] . '&amp;page=end');
             }
 
@@ -108,25 +119,20 @@ if ($can_write) {
             $doc->msg(__('Сообщение успешно отправлено'));
             $res = $db->prepare("UPDATE `forum_themes` SET `time_last` = ?, `id_last` = ? WHERE `id` = ? LIMIT 1");
             $res->execute(Array(TIME, $user->id, $theme['id']));
-            // mysql_query("UPDATE `forum_topics` SET `time_last` = '".TIME."' WHERE `id` = '$theme[id_topic]' LIMIT 1");
             exit;
         } else {
             $doc->err(__('Сообщение пусто'));
         }
     }
 
-    $form = new form("?id_theme=$theme[id]&amp;" . passgen() . (isset($_GET['return']) ? '&amp;return=' . urlencode($_GET['return']) : null));
+    $form = new form(new url());
     $form->textarea('message', __('Сообщение'));
     $form->checkbox('add_file', __('Добавить файл'));
-    if ($dcms->forum_message_captcha && $user->group < 2)
-        $form->captcha();
+    if ($dcms->forum_message_captcha && $user->group < 2) $form->captcha();
     $form->button(__('Отправить'));
     $form->display();
 }
 
 
-if (isset($_GET['return']))
-    $doc->ret(__('В тему'), text::toValue($_GET['return']));
-else
-    $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);
-?>
+if (isset($_GET['return'])) $doc->ret(__('В тему'), text::toValue($_GET['return']));
+else $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id']);

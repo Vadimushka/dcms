@@ -118,7 +118,7 @@ if (isset($_POST ['save'])) {
 
 $doc->title = __('Редактирование раздела "%s"', $topic ['name']); // шапка страницы
 
-$form = new form("?id=$topic[id]&amp;" . passgen() . (isset($_GET ['return']) ? '&amp;return=' . urlencode($_GET ['return']) : null));
+$form = new form(new url());
 $form->text('name', __('Название'), $topic['name']);
 $form->textarea('description', __('Описание'), $topic['description']);
 

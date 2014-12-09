@@ -37,7 +37,7 @@ if (isset($_POST['save'])) {
 }
 $doc->title = __('Переименование темы %s', $theme['name']);
 
-$form = new form("?id=$theme[id]&amp;" . passgen());
+$form = new form(new url());
 $form->text('name', __('Название'), $theme['name']);
 $form->button(__('Применить'), 'save');
 $form->display();

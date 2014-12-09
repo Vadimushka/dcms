@@ -9,14 +9,12 @@ class document extends design
     public $description = '';
     public $keywords = array();
     public $last_modified = null;
-
     protected $err = array();
     protected $msg = array();
     protected $outputed = false;
     protected $actions = array();
     protected $returns = array();
     protected $tabs = array();
-
     protected $_echo_content = '';
 
     function __construct($group = 0)
@@ -32,7 +30,7 @@ class document extends design
 
     /**
      * @param $name
-     * @param $url
+     * @param string|url $url
      * @param bool $selected
      * @return document_link
      */
@@ -43,7 +41,7 @@ class document extends design
 
     /**
      * @param $name
-     * @param $url
+     * @param string|url $url
      * @return document_link
      */
     function ret($name, $url)
@@ -53,7 +51,7 @@ class document extends design
 
     /**
      * @param $name
-     * @param $url
+     * @param string|url $url
      * @return document_link
      */
     function act($name, $url)
@@ -77,6 +75,35 @@ class document extends design
     function msg($text)
     {
         return $this->msg[] = new document_message($text);
+    }
+
+    /**
+     * Переадресация на адрес, указанный в GET параметре return или в $default_url
+     * @param string $default_url
+     * @param int $timeout Время, через которое произойдет переадресация
+     */
+    function toReturn($default_url = '/', $timeout = 2)
+    {
+        if ($default_url instanceof url) {
+            $url = $default_url->getUrl();
+        } else {
+            $url = $default_url;
+        }
+
+        if (!empty($_GET['return'])) {
+            $url_return = new url($_GET['return']);
+            if ($url_return->isInternalLink()) {
+                $url = $url_return->getUrl();
+            }
+        }
+        if ($timeout) {
+            header('Refresh: ' . intval($timeout) . '; url=' . $url);
+        } else {
+            // если задержки быть не должно, то ничего на клиент не отправляем и работу скрипта прерываем
+            header('Location: ' . $url);
+            $this->outputed = true;
+            exit;
+        }
     }
 
     /**
@@ -108,16 +135,14 @@ class document extends design
         header('Cache-Control: no-store, no-cache, must-revalidate', true);
         header('Expires: ' . date('r'), true);
         if ($this->last_modified) {
-            header("Last-Modified: " . gmdate("D, d M Y H:i:s", (int)$this->last_modified) . " GMT", true);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s", (int) $this->last_modified) . " GMT", true);
         }
 
         header('X-UA-Compatible: IE=edge', true); // отключение режима совместимости в осле
         header('Content-Type: text/html; charset=utf-8', true);
 
-        $this->assign('description', $this->description ? $this->description : $this->title,
-            1); // описание страницы (meta)
-        $this->assign('keywords', $this->keywords ? implode(',', $this->keywords) : $this->title,
-            1); // ключевые слова (meta)
+        $this->assign('description', $this->description ? $this->description : $this->title, 1); // описание страницы (meta)
+        $this->assign('keywords', $this->keywords ? implode(',', $this->keywords) : $this->title, 1); // ключевые слова (meta)
 
         $this->assign('actions', $this->actions); // ссылки к действию
         $this->assign('returns', $this->returns); // ссылки для возврата
@@ -139,7 +164,6 @@ class document extends design
         } else {
             $this->display('document.tpl');
         }
-
     }
 
     /**
@@ -175,5 +199,4 @@ class document extends design
     {
         $this->output();
     }
-
 }
