@@ -7,17 +7,13 @@ $doc->title = __('Бан пользователя');
 $ank = new user(@$_GET ['id_ank']);
 
 if (!$ank->group) {
-    if (isset($_GET ['return'])) header('Refresh: 1; url=' . $_GET ['return']);
-    else header('Refresh: 1; url=/');
-
+    $doc->toReturn();
     $doc->err(__('Нет данных о пользователе'));
     exit;
 }
 
 if ($ank->group >= $user->group) {
-    if (isset($_GET ['return'])) header('Refresh: 1; url=' . $_GET ['return']);
-    else header('Refresh: 1; url=/');
-
+    $doc->toReturn();
     $doc->err(__('Недостаточно привилегий'));
     exit;
 }

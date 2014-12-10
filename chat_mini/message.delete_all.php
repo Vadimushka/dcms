@@ -12,7 +12,7 @@ if (isset($_POST['delete'])) {
 
         $db->query("TRUNCATE TABLE `chat_mini`");
         $doc->msg(__('Все сообщения успешно удалены'));
-        header('Refresh: 1; url=./?' . SID);
+        $doc->toReturn('./');
         $doc->ret(__('Вернуться'), './');
         exit;
     }

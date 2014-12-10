@@ -6,10 +6,7 @@ $doc = new document(1);
 $doc->title = __('Новая тема');
 
 if (!isset($_GET ['id_topic']) || !is_numeric($_GET ['id_topic'])) {
-    if (isset($_GET ['return']))
-        header('Refresh: 1; url=' . $_GET ['return']);
-    else
-        header('Refresh: 1; url=./');
+    $doc->toReturn();
     $doc->err(__('Ошибка выбора раздела'));
     exit();
 }
@@ -19,10 +16,7 @@ $id_topic = (int) $_GET ['id_topic'];
 $q = $db->prepare("SELECT * FROM `forum_topics` WHERE `id` = ? AND `group_write` <= ?");
 $q->execute(Array($id_topic, $user->group));
 if (!$topic = $q->fetch()) {
-    if (isset($_GET ['return']))
-        header('Refresh: 1; url=' . $_GET ['return']);
-    else
-        header('Refresh: 1; url=./');
+    $doc->toReturn();
     $doc->err(__('В выбранном разделе нельзя создавать темы'));
     exit();
 }

@@ -5,10 +5,7 @@ $doc = new document(2);
 $doc->title = __('Удаление сообщения');
 
 if (!isset($_GET ['id']) || !is_numeric($_GET ['id'])) {
-    if (isset($_GET ['return']))
-        header('Refresh: 1; url=' . $_GET ['return']);
-    else
-        header('Refresh: 1; url=./');
+    $doc->toReturn('./');
     $doc->err(__('Ошибка выбора сообщения'));
     exit();
 }
@@ -18,10 +15,7 @@ $q = $db->prepare("SELECT * FROM `chat_mini` WHERE `id` = ? LIMIT 1");
 $q->execute(Array($id_message));
 
 if (!$message = $q->fetch()) {
-    if (isset($_GET ['return']))
-        header('Refresh: 1; url=' . $_GET ['return']);
-    else
-        header('Refresh: 1; url=./');
+    $doc->toReturn('./');
     $doc->err(__('Сообщение не найдено'));
     exit();
 }
@@ -35,10 +29,7 @@ $ank = new user($message ['id_user']);
 
 $dcms->log('Мини чат', "Удаление сообщения от [url=/profile.view.php?id={$ank->id}]{$ank->login}[/url] ([when]$message[time][/when]):\n" . $message ['message']);
 
-if (isset($_GET ['return']))
-    header('Refresh: 1; url=' . $_GET ['return']);
-else
-    header('Refresh: 1; url=./?' . SID);
+$doc->toReturn('./');
 if (isset($_GET ['return']))
     $doc->ret(__('Вернуться'), text::toValue($_GET ['return']));
 else

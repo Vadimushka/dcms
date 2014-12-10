@@ -14,12 +14,7 @@ if (isset($_GET ['id_ank'])) {
 }
 
 if (!$ank->group) {
-    if (isset($_GET ['return'])) {
-        header('Refresh: 1; url=' . $_GET ['return']);
-    } else {
-        header('Refresh: 1; url=/');
-    }
-
+    $doc->toReturn();
     $doc->err(__('Не удалось загрузить данные пользователя'));
     exit();
 }
@@ -27,12 +22,7 @@ if (!$ank->group) {
 $doc->title .= ' "' . $ank->login . '"';
 
 if ($ank->group >= $user->group) {
-    if (isset($_GET ['return'])) {
-        header('Refresh: 1; url=' . $_GET ['return']);
-    } else {
-        header('Refresh: 1; url=/');
-    }
-
+    $doc->toReturn();
     $doc->err(__('Ваш статус не позволяет производить действия с данным пользователем'));
     exit();
 }

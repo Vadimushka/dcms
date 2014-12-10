@@ -5,10 +5,7 @@ $doc = new document();
 $doc->title = __('Действия');
 
 if (!isset($_GET ['id']) || !is_numeric($_GET ['id'])) {
-    if (isset($_GET ['return']))
-        header('Refresh: 1; url=' . $_GET ['return']);
-    else
-        header('Refresh: 1; url=./');
+    $doc->toReturn('./');
     $doc->err(__('Ошибка выбора сообщения'));
     exit();
 }
@@ -18,10 +15,7 @@ $q = $db->prepare("SELECT * FROM `chat_mini` WHERE `id` = ? LIMIT 1");
 $q->execute(Array($id_message));
 
 if (!$message = $q->fetch()) {
-    if (isset($_GET ['return']))
-        header('Refresh: 1; url=' . $_GET ['return']);
-    else
-        header('Refresh: 1; url=./');
+    $doc->toReturn('./');
     $doc->err(__('Сообщение не найдено'));
     exit();
 }
