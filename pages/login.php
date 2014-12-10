@@ -118,7 +118,7 @@ if ($user->group) {
 }
 
 if (isset($_GET['return'])) {
-    $doc->ret('Вернуться', text::toValue($return));
+    $doc->ret(__('Вернуться'), text::toValue($return));
 }
 
 $form = new form(new url(null, array('return' => $return)));

@@ -42,7 +42,7 @@ try{
             $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'vk',?,?,?,'1')");
             $res->execute(Array($user_data['id'], $dcms->ip_long, TIME, $dcms->browser_id));
             $_SESSION [SESSION_ID_USER] = $user_data['id'];
-            $doc->msg("Авторизация прошла успешно");
+            $doc->msg(__("Авторизация прошла успешно"));
             exit;
         }
     }
@@ -54,7 +54,7 @@ try{
         $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'vk',?,?,?,'1')");
         $res->execute(Array($user_data['id'], $dcms->ip_long, TIME, $dcms->browser_id));
         $_SESSION [SESSION_ID_USER] = $user_data['id'];
-        $doc->msg("Авторизация прошла успешно");
+        $doc->msg(__("Авторизация прошла успешно"));
         exit;
     } else if (!$dcms->vk_reg_enable) {
         throw new Exception(__('Регистрация через vk.com запрещена'));
@@ -75,7 +75,7 @@ VALUES (:reg_date, :login, :pass, :sex, :reg_mail, :vk_id, :vk_first_name, :vk_l
 
     $id = $db->lastInsertId();
     $_SESSION [SESSION_ID_USER] = $id;
-    $doc->msg("Регистрация прошла успешно");
+    $doc->msg(__("Регистрация прошла успешно"));
 }catch (Exception $e){
     $doc->err(__('Не удалось авторизоваться: %s', $e->getMessage()));
     exit;
