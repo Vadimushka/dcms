@@ -20,7 +20,7 @@ if (!empty($_GET['menu'])) {
         exit;
     }
     $doc->title = __('Меню "%s" - редактирование', $menu);
-    $m_obj = new menu($menu);
+    $m_obj = new menu_ini($menu);
 
     if (!empty($_GET['item'])) {
         $item_name = (string) $_GET['item'];
@@ -256,7 +256,7 @@ if (!empty($_GET['menu'])) {
         } else {
             $doc->err(__('Ошибка при сохранении файла'));
         }
-        $m_obj = new menu($menu);
+        $m_obj = new menu_ini($menu);
     }
 
 

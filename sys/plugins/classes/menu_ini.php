@@ -3,7 +3,7 @@
 /**
  * UI. Меню /sys/ini/menu.*.ini
  */
-class menu {
+class menu_ini {
 
     public $icons = true; // отображение иконок меню    
     public $menu_arr = array(); // загруженный INI файл меню в массив

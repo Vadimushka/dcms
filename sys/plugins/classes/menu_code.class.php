@@ -4,7 +4,7 @@
  * Список возможных нарушений
  * TODO: переписать. Список нарушений будет динамически добавляться. Хранение перенести в базу.
  */
-class menu_code extends menu {
+class menu_code extends menu_ini {
 
     function __construct($menu_name) {
         parent::__construct($menu_name);

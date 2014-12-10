@@ -4,7 +4,7 @@ include_once '../sys/inc/start.php';
 $doc = new document(2);
 $doc->title = __('Действия');
 
-$user_actions = new menu('user_actions');
+$user_actions = new menu_ini('user_actions');
 
 if (isset($_GET['id']))
     $ank = new user($_GET['id']);

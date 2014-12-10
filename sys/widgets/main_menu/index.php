@@ -1,3 +1,3 @@
 <?php
-$menu = new menu('main');
+$menu = new menu_ini('main');
 $menu->display();
