@@ -27,9 +27,8 @@ if (!$dcms->vk_app_id || !$dcms->vk_app_secret){
     exit;
 }
 
-$vk = new vk($dcms->vk_app_id, $dcms->vk_app_secret);
-
 try{
+    $vk = new vk($dcms->vk_app_id, $dcms->vk_app_secret);
     $vk->getAccessToken('http://' . $_SERVER['HTTP_HOST'] . '/vk.php', $_GET['code']);
     $vk_user = $vk->getCurrentUser();
 

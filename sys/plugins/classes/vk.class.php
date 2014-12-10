@@ -18,6 +18,10 @@ class vk
     {
         $this->_app_id = $app_id;
         $this->_app_secret = $app_secret;
+
+        if (!$this->_app_id || !$this->_app_secret){
+            throw new Exception(__('Для работы с API необходимо указать ID приложения и Защищенный ключ'));
+        }
     }
 
     /**

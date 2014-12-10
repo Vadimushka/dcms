@@ -287,7 +287,7 @@ if ($step == 0) {
     $form->display();
 
 
-    if ($dcms->vk_auth_enable) {
+    if ($dcms->vk_auth_enable && $dcms->vk_app_id && $dcms->vk_app_secret) {
         $vk = new vk($dcms->vk_app_id, $dcms->vk_app_secret);
         $form = new form($vk->getAuthorizationUri('http://' . $_SERVER['HTTP_HOST'] . '/vk.php', 'email'));
         $form->button(__('Вход через vk.com'));
