@@ -82,7 +82,7 @@ if (!empty($_POST['vote'])) {
                 $dcms->log('Форум',
                     'Изменение параметров голосования в теме [url=/forum/theme.php?id=' . $theme['id'] . ']' . $theme['name'] . '[/url]');
                 $res = $db->prepare("UPDATE `forum_vote` SET " . implode(', ', $set) . ", `name` = ? WHERE `id` = ? LIMIT 1");
-                $res->execuete(Array($vote, $vote_a['id']));
+                $res->execute(Array($vote, $vote_a['id']));
                 $doc->msg(__('Параметры успешно изменены'));
             }
 
