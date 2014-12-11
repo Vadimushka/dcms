@@ -1,21 +1,29 @@
 <?
 $classes = array('post');
-if ($highlight)
+if ($highlight) {
     $classes[] = 'highlight';
-if ($image)
+}
+if ($image) {
     $classes[] = 'image';
-if ($icon || $icon_class)
+}
+if ($icon || $icon_class) {
     $classes[] = 'icon';
-if ($time)
+}
+if ($time) {
     $classes[] = 'time';
-if ($actions)
+}
+if ($actions) {
     $classes[] = 'actions';
-if ($counter)
+}
+if ($counter) {
     $classes[] = 'counter';
-if ($bottom)
+}
+if ($bottom) {
     $classes[] = 'bottom';
-if ($content)
+}
+if ($content) {
     $classes[] = 'content';
+}
 ?>
 <div id="<?= $id ?>"
      class="<?= implode(' ', $classes) ?>"
@@ -31,9 +39,10 @@ if ($content)
                 <img src="<?= $icon ?>" alt="">
             <? } ?>
         </span>
-        <span class="post_title"><?= $title ?></span>
+        <a class="post_title" <?php if ($url) { ?>href="<?= $url ?>"<?php } ?>><?= $title ?></a>
         <span
-            class="post_actions"><?= $this->section($actions, '<a href="{url}"><img src="{icon}" alt="" /></a>') ?></span>
+            class="post_actions"><?= $this->section($actions,
+                '<a href="{url}"><img src="{icon}" alt="" /></a>') ?></span>
         <span class="post_counter"><?= $counter ?></span>
         <span class="post_time"><?= $time ?></span>
     </div>

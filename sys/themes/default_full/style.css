@@ -469,7 +469,13 @@ html, body, #main {
     padding: 2px;
 }
 
-.post.highlight .post_title {
+.post a.post_title,
+.post.highlight a.post_title{
+    text-decoration: none;
+    color: inherit;
+}
+
+.post.highlight .post_title{
     font-weight: bold;
     padding: 2px;
 }

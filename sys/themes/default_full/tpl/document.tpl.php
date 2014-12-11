@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/sys/themes/.common/icons.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/animate.css" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?9"/>
+    <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?10"/>
     <noscript>
         <meta http-equiv="refresh" content="0; URL=/pages/bad_browser.html"/>
     </noscript>
