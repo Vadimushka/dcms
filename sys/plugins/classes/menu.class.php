@@ -192,7 +192,7 @@ class menu
     {
         $child_items = $this->getItems($id);
         foreach ($child_items as $item) {
-            $this->removeItem($item['id']);
+            $this->removeItemById($item['id']);
         }
         foreach ($this->_items as $key => $item) {
             if ($item['id'] === $id) {
