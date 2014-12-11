@@ -41,7 +41,7 @@ if (!isset($step)) {
     $step = $dcms->reg_with_rules ? 0 : 1;
 }
 $login = &$_SESSION['reg']['login'];
-$step_name = isset($_GET['rules']) ? $_GET['rules'] : null;
+$step_name = isset($_GET['step']) ? $_GET['step'] : null;
 // принимаем правила
 if ($step == 0 && $step_name === 'rules') {
     if ($_POST['ok']) {
