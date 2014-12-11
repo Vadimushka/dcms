@@ -40,7 +40,7 @@ class menu
                 }
             }
 
-            if (!is_int($item['id'])) {
+            if (!is_numeric($item['id'])) {
                 throw new Exception(__('Параметр %s должен быть %s', 'id', 'integer'));
             }
 
@@ -82,13 +82,13 @@ class menu
 
     private function _saveByParent($id_parent = null, $level = 0)
     {
-        if ($level > 10){
+        if ($level > 10) {
             throw new Exception(__("Слишком большая вложенность меню"));
         }
 
         $items = $this->getItems($id_parent);
         $db = db::me();
-        $res = $db->prepare("INSERT INTO `menu` (`menu_key`, `id_parent`, `position`, `title`, `url`, `data`) VALUES (:menu_key, :id_parent, :position, :title, :url, :data)");
+        $res = $db->prepare("INSERT INTO `menu` (`menu_key`, `id_parent`, `position`, `title`, `url`, `data`) VALUES (:menu_key, :id_parent, :position, :title, :url, :dt)");
         $position = 0;
         foreach ($items AS $item) {
             $res->execute(array(
@@ -97,13 +97,21 @@ class menu
                 ':position' => ++$position,
                 ':title' => $item['title'],
                 ':url' => $item['url'],
-                ':data' => array_key_exists('data', $item) ? $item['data'] : null
+                ':dt' => array_key_exists('data', $item) ? $item['data'] : null
             ));
             $id = $db->lastInsertId();
             $this->_setItemId($item['id'], $id);
             $this->setItemPosition($id, $position);
             $this->_saveByParent($id, $level + 1);
         }
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getMenuKey()
+    {
+        return $this->_menu_key;
     }
 
     private function _position_cmp($item1, $item2)
@@ -132,10 +140,11 @@ class menu
             throw new Exception(__('Ключ меню не задан'));
         }
 
-        $db = db::me();
-
-        $res = $db->prepare("DELETE FROM `menu` WHERE `menu_key` = :menu_key");
-        $res->execute(array(':menu_key' => $this->_menu_key));
+        if ($this->_menu_key) {
+            $db = db::me();
+            $res = $db->prepare("DELETE FROM `menu` WHERE `menu_key` = :menu_key");
+            $res->execute(array(':menu_key' => $this->_menu_key));
+        }
 
         if ($key && is_scalar($key)) {
             $this->_menu_key = $key;
@@ -152,7 +161,7 @@ class menu
      * @return int Идентификатор нового пункта
      * @throws Exception
      */
-    public function addItem($url, $title, $position = 0, $id_parent = null)
+    public function addItem($title, $url, $position = 0, $id_parent = null)
     {
         if (!is_null($id_parent) && !$this->getItemById($id_parent)) {
             throw new Exception(__("Родитель с id %s не найден", $id_parent));

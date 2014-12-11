@@ -3,6 +3,13 @@
 abstract class menus
 {
 
+    static public function exists($menu_key){
+        $db = db::me();
+        $res = $db->prepare('SELECT COUNT(*) FROM `menu` WHERE `menu_key` = :menu_key LIMIT 1');
+        $res->execute(array(':menu_key', $menu_key));
+        return $res->fetchColumn() !== 0;
+    }
+
     /**
      * Получение всех доступных меню
      * @return menu[]
