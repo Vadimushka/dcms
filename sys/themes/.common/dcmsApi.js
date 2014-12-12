@@ -76,30 +76,32 @@
 })(jQuery);
 
 // создаем модуль для AngularJs, который проксирует запросы через jQuery
-(function (angular) {
-    if (typeof angular == "undefined")
-        return;
-    angular.module('dcmsApi', [])
-        .factory('dcmsApi', function ($q) {
-            var api = $().dcmsApi;
-            return {
-                /**
-                 * Запрос к API DCMS
-                 * @param {string} module
-                 * @param {string} method
-                 * @param {*} params
-                 * @returns {Function|promise}
-                 */
-                request: function (module, method, params) {
-                    var deferred = $q.defer();
-                    api.request.call(this, module, method, params,
-                        function (data) {
-                            deferred.resolve(data);
-                        }, function () {
-                            deferred.reject();
-                        });
-                    return deferred.promise;
-                }
-            };
-        });
-})(angular);
+if (window.angular){
+    (function (angular) {
+        if (typeof angular == "undefined")
+            return;
+        angular.module('dcmsApi', [])
+            .factory('dcmsApi', function ($q) {
+                var api = $().dcmsApi;
+                return {
+                    /**
+                     * Запрос к API DCMS
+                     * @param {string} module
+                     * @param {string} method
+                     * @param {*} params
+                     * @returns {Function|promise}
+                     */
+                    request: function (module, method, params) {
+                        var deferred = $q.defer();
+                        api.request.call(this, module, method, params,
+                            function (data) {
+                                deferred.resolve(data);
+                            }, function () {
+                                deferred.reject();
+                            });
+                        return deferred.promise;
+                    }
+                };
+            });
+    })(window.angular);
+}
