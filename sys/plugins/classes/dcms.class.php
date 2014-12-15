@@ -45,6 +45,7 @@
  * @property string theme_light
  * @property string theme_mobile
  * @property string theme_full
+ * @property bool check_domain_work
  *
  */
 class dcms
