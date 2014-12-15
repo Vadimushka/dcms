@@ -40,10 +40,9 @@ class log_of_referers {
             $res->execute(Array($this->url['host'], TIME));
             return DB::me()->lastInsertId();
         }
-        $id = $q['id'];
         $res = DB::me()->prepare("UPDATE `log_of_referers_sites` SET `time` = ?, `count` = `count` + 1 WHERE `id` = ? LIMIT 1");
-        $res->execute(Array(TIME, $id));
-        return $id;
+        $res->execute(Array(TIME, $row['id']));
+        return $row['id'];
     }
 
     private function add_to_log($id) {
