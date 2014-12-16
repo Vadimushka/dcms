@@ -2,16 +2,15 @@
 /**
  * @var $this document
  */
-?><!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= $lang->xml_lang ?>">
+?><!DOCTYPE html>
+<html>
 <head>
     <title><?= $title ?></title>
     <link rel="shortcut icon" href="/favicon.ico"/>
     <link rel="stylesheet" href="/sys/themes/.common/system.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/icons.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
-    <link rel="stylesheet" href="<?= $path ?>/style.css?5" type="text/css"/>
-    <meta http-equiv="content-Type" content="application/xhtml+xml; charset=utf-8"/>
+    <link rel="stylesheet" href="<?= $path ?>/style.css?6" type="text/css"/>
     <meta name="viewport" content="minimum-scale=1.0,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <meta name="generator" content="DCMS <?= $dcms->version ?>"/>
     <? if ($description) { ?>
@@ -40,7 +39,7 @@
     </script>
     <script src="/sys/themes/.common/jquery-2.1.1.min.js"></script>
     <script src="/sys/themes/.common/dcmsApi.js"></script>
-    <script src="<?= $path ?>/js.js?5"></script>
+    <script src="<?= $path ?>/js.js?6"></script>
 </head>
 <body class="theme_light">
 <audio id="audio_notify" preload="auto">

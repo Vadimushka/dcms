@@ -36,6 +36,16 @@ function InputInsert(node, Open, Close, CursorEnd) {
     return false;
 }
 
+$(function () {
+    var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
+    for (var i = 0; i < prefixes.length; i++) {
+        if (document.createElement('div').style[prefixes[i]] !== undefined) {
+            $(document.body).addClass('transformSupport');
+            break;
+        }
+    }
+});
+
 
 $(function () {
     $(document).on('click', '.DCMS_thumb_down', function (event) {

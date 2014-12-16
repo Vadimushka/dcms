@@ -2,15 +2,6 @@ html, body {
     height: 100%;
 }
 
-#container_overflow {
-    background-color: rgba(255, 255, 255, 0);
-    -webkit-transition: background-color 0.5s ease-in-out;
-    -moz-transition: background-color 0.5s ease-in-out;
-    -o-transition: background-color 0.5s ease-in-out;
-    -ms-transition: background-color 0.5s ease-in-out;
-    transition: background-color 0.5s ease-in-out;
-}
-
 #container_overflow.menu {
     display: block;
     position: fixed;
@@ -18,7 +9,6 @@ html, body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.5);
 }
 
 #container_menu {
@@ -36,13 +26,30 @@ html, body {
     -o-transition: all 0.5s ease-in-out;
     -ms-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out;
+    min-width: 200px;
+    max-width: 300px;
+    -moz-transform: translate(-100%); /* Для Firefox */
+    -ms-transform: translate(-100%); /* Для IE */
+    -webkit-transform: translate(-100%); /* Для Safari, Chrome, iOS */
+    -o-transform: translate(-100%); /* Для Opera */
+    transform: translate(-100%);
 }
 
 #container_menu.menu {
     width: 50%;
-    min-width: 200px;
-    max-width: 300px;
     box-shadow: 0 1px 14px -5px #000;
+}
+
+.transformSupport #container_menu {
+    width: 50%;
+}
+
+.transformSupport #container_menu.menu {
+    -moz-transform: translate(0); /* Для Firefox */
+    -ms-transform: translate(0); /* Для IE */
+    -webkit-transform: translate(0); /* Для Safari, Chrome, iOS */
+    -o-transform: translate(0); /* Для Opera */
+    transform: translate(0);
 }
 
 #container_menu > a, #container_menu > span {
@@ -69,6 +76,15 @@ html, body {
 
 #container_content {
     position: relative;
+}
+
+#container_content.menu{
+    opacity: 0.5;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
 }
 
 #title {
