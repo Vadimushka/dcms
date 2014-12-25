@@ -2,6 +2,12 @@ html, body, #main {
     height: 100%;
 }
 
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
 .ie9 *, .ie8 * {
     border-radius: 0 !important;
 }
@@ -561,11 +567,9 @@ html, body, #main {
 }
 
 .post.image .post_image {
-    position: absolute;
+    float: left;
     display: inline-block;
     width: 50px;
-    left: 3px;
-    top: 3px;
     overflow: hidden;
     border-radius: 2px;
     border: 1px solid #BBB;

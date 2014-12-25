@@ -1,5 +1,5 @@
 <?
-$classes = array('post');
+$classes = array('post', 'clearfix');
 if ($highlight) {
     $classes[] = 'highlight';
 }
