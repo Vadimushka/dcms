@@ -35,7 +35,7 @@ if (isset($_GET['check_domain_work'])) {
  * переадресация на безопасное подключение
  */
 if ($dcms->https_only && (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on')) {
-    header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF']);
+    header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
     exit;
 }
 
@@ -53,7 +53,7 @@ if ($dcms->subdomain_theme_redirect && empty($subdomain_theme_redirect_disable))
         if ($dcms->$subdomain_enable) {
             // проверяем, включен ли поддомен для данного типа браузера
             // переадресовываем на соответствующий поддомен
-            header('Location: ' . (empty($_SERVER['HTTPS']) ? 'http' : 'https') . '://' . $dcms->$subdomain_var . '.' . $dcms->subdomain_main . $_SERVER ['REQUEST_URI']);
+            header('Location: //' . $dcms->$subdomain_var . '.' . $dcms->subdomain_main . $_SERVER ['REQUEST_URI']);
             exit;
         }
     }
