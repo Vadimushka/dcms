@@ -13,6 +13,7 @@ if (isset($_POST ['save'])) {
     $dcms->align_html = (int) !empty($_POST ['align_html']);
     $dcms->new_time_as_date = (int) !empty($_POST ['new_time_as_date']);
     $dcms->censure = (int) !empty($_POST ['censure']);
+    $dcms->https_only = (int) !empty($_POST ['https_only']);
 
     foreach ($browser_types as $b_types) {
         $key = 'theme_' . $b_types;
@@ -59,6 +60,7 @@ $form->checkbox('new_time_as_date', __('Новые файлы (темы и т.д
 $form->checkbox('debug', __('Режим разработчика') . ' ***', $dcms->debug);
 $form->checkbox('align_html', __('Выравнивание HTML кода'), $dcms->align_html);
 $form->checkbox('censure', __('Антимат') . ' ****', $dcms->censure);
+$form->checkbox('https_only', __('Принудительное использование %s', 'https'), $dcms->https_only);
 $form->text('copyright', __('Копирайт'), $dcms->copyright);
 
 $form->bbcode('* - ' . __('Будет заключен в квадратные скобки'));

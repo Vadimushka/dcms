@@ -32,6 +32,14 @@ if (isset($_GET['check_domain_work'])) {
 }
 
 /**
+ * переадресация на безопасное подключение
+ */
+if ($dcms->https_only && (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on')) {
+    header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF']);
+    exit;
+}
+
+/**
  * переадресация на поддомен, соответствующий типу браузера
  */
 if ($dcms->subdomain_theme_redirect && empty($subdomain_theme_redirect_disable)) {
