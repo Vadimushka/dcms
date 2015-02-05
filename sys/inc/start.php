@@ -32,11 +32,20 @@ if (isset($_GET['check_domain_work'])) {
 }
 
 /**
- * переадресация на безопасное подключение
+ * принудительное включение HTTPS соединения
  */
-if ($dcms->https_only && (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on')) {
-    header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
-    exit;
+if ($dcms->https_only) {
+    if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') &&
+        (empty($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] !== 'https') &&
+        (empty($_SERVER['HTTP_X_FORWARDED_SSL']) || $_SERVER['HTTP_X_FORWARDED_SSL'] !== 'on')
+    ) {
+        // принудительная переадресация на https
+        header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
+        exit;
+    } else {
+        // если пользователь уже зашел по https, то говорим браузеру, чтоб он больше не обращался по http
+        header("Strict-Transport-Security: max-age=31536000"); // https://ru.wikipedia.org/wiki/HSTS
+    }
 }
 
 /**
