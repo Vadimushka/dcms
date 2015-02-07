@@ -4,17 +4,15 @@ defined('DCMS') or die;
 global $user;
 $db = DB::me();
 if (false === ($new_posts = cache_counters::get('forum.new_posts.' . $user->group))) {
-    $res = $db->prepare("SELECT COUNT(DISTINCT(`msg`.`id_theme`))
-FROM `forum_messages` AS `msg`
-LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
+    $res = $db->prepare("SELECT COUNT(*)
+FROM `forum_themes` AS `th`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`group_show` <= ?
-AND `tp`.`group_show` <= ?
-AND `cat`.`group_show` <= ?
-AND `msg`.`group_show` <= ?
-AND `msg`.`time` > ?");
-    $res->execute(Array($user->group, $user->group, $user->group, $user->group, NEW_TIME));
+WHERE `th`.`group_show` <= :g
+AND `tp`.`group_show` <= :g
+AND `cat`.`group_show` <= :g
+AND `th`.`time_last` > :t");
+    $res->execute(Array(':g' => $user->group, ':t' => NEW_TIME));
     $new_posts = $res->fetchColumn();
     cache_counters::set('forum.new_posts.' . $user->group, $new_posts, 60);
 }
@@ -25,11 +23,11 @@ if (false === ($new_themes = cache_counters::get('forum.new_themes.' . $user->gr
 FROM `forum_themes` AS `th`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`group_show` <= ?
-AND `tp`.`group_show` <= ?
-AND `cat`.`group_show` <= ?
-AND `th`.`time_create` > ?");
-    $res->execute(Array($user->group, $user->group, $user->group, NEW_TIME));
+WHERE `th`.`group_show` <= :g
+AND `tp`.`group_show` <= :g
+AND `cat`.`group_show` <= :g
+AND `th`.`time_create` > :t");
+    $res->execute(Array(':g' => $user->group, ':t' => NEW_TIME));
     $new_themes = $res->fetchColumn();
     cache_counters::set('forum.new_themes.' . $user->group, $new_themes, 60);
 }
