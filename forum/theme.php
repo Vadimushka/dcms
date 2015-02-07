@@ -10,12 +10,14 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit;
 }
 $id_theme = (int)$_GET['id'];
-$q = $db->prepare("SELECT `forum_themes`.* , `forum_categories`.`name` AS `category_name` , `forum_topics`.`name` AS `topic_name`
-FROM `forum_themes`
-LEFT JOIN `forum_categories` ON `forum_categories`.`id` = `forum_themes`.`id_category`
-LEFT JOIN `forum_topics` ON `forum_topics`.`id` = `forum_themes`.`id_topic`
-WHERE `forum_themes`.`id` = ? AND `forum_themes`.`group_show` <= ? AND `forum_topics`.`group_show` <= ? AND `forum_categories`.`group_show` <= ?");
-$q->execute(Array($id_theme, $user->group, $user->group, $user->group));
+$q = $db->prepare("SELECT `th`.* ,
+ `cat`.`name` AS `category_name` ,
+  `tp`.`name` AS `topic_name`
+FROM `forum_themes` AS `th`
+JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
+JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
+WHERE `th`.`id` = :id_theme AND `th`.`group_show` <= :gr AND `tp`.`group_show` <= :gr AND `cat`.`group_show` <= :gr");
+$q->execute(Array(':id_theme' => $id_theme, ':gr' => current_user::getInstance()->id));
 if (!$theme = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна'));
