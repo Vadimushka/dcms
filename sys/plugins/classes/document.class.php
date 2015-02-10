@@ -112,8 +112,10 @@ class document extends design
      */
     function access_denied($err)
     {
-        if (isset($_GET['return']) && $url_return = new url($_GET['return']) && $url_return->isInternalLink()) {
-            header('Refresh: 2; url=' . $_GET['return']);
+        if (isset($_GET['return']) && $url_return = new url($_GET['return'])) {
+            if ($url_return->isInternalLink()) {
+                header('Refresh: 2; url=' . $_GET['return']);
+            }
         }
         $this->err($err);
         $this->output();
