@@ -17,7 +17,7 @@ FROM `forum_themes` AS `th`
 JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
 JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
 WHERE `th`.`id` = :id_theme AND `th`.`group_show` <= :gr AND `tp`.`group_show` <= :gr AND `cat`.`group_show` <= :gr");
-$q->execute(Array(':id_theme' => $id_theme, ':gr' => current_user::getInstance()->id));
+$q->execute(Array(':id_theme' => $id_theme, ':gr' => current_user::getInstance()->group));
 if (!$theme = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна'));
