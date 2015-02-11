@@ -30,7 +30,7 @@ ORDER BY `th`.`time_last` DESC");
 $count = count($themes_all);
 $themes_for_view = array();
 for ($i = 0; $i < $count; $i++) {
-    if ($posts_all[$i]['group_show'] > current_user::getInstance()->group) {
+    if ($themes_all[$i]['group_show'] > current_user::getInstance()->group) {
         continue;
     }
     $themes_for_view[] = $themes_all[$i];
