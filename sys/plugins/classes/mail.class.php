@@ -23,7 +23,8 @@ abstract class mail
         $limit = $all ? '' : ' LIMIT 10';
         $q = DB::me()->query("SELECT * FROM `mail_queue` " . $limit);
         $res = DB::me()->prepare("DELETE FROM `mail_queue` WHERE `id` = ? LIMIT 1");
-        while ($queue = $q->fetch()) {
+        $started_time = time();
+        while ($queue = $q->fetch() && $started_time > time() - 2) {
             if (function_exists('set_time_limit')) {
                 @set_time_limit(30);
             }
@@ -65,8 +66,8 @@ abstract class mail
             set_time_limit(min(600, max(30, count($toi) / 2)));
         }
         $res = DB::me()->prepare("INSERT INTO `mail_queue` (`to`, `title`, `content`) VALUES (?, ?, ?)");
-        foreach ($toi as $to) {
-            $res->execute(Array($to, $title, $content));
+        foreach ($toi as $k => $to) {
+            $res->execute(Array($to, $title, is_array($content) ? $content[$k] : $content));
         }
 
 
