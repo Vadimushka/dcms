@@ -32,7 +32,7 @@ if (isset($_POST['send'])) {
 
         $mailes = array();
 
-        $q = $db->query("SELECT `reg_mail`, `email` FROM `users` ORDER BY `id`")->execute();
+        $q = $db->query("SELECT `reg_mail`, `email` FROM `users` ORDER BY `id`");
 
         while ($um = $q->fetch()) {
             if ($um['reg_mail']) {
