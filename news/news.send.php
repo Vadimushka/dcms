@@ -27,7 +27,7 @@ if (isset($_POST['send'])) {
         $mail_unsubscribe = array();
         $q = $db->query("SELECT * FROM `mail_unsubscribe`");
         while ($mu = $q->fetch()) {
-            $mail_unsubscribe[$mu['email']] = (bool) $mu['code'];
+            $mail_unsubscribe[$mu['email']] = $mu['code'];
         }
 
         $mailes = array();
