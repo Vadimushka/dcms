@@ -20,11 +20,12 @@ abstract class mail
         // остальные запросы пусть пропускают отправку
         cache_events::set('mail.send_is_process', true, 60);
 
-        $limit = $all ? '' : ' LIMIT 10';
+        $limit = $all ? '' : ' LIMIT 100';
         $q = DB::me()->query("SELECT * FROM `mail_queue` " . $limit);
         $res = DB::me()->prepare("DELETE FROM `mail_queue` WHERE `id` = ? LIMIT 1");
+
         $started_time = time();
-        while ($queue = $q->fetch() && $started_time > time() - 2) {
+        while ($started_time > time() - 2 && $queue = $q->fetch()) {
             if (function_exists('set_time_limit')) {
                 @set_time_limit(30);
             }
