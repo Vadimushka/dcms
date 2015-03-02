@@ -1185,7 +1185,7 @@ class bbcode
 
     function youtube_2html($elem)
     {
-        return '<div class="DCMS_youtube"><iframe src="http://www.youtube.com/embed/' . text::toValue($elem['val'][0]['str']) . '" frameborder="0" allowfullscreen></iframe></div>';
+        return '<div class="DCMS_youtube"><iframe src="//www.youtube.com/embed/' . text::toValue($elem['val'][0]['str']) . '" frameborder="0" allowfullscreen></iframe></div>';
     }
 
     function vk_video_2html($elem)
@@ -1198,7 +1198,7 @@ class bbcode
             }
             $params[] = $key . '=' . $value;
         }
-        return '<div class="DCMS_vk_video"><iframe src="http://vk.com/video_ext.php?' . text::toValue(join('&',
+        return '<div class="DCMS_vk_video"><iframe src="//vk.com/video_ext.php?' . text::toValue(join('&',
                 $params)) . '"  frameborder="0"></iframe></div>';
     }
 
