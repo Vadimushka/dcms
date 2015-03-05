@@ -1339,7 +1339,7 @@ class bbcode
 
         if (preg_match('#://#', $aturl)) {
             // внешняя ссылка
-            $url = 'http://' . $_SERVER ['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($aturl);
+            $url = '//' . $_SERVER ['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($aturl);
             $new_window = @$dcms->browser_type == 'full' ? ' target="_blank"' : '';
             if ($parse_url = @parse_url($aturl)) {
                 if (!empty($parse_url['host']) && @$dcms->subdomain_main && strpos($parse_url['host'],
@@ -1349,7 +1349,7 @@ class bbcode
                     if (@$dcms->subdomain_replace_url) {
                         // вырезаем поддомен из локальных ссылок
                         $aturl = str_replace($parse_url['host'], $dcms->subdomain_main, $aturl);
-                        $url = 'http://' . $_SERVER ['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($aturl);
+                        $url = 'https?://' . $_SERVER ['HTTP_HOST'] . '/link.ext.php?url=' . urlencode($aturl);
                     }
 
                     $new_window = '';
@@ -1359,7 +1359,7 @@ class bbcode
             return '<a' . $new_window . ' href="' . $url . '">' . text::toValue($text) . '</a>';
         } else {
             // внутренняя 
-            $url = preg_replace('#^http://' . preg_quote($_SERVER ['HTTP_HOST']) . '(/|$)#ui', '/', $aturl);
+            $url = preg_replace('#^https?://' . preg_quote($_SERVER ['HTTP_HOST']) . '(/|$)#ui', '/', $aturl);
             return '<a href="' . text::toValue($url) . '">' . text::toValue($text) . '</a>';
         }
     }
