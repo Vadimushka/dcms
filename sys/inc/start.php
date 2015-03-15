@@ -31,21 +31,18 @@ if (isset($_GET['check_domain_work'])) {
     exit;
 }
 
-/**
- * принудительное включение HTTPS соединения
- */
-if ($dcms->https_only) {
-    if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') &&
-        (empty($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] !== 'https') &&
-        (empty($_SERVER['HTTP_X_FORWARDED_SSL']) || $_SERVER['HTTP_X_FORWARDED_SSL'] !== 'on')
-    ) {
+if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') &&
+    (empty($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] !== 'https') &&
+    (empty($_SERVER['HTTP_X_FORWARDED_SSL']) || $_SERVER['HTTP_X_FORWARDED_SSL'] !== 'on')
+) {
+    if ($dcms->https_only) {
         // принудительная переадресация на https
         header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
         exit;
-    } else {
-        // если пользователь уже зашел по https, то говорим браузеру, чтоб он больше не обращался по http
-        header("Strict-Transport-Security: max-age=31536000"); // https://ru.wikipedia.org/wiki/HSTS
     }
+} else if ($dcms->https_hsts) {
+    // если пользователь уже зашел по https, то говорим браузеру, чтоб он больше не обращался по http
+    header("Strict-Transport-Security: max-age=31536000"); // https://ru.wikipedia.org/wiki/HSTS
 }
 
 /**

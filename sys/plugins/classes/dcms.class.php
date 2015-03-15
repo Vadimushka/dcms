@@ -47,6 +47,7 @@
  * @property string theme_full
  * @property bool check_domain_work
  * @property bool https_only принудительное использование безопасного подключения
+ * @property bool https_hsts использование HSTS
  *
  */
 class dcms
