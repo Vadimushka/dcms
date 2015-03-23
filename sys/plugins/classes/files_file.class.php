@@ -29,7 +29,6 @@ class files_file
     protected $_screens = array(); // скриншоты (имена файлов)
     protected $_need_save = false; // необходимость пересохранения сведений о файле
     var $ratings = array();
-    protected $db;
 
     /**
      * files_file::__construct()
@@ -38,7 +37,6 @@ class files_file
      * @param string $filename
      */
     function __construct($path_dir_abs, $filename) {
-        $this->db = DB::me();
         $this->ratings = array(
             -2 => __('Ужасный файл'),
             -1 => __('Плохой файл'),
@@ -230,7 +228,7 @@ class files_file
     public function rating_my($set = false)
     {
         global $user;
-        $q = $this->db->prepare("SELECT `rating` FROM `files_rating` WHERE `id_file` = ? AND `id_user` = ?");
+        $q = db::me()->prepare("SELECT `rating` FROM `files_rating` WHERE `id_file` = ? AND `id_user` = ?");
         $q->execute(Array($this->id, $user->id));
         if (!$my_rating = $q->fetch()) {
             $my_rating = 0;
@@ -240,17 +238,17 @@ class files_file
             if ($set && $my_rating) {
                 // Изменяем запись
                 $my_rating = (int) $set;
-                $res = $this->db->prepare("UPDATE `files_rating` SET `rating` = ?, `time` = ? WHERE `id_file` = ? AND `id_user` = ? LIMIT 1");
+                $res = db::me()->prepare("UPDATE `files_rating` SET `rating` = ?, `time` = ? WHERE `id_file` = ? AND `id_user` = ? LIMIT 1");
                 $res->execute(Array($my_rating, TIME, $this->id, $user->id));
             } elseif ($set) {
                 // Вносим запись
                 $my_rating = (int) $set;
-                $res = $this->db->prepare("INSERT INTO `files_rating` (`id_file`, `id_user`, `time`, `rating`) VALUES (?, ?, ?, ?)");
+                $res = db::me()->prepare("INSERT INTO `files_rating` (`id_file`, `id_user`, `time`, `rating`) VALUES (?, ?, ?, ?)");
                 $res->execute(Array($this->id, $this->id, TIME, $my_rating));
             } elseif ($my_rating) {
                 // Удаляем запись
                 $my_rating = 0;
-                $res = $this->db->prepare("DELETE FROM `files_rating` WHERE `id_file` = ? AND `id_user` = ?");
+                $res = db::me()->prepare("DELETE FROM `files_rating` WHERE `id_file` = ? AND `id_user` = ?");
                 $res->execute(Array($this->id, $user->id));
             }
 
@@ -264,7 +262,7 @@ class files_file
      * Обновление рейтинга
      */
     public function rating_update() {
-        $q = $this->db->prepare("SELECT AVG(`rating`) AS `rating`, COUNT(`id_user`) AS `rating_count` FROM `files_rating` WHERE `id_file` = ?");
+        $q = db::me()->prepare("SELECT AVG(`rating`) AS `rating`, COUNT(`id_user`) AS `rating_count` FROM `files_rating` WHERE `id_file` = ?");
         $q->execute(Array($this->_data['id']));
         $data = $q->fetch();
         $this->rating = $data['rating'];
@@ -459,17 +457,17 @@ class files_file
         if ($this->name{0} == '.')
             return false;
 
-        $res = $this->db->prepare("INSERT INTO `files_cache` (`path_file_rel`, `time_add`, `group_show`, `runame`)
+        $res = db::me()->prepare("INSERT INTO `files_cache` (`path_file_rel`, `time_add`, `group_show`, `runame`)
 VALUES (?, ?, ?, ?)");
         $res->execute(Array(convert::to_utf8($this->path_file_rel), intval($this->time_add), intval($this->group_show), $this->runame));
-        return (bool) $this->id = $this->db->lastInsertId();
+        return (bool) $this->id = db::me()->lastInsertId();
     }
 
     /**
      * обновляем сведения о файле в базе данных
      */
     protected function _baseUpdate() {
-        $res = $this->db->prepare("UPDATE `files_cache`
+        $res = db::me()->prepare("UPDATE `files_cache`
 SET `path_file_rel` = ?,
 `time_add` = ?,
 `group_show` = ?,
@@ -485,13 +483,13 @@ WHERE `id` = ? LIMIT 1");
     protected function _baseDelete()
     {
         // удаление файла из кэша базы
-        $res=$this->db->prepare("DELETE FROM `files_cache` WHERE `id` = ? LIMIT 1");
+        $res=db::me()->prepare("DELETE FROM `files_cache` WHERE `id` = ? LIMIT 1");
         $res->execute(Array(intval($this->id)));
         // удаление комментов к файлу
-        $res=$this->db->prepare("DELETE FROM `files_comments` WHERE `id_file` = ?");
+        $res=db::me()->prepare("DELETE FROM `files_comments` WHERE `id_file` = ?");
         $res->execute(Array(intval($this->id)));
         // удаление рейтингов файла
-        $res=$this->db->prepare("DELETE FROM `files_rating` WHERE `id_file` = ?");
+        $res=db::me()->prepare("DELETE FROM `files_rating` WHERE `id_file` = ?");
         $res->execute(Array(intval($this->id)));
         return true;
     }
