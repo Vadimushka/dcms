@@ -219,12 +219,12 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
             $q->execute(Array($dcms->ip_long, $dcms->browser_name));
             if ($q->fetch()) {
                 // повторные переходы гостя
-                $res = $db->prepare("UPDATE `guest_online` SET `time_last` = ?, `request` = ?, `conversions` = `conversions` + 1 WHERE  `ip_long` = ? AND `browser` = ? LIMIT 1");
-                $res->execute(Array(TIME, $_SERVER ['REQUEST_URI'], $dcms->ip_long, $dcms->browser_name));
+                $res = $db->prepare("UPDATE `guest_online` SET `time_last` = ?, `request` = ?, `is_robot` = ?, `conversions` = `conversions` + 1 WHERE  `ip_long` = ? AND `browser` = ? LIMIT 1");
+                $res->execute(Array(TIME, $_SERVER ['REQUEST_URI'], browser::getIsRobot() ? '1' : '0', $dcms->ip_long, $dcms->browser_name));
             } else {
                 // новый гость
-                $res = $db->prepare("INSERT INTO `guest_online` (`ip_long`, `browser`, `time_last`, `time_start`, `request` ) VALUES (?, ?, ?, ?, ?)");
-                $res->execute(Array($dcms->ip_long, $dcms->browser_name, TIME, TIME, $_SERVER ['REQUEST_URI']));
+                $res = $db->prepare("INSERT INTO `guest_online` (`ip_long`, `browser`, `time_last`, `time_start`, `request`, `is_robot` ) VALUES (?, ?, ?, ?, ?, ?)");
+                $res->execute(Array($dcms->ip_long, $dcms->browser_name, TIME, TIME, $_SERVER ['REQUEST_URI'], browser::getIsRobot() ? '1' : '0'));
             }
         }
     }

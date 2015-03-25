@@ -37,6 +37,16 @@ abstract class browser
     }
 
     /**
+     * Возвращает true, если страницу запросил (поисковый) робот
+     * @return string
+     */
+    static function getIsRobot()
+    {
+        $info = self::getBrowserInfo();
+        return $info['isRobot'];
+    }
+
+    /**
      * Возвращает информацию о IP в формате IP_LONG
      * @staticvar boolean|string $ipLong
      * @return string
@@ -68,7 +78,8 @@ abstract class browser
         $info = array(
             'name' => 'Нет данных',
             'type' => 'light',
-            'ie' => false
+            'ie' => false,
+            'isRobot' => false
         );
 
         // определение названия браузера
@@ -330,6 +341,24 @@ abstract class browser
                 // $info['name'] = 'Windows Phone 7';
                 $info['type'] = 'mobile';
             }
+        }
+
+        if (preg_match('#Googlebot/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
+            $info['name'] = 'Googlebot ' . $v[1];
+            $info['type'] = 'full';
+            $info['isRobot'] = true;
+        }
+
+        if (preg_match('#Googlebot-Image/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
+            $info['name'] = 'Googlebot-Image ' . $v[1];
+            $info['type'] = 'full';
+            $info['isRobot'] = true;
+        }
+
+        if (preg_match('#Yandex([a-z]+)/([0-9]+\.[0-9]+)#i', $user_agent, $v)) {
+            $info['name'] = 'Yandex' . $v[1] . ' ' . $v[2];
+            $info['type'] = 'full';
+            $info['isRobot'] = true;
         }
 
         return $info;
