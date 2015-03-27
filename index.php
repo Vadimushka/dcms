@@ -11,3 +11,5 @@ foreach ($widgets as $widget_name => $show) {
     $widget = new widget(H . '/sys/widgets/' . $widget_name); // открываем
     $widget->display(); // отображаем
 }
+
+// test by Sanek_OS9
