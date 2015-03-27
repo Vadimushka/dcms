@@ -1,7 +1,7 @@
 <?php
 
 include_once '../sys/inc/start.php';
-$doc = new document();
+$doc = new document(2);
 $doc->title = __('Изменение порядка категорий');
 
 if (isset($_GET['sortable'])) {
