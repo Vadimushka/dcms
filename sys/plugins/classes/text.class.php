@@ -134,6 +134,7 @@ abstract class text {
 
         $bbcode = new bbcode($str);
 
+        $bbcode->mnemonics['[info]'] = '<img src="/sys/images/icons/info.png" alt="info" />';
         $bbcode->mnemonics['[add]'] = '<img src="/sys/images/icons/bb.add.png" alt="add" />';
         $bbcode->mnemonics['[del]'] = '<img src="/sys/images/icons/bb.del.png" alt="del" />';
         $bbcode->mnemonics['[fix]'] = '<img src="/sys/images/icons/bb.fix.png" alt="fix" />';

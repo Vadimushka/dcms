@@ -359,6 +359,21 @@ if ($ank->description) {
 }
 //endregion
 
+//region Список логинов
+if ($ank->last_time_login){
+    $q = $db->query("SELECT `login` FROM `login_history` WHERE `id_user` = '$ank->id' ORDER BY `time` DESC") ;
+    $res = $q->fetchAll() ;
+    $logins = array() ;
+    foreach($res AS $v){
+        $logins[] = $v['login'] ;
+    }
+    $post = $listing->post() ;
+    $post->title = __('История логинов') ;
+    $post->post = implode(', ', $logins) ;
+    $post->url = '/profile.logins.php?id=' . $ank->id ;
+}
+//endregion
+
 //region Последний визит
 $post = $listing->post();
 $post->title = __('Последний визит');
