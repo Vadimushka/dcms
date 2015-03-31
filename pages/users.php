@@ -5,12 +5,6 @@ $doc = new document();
 $doc->title = __('Пользователи');
 
 switch (@$_GET['order']) {
-    case 'donate_rub':
-        $order = 'donate_rub';
-        $sort = 'DESC';
-        $where = "WHERE `donate_rub` > '0'";
-        $doc->title = __('Пожертвования');
-        break;
     case 'group':
         $order = 'group';
         $sort = 'DESC';
@@ -60,7 +54,6 @@ $ord[] = array("?order=login&amp;page={$pages->this_page}" . (isset($search) ? '
 $ord[] = array("?order=rating&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('Рейтинг'), $order == 'rating');
 $ord[] = array("?order=balls&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('Баллы'), $order == 'balls');
 $ord[] = array("?order=group&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('Статус'), $order == 'group');
-$ord[] = array("?order=donate_rub&amp;page={$pages->this_page}" . (isset($search) ? '&amp;search=' . urlencode($search) : ''), __('Пожертвования'), $order == 'donate_rub');
 $or = new design();
 $or->assign('order', $ord);
 $or->display('design.order.tpl');
@@ -90,10 +83,7 @@ if ($arr = $q->fetchAll()) {
             case 'balls':
                 $post->content[] = '[b]' . __('Баллы') . ': ' . ((int)$p_user->balls) . '[/b]';
                 break;
-            case 'donate_rub':
-                $post->content[] = '[b]' . __('Сумма пожертвований: %s руб.', $p_user->donate_rub) . '[/b]';
-                break;
-        }
+         }
 
         $post->content[] = '[small]' . __('Дата регистрации') . ': ' . date('d-m-Y', $p_user->reg_date) . '[/small]';
         $post->content[] = '[small]' . __('Последний визит') . ': ' . misc::when($p_user->last_visit) . '[/small]';
@@ -106,6 +96,6 @@ $form->text('search', __('Ник или его часть'), @$search, false);
 $form->button(__('Поиск'));
 $form->display();
 
-$listing->display($order == 'donate_rub' ? __('Нет пользователей, пожертвовавших денег на проект') : __('Нет пользователей'));
+$listing->display(__('Нет пользователей'));
 
 $pages->display("?order=$order&amp;" . (isset($search) ? 'search=' . urlencode($search) . '&amp;' : ''));
