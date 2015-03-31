@@ -171,6 +171,17 @@ if ($ank->group > 1) {
 }
 //endregion
 
+//region Пожертвования
+if ($ank->donate_rub) {
+    $post = $listing->post();
+    $post->highlight = true;
+    $post->icon('donate');
+    $post->title = __('Пожертвования');
+    $post->content = __('%s руб.', $ank->donate_rub);
+    $post->url = '/users.php?order=donate_rub';
+}
+//endregion
+
 //region Имя
 if ($ank->realname) {
     $post = $listing->post();
