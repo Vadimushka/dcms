@@ -22,7 +22,6 @@
  * @property int count_visit Счетчик посещений сайта (авторизаций по cookie, post)
  * @property int is_writeable Флаг, означающий что пользователю разрешено оставлять сообщения на сайте
  * @property mixed nick ник пользователя
- * @property float donate_rub Сумма пожертвований
  * @property int ank_m_r Месяц рождения
  * @property int ank_d_r День рождения
  * @property mixed reg_mail
@@ -270,10 +269,7 @@ class user
 
         $ret = array('<span class="' . ($this->online ? 'DCMS_nick_on' : 'DCMS_nick_off') . '">' . $login . '</span>');
 
-        if ($this->donate_rub)
-            $ret[] = '<span class="DCMS_nick_donate"></span>';
-
-        if ($this->ank_m_r && $this->ank_d_r){
+         if ($this->ank_m_r && $this->ank_d_r){
             $today_date = date('m-d', mktime(0, 0, 0, date("m"), date("d"), 0));
             $birthday_date = date('m-d', mktime(0, 0, 0, $this->ank_m_r, $this->ank_d_r, 0));
             if ($today_date == $birthday_date)
