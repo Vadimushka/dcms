@@ -10,7 +10,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $id_message = (int) $_GET['id'];
-$q = $db->prepare("SELECT * FROM `forum_messages` WHERE `id` = ?");
+$q = $db->prepare("SELECT `forum_messages`.*, `forum_themes`.`id_moderator` AS `id_moderator` FROM `forum_messages` INNER JOIN `forum_themes` ON `forum_themes`.`id` = `forum_messages`.`id_theme` WHERE `forum_messages`.`id` = ? LIMIT 1");
 $q->execute(Array($id_message));
 
 if (!$message = $q->fetch()) {
@@ -24,7 +24,7 @@ $autor = new user((int) $message['id_user']);
 $access_edit = false;
 $edit_time = $message['time'] - TIME + 600;
 
-if ($user->group > $autor->group || $user->group == groups::max()) {
+if ($user->group > $autor->group || $user->group == groups::max() || $user->id == $message['id_moderator']) {
     $access_edit = true;
 } elseif ($user->id == $autor->id && $edit_time > 0) {
     $access_edit = true;

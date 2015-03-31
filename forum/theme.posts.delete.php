@@ -11,8 +11,8 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id_theme = (int)$_GET['id'];
 
-$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND `group_edit` <= ?");
-$q->execute(Array($id_theme, $user->group));
+$q = $db->prepare("SELECT * FROM `forum_themes` WHERE `id` = ? AND (`group_edit` <= ? || `id_moderator` = ?)");
+$q->execute(Array($id_theme, $user->group, $user->id));
 if (!$theme = $q->fetch()) {
     header('Refresh: 1; url=./');
     $doc->err(__('Тема не доступна для редактирования'));

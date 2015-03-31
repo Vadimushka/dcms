@@ -90,7 +90,7 @@ foreach ($messages AS $message) {
         $post->action('quote', "message.php?id_message=$message[id]&amp;quote"); // цитирование
     }
 
-    if ($user->group > $ank->group || $user->group == groups::max()) {
+    if ($user->group > $ank->group || $user->id == $theme['id_moderator'] || $user->group == groups::max()) {
         if ($theme['group_show'] <= 1) {
             if ($message['group_show'] <= 1) {
                 $post->action('hide', "message.edit.php?id=$message[id]&amp;return=" . URL . "&amp;act=hide&amp;" . passgen()); // скрытие
@@ -116,7 +116,7 @@ foreach ($messages AS $message) {
     }
 
     $post->title = $ank->nick();
-    $post->icon($ank->icon());
+    $post->icon($ank->id == $theme['id_moderator'] ? 'admin.1' : $ank->icon());
 
     $doc->last_modified = $message['time'];
     $post->time = misc::when($message['time']);
@@ -177,7 +177,7 @@ if ($theme['group_write'] <= $user->group) {
     $doc->act(__('Написать сообщение'), 'message.new.php?id_theme=' . $theme['id'] . "&amp;return=" . URL);
 }
 
-if ($user->group >= 2 || $theme['group_edit'] <= $user->group) {
+if ($user->group >= 2 || $theme['group_edit'] <= $user->group || $user->id == $theme['id_moderator']) {
     $doc->act(__('Действия'), 'theme.actions.php?id=' . $theme['id']);
 }
 
