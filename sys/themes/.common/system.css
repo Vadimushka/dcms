@@ -40,16 +40,11 @@ td {
 
 }
 
-.DCMS_nick_donate,
 .DCMS_nick_birthday {
     display: inline-block;
     width: 16px;
     height: 16px;
     margin-left: 3px;
-}
-
-.DCMS_nick_donate {
-    background-image: url("/sys/images/icons/donate.png");
 }
 
 .DCMS_nick_birthday {
