@@ -106,7 +106,7 @@ $form->button(__('Удалить выделенные темы'), 'delete');
 $form->display();
 
 if ($show == 'part')
-    $pages->display('?id=' . $theme['id'] . '&amp;show=part&amp;');
+    $pages->display('?id=' . $topic['id'] . '&amp;show=part&amp;');
 
 $doc->ret(__('В раздел'), 'topic.php?id=' . $topic['id']);
 $doc->ret(__('В категорию'), 'category.php?id=' . $topic['id_category']);
