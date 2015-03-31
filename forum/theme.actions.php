@@ -1,7 +1,7 @@
 <?php
 
 include_once '../sys/inc/start.php';
-$doc = new document(2);
+$doc = new document(1);
 $doc->title = __('Форум');
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -53,6 +53,12 @@ if ($theme['group_edit'] <= $user->group) {
     $post->title = __('Разрешения');
     $post->icon('security');
 }
+if ($theme['group_edit'] <= $user->group && $user->group >= 5) {
+    $post = $listing->post();
+    $post->url = 'theme.moderator.php?id=' . $theme['id'];
+    $post->title = __('Назначить модератора');
+    $post->icon('admin.1');
+}
 if (!$theme['id_vote'] && $theme['group_write'] <= $user->group && $user->group >= 2) {
     $post = $listing->post();
     $post->url = 'vote.new.php?id_theme=' . $theme['id'];
@@ -65,7 +71,7 @@ if ($theme['id_vote'] && $theme['group_write'] <= $user->group && $user->group >
     $post->title = __('Изменить голосование');
     $post->icon('vote');
 }
-if ($theme['group_edit'] <= $user->group && $user->group >= 2) {
+if ($theme['group_edit'] <= $user->group && $user->group >= 2 || $user->id == $theme['id_moderator']) {
     $post = $listing->post();
     $post->url = 'theme.posts.delete.php?id=' . $theme['id'];
     $post->title = __('Удаление сообщений');
