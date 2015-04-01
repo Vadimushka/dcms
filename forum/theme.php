@@ -90,7 +90,7 @@ foreach ($messages AS $message) {
         $post->action('quote', "message.php?id_message=$message[id]&amp;quote"); // цитирование
     }
 
-    if ($user->group > $ank->group || $user->id == $theme['id_moderator'] || $user->group == groups::max()) {
+    if ($user->group > $ank->group || ($user->id && $user->id == $theme['id_moderator']) || $user->group == groups::max()) {
         if ($theme['group_show'] <= 1) {
             if ($message['group_show'] <= 1) {
                 $post->action('hide', "message.edit.php?id=$message[id]&amp;return=" . URL . "&amp;act=hide&amp;" . passgen()); // скрытие
