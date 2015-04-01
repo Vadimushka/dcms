@@ -177,7 +177,7 @@ if ($theme['group_write'] <= $user->group) {
     $doc->act(__('Написать сообщение'), 'message.new.php?id_theme=' . $theme['id'] . "&amp;return=" . URL);
 }
 
-if ($user->group >= 2 || $theme['group_edit'] <= $user->group || $user->id == $theme['id_moderator']) {
+if ($user->group >= 2 || $theme['group_edit'] <= $user->group || ($user->id && $user->id == $theme['id_moderator'])) {
     $doc->act(__('Действия'), 'theme.actions.php?id=' . $theme['id']);
 }
 
