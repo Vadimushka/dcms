@@ -18,11 +18,11 @@ if (false === ($themes_all = cache::get($cache_id))) {
         `tp`.`group_write` AS `topic_group_write`,
             GREATEST(`th`.`group_show`, `tp`.`group_show`, `cat`.`group_show`) AS `group_show`
 FROM `forum_themes` AS `th`
-JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
+INNER JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic` AND `tp`.`theme_view` = :v
 JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
 WHERE `th`.`time_last` > :t
 ORDER BY `th`.`time_last` DESC");
-    $q->execute(Array(':t' => TIME - 3600 * 24 * 7));
+    $q->execute(Array(':t' => TIME - 3600 * 24 * 7, ':v' => 1));
 
     $themes_all = $q->fetchAll();
 }

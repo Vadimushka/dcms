@@ -17,11 +17,11 @@ if (false === ($themes_all = cache::get($cache_id))) {
             `tp`.`group_write` AS `topic_group_write`,
             GREATEST(`th`.`group_show`, `tp`.`group_show`, `cat`.`group_show`) AS `group_show`
 FROM `forum_themes` AS `th`
-JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
+INNER JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic` AND `tp`.`theme_view` = :v
 JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
 WHERE `th`.`time_create` > :t
 ORDER BY `th`.`id` DESC");
-    $q->execute(array(':t' => TIME - 3600 * 24 * 7)); // новые темы за неделю
+    $q->execute(array(':t' => TIME - 3600 * 24 * 7, ':v' => 1)); // новые темы за неделю
 
     $themes_all = $q->fetchAll();
     cache::set($cache_id, $themes_all, 20);

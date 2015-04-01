@@ -6,13 +6,13 @@ $db = DB::me();
 if (false === ($new_posts = cache_counters::get('forum.new_posts.' . $user->group))) {
     $res = $db->prepare("SELECT COUNT(*)
 FROM `forum_themes` AS `th`
-LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
+INNER JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic` AND `tp`.`theme_view` = :v
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
 WHERE `th`.`group_show` <= :g
 AND `tp`.`group_show` <= :g
 AND `cat`.`group_show` <= :g
 AND `th`.`time_last` > :t");
-    $res->execute(Array(':g' => $user->group, ':t' => NEW_TIME));
+    $res->execute(Array(':v' => 1, ':g' => $user->group, ':t' => NEW_TIME));
     $new_posts = $res->fetchColumn();
     cache_counters::set('forum.new_posts.' . $user->group, $new_posts, 60);
 }
@@ -21,13 +21,13 @@ AND `th`.`time_last` > :t");
 if (false === ($new_themes = cache_counters::get('forum.new_themes.' . $user->group))) {
     $res = $db->prepare("SELECT COUNT(*)
 FROM `forum_themes` AS `th`
-LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
+INNER JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic` AND `tp`.`theme_view` = :v
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
 WHERE `th`.`group_show` <= :g
 AND `tp`.`group_show` <= :g
 AND `cat`.`group_show` <= :g
 AND `th`.`time_create` > :t");
-    $res->execute(Array(':g' => $user->group, ':t' => NEW_TIME));
+    $res->execute(Array(':v' => 1, ':g' => $user->group, ':t' => NEW_TIME));
     $new_themes = $res->fetchColumn();
     cache_counters::set('forum.new_themes.' . $user->group, $new_themes, 60);
 }

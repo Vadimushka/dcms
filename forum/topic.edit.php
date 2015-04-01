@@ -25,6 +25,15 @@ if (isset($_POST ['save'])) {
     if (isset($_POST ['name'])) {
         $name = text::for_name($_POST ['name']);
         $description = text::input_text($_POST ['description']);
+        $theme_view = isset($_POST['theme_view']) ? 1 : 0 ;
+        
+        if($theme_view != $topic['theme_view']){
+            $dcms->log('Форум', 'Изменение отображения тем раздела "' . $topic ['name'] . '" в списке новых и обновленных') ;
+            $topic['theme_view'] = $theme_view ;
+            $res = $db->prepare("UPDATE `forum_topics` SET `theme_view` = ? WHERE `id` = ? LIMIT 1") ;
+            $res->execute(Array($theme_view, $topic['id'])) ;
+            $doc->msg(__('Отображение тем успешно изменено')) ;
+        }
 
         if ($name && $name != $topic ['name']) {
             $dcms->log('Форум', 'Изменение названия раздела "' . $topic ['name'] . '" на [url=/forum/topic.php?id=' . $topic ['id'] . ']"' . $name . '"[/url]');
@@ -145,6 +154,7 @@ foreach ($groups as $type => $value)
     $options [] = array($type, $value ['name'], $type == $topic ['group_edit']);
 $form->select('group_edit', __('Изменение параметров'), $options);
 
+$form->checkbox('theme_view', __('Отображать темы в списке новых и обновленыых тем'), $topic['theme_view']) ;
 $form->bbcode('* ' . __('Будьте внимательнее при установке доступа выше своего.'));
 $form->button(__('Применить'), 'save');
 $form->display();
