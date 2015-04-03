@@ -15,7 +15,7 @@ if ($access_write) {
             if ($files_ok = $dir->filesAdd(array($_FILES ['file'] ['tmp_name'] => $_FILES ['file'] ['name']))) {
                 $files_ok [$_FILES ['file'] ['tmp_name']]->id_user = $user->id;
                 $files_ok [$_FILES ['file'] ['tmp_name']]->group_edit = max($user->group, $dir->group_write, 2);
-
+                $user->balls += $dcms->add_balls_upload_file ;
                 $doc->msg(__('Файл "%s" успешно добавлен', $_FILES ['file'] ['name']));
                 // записываем свое действие в общий лог
                 if ($dir->group_write > 1)

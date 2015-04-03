@@ -271,7 +271,7 @@ if ($can_write && isset($_POST['send']) && isset($_POST['message']) && isset($_P
     } elseif ($dcms->censure && $mat = is_valid::mat($message)) {
         $doc->err(__('Обнаружен мат: %s', $mat));
     } elseif ($message) {
-        $user->balls++;
+        $user->balls += $dcms->add_balls_comment_file ;
         $res = $db->prepare("INSERT INTO `files_comments` (`id_file`, `id_user`, `time`, `text`) VALUES (?,?,?,?)");
         $res->execute(Array($file->id, $user->id, TIME, $message));
         $doc->msg(__('Комментарий успешно оставлен'));

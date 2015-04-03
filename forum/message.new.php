@@ -49,7 +49,7 @@ if ($can_write) {
             || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
             $doc->err(__('Проверочное число введено неверно'));
         } elseif ($message) {
-            $user->balls++;
+            $user->balls += $dcms->add_balls_message_forum ;
             $af = TIME;
 
             $post_update = false;

@@ -27,7 +27,7 @@ if ($can_write && $pages->this_page == 1) {
         } elseif ($dcms->censure && $mat = is_valid::mat($message)) {
             $doc->err(__('Обнаружен мат: %s', $mat));
         } elseif ($message) {
-            $user->balls++;
+            $user->balls += $dcms->add_balls_chat ;
             $res = $db->prepare("INSERT INTO `chat_mini` (`id_user`, `time`, `message`) VALUES (?, ?, ?)");
             $res->execute(Array($user->id, TIME, $message));
             header('Refresh: 1; url=?' . passgen() . '&' . SID);

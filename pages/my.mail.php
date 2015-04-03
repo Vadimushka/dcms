@@ -56,7 +56,7 @@ if (isset($_GET ['id'])) {
                 $doc->form_value('token', antiflood::getToken('mail'));
             }
 
-
+            $user->balls += $dcms->add_balls_mail ;
             $doc->msg(__('Сообщение успешно отправлено'));
             header('Refresh: 1; url=?id=' . $id_kont);
             exit();

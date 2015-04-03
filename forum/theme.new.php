@@ -56,7 +56,7 @@ if ($can_write && isset($_POST ['message']) && isset($_POST ['name'])) {
     elseif ($dcms->forum_theme_captcha && $user->group < 2 && (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session']))) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($message && $name) {
-        $user->balls++;
+        $user->balls += $dcms->add_balls_create_theme ;
         $res = $db->prepare("UPDATE `forum_topics` SET `time_last` = ? WHERE `id` = ? LIMIT 1");
         $res->execute(Array(TIME, $id_topic));
         $res = $db->prepare("INSERT INTO `forum_themes` (`id_category`, `id_topic`,  `name`, `id_autor`, `time_create`, `id_last`, `time_last`, `group_show`, `group_write`, `group_edit`) VALUES (?,?,?,?,?,?,?,?,?,?)");
