@@ -73,7 +73,65 @@ if (!empty($_GET['smile']) && isset($smiles_a[$_GET['smile']])) {
     exit;
 }
 
-
+if(isset($_GET['add'])){
+    /**
+     * Выгрузка смайла
+     */
+    if(isset($_POST['upload'])){
+        if($_FILES['file']['error'])
+            $doc->err(__('Ошибка при загрузке')) ;
+        elseif(!$_FILES['file']['size']){
+            $doc->err(__('Содержимое файла пусто')) ;
+        }else{
+            $smile = @imagecreatefromgif($_FILES['file']['tmp_name']) ;
+            if(!$smile){
+                $doc->err(__('Не верный формат')) ;
+            }elseif(file_exists(H . '/sys/images/smiles/' . $_FILES['file']['name'])){
+                $doc->err(__('Такой смайл уже существует')) ;
+            }elseif(move_uploaded_file($_FILES['file']['tmp_name'], H . '/sys/images/smiles/' . $_FILES['file']['name'])){
+                $name = explode('.', text::for_filename($_FILES['file']['name'])) ;
+                $doc->msg(__('Смайл "%s" успешно добавлен', $_FILES['file']['name'])) ;
+                header('Refresh: 1; ?smile=' . $name[0]) ;
+                exit ;
+            }
+        }
+    }
+    /**
+     * Импорт смайла
+     */
+    if(isset($_POST['import'])){
+        $url = text::input_text($_POST['url']) ;
+        $purl = parse_url($url) ;
+        $smile = @imagecreatefromgif($url) ;
+        if(!$smile){
+            $doc->err(__('Не верный формат')) ;
+        }elseif(empty($purl['path'])){
+            $doc->err(__('Путь к файлу не распознан')) ;
+        }elseif(!$fname = basename($purl['path'])){
+            $doc->err(__('Не удалось получить имя файла из пути')) ;
+        }elseif(file_exists(H . '/sys/images/smiles/' . text::for_filename($fname))){
+            $doc->err(__('Такой смайл уже существует')) ;
+        }elseif(copy($url, H . '/sys/images/smiles/' . text::for_filename($fname))){
+            $name = explode('.', text::for_filename($fname)) ;
+            $doc->msg(__('Смайл "%s" успешно добавлен', text::for_filename($fname))) ;
+            header('Refresh: 1; ?smile=' . $name[0]) ;
+            exit ;
+        }
+    }
+       
+    $doc->title = __('Добавление смайла') ;
+    
+    $form = new form('?add&amp;' . passgen()) ;
+    $form->file('file', __('Смайл (.gif)')) ;
+    $form->text('url', __('URL')) ;
+    $form->button(__('Выгрузить'), 'upload', false) ;
+    $form->button(__('Импортировать'), 'import') ;
+    $form->display() ;
+    
+    $doc->ret(__('Смайлы'), '?');
+    $doc->ret(__('Админка'), './');
+    exit ;
+}
 $listing = new listing();
 foreach ($smiles_a as $name => $path) {
     $post = $listing->post();
@@ -82,5 +140,5 @@ foreach ($smiles_a as $name => $path) {
     $post->content = __('Варианты') . ': ' . implode(', ', array_keys($smiles, $name));
 }
 $listing->display(__('Смайлы отсутствуют'));
-
+$doc->act(__('Добавить'), '?add') ;
 $doc->ret(__('Админка'), './');
