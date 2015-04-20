@@ -23,8 +23,9 @@ if(!empty($_GET['delete']) && isset($smiles_a[$_GET['delete']])){
         $doc->err(__('Смайл %s не найден', $sm. '.gif')) ;
     }elseif(!ini::save(H . '/sys/ini/smiles.ini', $smiles)) {
         $doc->err(__('Нет прав на запись в файл %s', 'smiles.ini')) ;
+    }else{
+        $doc->msg(__('Смайл "%s" успешно удален', $sm)) ;
     }
-    $doc->msg(__('Смайл "%s" успешно удален', $sm)) ;
 }
 if (!empty($_GET['smile']) && isset($smiles_a[$_GET['smile']])) {
     $sm = $_GET['smile'];
