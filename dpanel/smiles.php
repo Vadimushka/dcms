@@ -13,7 +13,19 @@ foreach ($smiles_gl as $path) {
     preg_match('#/([^/]+)\.gif$#', $path, $m);
     $smiles_a[$m[1]] = $path;
 }
-
+if(!empty($_GET['delete']) && isset($smiles_a[$_GET['delete']])){
+    $sm = $_GET['delete'] ;
+    $phrases = array_keys($smiles, $sm) ;
+    foreach($phrases as $phrase){
+        unset($smiles[$phrase]) ;
+    }
+    if(!unlink(H . '/sys/images/smiles/' . $sm . '.gif')){
+        $doc->err(__('Смайл %s не найден', $sm. '.gif')) ;
+    }elseif(!ini::save(H . '/sys/ini/smiles.ini', $smiles)) {
+        $doc->err(__('Нет прав на запись в файл %s', 'smiles.ini')) ;
+    }
+    $doc->msg(__('Смайл "%s" успешно удален', $sm)) ;
+}
 if (!empty($_GET['smile']) && isset($smiles_a[$_GET['smile']])) {
     $sm = $_GET['smile'];
 
@@ -138,6 +150,7 @@ foreach ($smiles_a as $name => $path) {
     $post->image = '/sys/images/smiles/' . $name . '.gif';
     $post->setUrl(new url(null, array('smile' => $name)));
     $post->content = __('Варианты') . ': ' . implode(', ', array_keys($smiles, $name));
+    $post->action('delete', '?delete=' . $name) ;
 }
 $listing->display(__('Смайлы отсутствуют'));
 $doc->act(__('Добавить'), '?add') ;
