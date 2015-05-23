@@ -47,7 +47,7 @@ if (!empty($_GET['smile']) && isset($smiles_a[$_GET['smile']])) {
     }
 
     if (!empty($_POST['phrase'])) {
-        $phrase = text::toValue($_POST['phrase']);
+        $phrase = text::toValue(preg_replace('#(^\.)|[^a-z0-9а-я_\-\.]+#ui', '', $_POST['phrase'])) ;
         if ($phrase) {
             if ($phrase == 'null' || $phrase == 'yes' || $phrase == 'no' || $phrase == 'true' || $phrase == 'false')
                     $doc->err(__('Запрещено использовать данную фразу'));
