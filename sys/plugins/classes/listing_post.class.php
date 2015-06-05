@@ -11,7 +11,7 @@ class listing_post extends ui
     public $url = '';
     public $icon = false;
     public $icon_class = ''; // класс иконки в спрайте (sys/themes/.common/icons.css)
-    public $counter = 0;
+    public $counter = false;
     public $time = '';
     public $image = '';
     public $title = '';
