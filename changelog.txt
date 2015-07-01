@@ -10,3 +10,5 @@
 [add] Добавлена возможность смены ника пользователем ([url=http://dcms.su/profile.view.php?id=174]Sanek_OS9[/url])
 [add] Добавлена возможность назначать модератора темы форума ([url=http://dcms.su/profile.view.php?id=174]Sanek_OS9[/url])
 [add] Для разделов форума добавлена опция скрытия темы в списке новых и обновленыых тем  ([url=http://dcms.su/profile.view.php?id=174]Sanek_OS9[/url])
+[fix] Теперь звук уведомлений в двух форматах [mp3+ogg] (браузер сам выберет какой воспроизводить)
+[del] Удалён файл, создающий неиспользуемую таблицу (/sys/preinstall/base.create.languages.ini)
