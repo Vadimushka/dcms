@@ -160,7 +160,7 @@ if ($ank->group > 1) {
     $q->execute(Array($ank->id));
     if ($row = $q->fetch()) {
         $adm = new user($row['id_adm']);
-        $post->content = __('Назначил' . ($adm->sex ? '' : 'а')) . ' ' . __($adm->group_name) . ' "' . $adm->nick . '"';
+        $post->content = __('Назначил' . ($adm->sex ? '' : 'а')) . ' ' . $adm->group_name . ' "' . $adm->nick . '"';
 
     }
 } elseif ($ank->is_vip) {
