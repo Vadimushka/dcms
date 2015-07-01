@@ -43,7 +43,8 @@
 </head>
 <body class="theme_light">
 <audio id="audio_notify" preload="auto">
-    <source src="/sys/themes/.common/notify.mp3"/>
+    <source src="/sys/themes/.common/notify.mp3" />
+    <source src="/sys/themes/.common/notify.ogg" />
 </audio>
 <div id="container_content">
     <h1 id='title' class="gradient_blue">

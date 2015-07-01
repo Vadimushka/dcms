@@ -88,7 +88,8 @@
 </head>
 <body class="theme_light_full theme_light" ng-controller="DcmsCtrl">
 <audio id="audio_notify" preload="auto" class="ng-hide">
-    <source src="/sys/themes/.common/notify.mp3"/>
+    <source src="/sys/themes/.common/notify.mp3" />
+    <source src="/sys/themes/.common/notify.ogg" />
 </audio>
 <div id="main">
     <div id="top_part">
