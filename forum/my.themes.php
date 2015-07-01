@@ -14,12 +14,13 @@ FROM `forum_messages` AS `msg`
 LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`id_autor` = ?
-AND `th`.`group_show` <= ?
-AND `tp`.`group_show` <= ?
-AND `cat`.`group_show` <= ?
-AND `msg`.`group_show` <= ?");
-$res->execute(Array($user->id, $user->group, $user->group, $user->group, $user->group));
+WHERE `th`.`id_autor` = :aid
+AND `th`.`group_show` <= :ugr
+AND `tp`.`group_show` <= :ugr
+AND `cat`.`group_show` <= :ugr
+AND `msg`.`group_show` <= :ugr");
+$res->execute(Array(':aid' => $ank->id,
+                    ':ugr' => $user->group));
 $pages = new pages;
 $pages->posts = $res->fetchColumn();
 
@@ -33,14 +34,15 @@ FROM `forum_messages` AS `msg`
 LEFT JOIN `forum_themes` AS `th` ON `th`.`id` = `msg`.`id_theme`
 LEFT JOIN `forum_topics` AS `tp` ON `tp`.`id` = `th`.`id_topic`
 LEFT JOIN `forum_categories` AS `cat` ON `cat`.`id` = `th`.`id_category`
-WHERE `th`.`id_autor` = ?
-AND `th`.`group_show` <= ?
-AND `tp`.`group_show` <= ?
-AND `cat`.`group_show` <= ?
-AND `msg`.`group_show` <= ?
+WHERE `th`.`id_autor` = :aid
+AND `th`.`group_show` <= :ugr
+AND `tp`.`group_show` <= :ugr
+AND `cat`.`group_show` <= :ugr
+AND `msg`.`group_show` <= :ugr
 GROUP BY `msg`.`id_theme`
 ORDER BY MAX(`msg`.`time`) DESC LIMIT ".$pages->limit);
-$q->execute(Array($user->id, $user->group, $user->group, $user->group, $user->group));
+$q->execute(Array(':aid' => $ank->id,
+                  ':ugr' => $user->group));
 
 $listing = new listing();
 if ($arr = $q->fetchAll()) {
@@ -52,9 +54,8 @@ if ($arr = $q->fetchAll()) {
         $post->title = text::toValue($themes['name']);
         $post->counter = $themes['count'];
         $post->url = 'theme.php?id=' . $themes['id'] . '&amp;page=end';
-        $autor = new user($themes['id_autor']);
         $last_msg = new user($themes['id_last']);
-        $post->content .= ($autor->id != $last_msg->id ? $autor->nick . '/' . $last_msg->nick : $autor->nick);
+        $post->content .= ($ank->id != $last_msg->id ? $ank->nick . '/' . $last_msg->nick : $ank->nick);
         $post->content .= text::toOutput("\n[url=category.php?id=$themes[id_category]]" . $themes['category_name'] . "[/url] > [url=topic.php?id=$themes[id_topic]]" . $themes['topic_name'] . "[/url]");
         $post->bottom = __('Просмотров: %s', $themes['views']);
     }
