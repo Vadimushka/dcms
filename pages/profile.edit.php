@@ -5,7 +5,10 @@ $doc = new document(1);
 $doc->title = __('Мой профиль');
 
 if (isset($_POST ['save'])) {
+    $user->languages = text::input_text(@$_POST['languages']);
+    $user->lastname = text::for_name(@$_POST ['lastname']);
     $user->realname = text::for_name(@$_POST ['realname']);
+    $user->middle_n = text::for_name(@$_POST ['middle_n']);
     $user->icq_uin = text::icq_uin(@$_POST ['icq']);
 
     if (isset($_POST ['ank_d_r'])) {
@@ -80,7 +83,9 @@ if (isset($_POST ['save'])) {
 }
 
 $form = new form('?' . passgen());
-$form->text('realname', __('Реальное имя'), $user->realname);
+$form->text('lastname', __('Фамилия'), $user->lastname);
+$form->text('realname', __('Имя'), $user->realname);
+$form->text('middle_n', __('Отчество'), $user->middle_n);
 $form->input('ank_d_r', __('Дата рождения'), $user->ank_d_r, 'text', false, 2, false, 2);
 $form->input('ank_m_r', '', $user->ank_m_r, 'text',  false, 2, false, 2);
 $form->input('ank_g_r', '', $user->ank_g_r, 'text',  true, 4, false, 4);
@@ -88,7 +93,8 @@ $form->text('icq', 'ICQ UIN', $user->icq_uin);
 $form->text('skype', 'Skype', $user->skype);
 $form->text('email', 'E-Mail', $user->email);
 $form->text('wmid', 'WMID', $user->wmid);
-$form->textarea('description', __('О себе') . ' [256]', $user->description);
+$form->text('languages', __('Язык'), $user->languages ? $user->languages : $user_language_pack->name);
+$form->textarea('description', __('О себе') . ' [512]', $user->description);
 
 $form->button(__('Применить'), 'save');
 $form->display();
