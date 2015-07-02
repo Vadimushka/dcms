@@ -184,9 +184,13 @@ if ($ank->donate_rub) {
 
 //region Имя
 if ($ank->realname) {
+    /* ФИО, если заполнено фамилия, имя и отчество, 
+       Вася Пупкин или Василий Петрович, если два из 3-х, 
+       Или-же просто имя, если фамилия и отчество пусты. */
+    $name = ($ank->lastname && $ank->middle_n) ? "$ank->lastname $ank->realname $ank->middle_n": $ank->realname . ($ank->middle_n ? " " . $ank->middle_n:'') . ($ank->lastname ? " " . $ank->lastname:'');
     $post = $listing->post();
-    $post->title = __('Имя');
-    $post->content = $ank->realname;
+    $post->title = ($ank->lastname && $ank->middle_n) ? __('ФИО') : __('Имя');
+    $post->content[] = $name;
 }
 //endregion
 
