@@ -11,7 +11,7 @@ $doc->title = __('Анкета');
 
 $ank = (empty($_GET ['id'])) ? $user : new user((int)$_GET ['id']);
 
-if (!$ank->group)
+if(!$ank->group)
     $doc->access_denied(__('Нет данных'));
 
 $doc->title = ($user->id && $ank->id == $user->id)? __('Моя анкета') : __('Анкета "%s"', $ank->nick);
@@ -245,6 +245,14 @@ if ($ank->id) {
 }
 //endregion
 
+//region язык(и)
+if ($ank->language || $ank->languages) { // $ank->language(s)
+    $post = $listing->post(); // Новый блок
+    $post->icon('language'); // Пиктограмка пункта: иероглиф
+    $post->title = ($ank->languages) ? __('Языки') : __('Язык'); 
+    $post->content = $ank->languages ? $ank->languages : $ank->language; }
+//endregion
+
 //region аська
 if ($ank->icq_uin) {
     if ($ank->is_friend($user) || $ank->vis_icq) {
@@ -300,7 +308,7 @@ if ($ank->email) {
 }
 //endregion
 
-//region Регистрационнац E-mail
+//region Регистрационный E-mail
 if ($ank->reg_mail) {
     if ($user->group > $ank->group) {
         $post = $listing->post();

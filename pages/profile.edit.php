@@ -93,7 +93,7 @@ $form->text('icq', 'ICQ UIN', $user->icq_uin);
 $form->text('skype', 'Skype', $user->skype);
 $form->text('email', 'E-Mail', $user->email);
 $form->text('wmid', 'WMID', $user->wmid);
-$form->text('languages', __('Язык'), $user->languages ? $user->languages : $user_language_pack->name);
+$form->text('languages', __('Языки'), $user->languages ? $user->languages : $user_language_pack->name);
 $form->textarea('description', __('О себе') . ' [512]', $user->description);
 
 $form->button(__('Применить'), 'save');
