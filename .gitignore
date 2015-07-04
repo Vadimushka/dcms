@@ -1,6 +1,7 @@
 *.bak
 *.tmp
 /.idea/*
+/nbproject/*
 /sys/logs/*
 /sys/tmp/*
 /sys/files/*.!config.dir.ini
