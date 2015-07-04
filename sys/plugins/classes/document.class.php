@@ -21,7 +21,7 @@ class document extends design
     {
         parent::__construct();
         global $user, $dcms;
-        $this->title = __($dcms->title); // локализированое название сайта
+        $this->title = $dcms->title;
         if ($group > $user->group) {
             $this->access_denied(__('Доступ к данной странице запрещен'));
         }

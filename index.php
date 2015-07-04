@@ -1,7 +1,7 @@
 <?php
 include_once 'sys/inc/start.php';
 $doc = new document ();
-
+$doc->title = __($dcms->title); // локализированое название сайта
 $widgets = (array)ini::read(H . '/sys/ini/widgets.ini'); // получаем список виджетов
 
 foreach ($widgets as $widget_name => $show) {
@@ -11,5 +11,3 @@ foreach ($widgets as $widget_name => $show) {
     $widget = new widget(H . '/sys/widgets/' . $widget_name); // открываем
     $widget->display(); // отображаем
 }
-
-// test by Sanek_OS9
