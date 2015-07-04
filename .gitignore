@@ -1,6 +1,12 @@
+*.bak
+*.tmp
 /.idea/*
 /sys/logs/*
 /sys/tmp/*
 /sys/files/*.!config.dir.ini
 /sys/languages/*/_*.lng
 /sys/languages/for_translate.lng
+/*ehthumbs.db
+/*desktop.ini
+/*Thumbs.db
+/*.Trashes
