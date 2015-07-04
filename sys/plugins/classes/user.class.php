@@ -259,7 +259,7 @@ class user
             return '[' . __('Пользователь удален') . ']';
         }
 
-        if ($this->vk_id){
+        if ($this->vk_id && $this->vk_first_name && $this->vk_last_name) {
             $login = $this->vk_first_name.' '.$this->vk_last_name;
         }else{
             $login = $this->login;
@@ -341,7 +341,7 @@ class user
         }
         // пользователь
         if ($this->group) {
-            if ($this->vk_id)
+            if ($this->vk_id && $this->vk_first_name && $this->vk_last_name)
                 return 'user.vk';
             return 'user.' . $this->sex;
         }
@@ -432,7 +432,7 @@ class user
                 $n .= '_' . $dcms->browser_type;
                 break;
             case 'login':
-                if ($this->vk_id)
+                if ($this->vk_id && $this->vk_first_name && $this->vk_last_name)
                     return;
                 break;
         }
