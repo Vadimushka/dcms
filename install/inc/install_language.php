@@ -17,7 +17,7 @@ class install_language {
         $languages = languages::getList();
 
         foreach ($languages as $key => $l) {
-            $checked = ($key == 'english' ? " checked='checked'" : '');
+            $checked = ($key == 'russian' ? " checked='checked'" : '');
 
             echo "<label>";
             echo "<input type='radio' name='language' value='$key'$checked />";
