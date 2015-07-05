@@ -106,7 +106,7 @@ if ($user->group) {
     // авторизовались успешно
     // удаляем информацию как о госте
     $res = $db->prepare("DELETE FROM `guest_online` WHERE `ip_long` = ? AND `browser` = ?;");
-    $res->execute(Array($dcms->ip_long, $dcms->browser));
+    $res->execute(Array($dcms->ip_long, $dcms->browser_name));
 
     if (isset($_GET['auth_key']) && cache::get($_GET['auth_key']) === 'request') {
         cache::set($_GET['auth_key'], array('session' => $_SESSION, 'cookie' => $_COOKIE), 60);
