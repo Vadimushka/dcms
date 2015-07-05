@@ -47,7 +47,7 @@ abstract class is_valid {
         if (preg_match("#(bot|DCMS|deleted|moder|system|бот|модер|систем)#ui", $nick)) {
             return false;
         }
-        // запрещаем одновременное использование кирилицы и латининского алфавита
+        // запрещаем одновременное использование кирилицы и латинского алфавита
         if (preg_match("#[a-z]+#ui", $nick) && preg_match("#[а-яё]+#ui", $nick)) {
             return false;
         }
