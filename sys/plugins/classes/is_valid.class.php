@@ -43,7 +43,11 @@ abstract class is_valid {
         if (!preg_match("#^[a-zа-яё][a-zа-яё0-9\-\_\ ]{2,31}$#ui", $nick)) {
             return false;
         }
-        // запрещаем одновременное использование русского и английского алфавилов
+        // запрещаем использовать ряд логинов (которые могут ввести в оману новичков)
+        if (preg_match("#(bot|DCMS|deleted|moder|system|бот|модер|систем)#ui", $nick)) {
+            return false;
+        }
+        // запрещаем одновременное использование кирилицы и латининского алфавита
         if (preg_match("#[a-z]+#ui", $nick) && preg_match("#[а-яё]+#ui", $nick)) {
             return false;
         }
