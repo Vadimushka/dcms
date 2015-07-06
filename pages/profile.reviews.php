@@ -60,7 +60,7 @@ if ($user->group && $can_write && isset($_POST['review']) && $user->id != $ank->
         $doc->ret(__('Вернуться'), '?id=' . $ank->id);
         $doc->msg(__('Ваш отзыв успешно оставлен'));
 
-        $ank->mess("$user->login " . __("оставил" . ($user->sex ? '' : 'а') . " о Вас свой") . " [url=/profile.reviews.php]" . __('отзыв') . "[/url]");
+        $ank->mess(__("%s оставил" . ($user->sex ? '' : 'а') . " о Вас свой [url=/profile.reviews.php]отзыв[/url]", $user->login));
 
         exit;
     } else {
