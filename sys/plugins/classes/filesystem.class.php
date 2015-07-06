@@ -57,9 +57,9 @@ abstract class filesystem {
      */
     static function getChmodToWrite($is_dir = false) {
         if ($is_dir) {
-            return 0700;
+            return 0755;
         } else {
-            return 0600;
+            return 0644;
         }
     }
 
