@@ -12,7 +12,7 @@ class vk
         $_version = '5.72',
         $_access_token,
         $_permissions,
-        $_email;
+        $_email = '';
 
     public function __construct($app_id, $app_secret)
     {
@@ -74,15 +74,15 @@ class vk
             $json_content = $http_client->getContent();
 
             if (false === ($data = json_decode($json_content, true))) {
-                throw new Exception("Не удалось распарсить данные");
+                throw new Exception(__("Не удалось распарсить данные"));
             }
 
             if (empty($data['access_token'])) {
-                throw new Exception("Не удалось получить access_token");
+                throw new Exception(__("Не удалось получить access_token"));
             }
 
             $this->setAccessToken($data['access_token']);
-            $this->_email = $data['email'];
+            $this->_email = (isset($data['email']))? $data['email'] : '';
         }
 
         return $this->_access_token;
@@ -142,13 +142,13 @@ class vk
     protected function _apiRequest($method, $params = array())
     {
         if (!$this->_access_token) {
-            throw new Exception('access token не установлен');
+            throw new Exception(__('access token не установлен'));
         }
         $params['access_token'] = $this->_access_token;
         $http_client = new http_client(new url('https://api.vk.com/method/' . $method, $params));
         $json_content = $http_client->getContent();
         if (false === ($data = json_decode($json_content, true))) {
-            throw new Exception("Не удалось распарсить данные");
+            throw new Exception(__("Не удалось распарсить данные"));
         }
 
         if (!empty($data['error'])) {
