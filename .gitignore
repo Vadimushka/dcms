@@ -8,7 +8,6 @@
 /sys/logs/*
 /sys/tmp/*
 /sys/files/*.!config.dir.ini
-/sys/languages/*/_*.lng
 /*ehthumbs.db
 /*desktop.ini
 /*Thumbs.db
