@@ -23,11 +23,12 @@ while ($ank = $q->fetch()) {
     $post->icon('guest');
     $post->title = $bots ? $ank['browser'] : __('Гость');
     $post->content[] = __("Переходов") . ': ' . $ank['conversions'];
-    if (!$bots) {
+    if ($user->group || $ank['ip_long'] == $dcms->ip_long)
+        $post->content[] = "IP: " . long2ip($ank['ip_long']);
+    if(!$bots)
         $post->content[] = __("Браузер") . ': ' . $ank['browser'];
-    }
-    $post->content[] = __("IP-адрес") . ": " . long2ip($ank['ip_long']);
-}
-$listing->display(__('Нет гостей'));
+    if ($user->group > 1 && $ank['browser_ua'] != '')
+        $post->content[] = 'User-Agent: '. $ank['browser_ua']; }
+$listing->display($bots ? __('Ботов нет') : __('Нет гостей'));
 
 $pages->display('?' . ($bots ? 'bots' : '') . '&amp;');

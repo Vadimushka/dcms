@@ -17,6 +17,12 @@ if (cache_events::get('system.update.work')) {
 }
 
 /**
+ * @const USER_AGENT
+ */
+if(!defined('USER_AGENT'))
+    define ('USER_AGENT', @$_SERVER['HTTP_USER_AGENT']);
+
+/**
  * загрузка системных параметров
  * @global \dcms $dcms Основной объект системы
  */
@@ -215,16 +221,16 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
         if (!AJAX) {
             // при ajax запросе данные о переходе засчитывать не будем
 
-            $q = $db->prepare("SELECT * FROM `guest_online` WHERE `ip_long` = ? AND `browser` = ? LIMIT 1");
-            $q->execute(Array($dcms->ip_long, $dcms->browser_name));
+            $q = $db->prepare("SELECT * FROM `guest_online` WHERE `ip_long` = ? AND `browser_ua` = ? LIMIT 1");
+            $q->execute(Array($dcms->ip_long, (string) USER_AGENT));
             if ($q->fetch()) {
                 // повторные переходы гостя
-                $res = $db->prepare("UPDATE `guest_online` SET `time_last` = ?, `request` = ?, `is_robot` = ?, `conversions` = `conversions` + 1 WHERE  `ip_long` = ? AND `browser` = ? LIMIT 1");
-                $res->execute(Array(TIME, $_SERVER ['REQUEST_URI'], browser::getIsRobot() ? '1' : '0', $dcms->ip_long, $dcms->browser_name));
+                $res = $db->prepare("UPDATE `guest_online` SET `time_last` = ?, `request` = ?, `is_robot` = ?, `domain` = ?, `conversions` = `conversions` + 1 WHERE  `ip_long` = ? AND `browser_ua` = ? LIMIT 1");
+                $res->execute(Array(TIME, $_SERVER ['REQUEST_URI'], browser::getIsRobot() ? '1' : '0', $_SERVER['HTTP_HOST'], $dcms->ip_long, (string) USER_AGENT));
             } else {
                 // новый гость
-                $res = $db->prepare("INSERT INTO `guest_online` (`ip_long`, `browser`, `time_last`, `time_start`, `request`, `is_robot` ) VALUES (?, ?, ?, ?, ?, ?)");
-                $res->execute(Array($dcms->ip_long, $dcms->browser_name, TIME, TIME, $_SERVER ['REQUEST_URI'], browser::getIsRobot() ? '1' : '0'));
+                $res = $db->prepare("INSERT INTO `guest_online` (`ip_long`, `browser`, `browser_ua`, `time_last`, `time_start`, `domain`, `request`, `is_robot` ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $res->execute(Array($dcms->ip_long, $dcms->browser_name, (string) USER_AGENT, TIME, TIME, $dcms->subdomain_main, $_SERVER ['REQUEST_URI'], browser::getIsRobot() ? '1' : '0'));
             }
         }
     }
