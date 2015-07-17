@@ -56,7 +56,7 @@ if (($ver = $update->is_updateble()) !== false) {
 
     $form = new form('?' . passgen());
     foreach ($can_skip as $key => $value)
-        $form->checkbox($key, $value, true);
+        $form->checkbox($key, __($value), true);
     $form->textarea(false, __('Полный список обновляемых файлов'), implode("\r\n", $list));
     $form->button(__('Обновить'), 'update');
     $form->display();
