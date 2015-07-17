@@ -11,7 +11,7 @@ abstract class stat
     public static function send()
     {
         $data = array(
-            'host' => $_SERVER['HTTP_HOST'],
+            'host' => dcms::getInstance()->subdomain_main,
             'version_dcms' => dcms::getInstance()->version,
             'version_php' => PHP_VERSION,
             'version_mysql' => db::me()->getAttribute(PDO::ATTR_SERVER_VERSION),
