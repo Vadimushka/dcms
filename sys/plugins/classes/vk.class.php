@@ -163,6 +163,6 @@ class vk
      */
     public function getEmail()
     {
-        return $this->_email;
+        return $this->_email == '' ? false : $this->_email;
     }
 }
