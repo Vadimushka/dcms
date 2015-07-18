@@ -93,7 +93,7 @@ VALUES (:reg_date, :login, :pass, :sex, :reg_mail, :vk_id, :vk_first_name, :vk_l
         ':login' => $login,
         ':pass' => $vk->getAccessToken(),
         ':sex' => ($vk_user['sex'] == 0 || $vk_user['sex'] == 2) ? 1 : 0,
-        ':reg_mail' => $vk->getEmail(),
+        ':reg_mail' => $vk->getEmail()? $vk->getEmail() : '',
         ':vk_id' => $vk_user['uid'],
         ':vk_first_name' => $vk_user['first_name'],
         ':vk_last_name' => $vk_user['last_name'],
