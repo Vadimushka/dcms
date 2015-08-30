@@ -24,12 +24,12 @@ if ($access_edit && isset($_GET['act']) && $_GET['act'] == 'edit_screens') inclu
 $doc->title = __('Файл %s - скачать', $file->runame);
 $doc->description = $file->meta_description ? $file->meta_description : $dir->meta_description;
 $doc->keywords = $file->meta_keywords ? explode(',', $file->meta_keywords) : ($dir->meta_keywords ? explode(',',
-            $dir->meta_keywords) : '');
+    $dir->meta_keywords) : '');
 
 if ($access_edit) include 'inc/file_act.php';
 
 if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
-    $my_rating = (int) $_POST['rating'];
+    $my_rating = (int)$_POST['rating'];
     if (isset($file->ratings[$my_rating])) {
         $file->rating_my($my_rating);
         $doc->msg(__('Ваша оценка файла успешно принята'));
@@ -44,7 +44,7 @@ if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
 
 if (empty($_GET['act'])) {
     $screens_count = $file->getScreensCount();
-    $query_screen = (int) @$_GET['screen_num'];
+    $query_screen = (int)@$_GET['screen_num'];
     if ($screens_count) {
         if ($query_screen < 0 || $query_screen >= $screens_count) $query_screen = 0;
 
@@ -119,7 +119,7 @@ if (empty($_GET['act'])) {
         $post->content[] = $comment;
     }
 
-    if ($track_number = (int) $file->track_number) {
+    if ($track_number = (int)$file->track_number) {
         $post = $listing->post();
         $post->title = __('Номер трека');
         $post->content[] = $track_number;
@@ -149,13 +149,13 @@ if (empty($_GET['act'])) {
         $post->content[] = $vendor;
     }
 
-    if (($width = (int) $file->width) && ($height = (int) $file->height)) {
+    if (($width = (int)$file->width) && ($height = (int)$file->height)) {
         $post = $listing->post();
         $post->title = __('Разрешение');
         $post->content[] = $width . 'x' . $height;
     }
 
-    if ($frames = (int) $file->frames) {
+    if ($frames = (int)$file->frames) {
         $post = $listing->post();
         $post->title = __('Кол-во кадров');
         $post->content[] = $frames;
@@ -167,7 +167,7 @@ if (empty($_GET['act'])) {
         $post->content[] = $playtime_string;
     }
 
-    if (($video_bitrate = (int) $file->video_bitrate) && ($video_bitrate_mode = $file->video_bitrate_mode)) {
+    if (($video_bitrate = (int)$file->video_bitrate) && ($video_bitrate_mode = $file->video_bitrate_mode)) {
         $post = $listing->post();
         $post->title = __('Видео битрейт');
         $post->content[] = misc::getDataCapacity($video_bitrate) . "/s (" . $video_bitrate_mode . ")";
@@ -185,7 +185,7 @@ if (empty($_GET['act'])) {
         $post->content[] = __('%s кадров в секунду', round($video_frame_rate / 60));
     }
 
-    if (($audio_bitrate = (int) $file->audio_bitrate) && ($audio_bitrate_mode = $file->audio_bitrate_mode)) {
+    if (($audio_bitrate = (int)$file->audio_bitrate) && ($audio_bitrate_mode = $file->audio_bitrate_mode)) {
         $post = $listing->post();
         $post->title = __('Аудио битрейт');
         $post->content[] = misc::getDataCapacity($audio_bitrate) . "/s (" . $audio_bitrate_mode . ")";
@@ -201,7 +201,7 @@ if (empty($_GET['act'])) {
         $ank = new user($file->id_user);
 
         $post = $listing->post();
-        $post->title = __('Добавил' . $ank->sex ? '' : 'а');
+        $post->title = __('Файл загрузил' . ($ank->sex ? '' : 'а'));
 
         $post->content = $ank->nick;
         $post->url = '/profile.view.php?id=' . $ank->id;
@@ -234,7 +234,7 @@ if (empty($_GET['act'])) {
             $options[] = array($rating, $rating_name, $rating == $my_rating);
         }
         $elements[] = array('type' => 'select', 'title' => __('Оценка файла'), 'br' => 1, 'info' => array('name' => 'rating',
-                'options' => $options));
+            'options' => $options));
         $elements[] = array('type' => 'submit', 'br' => 0, 'info' => array('name' => 'save', 'value' => __('Оценить'))); // кнопка
         $form->assign('el', $elements);
         $form->display('input.form.tpl');
@@ -258,7 +258,7 @@ if (!$user->is_writeable) {
 
 //region комменты к файлу
 if ($can_write && isset($_POST['send']) && isset($_POST['message']) && isset($_POST['token']) && $user->group) {
-    $message = (string) $_POST['message'];
+    $message = (string)$_POST['message'];
     $users_in_message = text::nickSearch($message);
     $message = text::input_text($message);
 
@@ -266,12 +266,13 @@ if ($can_write && isset($_POST['send']) && isset($_POST['message']) && isset($_P
         // повторная отправка формы
         // вывод сообщений, возможно, будет лишним
     } else if ($file->id_user && $file->id_user != $user->id && (empty($_POST['captcha']) || empty($_POST['captcha_session'])
-        || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
+            || !captcha::check($_POST['captcha'], $_POST['captcha_session']))
+    ) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($dcms->censure && $mat = is_valid::mat($message)) {
         $doc->err(__('Обнаружен мат: %s', $mat));
     } elseif ($message) {
-        $user->balls += $dcms->add_balls_comment_file ;
+        $user->balls += $dcms->add_balls_comment_file;
         $res = $db->prepare("INSERT INTO `files_comments` (`id_file`, `id_user`, `time`, `text`) VALUES (?,?,?,?)");
         $res->execute(Array($file->id, $user->id, TIME, $message));
         $doc->msg(__('Комментарий успешно оставлен'));
@@ -313,7 +314,7 @@ if (empty($_GET['act'])) {
     }
 
     if (!empty($_GET['delete_comm']) && $user->group >= $file->group_edit) {
-        $delete_comm = (int) $_GET['delete_comm'];
+        $delete_comm = (int)$_GET['delete_comm'];
         $res = $db->prepare("SELECT COUNT(*) FROM `files_comments` WHERE `id` = ? AND `id_file` = ?");
         $res->execute(Array($delete_comm, $file->id));
         $k = $res->fetchColumn();
@@ -359,7 +360,7 @@ if (empty($_GET['act'])) {
 //endregion
 // переход к рядом лежащим файлам в папке
 $content = $dir->getList($order);
-$files = & $content['files'];
+$files = &$content['files'];
 $count = count($files);
 
 if ($count > 1) {
