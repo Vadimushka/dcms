@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/sys/themes/.common/icons.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
     <link rel="stylesheet" href="/sys/themes/.common/animate.css" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?12"/>
+    <link rel="stylesheet" type="text/css" href="<?= $path ?>/style.css?13"/>
     <noscript>
         <meta http-equiv="refresh" content="0; URL=/pages/bad_browser.html"/>
     </noscript>
@@ -93,56 +93,52 @@
 </audio>
 <div id="main">
     <div id="top_part">
-        <div id="header" class="gradient_blue">
-            <div class="body_width_limit">
+        <div id="header">
+            <div class="body_width_limit clearfix">
                 <h1 id="title"><?= $title ?></h1>
 
-                <div id="navigation">
-                    <? if (!IS_MAIN) { ?>
-                        <a class="gradient_blue invert border radius padding" href='/'><?= __("На главную") ?></a>
-                    <? } ?>
-                    <?= $this->section($returns,
-                        '<a class="gradient_blue invert border radius padding" href="{url}">{name}</a>', true); ?>
+                <div id="navigation" class="clearfix <?= IS_MAIN ? 'ng-hide' : '' ?>">
+                    <a class="nav_item" href='/'><?= __("Главная") ?></a>
+                    <?= $this->section($returns, '<a class="nav_item" href="{url}">{name}</a>', true); ?>
+                    <span class="nav_item"><?= $title ?></span>
                 </div>
-                <div id="tabs">
+                <div id="tabs" class="<?= !$tabs ? 'ng-hide' : '' ?>">
                     <?= $this->section($tabs, '<a class="tab sel{selected}" href="{url}">{name}</a>', true); ?>
                 </div>
             </div>
             <div id="navigation_user">
-                <div class="body_width_limit">
-                    <?
-                    echo $this->section($actions,
-                        '<a class="gradient_grey border radius padding" href="{url}">{name}</a>');
-                    ?>
-                    <a ng-show="+user.friend_new_count" class='gradient_grey border radius padding ng-hide'
-                       href='/my.friends.php' ng-bind="str.friends"><?= __("Друзья") ?></a>
-                    <a ng-show="+user.mail_new_count" class='gradient_grey border radius padding ng-hide'
-                       href='/my.mail.php?only_unreaded' ng-bind="str.mail"><?= __("Почта") ?></a>
-                    <a ng-show="+user.group" class="gradient_grey border radius padding ng-hide"
+                <div class="body_width_limit clearfix">
+                    <a ng-show="+user.group" class="<?= $user->group ? '' : 'ng-hide' ?>"
                        href="/menu.user.php" ng-bind="user.nick"><?= $user->nick ?></a>
-                    <a ng-hide="+user.group" class="gradient_grey border radius padding ng-hide"
+                    <a ng-show="+user.friend_new_count" class='ng-hide'
+                       href='/my.friends.php' ng-bind="str.friends"><?= __("Друзья") ?></a>
+                    <a ng-show="+user.mail_new_count" class='ng-hide'
+                       href='/my.mail.php?only_unreaded' ng-bind="str.mail"><?= __("Почта") ?></a>
+                    <a ng-hide="+user.group" class="ng-hide"
                        href="/login.php?return={{URL}}" ng-bind="translates.auth"><?= __("Авторизация") ?></a>
-                    <a ng-hide="+user.group" class="gradient_grey border radius padding ng-hide"
+                    <a ng-hide="+user.group" class="ng-hide"
                        href="/reg.php?return={{URL}}" ng-bind="translates.reg"><?= __("Регистрация") ?></a>
+
+                    <?= $this->section($actions, '<a class="action" href="{url}">{name}</a>'); ?>
                 </div>
             </div>
             <?php $this->displaySection('header'); ?>
         </div>
-        <div class="body_width_limit">
+        <div class="body_width_limit clearfix">
             <div id="left_column">
                 <?php $this->displaySection('left_column'); ?>
             </div>
             <div id="content">
                 <div id="messages">
-                    <?= $this->section($err, '<div class="gradient_red border radius">{text}</div>'); ?>
-                    <?= $this->section($msg, '<div class="gradient_green border radius">{text}</div>'); ?>
+                    <?= $this->section($err, '<div class="error">{text}</div>'); ?>
+                    <?= $this->section($msg, '<div class="info">{text}</div>'); ?>
                 </div>
                 <?php $this->displaySection('content'); ?>
             </div>
         </div>
         <div id="empty"></div>
     </div>
-    <div id="footer" class="gradient_grey">
+    <div id="footer">
         <div class="body_width_limit">
                     <span id="copyright">
                         <?= $copyright ?>

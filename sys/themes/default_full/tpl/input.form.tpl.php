@@ -66,7 +66,7 @@
                     '</label>';
                 break;
             case 'submit':
-                echo '<input class="gradient_blue border radius padding radius" type="submit"' .
+                echo '<input class="" type="submit"' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['value'] ? ' value="' . text::toValue($element['info']['value']) . '"' : '') .
                     ' />';
