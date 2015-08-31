@@ -154,6 +154,7 @@ html, body, #main {
     text-shadow: none;
     border-radius: 0 0 2px 2px;
     margin-left: 2px;
+    transition: all 500ms;
 }
 
 #navigation_user a.action {
@@ -330,6 +331,7 @@ html, body, #main {
     background-color: #554734;
     color: #FFBB5B;
     border-radius: 2px;
+    transition: all 500ms;
 }
 
 input[type="submit"]:hover {
@@ -372,6 +374,11 @@ input[type="submit"]:hover {
     color: #fff;
     padding: 3px;
     border-radius: 2px;
+    transition: all 0.5s;
+}
+
+.form .textarea_wrapper.with_ctrl_enter:hover:after{
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .form .textarea_wrapper textarea {
@@ -393,6 +400,7 @@ input[type="submit"]:hover {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    transition: all 500ms;
 }
 
 .form .textarea_wrapper .textarea_bbcode span:hover {
@@ -521,9 +529,11 @@ input[type="submit"]:hover {
 
 .listing .post:not([data-post-url=""]) {
     border-left: 3px #FFBB5B solid;
+    transition: all 500ms;
 }
 
 .listing .post:hover:not([data-post-url=""]) {
+
     border-left-color: #383838;
     text-decoration: none !important;
     background-color: rgba(255, 187, 91, 0.05);
