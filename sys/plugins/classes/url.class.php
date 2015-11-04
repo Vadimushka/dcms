@@ -39,8 +39,10 @@ class url
         }
 
         if (array_key_exists('query', $parsed)) {
-            $query_parts = explode('&', $parsed['query']);
+            $query_parts = preg_split('/&(amp;)?/', $parsed['query']);
             for ($i = 0; $i < count($query_parts); $i++) {
+                if (!$query_parts[$i])
+                    continue;
                 $query_part = explode('=', $query_parts[$i], 2);
                 $this->setParam(urldecode($query_part[0]), isset($query_part[1]) ? urldecode($query_part[1]) : null);
             }
@@ -54,7 +56,7 @@ class url
 
     public function getParam($name, $default = null)
     {
-        if (!array_key_exists($name, $this->_params)){
+        if (!array_key_exists($name, $this->_params)) {
             return $default;
         }
         return $this->_params[$name];
@@ -124,7 +126,7 @@ class url
         }
 
         if ($this->_fragment) {
-            $url.='#' . $this->_fragment;
+            $url .= '#' . $this->_fragment;
         }
 
         return $url;
