@@ -520,3 +520,21 @@ td.image {
     font-weight: bold;
     color: #383838;
 }
+
+.select_bar {
+    display: block;
+    text-align: center;
+    font-size: 0.66em;
+    line-height: 3em;
+}
+
+.select_bar > * {
+    display: inline-block;
+    padding: 0 .5em;
+    margin: .2em;
+    border-radius: .2em;
+    background-color: #ccc;
+    max-width: 30%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
