@@ -6,7 +6,7 @@
 
 body {
     background-color: rgba(0, 0, 0, 0.07);
-    font-size: 16px;
+    font-size: 14pt;
 }
 
 @keyframes blinker {
@@ -537,4 +537,9 @@ td.image {
     max-width: 30%;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.post td.content a {
+    color: #967A4F;
+    text-decoration: underline;
 }
