@@ -1,12 +1,29 @@
+<?php
+$url = new url($link);
+$show_pages = array();
+for ($i = max(2, $page - 8); $i < min($k_page, $page + 10); $i++) {
+    $show_pages[] = $i;
+}
+
+/**
+ * @param int $page
+ * @param int $current
+ * @param url $url
+ * @return string
+ */
+function _theme_pages_helper($page, $current, $url)
+{
+    $class = 'page ' . ($page == $current ? 'active' : '');
+    return "<a href='{$url->setParam('page', $page)}' class='{$class}'>{$page}</a>";
+}
+
+?>
 <div class="pages">
     <?
-    echo $page == 1 ? '<span class="gradient_blue invert border radius">1</span>' : '<a class="gradient_grey border radius" href="' . $link . 'page=1">1</a>';
-    for ($i = max(2, $page - 4); $i < min($k_page, $page + 3); $i++) {
-        if ($i == $page)
-            echo '<span class="gradient_blue invert border radius">' . $i . '</span>';
-        else
-            echo '<a class="gradient_grey border radius" href="' . $link . 'page=' . $i . '">' . $i . '</a>';
+    echo _theme_pages_helper(1, $page, $url);
+    foreach ($show_pages as $p) {
+        echo _theme_pages_helper($p, $page, $url);
     }
-    echo $page == $k_page ? '<span class="gradient_blue invert border radius">' . $k_page . '</span>' : '<a class="gradient_grey border radius" href="' . $link . 'page=' . $k_page . '">' . $k_page . '</a>'
+    echo _theme_pages_helper($k_page, $page, $url);
     ?>
 </div>

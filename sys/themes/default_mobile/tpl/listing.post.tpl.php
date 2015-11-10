@@ -1,9 +1,9 @@
 <?
 $post_time = $time ? '<span class="time">' . $time . '</span>' : '';
-$post_counter = $counter ? '<span class="counter gradient_grey invert border">' . $counter . '</span>' : '';
+$post_counter = $counter ? '<span class="counter">' . $counter . '</span>' : '';
 $post_actions = '<span class="actions">' . $this->section($actions, '<a href="{url}"><img src="{icon}" alt="" /></a>') . '</span>';
 ?>
-<?= ($url ? '<a href="' . $url . '" class="' : '<div class="') . 'post gradient_grey border padding' . ($highlight ? ' highlight' : '') . '" id="' . $id . '">' ?>
+<?= ($url ? '<a href="' . $url . '" class="' : '<div class="') . 'post' . ($highlight ? ' highlight' : '') . '" id="' . $id . '">' ?>
     <table cellspacing="0" cellpadding="0" width="100%">
         <? if ($image) { ?>
             <tr>

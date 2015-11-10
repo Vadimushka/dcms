@@ -1,4 +1,4 @@
-<div class="form gradient_grey invert border padding">
+<div class="form">
     <?=
     '<form id="' . $id . '" data-ajax-url="' . $ajax_url . '"' .
     ($method ? ' method="' . $method . '"' : '') .
@@ -30,7 +30,7 @@
                 <?
                 break;
             case 'input_text':
-                echo '<input class="gradient_grey invert border padding radius" type="text"' .
+                echo '<input type="text"' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['value'] ? ' value="' . text::toValue($element['info']['value']) . '"' : '') .
                     ($element['info']['maxlength'] ? ' maxlength="' . intval($element['info']['maxlength']) . '"' : '') .
@@ -45,7 +45,7 @@
                     ' />';
                 break;
             case 'password':
-                echo '<input class="gradient_grey invert border padding radius" type="password"' .
+                echo '<input type="password"' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['value'] ? ' value="' . text::toValue($element['info']['value']) . '"' : '') .
                     ($element['info']['maxlength'] ? ' maxlength="' . intval($element['info']['maxlength']) . '"' : '') .
@@ -54,7 +54,7 @@
                     ' />';
                 break;
             case 'textarea':
-                echo '<div class="textarea gradient_grey invert border padding"><textarea' .
+                echo '<div class="textarea"><textarea' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['disabled'] ? ' disabled="disabled"' : '') .
                     '>' .
@@ -74,7 +74,7 @@
                     '</label>';
                 break;
             case 'submit':
-                echo '<input class="gradient_blue border radius padding radius" type="submit"' .
+                echo '<input type="submit"' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
                     ($element['info']['value'] ? ' value="' . text::toValue($element['info']['value']) . '"' : '') .
                     ' />';
@@ -85,7 +85,7 @@
                     ' />';
                 break;
             case 'select':
-                echo '<select class="gradient_grey border padding radius" name="' . $element['info']['name'] . '">';
+                echo '<select name="' . $element['info']['name'] . '">';
                 foreach ($element['info']['options'] AS $option) {
                     if ($option['groupstart'])
                         echo '<optgroup label="' . $option[0] . '">';
