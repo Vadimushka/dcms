@@ -1,7 +1,7 @@
 <?php
 $url = new url($link);
 $show_pages = array();
-for ($i = max(2, $page - 8); $i < min($k_page, $page + 10); $i++) {
+for ($i = max(2, $page - 4); $i < min($k_page, $page + 6); $i++) {
     $show_pages[] = $i;
 }
 
