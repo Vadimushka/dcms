@@ -293,7 +293,7 @@ input[type=submit] {
     background-color: #FFBB5B;
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"], input[type="number"], input[type="email"] {
     margin: .3em;
     height: 2em;
     padding: 0 .5em;
