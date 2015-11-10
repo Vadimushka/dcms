@@ -72,6 +72,10 @@ body {
 #title.friend .tIcon.friend,
 #title.mail .tIcon.mail {
     display: block;
+
+    -webkit-animation: blinker 1s cubic-bezier(0, 0.99, 1, 1.01) infinite;
+    -moz-animation: blinker 1s cubic-bezier(0, 0.99, 1, 1.01) infinite;
+    -o-animation: blinker 1s cubic-bezier(0, 0.99, 1, 1.01) infinite;
     animation: blinker 1s cubic-bezier(0, 0.99, 1, 1.01) infinite;
 }
 
