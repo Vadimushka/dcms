@@ -44,12 +44,12 @@ body {
 }
 
 #title .tIcon.menu {
-    background-image: url(../img/menu.png);
+    background-image: url(../icons/menu.png);
     right: 0;
 }
 
 #title .tIcon.friend {
-    background-image: url(../img/friend.png);
+    background-image: url(../icons/friend.png);
     right: 2em;
 }
 
@@ -58,7 +58,7 @@ body {
 }
 
 #title .tIcon.mail {
-    background-image: url(../img/mail.png);
+    background-image: url(../icons/mail.png);
     right: 2em;
 }
 
@@ -83,12 +83,12 @@ body {
 }
 
 #title .tIcon.home {
-    background-image: url(../img/home.png);
+    background-image: url(../icons/home.png);
     left: 0;
 }
 
 #title .tIcon.left {
-    background-image: url(../img/arrow-left.png);
+    background-image: url(../icons/arrow-left.png);
     left: 2em;
     display: none;
 }
@@ -337,7 +337,7 @@ body.menu_show {
     right: .1em;
     width: 1.5em;
     height: 1.5em;
-    background: url(../img/smile.png) no-repeat;
+    background: url(../icons/smile.png) no-repeat;
     background-size: contain;
 }
 
@@ -439,7 +439,7 @@ form[disabled="disabled"] input[type="submit"] {
 }
 
 #title.returns .tIcon.left ul li span {
-    background: url(../img/arrow-left.png) no-repeat center center;
+    background: url(../icons/arrow-left.png) no-repeat center center;
     background-size: 50%;
     position: absolute;
     height: 2em;
