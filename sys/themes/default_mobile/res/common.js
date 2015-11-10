@@ -4,6 +4,16 @@
 (function(window){
     "use strict";
 
+    $(function () {
+        var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
+        for (var i = 0; i < prefixes.length; i++) {
+            if (document.createElement('div').style[prefixes[i]] !== undefined) {
+                $(document.body).addClass('transformSupport');
+                break;
+            }
+        }
+    });
+
     $(document).on('click', '.DCMS_thumb_down', function (event) {
         if (!window.confirm(window.translate.rating_down_message)) {
             event.preventDefault();

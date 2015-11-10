@@ -10,7 +10,9 @@ body {
 }
 
 @keyframes blinker {
-    50% { opacity: 0.0; }
+    50% {
+        opacity: 0.0;
+    }
 }
 
 #title {
@@ -53,7 +55,7 @@ body {
     right: 2em;
 }
 
-#title.mail .tIcon.friend{
+#title.mail .tIcon.friend {
     right: 4em;
 }
 
@@ -112,9 +114,8 @@ body {
     background-color: #383838;
     color: #FFBB5B;
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
-    right: -100%;
-    opacity: 0;
-    transition: all linear 200ms;
+    right: -80%;
+    transition: right linear 200ms;
     z-index: 2;
 }
 
@@ -132,7 +133,22 @@ body {
 
 .menu_show #menu_overflow {
     right: 0;
-    opacity: 1;
+}
+
+.transformSupport #menu_overflow {
+    right: -80%;
+
+    -webkit-transition: -webkit-transform linear .2s;
+    -moz-transition: -moz-transform linear .2s;
+    -o-transition: -o-transform linear .2s;
+    transition: transform linear .2s;
+}
+
+.transformSupport.menu_show #menu_overflow {
+    -webkit-transform: translateX(-100%);
+    -moz-transform: translateX(-100%);
+    -o-transform: translateX(-100%);
+    transform: translateX(-100%);
 }
 
 .menu_show .tIcon.menu {
