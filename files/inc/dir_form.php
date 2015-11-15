@@ -4,32 +4,43 @@ defined('DCMS') or die();
 if ($access_write) {
     // выгрузка и импорт файлов
     switch (@$_GET ['act']) {
-        case 'file_upload' :
-        {
+        case 'file_upload' : {
+            $max_file_uploads = ini_get('max_file_uploads');
+            $upload_max_filesize = misc::returnBytes(ini_get('upload_max_filesize'));
+            $post_max_size = misc::returnBytes(ini_get('post_max_size'));
+            $memory_limit = misc::returnBytes(ini_get('memory_limit'));
+
+            if ($memory_limit > 0) {
+                $limit_size = min($upload_max_filesize, $post_max_size, $memory_limit);
+            } else { // локально может отсутствовать лимит по памяти
+                $limit_size = min($upload_max_filesize, $post_max_size);
+            }
+
             $form = new form('?' . passgen());
-            $form->file('file', __('Файл'));
+            $form->fileMultiple('files[]', __('Файлы (мультивыбор)'));
+            $form->bbcode(__('Максимальный размер всех файлов не должен превышать %s', misc::getDataCapacity($limit_size)));
+            $form->bbcode(__('Максимальное кол-во файлов: %s', $max_file_uploads));
+            $form->bbcode(__('[b]Данные ограничения настраниваются администратором сервера[b]'));
             $form->button(__('Выгрузить'));
             $form->display();
         }
             break;
     }
 
-    $doc->act(__('Выгрузить файл'), '?act=file_upload');
+    $doc->act(__('Выгрузить файлы'), '?act=file_upload');
 }
 
 if ($access_edit) {
     // изменеение параметров
     switch (@$_GET ['act']) {
-        case 'file_import' :
-        {
+        case 'file_import' : {
             $form = new form('?' . passgen());
             $form->text('url', __('URL'), 'http://');
             $form->button(__('Импортировать'), 'file_import');
             $form->display();
         }
             break;
-        case 'write_dir' :
-        {
+        case 'write_dir' : {
             $form = new form('?' . passgen());
             $form->text('name', __('Название папки'));
             $form->bbcode('* ' . __('На сервере создастся папка на транслите'));
@@ -38,8 +49,7 @@ if ($access_edit) {
         }
             break;
 
-        case 'edit_unlink' :
-        {
+        case 'edit_unlink' : {
             if ($rel_path) {
                 $form = new form('?' . passgen());
                 $form->captcha();
@@ -49,8 +59,7 @@ if ($access_edit) {
             }
         }
             break;
-        case 'edit_path' :
-        {
+        case 'edit_path' : {
             // перемещение папки
             $options = array();
             // список папок в загруз-центре
@@ -94,8 +103,7 @@ if ($access_edit) {
 
         }
             break;
-        case 'edit_prop' :
-        {
+        case 'edit_prop' : {
             $groups = groups::load_ini(); // загружаем массив групп
 
             $form = new form('?' . passgen());

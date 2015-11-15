@@ -1,25 +1,78 @@
 <?php
 
 defined('DCMS') or die();
+
+/**
+ * Преобразуем $_FILES в более удобный массив
+ * @param $name
+ * @return array
+ */
+function files_to_normal_array($name){
+    $files = array();
+    if (!empty($_FILES [$name])){
+        foreach($_FILES [$name] AS $key => $value){
+            $value = (array)$value;
+            foreach ($value AS $index => $val){
+                $files[$index][$key] = $val;
+            }
+        }
+    }
+    return $files;
+}
+
+
 // файл отвечает за исполнение действий
 if ($access_write) {
+
     // выгрузка
-    if (!empty($_FILES ['file'])) {
-        if ($_FILES ['file'] ['error'])
-            $doc->err(__('Ошибка при загрузке'));
-        elseif (!$_FILES ['file'] ['size'])
-            $doc->err(__('Содержимое файла пусто'));
-        elseif ($dir->is_file(text::for_filename($_FILES ['file'] ['name']))) {
-            $doc->err(__('Файл с таким названием уже существует'));
-        } else {
-            if ($files_ok = $dir->filesAdd(array($_FILES ['file'] ['tmp_name'] => $_FILES ['file'] ['name']))) {
+    if (!empty($_FILES ['files'])) {
+        $files = files_to_normal_array('files');
+        foreach ($files AS $file) {
+            if ($file['error']) {
+                switch ($file['error']) {
+                    case UPLOAD_ERR_INI_SIZE:
+                        $doc->err(__('Размер принятого файла превысил максимально допустимый размер, который задан директивой upload_max_filesize'));
+                        break;
+                    case UPLOAD_ERR_FORM_SIZE:
+                        $doc->err(__('Размер загружаемого файла превысил значение MAX_FILE_SIZE, указанное в HTML-форме'));
+                        break;
+                    case UPLOAD_ERR_PARTIAL:
+                        $doc->err(__('Загружаемый файл был получен только частично'));
+                        break;
+                    case UPLOAD_ERR_NO_FILE:
+                        $doc->err(__('Файл не был загружен'));
+                        break;
+                    case UPLOAD_ERR_NO_TMP_DIR:
+                        $doc->err(__('Отсутствует временная папка'));
+                        break;
+                    case UPLOAD_ERR_CANT_WRITE:
+                        $doc->err(__('Не удалось записать файл на диск'));
+                        break;
+                    case UPLOAD_ERR_EXTENSION:
+                        $doc->err(__('PHP-расширение остановило загрузку файла'));
+                        break;
+                }
+                continue;
+            }
+
+            if (!$file['size']) {
+                $doc->err(__('Содержимое файла пусто'));
+                continue;
+            }
+
+            if ($dir->is_file(text::for_filename($file ['name']))) {
+                $doc->err(__('Файл с таким названием (%s) уже существует', text::for_filename($file ['name'])));
+                continue;
+            }
+
+            if ($files_ok = $dir->filesAdd(array($file ['tmp_name'] => $file ['name']))) {
                 $files_ok [$_FILES ['file'] ['tmp_name']]->id_user = $user->id;
                 $files_ok [$_FILES ['file'] ['tmp_name']]->group_edit = max($user->group, $dir->group_write, 2);
-                $user->balls += $dcms->add_balls_upload_file ;
-                $doc->msg(__('Файл "%s" успешно добавлен', $_FILES ['file'] ['name']));
+                $user->balls += $dcms->add_balls_upload_file;
+                $doc->msg(__('Файл "%s" успешно добавлен', $file ['name']));
                 // записываем свое действие в общий лог
                 if ($dir->group_write > 1)
-                    $dcms->log('Файлы', 'Выгрузка файла [url="/files' . $files_ok [$_FILES ['file'] ['tmp_name']]->getPath() . '"]' . $_FILES ['file'] ['name'] . '[/url]');
+                    $dcms->log('Файлы', 'Выгрузка файла [url="/files' . $files_ok [$file['tmp_name']]->getPath() . '"]' . $file ['name'] . '[/url]');
                 unset($files_ok);
             } else {
                 $doc->err(__('Не удалось сохранить выгруженный файл'));

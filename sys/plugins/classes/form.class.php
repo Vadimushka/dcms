@@ -119,6 +119,23 @@ class form extends ui
         $this->input($name, $title, false, 'file', $br);
     }
 
+    function fileMultiple($name, $title, $br = true){
+        $input = array();
+        $this->set_is_files();
+
+        $input['type'] = 'file';
+        $input['title'] = text::toOutput($title);
+        $input['br'] = (bool)$br;
+
+        $info = array();
+        $info['name'] = text::toValue($name);
+        $info['multiple'] = true;
+
+        $input['info'] = $info;
+        $this->_data['el'][] = $input;
+        return true;
+    }
+
     /**
      * Капча
      * @param boolean $br перенос строки
@@ -259,6 +276,19 @@ class form extends ui
     {
         $this->_data['method'] = 'post';
         $this->_data['files'] = true;
+        $this->_data['limit_files'] = ini_get('max_file_uploads');
+
+        $upload_max_filesize = misc::returnBytes(ini_get('upload_max_filesize'));
+        $post_max_size = misc::returnBytes(ini_get('post_max_size'));
+        $memory_limit = misc::returnBytes(ini_get('memory_limit'));
+
+        if ($memory_limit > 0) {
+            $limit_size = min($upload_max_filesize, $post_max_size, $memory_limit);
+        } else { // локально может отсутствовать лимит по памяти
+            $limit_size = min($upload_max_filesize, $post_max_size);
+        }
+
+        $this->_data['limit_size'] = $limit_size;
     }
 
 }

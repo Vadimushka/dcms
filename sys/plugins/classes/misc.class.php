@@ -148,6 +148,25 @@ abstract class misc
         return $filesize . ' ' . $filesize_ed;
     }
 
+    static function returnBytes($val)
+    {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val) - 1]);
+        switch ($last) {
+            case 'g':
+                $val *= 1073741824;
+                break;
+            case 'm':
+                $val *= 1048576;
+                break;
+            case 'k':
+                $val *= 1024;
+                break;
+        }
+
+        return $val;
+    }
+
     /**
      * читабельное представление времени с учетом часового пояса пользователя
      * @global \user $user

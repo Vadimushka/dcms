@@ -3,7 +3,9 @@
     '<form id="' . $id . '" ng-controller="FormCtrl" ng-submit="form.onSubmit($event)" data-url="' . $ajax_url . '" ng-disabled="form.sending"' .
     ($method ? ' method="' . $method . '"' : '') .
     ($action ? ' action="' . $action . '"' : '') .
-    ($files ? ' enctype="multipart/form-data"' : '')
+    ($files ? ' enctype="multipart/form-data"' : '') .
+    ($limit_files ? ' data-limit-files="' . $limit_files . '"' : '') .
+    ($limit_size ? ' data-limit-size="' . $limit_size . '"' : '')
     . '>'
     ?>
 
@@ -74,6 +76,7 @@
             case 'file':
                 echo '<input type="file"' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
+                    ($element['info']['multiple'] ? ' multiple="multiple"' : '') .
                     ' />';
                 break;
             case 'select':

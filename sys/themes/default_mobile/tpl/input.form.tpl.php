@@ -82,6 +82,7 @@
             case 'file':
                 echo '<input type="file"' .
                     ($element['info']['name'] ? ' name="' . $element['info']['name'] . '"' : '') .
+                    ($element['info']['multiple'] ? ' multiple="multiple"' : '') .
                     ' />';
                 break;
             case 'select':
