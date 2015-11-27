@@ -5,7 +5,9 @@ $doc = new document(groups::max());
 $doc->title = __('Лицензионное соглашение');
 $doc->ret(__('Админка'), './');
 
-$bb = new bb(H . '/sys/docs/license.txt');
+if (is_file(H . '/sys/docs/license_' . $user_language_pack->code . '.txt'))
+    $bb = new bb(H . '/sys/docs/license_' . $user_language_pack->code . '.txt'); else
+    $bb = new bb(H . '/sys/docs/license.txt');
 if ($bb->title)
     $doc->title = $bb->title;
 
