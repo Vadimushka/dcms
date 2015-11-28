@@ -61,9 +61,9 @@ class install_reg_admin {
 
                         $sex = (int) !empty($_POST['sex']);
                         $this->pass2 = $this->pass1 = $_POST['password'];
-                        $res = DB::me()->prepare("INSERT INTO `users` (`reg_date`, `group`, `login`, `password`, `sex`) 
-                            values(?, '6', ?, ?, ?)");
-                        $res->execute(Array(TIME, $this->login, crypt::hash($this->pass1, $this->settings['salt']), $sex));
+                        $res = DB::me()->prepare("INSERT INTO `users` (`reg_date`, `group`, `login`, `password`, `sex`, `language`) 
+                            values(?, '6', ?, ?, ?, ?)");
+                        $res->execute(Array(TIME, $this->login, crypt::hash($this->pass1, $this->settings['salt']), $sex, $this->settings['language']));
                         $return = true;
                     }
                 }else {
