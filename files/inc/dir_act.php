@@ -7,12 +7,13 @@ defined('DCMS') or die();
  * @param $name
  * @return array
  */
-function files_to_normal_array($name){
+function files_to_normal_array($name)
+{
     $files = array();
-    if (!empty($_FILES [$name])){
-        foreach($_FILES [$name] AS $key => $value){
+    if (!empty($_FILES [$name])) {
+        foreach ($_FILES [$name] AS $key => $value) {
             $value = (array)$value;
-            foreach ($value AS $index => $val){
+            foreach ($value AS $index => $val) {
                 $files[$index][$key] = $val;
             }
         }
@@ -66,8 +67,8 @@ if ($access_write) {
             }
 
             if ($files_ok = $dir->filesAdd(array($file ['tmp_name'] => $file ['name']))) {
-                $files_ok [$_FILES ['file'] ['tmp_name']]->id_user = $user->id;
-                $files_ok [$_FILES ['file'] ['tmp_name']]->group_edit = max($user->group, $dir->group_write, 2);
+                $files_ok [$file ['tmp_name']]->id_user = $user->id;
+                $files_ok [$file ['tmp_name']]->group_edit = max($user->group, $dir->group_write, 2);
                 $user->balls += $dcms->add_balls_upload_file;
                 $doc->msg(__('Файл "%s" успешно добавлен', $file ['name']));
                 // записываем свое действие в общий лог
