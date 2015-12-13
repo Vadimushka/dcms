@@ -76,15 +76,25 @@ abstract class browser
     {
         $user_agent = @$_SERVER['HTTP_USER_AGENT'];
         $info = array(
-            'name' => 'Нет данных',
+            'name' => __('Нет данных'),
             'type' => 'light',
             'ie' => false,
             'isRobot' => false
         );
 
+        // определение большенства ботов
+        if (preg_match('#(app|bot|crawler|cURL|scaner|spider|validator)#ui', $user_agent)) {
+            $info['isRobot'] = true;
+        }
+
         // определение названия браузера
         if (preg_match('#^([a-z0-9\-\_ ]+)/([0-9]+\.[0-9]+)#i', $user_agent, $b)) {
             $info['name'] = $b[1] . (!empty($b[2]) ? ' ' . $b[2] : '');
+            $info['type'] = 'light';
+        }
+
+        // определяем большенство компьтеров
+        if (preg_match('#(BSD|Linux|Mac|NT|X11|WOW64)#ui', $user_agent)) {
             $info['type'] = 'full';
         }
 
@@ -288,6 +298,11 @@ abstract class browser
             $info['name'] = 'BOLT ' . $m[1];
             $info['type'] = 'light';
         }
+
+        if (preg_match('#WAP#ui', $user_agent)) {
+            $info['type'] = 'light';
+        }
+
         if ($tel = self::_phone_model($user_agent)) {
             // определение модели телефона
             $info['name'] = $tel[0];
