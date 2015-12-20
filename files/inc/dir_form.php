@@ -20,7 +20,7 @@ if ($access_write) {
             $form->fileMultiple('files[]', __('Файлы (мультивыбор)'));
             $form->bbcode(__('Максимальный размер всех файлов не должен превышать %s', misc::getDataCapacity($limit_size)));
             $form->bbcode(__('Максимальное кол-во файлов: %s', $max_file_uploads));
-            $form->bbcode(__('[b]Данные ограничения настраниваются администратором сервера[b]'));
+            $form->bbcode(__('[b]Данные ограничения настраиваются администратором сервера[b]'));
             $form->button(__('Выгрузить'));
             $form->display();
         }
