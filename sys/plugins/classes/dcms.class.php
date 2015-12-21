@@ -214,7 +214,6 @@ class dcms
 
         if (browser::getName() == __('Нет данных')) {
             $browser_id = 0;
-            return 0;
         }
 
         if ($browser_id === false) {
