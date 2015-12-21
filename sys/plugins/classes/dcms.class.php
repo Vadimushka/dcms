@@ -180,7 +180,7 @@ class dcms
 
     protected function _subdomain_main()
     {
-        $domain = preg_replace('/^(wap|pda|web|www|i|touch|mobile)\./ui', '', $_SERVER['HTTP_HOST']);
+        $domain = preg_replace('/^(wap|pda|web|www|i|touch|mobile|light)\./ui', '', $_SERVER['HTTP_HOST']);
         return $domain;
     }
 
@@ -211,6 +211,11 @@ class dcms
     protected function _browser_id()
     {
         static $browser_id = false;
+
+        if (browser::getName() == __('Нет данных')) {
+            $browser_id = 0;
+            return 0;
+        }
 
         if ($browser_id === false) {
             $q = db::me()->prepare("SELECT * FROM `browsers` WHERE `name` = ? LIMIT 1");
