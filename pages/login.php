@@ -47,27 +47,24 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
 
         $q = $db->prepare("SELECT `id`, `password` FROM `users` WHERE `login` = ? LIMIT 1");
         $q->execute(Array($login));
-        if (!$row = $q->fetch()) {
+        if(!$row = $q->fetch()) {
             $doc->err(__('Логин "%s" не зарегистрирован', $login));
         } elseif (crypt::hash($password, $dcms->salt) !== $row['password']) {
             $need_of_captcha = true;
             cache_aut_failture::set($dcms->ip_long, true, 600); // при ошибке заставляем пользователя проходить капчу
-            $id_user = $row['id'];
-            $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'post',?,?,?,'0')");
-            $res->execute(Array($id_user, $dcms->ip_long, TIME, $dcms->browser_id));
+            misc::logaut($row['id'], 'post', 0, 0); // пишем в журнал неудачную попытку войти
             $doc->err(__('Вы ошиблись при вводе пароля'));
         } else {
-            $id_user = $row['id'];
-            $user_t = new user($id_user);
-            if (!$user_t->group) {
+            $user_t = new user((int)$row['id']);
+            if(!$user_t->group) {
                 $doc->err(__('Ошибка при получении профиля пользователя'));
             } elseif ($user_t->a_code) {
                 $doc->err(__('Аккаунт не активирован'));
+                misc::logaut($user_t->id, 'post', 0, 0);
             } else {
                 $user = $user_t;
                 cache_aut_failture::set($dcms->ip_long, false, 1);
-                $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`,`method`,`iplong`, `time`, `id_browser`, `status`) VALUES (?,'post',?,?,?,'1')");
-                $res->execute(Array($id_user, $dcms->ip_long, TIME, $dcms->browser_id));
+                misc::logaut($user->id, 'post', 1); // в журнал 
 
                 if ($user->recovery_password) {
                     // если пользователь авторизовался, то ключ для восстановления ему больше не нужен
@@ -76,8 +73,7 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
                 $_SESSION[SESSION_ID_USER] = $user->id;
                 if (isset($_POST['save_to_cookie']) && $_POST['save_to_cookie']) {
                     setcookie(COOKIE_ID_USER, $user->id, TIME + 60 * 60 * 24 * 365);
-                    setcookie(COOKIE_USER_PASSWORD, crypt::encrypt($password, $dcms->salt_user),
-                        TIME + 60 * 60 * 24 * 365);
+                    setcookie(COOKIE_USER_PASSWORD, crypt::encrypt($password, $dcms->salt_user), TIME + 60 * 60 * 24 * 365);
                 }
             }
         }
@@ -86,17 +82,13 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
     $tmp_user = new user($_COOKIE[COOKIE_ID_USER]);
 
     if (crypt::hash(crypt::decrypt($_COOKIE[COOKIE_USER_PASSWORD], $dcms->salt_user), $dcms->salt) === $tmp_user->password) {
-        // если пользователь авторизовался, то ключ для восстановления ему больше не нужен
-        if ($user->recovery_password) $user->recovery_password = '';
-        $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`, `method`, `iplong`, `time`, `id_browser`, `status`) VALUES (?,'cookie',?,?,?,'1')");
-        $res->execute(Array($tmp_user->id, $dcms->ip_long, TIME, $dcms->browser_id));
+         misc::logaut($tmp_user->id, 'cookie', 1); // пишем в журнал успешную авторизацию 
         $user = $tmp_user;
         $_SESSION[SESSION_ID_USER] = $user->id;
     } else {
         $need_of_captcha = true;
         cache_aut_failture::set($dcms->ip_long, true, 600); // при ошибке заставляем пользователя проходить капчу
-        $res = $db->prepare("INSERT INTO `log_of_user_aut` (`id_user`, `method`, `iplong`, `time`, `id_browser`, `status`) VALUES (?,'cookie',?,?,?,'0')");
-        $res->execute(Array($tmp_user->id, $dcms->ip_long, TIME, $dcms->browser_id));
+        misc::logaut($tmp_user->id, 'cookie', 0); // пишем в журнал попытку входа по куках
         setcookie(COOKIE_ID_USER);
         setcookie(COOKIE_USER_PASSWORD);
     }
@@ -132,6 +124,6 @@ $form->display();
 if ($dcms->vk_auth_enable && $dcms->vk_app_id && $dcms->vk_app_secret) {
     $vk = new vk($dcms->vk_app_id, $dcms->vk_app_secret);
     $form = new form($vk->getAuthorizationUri('http://' . $_SERVER['HTTP_HOST'] . '/vk.php', 'email'));
-    $form->button(__('Вход через vk.com'));
+    $form->button(__('Вход через %', 'vk.com'));
     $form->display();
 }
