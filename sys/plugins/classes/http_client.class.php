@@ -81,7 +81,8 @@ class http_client
                 $spurl = @parse_url($this->_socks_proxy);
                 $sport = empty($spurl['port']) ? 9050 : $spurl['port'];
                 if (!$this->_sock = @fsockopen('tcp://' . $spurl['host'], $sport, $this->errn, $this->errs,
-                        $this->timeout)) {
+                    $this->timeout)
+                ) {
                     misc::log($spurl['host'] . ' (Прокси-сервер) - Не удалось подключиться', 'http_client');
                 } else {
 
@@ -254,7 +255,7 @@ class http_client
 
         fclose($fo);
         $this->_disconnect();
-        return (bool) $size;
+        return (bool)$size;
     }
 
     /**
@@ -265,7 +266,7 @@ class http_client
     {
         $headers = $this->get_headers();
         if ($headers) {
-            if (preg_match('/filename=(.+?);/', $headers, $m)) {
+            if (preg_match('/Content-Disposition: .*filename=([^ \n\r]+)/i', $headers, $m)) {
                 return $m[1];
             }
         }
@@ -416,7 +417,7 @@ class http_client
         }
 
         if (isset($purl['user']) && isset($purl['pass']))
-                $headers[] = 'Authorization: Basic ' . base64_encode($purl['user'] . ':' . $purl['pass']);
+            $headers[] = 'Authorization: Basic ' . base64_encode($purl['user'] . ':' . $purl['pass']);
 
         $headers[] = 'Connection: Close';
 

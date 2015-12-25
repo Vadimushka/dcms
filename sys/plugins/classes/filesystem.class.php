@@ -29,8 +29,8 @@ abstract class filesystem {
 
     /**
      * Возвращает путь относительно корневой директории сайта
-     * @param string $path абсолютный путь
-     * @return string относительный путь
+     * @param string|string[] $path абсолютный путь
+     * @return string|string[] относительный путь
      */
     static function getRelPath($path) {
         $is_array = false;
