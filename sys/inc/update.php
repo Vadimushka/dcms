@@ -52,7 +52,7 @@ class update
     public function getLatestVersion()
     {
         // последняя версия DCMS
-        $curl = new http_client('http://dcms.su/build/config.ini');
+        $curl = new http_client(dcms::getInstance()->update_url);
         $config_content = $curl->getContent();
 
         if (!$config_content) {
