@@ -1,7 +1,7 @@
 <?php
 include_once '../sys/inc/start.php';
 $return = empty($_GET['return'])? '/' : $_GET['return'];
-$o_v = preg_match('#NT#ui', @$_SERVER ['HTTP_USER_AGENT']) ? "12.17":"12.16";
+$o_v = preg_match('#NT#ui', @$_SERVER ['HTTP_USER_AGENT']) ? "12.18":"12.16";
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= $user_language_pack->xml_lang ?>">
  <head>
