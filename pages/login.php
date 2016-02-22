@@ -35,8 +35,7 @@ if ($user->group) {
 
 $need_of_captcha = cache_aut_failture::get($dcms->ip_long);
 
-if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'],
-        $_POST['captcha_session']))) {
+if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
     $doc->err(__('Проверочное число введено неверно'));
 } elseif (isset($_POST['login']) && isset($_POST['password'])) {
     if (!$_POST['login']) $doc->err(__('Введите логин'));
