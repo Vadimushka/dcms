@@ -267,7 +267,10 @@ class bbcode
                 'gradient',
                 'youtube',
                 'font',
-                'mark'
+                'mark',
+                'left',
+                'center',
+                'right'
             )
         ),
         'youtube' => array(
@@ -361,7 +364,10 @@ class bbcode
                 'red',
                 'green',
                 'blue',
-                'yellow'
+                'yellow',
+                'left',
+                'center',
+                'right'
             )
         ),
         'color' => array(
