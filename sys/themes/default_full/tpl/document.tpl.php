@@ -77,7 +77,7 @@
             {Text: 'IMG', Title: translates.bbcode_img, Prepend: '[img]', Append: '[/img]'},
             {Text: 'PHP', Title: translates.bbcode_php, Prepend: '[php]', Append: '[/php]'},
             {Text: 'SPOILER', Title: translates.bbcode_spoiler, Prepend: '[spoiler title=""]', Append: '[/spoiler]'},
-            {Text: 'HIDE', Title: translates.bbcode_hide, Prepend: '[hide group="0" balls="0"]', Append: '[/hide]'}
+            {Text: 'HIDE', Title: translates.bbcode_hide, Prepend: '[hide group="1" balls="1"]', Append: '[/hide]'}
         ];
     </script>
     <style type="text/css">
