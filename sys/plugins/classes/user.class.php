@@ -245,7 +245,7 @@ class user
         if ($this->id !== false) {
             return '<a href="/profile.view.php?id=' . $this->id . '">' . $this->nick() . '</a>';
         } else {
-            return '[Нет данных]';
+            return '['. __('Нет данных') . ']';
         }
     }
 
@@ -441,7 +441,7 @@ class user
             $this->_data [$n] = $v;
             $this->_update [$n] = $v;
         } else {
-            trigger_error("Поле $n не существует");
+            trigger_error(__('Поле "%s" не существует', $n));
         }
     }
 
