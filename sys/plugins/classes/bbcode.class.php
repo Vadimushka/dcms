@@ -249,6 +249,7 @@ class bbcode
                 'u',
                 'i',
                 'b',
+                'quote',
                 'small',
                 'user',
                 'smile',
@@ -1410,8 +1411,8 @@ class bbcode
         }
         $file = basename($elem['attrib']['file'], '.jpg');
 
-        if (!@file_exists(H . '/sys/files/.bbcode/' . $file . '.jpg')) {
-            return false;
+        if(!@file_exists(H . '/sys/files/.bbcode/' . $file . '.jpg')) {
+            return '<div class="error" style="color:gray">[' . __('тут была картинка') . ']</div>';
         }
 
         $file = new files_file(FILES . '/.bbcode', $file . '.jpg');
