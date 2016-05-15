@@ -2,7 +2,7 @@
 [big]Создатель и главный разработчик:[/big]
 - [b][url="http://dcms.su/profile.view.php?id=1"]DESURE[/url][/b]
 [big]Исправление багов:[/big]
-- [b][url="http://Lysianka.org.ua/id1"]S1S13AF7[/url][/b]
+- [b][url="http://misc.pp.ua/id1"]S1S13AF7[/url][/b]
 [big]Работа над PDO:[/big]
 - [b][url="http://dcms.su/profile.view.php?id=3336"]valerik[/url][/b]
 
@@ -20,7 +20,7 @@
 Пишите на [b]desure[/b]@mail.ru
 
 [big]Локализация:[/big]
-- [b][url="http://Lysianka.org.ua/id1"]S1S13AF7[/url][/b]: Ukrainian
+- [b][url="http://misc.pp.ua/id1"]S1S13AF7[/url][/b]: Ukrainian
 - [b]Інверсія[/b]: English
 - [b]Zanger[/b]: Indonesian
 - [b][url="http://dcms.su/profile.view.php?id=2234"]deemuss[/url][/b]: Polish
