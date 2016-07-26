@@ -116,7 +116,7 @@ foreach ($messages AS $message) {
     }
 
     $post->title = $ank->nick();
-    $post->icon($ank->id == $theme['id_moderator'] ? 'admin.1' : $ank->icon());
+    $post->icon($ank->icon());
 
     $doc->last_modified = $message['time'];
     $post->time = misc::when($message['time']);
