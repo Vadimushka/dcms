@@ -1340,7 +1340,7 @@ class bbcode
         global $dcms;
         $aturl = str_replace(array("\n", "\r", "\t"), '', $aturl);
 
-        if (preg_match('#^ *(javascript|data)#', $aturl)) {
+        if (preg_match('#^ *(javascript|data)#i', $aturl)) {
             return '!!! Javascript запрещен !!!';
         }
 
