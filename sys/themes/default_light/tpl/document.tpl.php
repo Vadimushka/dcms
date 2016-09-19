@@ -11,12 +11,13 @@
     <link rel="stylesheet" href="/sys/themes/.common/theme_light.css" type="text/css"/>
     <link rel="stylesheet" href="<?= $path ?>/style.css" type="text/css"/>
     <meta http-equiv="content-Type" content="application/xhtml+xml; charset=utf-8"/>
+    <meta name="viewport" content="initial-scale=1,width=device-width" />
     <meta name="generator" content="DCMS <?= $dcms->version ?>"/>
     <? if ($description) { ?>
         <meta name="description" content="<?= $description ?>" /><? } ?>
     <? if ($keywords) { ?>
         <meta name="keywords" content="<?= $keywords ?>" /><? } ?>
-    <style>
+    <style type="text/css">
         .hide {
             display: none !important;
         }
@@ -41,6 +42,7 @@
     <? $this->displaySection('after_content')?>
     <? $this->display('inc.foot.tpl') ?>
     <div id="foot">
+		<?= __("Язык") ?>: <a href='/pages/language.php?return=<?= URL ?>' id="language"><?= $lang->name ?></a><br/>
         <?= __("Время генерации страницы: %s сек", $document_generation_time) ?><br/>
         <?= $copyright ?>
     </div>
