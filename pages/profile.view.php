@@ -277,7 +277,6 @@ if ($ank->skype) {
         $post = $listing->post();
         $post->title = 'Skype';
         $post->content = $ank->skype;
-        $post->icon = 'http://mystatus.skype.com/smallicon/' . $ank->skype;
         $post->url = 'skype:' . $ank->skype . '?chat';
     } else {
 
@@ -326,8 +325,8 @@ if ($ank->wmid) {
     $post = $listing->post();
     $post->title = 'WMID';
     $post->content = $ank->wmid;
-    $post->url = 'http://passport.webmoney.ru/asp/certview.asp?wmid=' . $ank->wmid;
-    $post->image = 'http://stats.wmtransfer.com/Levels/pWMIDLevel.aspx?wmid=' . $ank->wmid . '&amp;w=35&amp;h=16';
+    $post->url = '//passport.webmoney.ru/asp/certview.asp?wmid=' . $ank->wmid;
+    $post->image = '//bl.wmtransfer.com/img/bl/' . $ank->wmid . '?w=50&h=18&bg=0XDBE2E9';
 }
 //endregion
 
