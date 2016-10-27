@@ -21,6 +21,8 @@ if (!$category = $q->fetch()) {
 
 
 $doc->title .= ' - ' . $category['name'];
+$doc->description = $category['description'];
+$doc->keywords = $category['keywords'];
 
 $res = $db->prepare("SELECT COUNT(*) FROM `forum_topics` WHERE `id_category` = ? AND `group_show` <= ?");
 $res->execute(Array($category['id'], $user->group));

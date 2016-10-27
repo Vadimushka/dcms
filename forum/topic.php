@@ -24,6 +24,8 @@ if (!$topic = $q->fetch()) {
 }
 
 $doc->title .= ' - ' . $topic['name'];
+$doc->description = $topic['description'];
+$doc->keywords = $topic['keywords'];
 
 $res = $db->prepare("SELECT COUNT(*) FROM `forum_themes` WHERE `id_topic` = ? AND `group_show` <= ?");
 $res->execute(Array($topic['id'], $user->group));

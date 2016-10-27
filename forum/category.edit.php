@@ -22,9 +22,10 @@ if (!$category = $q->fetch()) {
 
 
 if (isset($_POST['save'])) {
-    if (isset($_POST['name']) && isset($_POST['description'])) {
+    if (isset($_POST['name']) && isset($_POST['description']) && isset($_POST['keywords']) ) {
         $name = text::for_name($_POST['name']);
         $description = text::input_text($_POST['description']);
+        $keywords = text::input_text($_POST['keywords']);
 
         if ($name && $name != $category['name']) {
             $dcms->log('Форум', 'Изменение названия категории "' . $category['name'] . '" на [url=/forum/category.php?id=' . $category['id'] . ']"' . $name . '"[/url]');
@@ -41,6 +42,16 @@ if (isset($_POST['save'])) {
             $doc->msg(__('Описание категории успешно изменено'));
             $dcms->log('Форум', 'Изменение описания категории [url=/forum/category.php?id=' . $category['id'] . ']"' . $category['name'] . '"[/url]');
         }
+
+        if ($keywords != $category['keywords']) {
+            $category['keywords'] = $keywords;
+            $res = $db->prepare("UPDATE `forum_categories` SET `keywords` = ? WHERE `id` = ? LIMIT 1");
+            $res->execute(Array($category['keywords'], $category['id']));
+            $doc->msg(__('Ключевые слова успешно измененены'));
+            $dcms->log('Форум', 'Изменение ключевых слов категории [url=/forum/category.php?id=' . $category['id'] . ']"' . $category['name'] . '"[/url]');
+        }
+
+
     }
 
     if (isset($_POST['position'])) { // позиция
@@ -103,6 +114,7 @@ $doc->title = __('Редактирование категории "%s"', $catego
 $form = new form(new url());
 $form->text('name', __('Название'), $category['name']);
 $form->textarea('description', __('Описание'), $category['description']);
+$form->text('keywords', __('Ключевые слова'), $category['keywords']);
 $form->text('position', __('Позиция'), $category['position']);
 
 $options = array();

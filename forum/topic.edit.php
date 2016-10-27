@@ -25,6 +25,7 @@ if (isset($_POST ['save'])) {
     if (isset($_POST ['name'])) {
         $name = text::for_name($_POST ['name']);
         $description = text::input_text($_POST ['description']);
+        $keywords = text::input_text($_POST ['keywords']);
         $theme_view = isset($_POST['theme_view']) ? 1 : 0 ;
         
         if($theme_view != $topic['theme_view']){
@@ -44,12 +45,20 @@ if (isset($_POST ['save'])) {
         }
     }
 
-    if ($description != $topic ['description']) {
+        if ($description != $topic ['description']) {
         $dcms->log('Форум', 'Изменение описания раздела [url=/forum/topic.php?id=' . $topic ['id'] . ']"' . $topic ['name'] . '"[/url]');
         $topic ['description'] = $description;
         $res = $db->prepare("UPDATE `forum_topics` SET `description` = ? WHERE `id` = ? LIMIT 1");
         $res->execute(Array($topic ['description'], $topic['id']));
         $doc->msg(__('Описание раздела успешно изменено'));
+    }
+
+    if ($keywords != $topic ['keywords']) {
+        $dcms->log('Форум', 'Изменение ключевых слов раздела [url=/forum/topic.php?id=' . $topic ['id'] . ']"' . $topic ['name'] . '"[/url]');
+        $topic ['keywords'] = $keywords;
+        $res = $db->prepare("UPDATE `forum_topics` SET `keywords` = ? WHERE `id` = ? LIMIT 1");
+        $res->execute(Array($topic ['keywords'], $topic['id']));
+        $doc->msg(__('Ключевые слова раздела успешно измененены'));
     }
 
     if (isset($_POST ['category'])) {
@@ -130,6 +139,7 @@ $doc->title = __('Редактирование раздела "%s"', $topic ['na
 $form = new form(new url());
 $form->text('name', __('Название'), $topic['name']);
 $form->textarea('description', __('Описание'), $topic['description']);
+$form->text('keywords', __('Ключевые слова'), $topic['keywords']);
 
 $options = array();
 $q = $db->prepare("SELECT `id`,`name` FROM `forum_categories` WHERE `group_show` <= ? ORDER BY `position` ASC");
