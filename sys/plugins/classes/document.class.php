@@ -144,7 +144,7 @@ class document extends design
         header('Content-Type: text/html; charset=utf-8', true);
 
         $this->assign('description', $this->description ? $this->description : $this->title, 1); // описание страницы (meta)
-        $this->assign('keywords', $this->keywords ? implode(',', $this->keywords) : $this->title, 1); // ключевые слова (meta)
+        $this->assign('keywords', $this->keywords ? $this->keywords : $this->title, 1); // ключевые слова (meta)
 
         $this->assign('actions', $this->actions); // ссылки к действию
         $this->assign('returns', $this->returns); // ссылки для возврата
