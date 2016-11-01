@@ -109,7 +109,7 @@ class form extends ui
     }
 
     /**
-     * Поде для выбора файла
+     * Поле для выбора файла
      * @param string $name аттрибут name
      * @param string $title Заголовок к полю выбора файла
      * @param boolean $br перенос строки
