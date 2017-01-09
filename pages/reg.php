@@ -144,8 +144,8 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
                 $t->assign('password', $_POST['password']);
                 $t->assign('site', $dcms->sitename);
                 $t->assign('url',
-                    'http://' . $_SERVER['HTTP_HOST'] . '/activation.php?id=' . $id_user . '&amp;code=' . $a_code . (isset($_GET['return'])
-                            ? '&amp;return=' . urlencode($_GET['return']) : null));
+                    'http://' . $_SERVER['HTTP_HOST'] . '/activation.php?id=' . $id_user . '&code=' . $a_code . (isset($_GET['return'])
+                            ? '&return=' . urlencode($_GET['return']) : null));
                 if (mail::send($_POST['mail'], 'Регистрация',
                         $t->fetch('file:' . H . '/sys/templates/mail.activation.tpl'))) {
                     $step = 3;
