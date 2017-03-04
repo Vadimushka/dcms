@@ -110,8 +110,8 @@
 
     echo '</form>';
     ?>
-    <? if ($refresh_url && !$ajax_url) { ?>
+    <?php if ($refresh_url && !$ajax_url) { ?>
         <a class="refresh" title="<?= __('Обновить') ?>" href="<?= $refresh_url ?>"><img
                 src="<?= $path ?>/img/refresh.png" alt=""/></a>
-    <? } ?>
+    <?php } ?>
 </div>

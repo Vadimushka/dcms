@@ -16,12 +16,12 @@
                         <?= $vote['pc'] ?>%
                     </div>
                 </td>
-                <? if ($is_add) { ?>
+                <?php if ($is_add) { ?>
                     <td>
                         <a class="vote_plus" href="<?= $vote['url'] ?>">+</a>
                     </td>
-                <? } ?>
+                <?php } ?>
             </tr>        
-        <? } ?>
+        <?php } ?>
     </table>
 </div>

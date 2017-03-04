@@ -106,10 +106,10 @@
     <span class="err animate" ng-show="form.err" ng-bind="form.err"></span>
 
     <div class="waiter animate ng-hide" ng-show="form.sending"></div>
-    <? if ($refresh_url && !$ajax_url) { ?>
+    <?php if ($refresh_url && !$ajax_url) { ?>
         <a class="refresh" title="<?= __('Обновить') ?>" href="<?= $refresh_url ?>"><img
                 src="<?= $path ?>/img/refresh.png" alt=""/></a>
-    <? } ?>
+    <?php } ?>
     <?
     echo '</form>';
     ?>

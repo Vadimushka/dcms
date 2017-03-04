@@ -20,21 +20,21 @@ $checked_st = $checked ? ' checked="checked"' : '';
             </tr>
 
 
-            <? if ($content) { ?>
+            <?php if ($content) { ?>
                 <tr>
                     <td class="content" colspan="10">
                         <?= $content ?>
                     </td>
                 </tr>
-            <? } ?>
+            <?php } ?>
 
-            <? if ($bottom) { ?>
+            <?php if ($bottom) { ?>
                 <tr>
                     <td class="bottom" colspan="10">
                         <?= $bottom ?>
                     </td>
                 </tr>
-            <? } ?>
+            <?php } ?>
         </table>
     </label>
 </div>
