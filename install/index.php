@@ -30,6 +30,16 @@ function db_connect() {
     }
 }
 
+function _ob_clean_errors($str)
+{
+    return "";
+}
+
+function _on_install_script_shutdown()
+{
+    ob_start("_ob_clean_errors");
+}
+
 if (is_file(H . '/sys/ini/settings.ini')) {
     header("Location: /?" . passgen() . '&' . SID);
     exit;
@@ -48,6 +58,7 @@ foreach ($ini as $key => $value) {
     }
 }
 
+register_shutdown_function("_on_install_script_shutdown");
 header('Content-Type: application/xhtml+xml; charset=utf-8');
 ob_start();
 include 'inc/head.php';
