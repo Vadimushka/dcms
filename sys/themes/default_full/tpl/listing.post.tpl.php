@@ -1,4 +1,4 @@
-<?
+<?php
 $classes = array('post', 'clearfix');
 if ($highlight) {
     $classes[] = 'highlight';

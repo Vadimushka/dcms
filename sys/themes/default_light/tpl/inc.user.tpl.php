@@ -1,5 +1,5 @@
 <div id="navigation_user">
-    <?
+    <?php
     if ($user->id) {
         ?>
         <?php if ($user->friend_new_count) { ?>
@@ -10,12 +10,12 @@
         <?php } ?>
         <a id='menu_user' style='font-weight: bold;' href="/menu.user.php"><?= $user->login ?></a> 
 
-        <?
+        <?php
     } else {
         ?>
         <a href="/login.php?return=<?= URL ?>"><?= __("Авторизация") ?></a>
         <a href="/reg.php?return=<?= URL ?>"><?= __("Регистрация") ?></a>
-        <?
+        <?php
     }
     ?>
 </div> 

@@ -1,4 +1,4 @@
-<?
+<?php
 $div = 'post gradient_grey border padding ' . ($highlight ? 'post_hightlight' : '');
 $post_time = $time ? '<span class="post_time">' . $time . '</span>' : '';
 $post_counter = $counter ? '<span class="post_counter">' . $counter . '</span>' : '';

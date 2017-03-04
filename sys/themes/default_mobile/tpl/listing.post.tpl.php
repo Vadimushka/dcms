@@ -1,4 +1,4 @@
-<?
+<?php
 $post_time = $time ? '<span class="time">' . $time . '</span>' : '';
 $post_counter = $counter ? '<span class="counter">' . $counter . '</span>' : '';
 $post_actions = '<span class="actions">' . $this->section($actions, '<a href="{url}"><img src="{icon}" alt="" /></a>') . '</span>';

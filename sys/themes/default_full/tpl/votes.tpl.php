@@ -1,7 +1,7 @@
 <div class="votes">
     <span class="votes_name"><?= $name ?></span>
     <table style="width: 100%">
-        <?
+        <?php
         foreach ($votes AS $vote) {
             ?>
             <tr>

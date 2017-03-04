@@ -1,4 +1,4 @@
-<?
+<?php
 if ($url)
     $title = '<a href="' . $url . '">' . $title . '</a>';
 
