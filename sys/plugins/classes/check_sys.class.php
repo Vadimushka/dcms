@@ -46,7 +46,7 @@ class check_sys {
         if (version_compare(PHP_VERSION, DCMS_REQUIRE_PHP_VERSION, '>=')) {
             $this->oks[] = 'PHP >= ' . DCMS_REQUIRE_PHP_VERSION . ': ОК (' . PHP_VERSION . ')';
         } else {
-            $this->errors[] = __('Требуется PHP >= %s (сейчас %s)', '5.2', PHP_VERSION);
+            $this->errors[] = __('Требуется PHP >= %s (сейчас %s)', DCMS_REQUIRE_PHP_VERSION, PHP_VERSION);
         }
         // проверка MySQL
         if (function_exists('mysqli_info')) {

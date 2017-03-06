@@ -1,5 +1,6 @@
 <?php
 
+define("DCMS_REQUIRE_PHP_VERSION", "5.4");
 /**
  * @const TIME_START Время запуска скрипта в миллисекундах
  */
