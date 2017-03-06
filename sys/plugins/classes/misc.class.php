@@ -72,7 +72,7 @@ abstract class misc
      */
     static function array_key_move(&$array, $key, $step = 1)
     {
-        return arraypos::move($array, $key, $step);
+        return Dcms\Helpers\ArrayPos::move($array, $key, $step);
     }
 
     /**

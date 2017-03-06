@@ -76,7 +76,7 @@ if (!empty($_GET['menu'])) {
                     'is_vip' => $is_vip,
                     'group' => $group
                 );
-                arraypos::setPosition($ini, $name, $position);
+                Dcms\Helpers\ArrayPos::setPosition($ini, $name, $position);
                 if (ini::save(H . '/sys/ini/menu.' . $menu . '.ini', $ini, true)) {
                     $doc->msg(__('Изменения успешно приняты'));
                 } else {
@@ -103,7 +103,7 @@ if (!empty($_GET['menu'])) {
             $form = new form('?menu=' . urlencode($menu) . '&amp;item=' . urlencode($item_name) . '&amp;' . passgen());
 
             $form->text('name', __('Название'), $item_name);
-            $form->text('position', __('Позиция'), arraypos::getPosition($m_obj->menu_arr, $item_name));
+            $form->text('position', __('Позиция'), Dcms\Helpers\ArrayPos::getPosition($m_obj->menu_arr, $item_name));
             $form->text('url', __('Ссылка'), $item['url']);
 
             $icons = (array) glob(H . '/sys/images/icons/*.png');
@@ -158,7 +158,7 @@ if (!empty($_GET['menu'])) {
                     'is_vip' => $is_vip,
                     'group' => $group
                 );
-                arraypos::setPosition($ini, $name, $position);
+                Dcms\Helpers\ArrayPos::setPosition($ini, $name, $position);
                 if (ini::save(H . '/sys/ini/menu.' . $menu . '.ini', $ini, true)) {
                     $doc->msg(__('Изменения успешно приняты'));
                 } else {
@@ -218,7 +218,7 @@ if (!empty($_GET['menu'])) {
         foreach ($sortable as $position => $key) {
             //$key = base64_decode($key);
             // echo "$position $key\n";
-            arraypos::setPosition($ini, $key, $position + 1);
+            Dcms\Helpers\ArrayPos::setPosition($ini, $key, $position + 1);
         }
 
         header('Content-type: application/json');
