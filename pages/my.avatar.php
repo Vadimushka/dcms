@@ -48,7 +48,7 @@ if ($path = $user->getAvatar($doc->img_max_width())) {
 
     if (!empty($_POST ['delete'])) {
         $avatar = new files_file($avatars_path, $avatar_file_name);
-        if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session']))
+        if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST ['captcha'], $_POST ['captcha_session']))
             $doc->err(__('Проверочное число введено неверно'));
         elseif ($avatar->delete()) {
             $doc->msg(__('Аватар успешно удален'));

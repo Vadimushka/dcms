@@ -19,7 +19,7 @@ if ($ank->group > $user->group)
     $doc->access_denied(__('У Вас нет прав для удаления данной новости'));
 
 if (isset($_POST['delete'])) {
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
         $res = $db->prepare("DELETE FROM `news` WHERE `id` = ? LIMIT 1");

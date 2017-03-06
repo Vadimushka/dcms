@@ -16,7 +16,7 @@ if (empty($news)) {
 }
 
 if ($news['checked'] && isset($_POST['send'])) {
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session']))
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session']))
         $doc->err(__('Ошибка при вводе чисел с картинки'));
     else {
         $res = $db->prepare("INSERT INTO `news` (`title`, `time`, `text`, `id_user`) VALUES (?,?,?,?)");

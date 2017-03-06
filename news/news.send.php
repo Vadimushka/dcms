@@ -21,7 +21,7 @@ if ($news['sended'])
     $doc->access_denied(__('Новость уже была разослана'));
 
 if (isset($_POST['send'])) {
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
         $mail_unsubscribe = array();

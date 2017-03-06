@@ -5,7 +5,7 @@ $doc = new document(3);
 $doc->title = __('Удаление сообщений');
 
 if (isset($_POST['delete'])) {
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
         $dcms->log('Мини чат', 'Очистка от всех сообщений');

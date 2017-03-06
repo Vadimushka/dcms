@@ -80,7 +80,7 @@ if (imagetypes() & IMG_JPG) {
 if (empty($_GET['captcha_session'])) {
     exit;
 }
-if (!$code = captcha::getCode($_GET['captcha_session'])) {
+if (!$code = Dcms\Helpers\Captcha::getCode($_GET['captcha_session'])) {
     exit;
 }
 

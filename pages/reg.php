@@ -77,7 +77,7 @@ if ($step == 1 && $step_name === 'nick' && isset($_POST['login'])) {
 if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
     $sex = $_POST['sex'] ? 1 : 0;
 
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'],
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'],
             $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
         $error = true;

@@ -65,7 +65,7 @@ if ($photo->id_user && $photo->id_user == $user->id) {
     if (!empty($_GET ['act']) && $_GET ['act'] === 'delete') {
 
         if (!empty($_POST ['delete'])) {
-            if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'],
+            if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST ['captcha'],
                     $_POST ['captcha_session'])) $doc->err(__('Проверочное число введено неверно'));
             elseif ($photo->delete()) {
                 $doc->msg(__('Фото успешно удалено'));
@@ -122,7 +122,7 @@ if ($can_write) {
         $message = text::input_text($_POST ['message']);
 
         if ($photo->id_user && $photo->id_user != $user->id && (empty($_POST ['captcha']) || empty($_POST ['captcha_session'])
-            || !captcha::check($_POST ['captcha'], $_POST ['captcha_session'])))
+            || !Dcms\Helpers\Captcha::check($_POST ['captcha'], $_POST ['captcha_session'])))
                 $doc->err(__('Проверочное число введено неверно'));
         elseif ($dcms->censure && $mat = is_valid::mat($message)) $doc->err(__('Обнаружен мат: %s', $mat));
         elseif ($message) {

@@ -1,9 +1,11 @@
 <?php
 
+namespace Dcms\Helpers;
+
 /**
  * Работа с данными для картинки с проверочным кодом (капчей)
  */
-abstract class captcha {
+abstract class Captcha {
     
     /**
      * генерация проверочного кода и возврат сессии

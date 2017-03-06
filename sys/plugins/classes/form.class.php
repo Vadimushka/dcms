@@ -142,7 +142,7 @@ class form extends ui
      */
     function captcha($br = true)
     {
-        $this->_data['el'][] = array('type' => 'captcha', 'br' => $br, 'session' => captcha::gen());
+        $this->_data['el'][] = array('type' => 'captcha', 'br' => $br, 'session' => Dcms\Helpers\Captcha::gen());
     }
 
     /**
