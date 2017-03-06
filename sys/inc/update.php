@@ -378,22 +378,24 @@ class update
      */
     protected function _sql()
     {
-        $tables_exists = new tables();
-        $table_files = (array)glob(H . '/sys/preinstall/base.create.*.ini');
+        $tables_exists = \Dcms\Helpers\DbStructure\DbStructure::getAllTables(Db::me());
+        $table_files = (array)glob(H . '/sys/preinstall/table.*.structure.json');
         $tables = array();
         foreach ($table_files as $table_file) {
-            preg_match('#base.create\.(.+)\.ini#ui', $table_file, $m);
+            preg_match('#table\.(.+)\.structure\.json#ui', $table_file, $m);
             $tables[] = $m[1];
         }
 
         foreach ($tables as $table) {
-            $tab = new table_structure(H . '/sys/preinstall/base.create.' . $table . '.ini');
-            if (in_array($table, $tables_exists->tables)) {
-                $tab_old = new table_structure();
-                $tab_old->loadFromBase($table);
-                $sql = $tab_old->getSQLQueryChange($tab);
+            $targetTable = new \Dcms\Helpers\DbStructure\DbStructureTable();
+            $targetTable->loadFromJsonFile(H . '/sys/preinstall/table.' . $table . '.structure.json');
+
+            if (in_array($table, $tables_exists)) {
+                $currentTable = new \Dcms\Helpers\DbStructure\DbStructureTable();
+                $currentTable->loadFromBase(DB::me(), $table);
+                $sql = $currentTable->getSQLChange($targetTable);
             } else {
-                $sql = $tab->getSQLQueryCreate();
+                $sql = $targetTable->getSQLCreate();
             }
 
             DB::me()->query($sql);

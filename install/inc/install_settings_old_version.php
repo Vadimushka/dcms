@@ -38,5 +38,3 @@ class install_settings_old_version {
         return $this->return;
     }
 }
-
-?>

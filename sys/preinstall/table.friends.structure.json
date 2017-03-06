@@ -1,0 +1,107 @@
+{
+    "Properties": {
+        "Name": "friends",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": ""
+    },
+    "Columns": [
+        {
+            "Field": "id_user",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Пользователь"
+        },
+        {
+            "Field": "id_friend",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Друг"
+        },
+        {
+            "Field": "time",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "name",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Переопределение ника"
+        },
+        {
+            "Field": "confirm",
+            "Type": "enum('0','1')",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": "0",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "friends",
+            "Non_unique": "0",
+            "Key_name": "friends",
+            "Seq_in_index": "1",
+            "Column_name": null,
+            "Columns": [
+                "id_user",
+                "id_friend"
+            ],
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "friends",
+            "Non_unique": "1",
+            "Key_name": "confirm",
+            "Seq_in_index": "1",
+            "Column_name": "confirm",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

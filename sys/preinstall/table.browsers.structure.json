@@ -1,0 +1,97 @@
+{
+    "Properties": {
+        "Name": "browsers",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": "Браузеры"
+    },
+    "Columns": [
+        {
+            "Field": "id",
+            "Type": "int(11)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "auto_increment",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "type",
+            "Type": "enum('light','mobile','full')",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "name",
+            "Type": "varchar(64)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "UNI",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "browsers",
+            "Non_unique": "0",
+            "Key_name": "PRIMARY",
+            "Seq_in_index": "1",
+            "Column_name": "id",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "browsers",
+            "Non_unique": "0",
+            "Key_name": "name",
+            "Seq_in_index": "1",
+            "Column_name": "name",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "browsers",
+            "Non_unique": "1",
+            "Key_name": "type",
+            "Seq_in_index": "1",
+            "Column_name": "type",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

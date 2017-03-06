@@ -1,0 +1,196 @@
+{
+    "Properties": {
+        "Name": "forum_topics",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": "Разделы форума (находятся в категориях)"
+    },
+    "Columns": [
+        {
+            "Field": "id",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "auto_increment",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "time_create",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Время создания"
+        },
+        {
+            "Field": "time_last",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Время обновления (для сортировки)"
+        },
+        {
+            "Field": "id_category",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Категория форума"
+        },
+        {
+            "Field": "name",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Название"
+        },
+        {
+            "Field": "description",
+            "Type": "text",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Описание раздела"
+        },
+        {
+            "Field": "keywords",
+            "Type": "text",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Ключевые слова раздела"
+        },
+        {
+            "Field": "group_show",
+            "Type": "smallint(6)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": "0",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Права для просмотра раздела"
+        },
+        {
+            "Field": "group_write",
+            "Type": "smallint(6)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": "1",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Права для создания тем в разделе"
+        },
+        {
+            "Field": "group_edit",
+            "Type": "smallint(6)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": "4",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Права для редактирования"
+        },
+        {
+            "Field": "theme_create_with_wmid",
+            "Type": "enum('0','1')",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": "0",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Создание тем только с WMID"
+        },
+        {
+            "Field": "theme_view",
+            "Type": "enum('0','1')",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": "1",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Отображать темы в списке новых и обновленных"
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "forum_topics",
+            "Non_unique": "0",
+            "Key_name": "PRIMARY",
+            "Seq_in_index": "1",
+            "Column_name": "id",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "forum_topics",
+            "Non_unique": "1",
+            "Key_name": "id_category",
+            "Seq_in_index": "1",
+            "Column_name": "id_category",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "forum_topics",
+            "Non_unique": "1",
+            "Key_name": "group_show",
+            "Seq_in_index": "1",
+            "Column_name": "group_show",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

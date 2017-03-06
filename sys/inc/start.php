@@ -1,7 +1,8 @@
 <?php
+define("DCMS_REQUIRE_PHP_VERSION", "5.2");
 
 // Проверяем версию PHP
-version_compare(PHP_VERSION, '5.2', '>=') or die('Требуется PHP >= 5.2');
+version_compare(PHP_VERSION, DCMS_REQUIRE_PHP_VERSION, '>=') or die('Требуется PHP >= ' . DCMS_REQUIRE_PHP_VERSION);
 
 /**
  * Константы и функции, необходимые для работы движка.
@@ -91,51 +92,6 @@ if ($dcms->new_time_as_date) {
 try {
     $db = DB::me($dcms->mysql_host, $dcms->mysql_base, $dcms->mysql_user, $dcms->mysql_pass);
 } catch (ExceptionPdoNotExists $e) {
-    @mysql_connect($dcms->mysql_host, $dcms->mysql_user, $dcms->mysql_pass) or die('Нет соединения с MySQL сервером');
-    @mysql_select_db($dcms->mysql_base) or die('Нет доступа к выбранной базе данных');
-    mysql_query('SET NAMES "utf8"');
-
-    if (false != ($backups = glob(TMP . '/backup.*.zip'))) {
-        if (count($backups) == 1) {
-            cache_events::set('system.update.work', true, 600);
-
-            $zip = new PclZip($backups[0]);
-            $zip->extract(PCLZIP_OPT_PATH, H . '/');
-
-            $tables_exists = new tables(); // тут должна проинклудиться старая версия файла, не использующая PDO
-            $table_files = (array)glob(H . '/sys/preinstall/base.create.*.ini');
-            $tables = array();
-            foreach ($table_files as $table_file) {
-                preg_match('#base.create\.(.+)\.ini#ui', $table_file, $m);
-                $tables[] = $m[1];
-            }
-
-            foreach ($tables as $table) {
-                $tab = new table_structure(H . '/sys/preinstall/base.create.' . $table . '.ini');
-                if (in_array($table, $tables_exists->tables)) {
-                    $tab_old = new table_structure();
-                    $tab_old->loadFromBase($table);
-                    $sql = $tab_old->getSQLQueryChange($tab);
-                } else {
-                    $sql = $tab->getSQLQueryCreate();
-                }
-                mysql_query($sql);
-            }
-
-            if ($dcms->update_auto == 2)
-                $dcms->update_auto = 1; // отключаем автоматическое обновление
-
-            $admins = groups::getAdmins();
-            /** @var $admin \user */
-            foreach ($admins AS $admin) {
-                $admin->mess("Так как на сервере отсутствует PDO, система была восстановлена из резервной копии.");
-            }
-
-            cache_events::set('system.update.work', false);
-            die("Обновите страницу");
-        }
-    }
-
     die($e->getMessage());
 } catch (Exception $e) {
     die('Ошибка подключения к базе данных:' . $e->getMessage());

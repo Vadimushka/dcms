@@ -1,0 +1,151 @@
+{
+    "Properties": {
+        "Name": "guest_online",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": ""
+    },
+    "Columns": [
+        {
+            "Field": "ip_long",
+            "Type": "bigint(20)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "is_robot",
+            "Type": "enum('1','0')",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": "0",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "browser",
+            "Type": "varchar(64)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "browser_ua",
+            "Type": "varchar(256)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "user_agent"
+        },
+        {
+            "Field": "time_start",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "time_last",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "domain",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Домен"
+        },
+        {
+            "Field": "request",
+            "Type": "varchar(1024)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": "/",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Последняя страница"
+        },
+        {
+            "Field": "conversions",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": "1",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Количество переходов"
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "guest_online",
+            "Non_unique": "0",
+            "Key_name": "UNIQUE",
+            "Seq_in_index": "1",
+            "Column_name": null,
+            "Columns": [
+                "ip_long",
+                "browser_ua"
+            ],
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "guest_online",
+            "Non_unique": "1",
+            "Key_name": "time_last",
+            "Seq_in_index": "1",
+            "Column_name": "time_last",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

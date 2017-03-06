@@ -8,18 +8,18 @@ class install_check_old_version {
     function __construct() {
         db_connect();
 
-        $this->tables = new tables();
+        $this->tables = \Dcms\Helpers\DbStructure\DbStructure::getAllTables(Db::me());
 
         if (
-                in_array('user', $this->tables->tables) &&
-                in_array('mail', $this->tables->tables) &&
-                in_array('forum_f', $this->tables->tables) &&
-                in_array('forum_r', $this->tables->tables) &&
-                in_array('forum_t', $this->tables->tables) &&
-                in_array('forum_p', $this->tables->tables) &&
-                in_array('ban', $this->tables->tables) &&
-                in_array('rekl', $this->tables->tables) &&
-                in_array('news', $this->tables->tables)
+                in_array('user', $this->tables) &&
+                in_array('mail', $this->tables) &&
+                in_array('forum_f', $this->tables) &&
+                in_array('forum_r', $this->tables) &&
+                in_array('forum_t', $this->tables) &&
+                in_array('forum_p', $this->tables) &&
+                in_array('ban', $this->tables) &&
+                in_array('rekl', $this->tables) &&
+                in_array('news', $this->tables)
         )
             $this->old_version = true;
     }
@@ -46,5 +46,3 @@ class install_check_old_version {
     }
 
 }
-
-?>

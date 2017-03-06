@@ -43,8 +43,8 @@ class check_sys {
 
     protected function _checkSys() {
         // проверка версии PHP
-        if (version_compare(PHP_VERSION, '5.2', '>=')) {
-            $this->oks[] = 'PHP >= 5.2: ОК (' . PHP_VERSION . ')';
+        if (version_compare(PHP_VERSION, DCMS_REQUIRE_PHP_VERSION, '>=')) {
+            $this->oks[] = 'PHP >= ' . DCMS_REQUIRE_PHP_VERSION . ': ОК (' . PHP_VERSION . ')';
         } else {
             $this->errors[] = __('Требуется PHP >= %s (сейчас %s)', '5.2', PHP_VERSION);
         }

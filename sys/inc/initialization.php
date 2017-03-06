@@ -61,7 +61,7 @@ define('TMP', H . '/sys/tmp');
  */
 define('FILES', realpath(H . '/sys/files'));
 /**
- * @const TIME UNIXTIMESTAMP 
+ * @const TIME UNIXTIMESTAMP
  */
 define('TIME', time());
 /**
@@ -146,6 +146,7 @@ if (function_exists('iconv')) {
 /**
  * автоматическая загрузка классов
  * @param string $class_name имя класса
+ * @deprecated
  */
 function dcmsAutoload($class_name) {
     $path = H . '/sys/plugins/classes/' . strtolower($class_name) . '.class.php';
@@ -155,6 +156,11 @@ function dcmsAutoload($class_name) {
 }
 
 spl_autoload_register('dcmsAutoload');
+
+require_once(H . '/sys/plugins/classes/SplClassLoader.php');
+$loader = new SplClassLoader(null, H . '/sys/plugins/classes/');
+$loader->register();
+unset($loader);
 
 include_once (H . '/sys/plugins/classes/cache.class.php');
 

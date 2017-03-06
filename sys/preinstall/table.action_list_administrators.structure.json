@@ -1,0 +1,134 @@
+{
+    "Properties": {
+        "Name": "action_list_administrators",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": "Список действий администрации"
+    },
+    "Columns": [
+        {
+            "Field": "id",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "auto_increment",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "id_user",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "time",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "module",
+            "Type": "varchar(64)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "description",
+            "Type": "text",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "action_list_administrators",
+            "Non_unique": "0",
+            "Key_name": "PRIMARY",
+            "Seq_in_index": "1",
+            "Column_name": "id",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "action_list_administrators",
+            "Non_unique": "1",
+            "Key_name": "id_user",
+            "Seq_in_index": "1",
+            "Column_name": "id_user",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "action_list_administrators",
+            "Non_unique": "1",
+            "Key_name": "module",
+            "Seq_in_index": "1",
+            "Column_name": "module",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "action_list_administrators",
+            "Non_unique": "1",
+            "Key_name": "time",
+            "Seq_in_index": "1",
+            "Column_name": "time",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

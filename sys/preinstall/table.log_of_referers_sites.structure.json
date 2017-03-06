@@ -1,0 +1,123 @@
+{
+    "Properties": {
+        "Name": "log_of_referers_sites",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": ""
+    },
+    "Columns": [
+        {
+            "Field": "id",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "auto_increment",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "domain",
+            "Type": "varchar(64)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "UNI",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "time",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "count",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": "1",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Количество переходов"
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "log_of_referers_sites",
+            "Non_unique": "0",
+            "Key_name": "PRIMARY",
+            "Seq_in_index": "1",
+            "Column_name": "id",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "log_of_referers_sites",
+            "Non_unique": "0",
+            "Key_name": "domain",
+            "Seq_in_index": "1",
+            "Column_name": "domain",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "log_of_referers_sites",
+            "Non_unique": "1",
+            "Key_name": "time",
+            "Seq_in_index": "1",
+            "Column_name": "time",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "log_of_referers_sites",
+            "Non_unique": "1",
+            "Key_name": "count",
+            "Seq_in_index": "1",
+            "Column_name": "count",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

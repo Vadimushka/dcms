@@ -13,18 +13,10 @@ require_once dirname(__FILE__) . '/../sys/inc/initialization.php';
  */
 function db_connect() {
     $settings = &$_SESSION['settings'];
-    
-    /*
-    mysql_connect($settings['mysql_host'], $settings['mysql_user'], $settings['mysql_pass']) or die(__('Нет соединения с сервером базы'));
-    mysql_select_db($settings['mysql_base']) or die(__('Нет доступа к выбранной базе данных'));
-    mysql_query('SET NAMES "utf8"');
-    */
-
     try {
         $db = DB::me($settings['mysql_host'], $settings['mysql_base'], $settings['mysql_user'], $settings['mysql_pass']);
         $db->setAttribute(PDO :: ATTR_DEFAULT_FETCH_MODE, PDO :: FETCH_ASSOC);
         $db->query("SET NAMES utf8;");
-        $dcms->db = $db;
     } catch (Exception $e) {
         die('Ошибка подключения к базе данных:' . $e->getMessage());
     }

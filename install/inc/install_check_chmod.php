@@ -39,5 +39,3 @@ class install_check_chmod {
     }
 
 }
-
-?>

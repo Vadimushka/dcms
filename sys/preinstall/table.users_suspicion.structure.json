@@ -1,0 +1,56 @@
+{
+    "Properties": {
+        "Name": "users_suspicion",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": "Подозрительные регистрации"
+    },
+    "Columns": [
+        {
+            "Field": "id_user",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "text",
+            "Type": "varchar(64)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "users_suspicion",
+            "Non_unique": "0",
+            "Key_name": "PRIMARY",
+            "Seq_in_index": "1",
+            "Column_name": "id_user",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

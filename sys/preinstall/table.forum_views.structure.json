@@ -1,0 +1,85 @@
+{
+    "Properties": {
+        "Name": "forum_views",
+        "Engine": "MyISAM",
+        "Row_format": "Fixed",
+        "Max_data_length": "3659174697238527",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": "Форум: Просмотры тем"
+    },
+    "Columns": [
+        {
+            "Field": "id_theme",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "id_user",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "time",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "forum_views",
+            "Non_unique": "1",
+            "Key_name": "id_theme",
+            "Seq_in_index": "1",
+            "Column_name": "id_theme",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "forum_views",
+            "Non_unique": "1",
+            "Key_name": "id_theme_2",
+            "Seq_in_index": "1",
+            "Column_name": null,
+            "Columns": [
+                "id_theme",
+                "id_user"
+            ],
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

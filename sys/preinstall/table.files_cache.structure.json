@@ -1,0 +1,122 @@
+{
+    "Properties": {
+        "Name": "files_cache",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": "Список файлов для счетчика"
+    },
+    "Columns": [
+        {
+            "Field": "id",
+            "Type": "int(11)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "auto_increment",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "path_file_rel",
+            "Type": "text",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "time_add",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "group_show",
+            "Type": "tinyint(3) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "runame",
+            "Type": "varchar(128)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "files_cache",
+            "Non_unique": "0",
+            "Key_name": "PRIMARY",
+            "Seq_in_index": "1",
+            "Column_name": "id",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "files_cache",
+            "Non_unique": "1",
+            "Key_name": "group_show",
+            "Seq_in_index": "1",
+            "Column_name": null,
+            "Columns": [
+                "group_show",
+                "time_add"
+            ],
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "files_cache",
+            "Non_unique": "1",
+            "Key_name": "path_file_rel",
+            "Seq_in_index": "1",
+            "Column_name": "path_file_rel",
+            "Columns": null,
+            "Collation": null,
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "FULLTEXT",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

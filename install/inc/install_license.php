@@ -19,5 +19,3 @@ class install_license {
     }
 
 }
-
-?>
