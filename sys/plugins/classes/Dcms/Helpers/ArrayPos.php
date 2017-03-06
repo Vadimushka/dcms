@@ -1,9 +1,11 @@
 <?php
 
+namespace Dcms\Helpers;
+
 /**
  * мега велосипед для работы с позициями элементов в массиве.
  */
-abstract class arraypos {
+abstract class ArrayPos {
 
     /**
      * Получение позиции элемента в массиве

@@ -8,6 +8,9 @@ class menu_ini {
     public $icons = true; // отображение иконок меню    
     public $menu_arr = array(); // загруженный INI файл меню в массив
     protected $_listings = array();
+    /**
+     * @var \listing
+     */
     protected $_listing;
     protected $_values = array(); // переменные, доступные в строках меню
 

@@ -50,7 +50,7 @@ if (isset($_GET['sortable'])) {
 
     foreach ($sortable as $position => $key) {
         // echo "$position $key\n";
-        arraypos::setPosition($widgets_conf, $key, $position + 1);
+        Dcms\Helpers\ArrayPos::setPosition($widgets_conf, $key, $position + 1);
     }
 
     header('Content-type: application/json');
