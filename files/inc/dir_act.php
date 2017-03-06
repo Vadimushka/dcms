@@ -161,7 +161,7 @@ if ($access_edit) {
     }
 
     if (isset($_POST ['edit_unlink']) && $rel_path && $dir->name{0} !== '.') {
-        if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session'])) {
+        if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST ['captcha'], $_POST ['captcha_session'])) {
             $design->err(__('Проверочное число введено неверно'));
         } else {
             if ($dir->delete()) {

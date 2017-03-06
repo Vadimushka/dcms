@@ -32,7 +32,7 @@ if (isset($_POST['change'])) {
     $id_old = $ank->id;
     $res = $db->prepare("SELECT COUNT(*) FROM `users` WHERE `id` = ?");
     $res->execute(Array($id_new));
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($id_new < 0) {
         $doc->err(__('Идентификатор не может быть отрицательным'));

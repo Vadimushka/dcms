@@ -266,7 +266,7 @@ if ($can_write && isset($_POST['send']) && isset($_POST['message']) && isset($_P
         // повторная отправка формы
         // вывод сообщений, возможно, будет лишним
     } else if ($file->id_user && $file->id_user != $user->id && (empty($_POST['captcha']) || empty($_POST['captcha_session'])
-            || !captcha::check($_POST['captcha'], $_POST['captcha_session']))
+            || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session']))
     ) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($dcms->censure && $mat = is_valid::mat($message)) {

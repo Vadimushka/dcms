@@ -26,7 +26,7 @@ if (!$category = $q->fetch()) {
 $doc->title = __('Удаление категории "%s"', $category['name']); // шапка страницы
 
 if (isset($_POST['delete'])) {
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {
         $q = $db->prepare("SELECT `id` FROM `forum_themes` WHERE `id_category` = ?");

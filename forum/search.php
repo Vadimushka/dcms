@@ -26,7 +26,7 @@ if (!isset($_GET['cache']) || empty($searched)) {
     $searched_mark = array();
 }
 if (!empty($_POST['query'])) {
-    if ($dcms->forum_search_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])))
+    if ($dcms->forum_search_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session'])))
         $doc->err(__('Код с картинки введен неверно'));
     else {
         $stemmer = new stemmer();

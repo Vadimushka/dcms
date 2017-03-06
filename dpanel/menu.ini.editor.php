@@ -33,7 +33,7 @@ if (!empty($_GET['menu'])) {
         $item = $m_obj->menu_arr[$item_name];
         $doc->title = __('Меню "%s" - %s', $menu, $item_name);
         if (!empty($_POST['delete'])) {
-            if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+            if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
                 $doc->err(__('Проверочное число введено неверно'));
             } else {
                 $ini = ini::read(H . '/sys/ini/menu.' . $menu . '.ini', true);

@@ -6,7 +6,7 @@ $doc->title = __('Вход в админку');
 
 if (!dpanel::is_access() && (empty($_POST['captcha_session']) || empty($_POST['captcha']))) {
     $doc->msg(__('Для входа в админку необходимо пройти капчу'));
-} elseif (!dpanel::is_access() && !captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
+} elseif (!dpanel::is_access() && !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session'])) {
     $doc->err(__('Вы ошиблись при вводе чисел с картинки'));
 } else {
     dpanel::access(); // разрешаем доступ к админке

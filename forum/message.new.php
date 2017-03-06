@@ -46,7 +46,7 @@ if ($can_write) {
             $doc->err(__('Сообщение уже отправлено или вы пытаетесь ответить сами себе'));
             exit;
         } elseif ($dcms->forum_message_captcha && $user->group < 2 && (empty($_POST['captcha']) || empty($_POST['captcha_session'])
-            || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
+            || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
             $doc->err(__('Проверочное число введено неверно'));
         } elseif ($message) {
             $user->balls += $dcms->add_balls_message_forum ;

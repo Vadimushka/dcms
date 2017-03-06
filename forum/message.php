@@ -63,7 +63,7 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
     $message_re = text::input_text($message);
 
     if ($dcms->forum_message_captcha && $user->group < 2 && (empty($_POST['captcha']) || empty($_POST['captcha_session'])
-        || !captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
+        || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($dcms->censure && $mat = is_valid::mat($message_re)) {
         $doc->err(__('Обнаружен мат: %', $mat));

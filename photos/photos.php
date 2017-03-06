@@ -123,7 +123,7 @@ if (!empty($_GET ['act']) && $ank->id == $user->id) {
 
             if (!empty($_POST ['delete'])) {
 
-                if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'],
+                if (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST ['captcha'],
                         $_POST ['captcha_session'])) $doc->err(__('Проверочное число введено неверно'));
                 elseif ($album->delete()) {
                     $doc->msg(__('Альбом успешно удален'));

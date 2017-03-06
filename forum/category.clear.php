@@ -23,7 +23,7 @@ if (!$category = $q->fetch()) {
 $doc->title = __('Чистка категории "%s"', $category['name']); // шапка страницы
 
 if (isset($_POST['clear'])) {
-    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !captcha::check($_POST['captcha'],
+    if (empty($_POST['captcha']) || empty($_POST['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST['captcha'],
             $_POST['captcha_session'])) {
         $doc->err(__('Проверочное число введено неверно'));
     } else {

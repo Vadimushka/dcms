@@ -53,7 +53,7 @@ if ($can_write && isset($_POST ['message']) && isset($_POST ['name'])) {
         $doc->err(__('Обнаружен мат: %s', $mat));
     elseif ($dcms->censure && $mat = is_valid::mat($name))
         $doc->err(__('Обнаружен мат: %s', $mat));
-    elseif ($dcms->forum_theme_captcha && $user->group < 2 && (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !captcha::check($_POST ['captcha'], $_POST ['captcha_session']))) {
+    elseif ($dcms->forum_theme_captcha && $user->group < 2 && (empty($_POST ['captcha']) || empty($_POST ['captcha_session']) || !Dcms\Helpers\Captcha::check($_POST ['captcha'], $_POST ['captcha_session']))) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($message && $name) {
         $user->balls += $dcms->add_balls_create_theme ;
