@@ -1,5 +1,5 @@
 <?php
-define("DCMS_REQUIRE_PHP_VERSION", "5.2");
+define("DCMS_REQUIRE_PHP_VERSION", "5.4");
 
 // Проверяем версию PHP
 version_compare(PHP_VERSION, DCMS_REQUIRE_PHP_VERSION, '>=') or die('Требуется PHP >= ' . DCMS_REQUIRE_PHP_VERSION);
