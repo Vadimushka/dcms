@@ -1,14 +1,13 @@
 <?php
-define("DCMS_REQUIRE_PHP_VERSION", "5.4");
-
-// Проверяем версию PHP
-version_compare(PHP_VERSION, DCMS_REQUIRE_PHP_VERSION, '>=') or die('Требуется PHP >= ' . DCMS_REQUIRE_PHP_VERSION);
 
 /**
  * Константы и функции, необходимые для работы движка.
  * Выделены в отдельный файл чтобы избежать дублирования кода в инсталляторе
  */
 require_once dirname(__FILE__) . '/initialization.php';
+
+// Проверяем версию PHP
+version_compare(PHP_VERSION, DCMS_REQUIRE_PHP_VERSION, '>=') or die('Требуется PHP >= ' . DCMS_REQUIRE_PHP_VERSION);
 
 /**
  * во время автоматического обновления не должно быть запросов со стороны пользователя
