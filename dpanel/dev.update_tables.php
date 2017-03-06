@@ -5,11 +5,18 @@ dpanel::check_access();
 $doc = new document(6);
 $doc->title = __('Обновление структуры таблиц');
 
-$tables_exists = new tables();
-$table_files = (array)glob(H . '/sys/preinstall/base.create.*.ini');
+$dbStructure = new \Dcms\Helpers\DbStructure\DbStructure();
+$dbStructure->loadFromBase(Db::me());
+
+$dbTables = [];
+foreach ($dbStructure->Tables as $table) {
+    $dbTables[] = $table->Properties->Name;
+}
+
+$table_files = (array)glob(H . '/sys/preinstall/table.*.structure.json');
 $tables = array();
 foreach ($table_files as $table_file) {
-    preg_match('#base.create\.(.+)\.ini#ui', $table_file, $m);
+    preg_match('#table\.(.+)\.structure\.json#ui', $table_file, $m);
     $tables[] = $m[1];
 }
 
@@ -23,22 +30,25 @@ if (!empty($_POST)) {
                 set_time_limit(600);
 
             if (!empty($_POST['load'])) {
-                if (!is_file(H . '/sys/preinstall/base.create.' . $table . '.ini'))
+                if (!is_file(H . '/sys/preinstall/table.' . $table . '.structure.json'))
                     continue;
 
-                $tab = new table_structure(H . '/sys/preinstall/base.create.' . $table . '.ini');
+                $fTable = new \Dcms\Helpers\DbStructure\DbStructureTable();
+                $fTable->loadFromJsonFile(H . '/sys/preinstall/table.' . $table . '.structure.json');
+
                 // если такая таблица уже существует, то получаем запрос на ее изменение
-                if (in_array($table, $tables_exists->tables)) {
-                    $tab_old = new table_structure();
-                    $tab_old->loadFromBase($table);
-                    $sql = $tab_old->getSQLQueryChange($tab);
+                if (in_array($table, $dbTables)) {
+
+                    $dbTable = new \Dcms\Helpers\DbStructure\DbStructureTable();
+                    $dbTable->loadFromBase(DB::me(), $table);
+
+                    $sql = $dbTable->getSQLChange($fTable);
                 } else
-                    $sql = $tab->getSQLQueryCreate();
+                    $sql = $fTable->getSQLCreate();
 
                 if ($db->query($sql)) {
                     $doc->msg(__('Запрос на изменение таблицы "%s" успешно выполнен', $table));
-                    $tables_exists = new tables();
-                    if (in_array($table, $tables_exists->tables))
+                    if (in_array($table, $dbTables))
                         $doc->msg(__('Таблица "%s" успешно изменена', $table));
                     else
                         $doc->err(__('Таблица "%s" не создана', $table));
@@ -54,16 +64,19 @@ foreach ($tables as $table) {
 
     $checked = false;
     $sql = false;
-    if (!in_array($table, $tables_exists->tables)) {
+    if (!in_array($table, $dbTables)) {
         // таблица не существует в базе, значит нужно создать
         $checked = true;
     } else {
-        $tab_old = new table_structure();
-        $tab_old->loadFromBase($table);
 
-        $tab_new = new table_structure(H . '/sys/preinstall/base.create.' . $table . '.ini');
+        $dbTable = new \Dcms\Helpers\DbStructure\DbStructureTable();
+        $dbTable->loadFromBase(DB::me(), $table);
+
+        $fTable = new \Dcms\Helpers\DbStructure\DbStructureTable();
+        $fTable->loadFromJsonFile(H . '/sys/preinstall/table.' . $table . '.structure.json');
+
         // если есть изменения, то обновляем
-        if ($sql = $tab_old->getSQLQueryChange($tab_new))
+        if ($sql = $dbTable->getSQLChange($fTable))
             $checked = true;
     }
 

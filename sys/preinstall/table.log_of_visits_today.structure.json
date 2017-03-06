@@ -1,0 +1,111 @@
+{
+    "Properties": {
+        "Name": "log_of_visits_today",
+        "Engine": "MyISAM",
+        "Row_format": "Fixed",
+        "Max_data_length": "5066549580791807",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": ""
+    },
+    "Columns": [
+        {
+            "Field": "time",
+            "Type": "int(11)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "iplong",
+            "Type": "bigint(20)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "id_browser",
+            "Type": "int(11)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "browser_type",
+            "Type": "enum('light','mobile','full','robot')",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Тип браузера"
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "log_of_visits_today",
+            "Non_unique": "1",
+            "Key_name": "iplong",
+            "Seq_in_index": "1",
+            "Column_name": null,
+            "Columns": [
+                "iplong",
+                "id_browser"
+            ],
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "log_of_visits_today",
+            "Non_unique": "1",
+            "Key_name": "browser_type",
+            "Seq_in_index": "1",
+            "Column_name": "browser_type",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "log_of_visits_today",
+            "Non_unique": "1",
+            "Key_name": "time",
+            "Seq_in_index": "1",
+            "Column_name": "time",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

@@ -12,10 +12,11 @@ class install_save_settings {
     function actions() {
         $return = false;
         if ($this->is_writed = ini::save(H . '/sys/ini/settings.ini', $this->settings)) {
-            $return = true;
 
             unset($_SESSION);
-            session_destroy();
+            @session_destroy();
+            @session_name(SESSION_NAME);
+            @session_start();
 
             foreach ($_COOKIE as $key => $value) {
                 setcookie($key);
@@ -40,5 +41,3 @@ class install_save_settings {
     }
 
 }
-
-?>

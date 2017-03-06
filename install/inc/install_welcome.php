@@ -11,5 +11,3 @@ class install_welcome {
         return true;
     }
 }
-
-?>

@@ -1,0 +1,158 @@
+{
+    "Properties": {
+        "Name": "log_of_user_aut",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": "Лоґ авторизацій 2.5"
+    },
+    "Columns": [
+        {
+            "Field": "id_user",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "ID юзера"
+        },
+        {
+            "Field": "user_id",
+            "Type": "int(16) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": "0",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "ID юзера ВК"
+        },
+        {
+            "Field": "method",
+            "Type": "enum('cookie','post','get','vk')",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": "post",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Метод"
+        },
+        {
+            "Field": "iplong",
+            "Type": "bigint(20)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "IP Адрес"
+        },
+        {
+            "Field": "time",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "дата"
+        },
+        {
+            "Field": "browser",
+            "Type": "varchar(64)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Назва браузера"
+        },
+        {
+            "Field": "id_browser",
+            "Type": "int(11)",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": "0",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "ID браузера"
+        },
+        {
+            "Field": "browser_ua",
+            "Type": "varchar(256)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "user-agent"
+        },
+        {
+            "Field": "domain",
+            "Type": "varchar(20)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Домен"
+        },
+        {
+            "Field": "status",
+            "Type": "enum('0','1')",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": "0",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Статус авторизации"
+        },
+        {
+            "Field": "count",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": "1",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "К-сть"
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "log_of_user_aut",
+            "Non_unique": "1",
+            "Key_name": "id_user",
+            "Seq_in_index": "1",
+            "Column_name": null,
+            "Columns": [
+                "id_user",
+                "iplong"
+            ],
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

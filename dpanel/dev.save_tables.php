@@ -5,24 +5,32 @@ dpanel::check_access();
 $doc = new document(groups::max());
 $doc->title = __('Сохранение таблиц');
 
-$tables = new tables();
+$dbStructure = new \Dcms\Helpers\DbStructure\DbStructure();
+$dbStructure->loadFromBase(Db::me());
+
+$tables = [];
+foreach ($dbStructure->Tables as $table) {
+    $tables[] = $table->Properties->Name;
+}
 
 if (!empty($_POST)) {
     foreach ($_POST as $table => $val) {
-        // echo $table."<br />";
         if (!$val)
             continue;
-        if (in_array($table, $tables->tables)) {
+        if (in_array($table, $tables)) {
             if (function_exists('set_time_limit'))
                 set_time_limit(600);
 
             if (!empty($_POST['create'])) {
-                $tab = new table_structure();
-                $tab->loadFromBase($table);
-                $tab->saveToIniFile(H . '/sys/preinstall/base.create.' . $table . '.ini');
+                $tableStructure = new \Dcms\Helpers\DbStructure\DbStructureTable();
+                $tableStructure->loadFromBase(Db::me(), $table);
+                $tableStructure->saveToJsonFile(H . '/sys/preinstall/table.' . $table . '.structure.json');
             }
             if (!empty($_POST['data'])) {
-                $tables->save_data(H . '/sys/preinstall/base.data.' . $table . '.sql', $table);
+                $tableRows = new \Dcms\Helpers\DbStructure\DbStructureRows();
+                $tableRows->loadFromBase(Db::me(), $table);
+//                $tableRows->saveToJsonFile(H . '/sys/preinstall/table.' . $table . '.data.json');
+                $tableRows->saveToSQLReplaceFile(H . '/sys/preinstall/table.' . $table . '.data.sql', Db::me(), $table);
             }
         }
     }
@@ -40,8 +48,8 @@ if (!empty($_POST)) {
 }
 
 $listing = new listing();
-foreach ($tables->tables as $table) {
-    if ($table {0} == '~') {
+foreach ($tables as $table) {
+    if ($table{0} == '~') {
         continue;
     }
     $ch = $listing->checkbox();

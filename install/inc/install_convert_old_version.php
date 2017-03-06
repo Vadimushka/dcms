@@ -378,5 +378,3 @@ class install_convert_old_version {
     }
 
 }
-
-?>

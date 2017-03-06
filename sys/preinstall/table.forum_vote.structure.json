@@ -1,0 +1,236 @@
+{
+    "Properties": {
+        "Name": "forum_vote",
+        "Engine": "MyISAM",
+        "Row_format": "Dynamic",
+        "Max_data_length": "281474976710655",
+        "Collation": "utf8_general_ci",
+        "Charset": "utf8",
+        "Create_options": "",
+        "Comment": "Голосования"
+    },
+    "Columns": [
+        {
+            "Field": "id",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "PRI",
+            "Default": null,
+            "Extra": "auto_increment",
+            "Privileges": "select,insert,update,references",
+            "Comment": ""
+        },
+        {
+            "Field": "id_autor",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Создатель"
+        },
+        {
+            "Field": "group_view",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": "0",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Группа, которой доступен просмотр"
+        },
+        {
+            "Field": "group_vote",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "",
+            "Default": "1",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Группа, которой доступно внесение голоса"
+        },
+        {
+            "Field": "active",
+            "Type": "enum('1','0')",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": "1",
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Признак активности"
+        },
+        {
+            "Field": "id_theme",
+            "Type": "int(10) unsigned",
+            "Collation": null,
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Тема в форуме"
+        },
+        {
+            "Field": "name",
+            "Type": "varchar(1024)",
+            "Collation": "utf8_general_ci",
+            "Null": "NO",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Предмет голосования"
+        },
+        {
+            "Field": "v1",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа 1"
+        },
+        {
+            "Field": "v2",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа  2"
+        },
+        {
+            "Field": "v3",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа 3"
+        },
+        {
+            "Field": "v4",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа 4"
+        },
+        {
+            "Field": "v5",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа 5"
+        },
+        {
+            "Field": "v6",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа 6"
+        },
+        {
+            "Field": "v7",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа 7"
+        },
+        {
+            "Field": "v8",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа 8"
+        },
+        {
+            "Field": "v9",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа 9"
+        },
+        {
+            "Field": "v10",
+            "Type": "varchar(32)",
+            "Collation": "utf8_general_ci",
+            "Null": "YES",
+            "Key": "",
+            "Default": null,
+            "Extra": "",
+            "Privileges": "select,insert,update,references",
+            "Comment": "Вариант ответа 10"
+        }
+    ],
+    "Keys": [
+        {
+            "Table": "forum_vote",
+            "Non_unique": "0",
+            "Key_name": "PRIMARY",
+            "Seq_in_index": "1",
+            "Column_name": "id",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        },
+        {
+            "Table": "forum_vote",
+            "Non_unique": "1",
+            "Key_name": "id_theme",
+            "Seq_in_index": "1",
+            "Column_name": "id_theme",
+            "Columns": null,
+            "Collation": "A",
+            "Sub_part": null,
+            "Packed": null,
+            "Null": "",
+            "Index_type": "BTREE",
+            "Comment": "",
+            "Index_comment": null
+        }
+    ],
+    "ForeignKeys": [
+
+    ]
+}

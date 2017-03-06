@@ -32,5 +32,3 @@ class install_check_platform {
     }
 
 }
-
-?>
