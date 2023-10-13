@@ -50,6 +50,7 @@ class DB
             self::$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             self::$pdo->query("SET NAMES utf8;");
+            self::$pdo->query('SET SESSION sql_mode="ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION";');
         }
         return self::$pdo;
     }
