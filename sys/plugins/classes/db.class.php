@@ -48,6 +48,7 @@ class DB
 
             self::$pdo = new PDO('mysql:host=' . self::$host . ';dbname=' . self::$db_name, self::$user, self::$password);
             self::$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             self::$pdo->query("SET NAMES utf8;");
         }
         return self::$pdo;
