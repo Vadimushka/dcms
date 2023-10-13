@@ -17,14 +17,14 @@ $error = false;
 $inv = &$_SESSION['reg']['invite'];
 if (!$inv && isset($_GET['invite']) && $_GET['invite']) {
     $q = $db->prepare("SELECT * FROM `invations` WHERE `code` = ? AND `id_invite` IS NULL AND `email` IS NOT NULL LIMIT 1");
-    $q->execute(Array($_GET['invite']));
+    $q->execute(array($_GET['invite']));
     if ($inv = $q->fetch()) {
 
 
         // $doc->msg('Пригласительный учтен');
 
         $res = $db->prepare("UPDATE `invations` SET `code` = null WHERE `id` = ? LIMIT 1");
-        $res->execute(Array($inv['id']));
+        $res->execute(array($inv['id']));
     } else {
         $doc->err(__('Пригласительный недействителен'));
     }
@@ -56,7 +56,7 @@ if ($step == 1 && $step_name === 'nick' && isset($_POST['login'])) {
     if (is_valid::nick($_POST['login'])) {
         $login = $_POST['login'];
         $res = $db->prepare("SELECT * FROM `users` WHERE login =?;");
-        $res->execute(Array($login));
+        $res->execute(array($login));
         if (!$res->fetch()) {
             if ($_POST['login'] != htmlspecialchars($_POST['login'])) {
                 $doc->err(__('В нике содержатся запрещенные символы'));
@@ -94,7 +94,7 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
         }
 
         $res = $db->prepare("SELECT * FROM users WHERE `reg_mail`=?");
-        $res->execute(Array($_POST['mail']));
+        $res->execute(array($_POST['mail']));
         if ($res->fetch()) {
             $doc->err(__('Пользователь с таким e-mail уже зарегистрирован'));
             $error = true;
@@ -123,45 +123,41 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
 
             try {
                 $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `a_code`, `reg_mail`) VALUES (?, ?, ?, ?, ?, ?)");
-                $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code, $_POST['mail']));
-            } catch (PDOException $exception) {
-                echo "<pre>";
-                print_r($exception->getMessage());
-                echo "</pre>";
-                exit;
-            }
+                $res->execute(array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code, $_POST['mail']));
+
+                $id_user = $db->lastInsertId();
+
+                if ($id_user && is_numeric($id_user)) {
+
+                    if ($susp = is_valid::suspicion($inv['email'] . ' ' . $_SESSION['reg']['login'])) {
+                        // подозрительный e-mail или логин
+                        $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
+                        $res->execute(array($id_user, $susp));
+                        $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике или адресе email была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]",
+                            4);
+                    }
 
 
-
-            $id_user = $db->lastInsertId();
-
-            if ($id_user && is_numeric($id_user)) {
-
-
-                if ($susp = is_valid::suspicion($inv['email'] . ' ' . $_SESSION['reg']['login'])) {
-                    // подозрительный e-mail или логин
-                    $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
-                    $res->execute(Array($id_user, $susp));
-                    $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике или адресе email была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]",
-                        4);
-                }
-
-
-                $t = new design();
-                $t->assign('title', __('Успешная регистрация'));
-                $t->assign('login', $_SESSION['reg']['login']);
-                $t->assign('password', $_POST['password']);
-                $t->assign('site', $dcms->sitename);
-                $t->assign('url',
-                    'http://' . $_SERVER['HTTP_HOST'] . '/activation.php?id=' . $id_user . '&code=' . $a_code . (isset($_GET['return'])
+                    $t = new design();
+                    $t->assign('title', __('Успешная регистрация'));
+                    $t->assign('login', $_SESSION['reg']['login']);
+                    $t->assign('password', $_POST['password']);
+                    $t->assign('site', $dcms->sitename);
+                    $t->assign('url',
+                        'http://' . $_SERVER['HTTP_HOST'] . '/activation.php?id=' . $id_user . '&code=' . $a_code . (isset($_GET['return'])
                             ? '&return=' . urlencode($_GET['return']) : null));
-                if (mail::send($_POST['mail'], 'Регистрация',
+                    if (mail::send($_POST['mail'], 'Регистрация',
                         $t->fetch('file:' . H . '/sys/templates/mail.activation.tpl'))) {
-                    $step = 3;
-                    //$doc->msg(__('На Ваш E-mail отправлено письмо с ссылкой для активации аккаунта'));
-                } else $doc->err(__('Ошибка при отправке email, попробуйте позже'));
-            } else {
-                $doc->err(__('Ошибка при регистрации. Попробуйте позже'));
+                        $step = 3;
+                        //$doc->msg(__('На Ваш E-mail отправлено письмо с ссылкой для активации аккаунта'));
+                    } else $doc->err(__('Ошибка при отправке email, попробуйте позже'));
+                } else {
+                    $doc->err(__('Ошибка при регистрации. Попробуйте позже'));
+                    $step = 1;
+                }
+            } catch (PDOException $exception) {
+
+                $doc->err(__('Ошибка при регистрации. Попробуйте позже') . $exception->getMessage());
                 $step = 1;
             }
         }
@@ -186,7 +182,7 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
         }
 
         $res = $db->prepare("SELECT * FROM `users` WHERE `reg_mail` = ?");
-        $res->execute(Array($inv['email']));
+        $res->execute(array($inv['email']));
         if ($res->fetch()) {
             $doc->err(__('Пользователь с таким e-mail уже зарегистрирован'));
             $error = true;
@@ -195,7 +191,7 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
         //Если нет ошибок
         if (!$error) {
             $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `reg_mail`) VALUES(?, ?, ?, ?, ?)");
-            $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $inv['email']));
+            $res->execute(array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $inv['email']));
             $id_user = $db->lastInsertId();
 
             if ($id_user && is_numeric($id_user)) {
@@ -203,23 +199,22 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
                 if ($susp = is_valid::suspicion($inv['email'] . ' ' . $_SESSION['reg']['login'])) {
                     // подозрительный e-mail или логин
                     $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
-                    $res->execute(Array($id_user, $susp));
+                    $res->execute(array($id_user, $susp));
                     $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике или адресе email была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]",
                         4);
                 }
 
 
-
                 $res = $db->prepare("UPDATE `invations` SET `id_invite` = ?, `time_reg` = ? WHERE `id` = ? LIMIT 1");
-                $res->execute(Array($id_user, TIME, $inv['id']));
+                $res->execute(array($id_user, TIME, $inv['id']));
                 $res = $db->prepare("UPDATE `users` SET `balls` = `balls` * '1.1' WHERE `id` = ? LIMIT 1");
-                $res->execute(Array($inv['id_user']));
+                $res->execute(array($inv['id_user']));
                 $step = 3;
             }
         }
     } else {
         $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`) VALUES (?, ?, ?, ?)");
-        $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex));
+        $res->execute(array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex));
         $id_user = $db->lastInsertId();
 
 
@@ -228,7 +223,7 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
             if ($susp = is_valid::suspicion($_SESSION['reg']['login'])) {
                 // подозрительный логин
                 $res = $db->prepare("INSERT INTO `users_suspicion` (`id_user`, `text`) VALUES (?, ?)");
-                $res->execute(Array($id_user, $susp));
+                $res->execute(array($id_user, $susp));
                 $dcms->distribution("Пользователь [user]{$id_user}[/user] сочтен подозрительным, так как в нике была обнаружена несвязная комбинация символов: {$susp}\n[url=/dpanel/users.suspicious.php]Список подозрительных пользователей[/url]",
                     4);
             }
