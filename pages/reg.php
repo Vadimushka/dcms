@@ -122,7 +122,25 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
             $a_code = md5(passgen());
 
             $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `a_code`, `reg_mail`) VALUES (?, ?, ?, ?, ?, ?)");
-            $result = $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code, $_POST['mail']));
+            echo "<pre>";
+            print_r([
+                TIME,
+                $_SESSION['reg']['login'],
+                crypt::hash($_POST['password'], $dcms->salt),
+                $sex,
+                $a_code,
+                $_POST['mail']
+            ]);
+            echo "</pre>";
+            exit;
+            $result = $res->execute([
+                TIME,
+                $_SESSION['reg']['login'],
+                crypt::hash($_POST['password'], $dcms->salt),
+                $sex,
+                $a_code,
+                $_POST['mail']
+            ]);
 
 
             if (!$result) {
