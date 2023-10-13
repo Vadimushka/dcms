@@ -92,7 +92,17 @@ abstract class mail
         $headers .= "Subject: $title$EOL";
         $headers .= "Mime-Version: 1.0$EOL";
         $headers .= "Content-Type: text/html; charset=\"utf-8\"$EOL";
-        return mail($to, '=?utf-8?B?' . base64_encode($title) . '?=', $content, $headers);
+        $mail = mail($to, '=?utf-8?B?' . base64_encode($title) . '?=', $content, $headers);
+
+        echo "<pre>";
+        print_r($to);
+        print_r('=?utf-8?B?' . base64_encode($title) . '?=');
+        print_r($mail);
+        print_r($content);
+        print_r($headers);
+        echo "</pre>";
+        exit;
+        return $mail;
     }
 
 }
