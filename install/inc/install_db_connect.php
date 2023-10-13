@@ -17,10 +17,11 @@ class install_db_connect
         if (isset($_POST['mysql_pass'])) $this->settings['mysql_pass'] = $_POST['mysql_pass'];
         if (isset($_POST['mysql_base'])) $this->settings['mysql_base'] = $_POST['mysql_base'];
 
-        if (!@mysql_connect($this->settings['mysql_host'], $this->settings['mysql_user'], $this->settings['mysql_pass'])) {
-            $this->err_str = mysql_error();
+        $mysqli = @mysqli_connect($this->settings['mysql_host'], $this->settings['mysql_user'], $this->settings['mysql_pass']);
+        if (!$mysqli) {
+            $this->err_str = mysqli_error($mysqli);
             $this->err_connect = true;
-        } elseif (!@mysql_select_db($this->settings['mysql_base']))
+        } elseif (!@mysqli_select_db($mysqli, $this->settings['mysql_base']))
             $this->err_db = true;
         else
             $this->is_connected = true;
