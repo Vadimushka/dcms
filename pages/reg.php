@@ -122,8 +122,16 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
             $a_code = md5(passgen());
 
             $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `a_code`, `reg_mail`) VALUES (?, ?, ?, ?, ?, ?)");
-            $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code,
-                $_POST['mail']));
+            $result = $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code, $_POST['mail']));
+
+
+            if (!$result) {
+                print_r($db->errorInfo());
+                exit;
+            }
+
+
+
             $id_user = $db->lastInsertId();
 
             if ($id_user && is_numeric($id_user)) {
@@ -152,7 +160,7 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
                     //$doc->msg(__('На Ваш E-mail отправлено письмо с ссылкой для активации аккаунта'));
                 } else $doc->err(__('Ошибка при отправке email, попробуйте позже'));
             } else {
-                $doc->err(__('Ошибка при регистрации. Попробуйте позже') . json_encode($db->errorInfo(), JSON_UNESCAPED_UNICODE));
+                $doc->err(__('Ошибка при регистрации. Попробуйте позже'));
                 $step = 1;
             }
         }
