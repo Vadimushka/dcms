@@ -121,8 +121,17 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
 
             $a_code = md5(passgen());
 
-            $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `a_code`, `reg_mail`) VALUES (?, ?, ?, ?, ?, ?)");
-            $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code, $_POST['mail']));
+            try {
+                $res = $db->prepare("INSERT INTO `users` (`reg_date`, `login`, `password`, `sex`, `a_code`, `reg_mail`) VALUES (?, ?, ?, ?, ?, ?)");
+                $res->execute(Array(TIME, $_SESSION['reg']['login'], crypt::hash($_POST['password'], $dcms->salt), $sex, $a_code, $_POST['mail']));
+            } catch (PDOException $exception) {
+                echo "<pre>";
+                print_r($exception->getMessage());
+                echo "</pre>";
+                exit;
+            }
+
+
 
             $id_user = $db->lastInsertId();
 
