@@ -152,7 +152,7 @@ if ($step == 2 && $step_name === 'final' && isset($_POST['sex'])) {
                     //$doc->msg(__('На Ваш E-mail отправлено письмо с ссылкой для активации аккаунта'));
                 } else $doc->err(__('Ошибка при отправке email, попробуйте позже'));
             } else {
-                $doc->err(__('Ошибка при регистрации. Попробуйте позже'));
+                $doc->err(__('Ошибка при регистрации. Попробуйте позже') . json_encode($db->errorInfo(), JSON_UNESCAPED_UNICODE));
                 $step = 1;
             }
         }
