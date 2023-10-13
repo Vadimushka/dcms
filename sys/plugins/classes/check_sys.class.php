@@ -49,7 +49,7 @@ class check_sys {
             $this->errors[] = __('Требуется PHP >= %s (сейчас %s)', '5.2', PHP_VERSION);
         }
         // проверка MySQL
-        if (function_exists('mysql_info')) {
+        if (function_exists('mysqli_info')) {
             $this->oks[] = 'MySQL: OK';
         } else {
             $this->errors[] = __('Невозможно получить информацию о MySQL');
@@ -113,7 +113,7 @@ class check_sys {
         if (!ini_get('magic_quotes_gpc')) {
             $this->oks[] = 'magic_quotes_gpc = 0: OK';
         } else {
-            
+
         }$this->notice[] = __('Параметр magic_quotes_gpc установлен в 1. Экранирование кавычек будет добавлять обратный слэш перед каждой кавычкой.');
 
         if (ini_get('arg_separator.output') == '&amp;') {
