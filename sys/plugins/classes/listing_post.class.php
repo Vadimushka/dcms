@@ -15,7 +15,7 @@ class listing_post extends ui
     public $time = '';
     public $image = '';
     public $title = '';
-    public $content = '';
+    public $content = [];
     public $bottom = '';
     public $highlight = false;
     public $actions = array();
@@ -38,7 +38,7 @@ class listing_post extends ui
         $this->id = $this->_data['id'];
 
         $this->title = $title;
-        $this->content = $content;
+        $this->content = is_array($content) ? $content : [$content];
     }
 
     public function __get($name)
@@ -115,7 +115,6 @@ class listing_post extends ui
         if (is_array($this->content)) {
             $this->content = text::toOutput(implode("\n", $this->content));
         }
-        $this->_data['content'] = $this->content;
         $this->_data['counter'] = $this->counter;
         $this->_data['image'] = $this->image;
         $this->_data['icon'] = $this->icon;
