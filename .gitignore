@@ -6,6 +6,10 @@ build/
 nbproject/
 /sys/logs/
 /sys/tmp/
+/sys/ini/iv.dat
+/sys/ini/settings.ini
+/sys/themes/.common/icons.css
+/sys/themes/.common/icons.png
 /sys/files/*.!config.dir.ini
 /sys/languages/*/_*.lng
 /*ehthumbs.db
