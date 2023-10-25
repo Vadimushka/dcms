@@ -9,8 +9,9 @@ class ui_contaner extends ui {
     }
 
     public function add($ui) {
-        if (!is_a($ui, 'ui'))
+        if (!$ui instanceof ui) {
             return false;
+        }
         return $this->_ui_list[] = $ui;
     }
 
@@ -18,8 +19,9 @@ class ui_contaner extends ui {
 
         $this->_data['content'] = '';
         foreach ($this->_ui_list AS $post) {
-            if (is_a($post, 'ui'))
+            if ($post instanceof ui) {
                 $this->_data['content'] .= $post->fetch();
+            }
         }
 
         return parent::fetch();

@@ -115,6 +115,7 @@ class listing_post extends ui
         if (is_array($this->content)) {
             $this->content = text::toOutput(implode("\n", $this->content));
         }
+        $this->_data['content'] = $this->content;
         $this->_data['counter'] = $this->counter;
         $this->_data['image'] = $this->image;
         $this->_data['icon'] = $this->icon;
