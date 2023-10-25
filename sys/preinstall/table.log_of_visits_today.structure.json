@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "log_of_visits_today",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Fixed",
         "Max_data_length": "5066549580791807",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": ""
     },
@@ -46,7 +46,8 @@
         {
             "Field": "browser_type",
             "Type": "enum('light','mobile','full','robot')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "MUL",
             "Default": null,

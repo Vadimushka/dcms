@@ -35,8 +35,12 @@ class install_load_sql {
 
             DB::me()->query("DROP TABLE IF EXISTS `{$tab->Properties->Name}`");
 
-            if (!DB::me()->query($sql)) {
-                $this->errors[] = array($sql, DB::me()->errorInfo()[2]);
+            try {
+                if (!DB::me()->query($sql)) {
+                    $this->errors[] = array($sql, DB::me()->errorInfo()[2]);
+                }
+            } catch (Exception $exception) {
+                $this->errors[] = array($sql, $exception->getMessage());
             }
 
         }

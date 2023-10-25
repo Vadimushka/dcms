@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "users_online",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Пользователи online"
     },
@@ -45,11 +45,12 @@
         },
         {
             "Field": "request",
-            "Type": "varchar(1024)",
-            "Collation": "utf8_general_ci",
-            "Null": "YES",
+            "Type": "text",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
+            "Null": "NO",
             "Key": "MUL",
-            "Default": null,
+            "Default": "",
             "Extra": "",
             "Privileges": "select,insert,update,references",
             "Comment": "Последняя страница"

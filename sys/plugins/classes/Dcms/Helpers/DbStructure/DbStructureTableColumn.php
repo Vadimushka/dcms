@@ -8,6 +8,7 @@ class DbStructureTableColumn implements DbStructureTablePartI
     public $Field;
     public $Type;
     public $Collation;
+    public $Charset;
     public $Null;
     public $Key;
     public $Default;
@@ -21,6 +22,14 @@ class DbStructureTableColumn implements DbStructureTablePartI
     public function getSQLCreate()
     {
         $sql = "`{$this->Field}` {$this->Type}";
+
+        if ($this->Charset) {
+            $sql .= " CHARACTER SET $this->Charset";
+        }
+        if ($this->Collation) {
+            $sql .= " COLLATE $this->Collation";
+        }
+
         $sql .= ($this->Null == "NO" ? ' NOT' : '') . ' NULL';
 
         if (!is_null($this->Default) || $this->Null == "NO") {

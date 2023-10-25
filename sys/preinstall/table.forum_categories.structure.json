@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "forum_categories",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Форум - категории"
     },
@@ -35,7 +35,8 @@
         {
             "Field": "name",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -78,8 +79,9 @@
         },
         {
             "Field": "description",
-            "Type": "varchar(1024)",
-            "Collation": "utf8_general_ci",
+            "Type": "text",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -89,8 +91,9 @@
         },
         {
             "Field": "keywords",
-            "Type": "varchar(1024)",
-            "Collation": "utf8_general_ci",
+            "Type": "text",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,

@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "forum_vote",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Голосования"
     },
@@ -57,7 +57,8 @@
         {
             "Field": "active",
             "Type": "enum('1','0')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": "1",
@@ -78,8 +79,9 @@
         },
         {
             "Field": "name",
-            "Type": "varchar(1024)",
-            "Collation": "utf8_general_ci",
+            "Type": "text",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -90,7 +92,8 @@
         {
             "Field": "v1",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -101,7 +104,8 @@
         {
             "Field": "v2",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -112,7 +116,8 @@
         {
             "Field": "v3",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -123,7 +128,8 @@
         {
             "Field": "v4",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -134,7 +140,8 @@
         {
             "Field": "v5",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -145,7 +152,8 @@
         {
             "Field": "v6",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -156,7 +164,8 @@
         {
             "Field": "v7",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -167,7 +176,8 @@
         {
             "Field": "v8",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -178,7 +188,8 @@
         {
             "Field": "v9",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -189,7 +200,8 @@
         {
             "Field": "v10",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,

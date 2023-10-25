@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__) . '/../sys/inc/initialization.php';
 
- if ($_SESSION['language'] && languages::exists($_SESSION['language'])){
+if ($_SESSION['language'] && languages::exists($_SESSION['language'])) {
     $user_language_pack = new language_pack($_SESSION['language']);
 } else {
     $user_language_pack = new language_pack('english');
@@ -11,12 +11,13 @@ require_once dirname(__FILE__) . '/../sys/inc/initialization.php';
 /**
  * подключение к базе данных на этапе установки
  */
-function db_connect() {
+function db_connect()
+{
     $settings = &$_SESSION['settings'];
     try {
         $db = DB::me($settings['mysql_host'], $settings['mysql_base'], $settings['mysql_user'], $settings['mysql_pass']);
-        $db->setAttribute(PDO :: ATTR_DEFAULT_FETCH_MODE, PDO :: FETCH_ASSOC);
-        $db->query("SET NAMES utf8;");
+        $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $db->query("SET NAMES utf8mb4;");
     } catch (Exception $e) {
         die('Ошибка подключения к базе данных:' . $e->getMessage());
     }
@@ -73,7 +74,7 @@ echo "<input type='submit' name='to_start' value='" . __('В начало') . "'
 echo "<input type='submit' name='refresh' value='" . __('Обновить') . "' />";
 echo "</form>";
 
-if (!@include_once ('inc/' . $step . '.php'))
+if (!@include_once('inc/' . $step . '.php'))
     die(__('Невозможно продолжить установку по причине отсутствия файла %s', 'inc/' . $step . '.php'));
 $inst_obj = new $step;
 

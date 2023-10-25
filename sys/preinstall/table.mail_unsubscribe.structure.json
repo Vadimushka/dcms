@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "mail_unsubscribe",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Отписка от email"
     },
@@ -13,7 +13,8 @@
         {
             "Field": "email",
             "Type": "varchar(128)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "PRI",
             "Default": null,
@@ -24,7 +25,8 @@
         {
             "Field": "code",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "MUL",
             "Default": null,

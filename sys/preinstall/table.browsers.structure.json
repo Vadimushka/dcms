@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "browsers",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Браузеры"
     },
@@ -24,7 +24,7 @@
         {
             "Field": "type",
             "Type": "enum('light','mobile','full')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "MUL",
             "Default": null,
@@ -35,7 +35,7 @@
         {
             "Field": "name",
             "Type": "varchar(64)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "UNI",
             "Default": null,

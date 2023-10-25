@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "forum_topics",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Разделы форума (находятся в категориях)"
     },
@@ -57,7 +57,7 @@
         {
             "Field": "name",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -68,7 +68,7 @@
         {
             "Field": "description",
             "Type": "text",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -79,7 +79,7 @@
         {
             "Field": "keywords",
             "Type": "text",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -123,7 +123,7 @@
         {
             "Field": "theme_create_with_wmid",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": "0",
@@ -134,7 +134,7 @@
         {
             "Field": "theme_view",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": "1",

@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "guest_online",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": ""
     },
@@ -24,7 +24,8 @@
         {
             "Field": "is_robot",
             "Type": "enum('1','0')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": "0",
@@ -35,7 +36,8 @@
         {
             "Field": "browser",
             "Type": "varchar(64)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -46,7 +48,8 @@
         {
             "Field": "browser_ua",
             "Type": "varchar(256)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "PRI",
             "Default": null,
@@ -79,7 +82,8 @@
         {
             "Field": "domain",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -89,11 +93,12 @@
         },
         {
             "Field": "request",
-            "Type": "varchar(1024)",
-            "Collation": "utf8_general_ci",
+            "Type": "text",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
-            "Default": "/",
+            "Default": "",
             "Extra": "",
             "Privileges": "select,insert,update,references",
             "Comment": "Последняя страница"

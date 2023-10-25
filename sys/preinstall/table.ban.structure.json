@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "ban",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": ""
     },
@@ -46,7 +46,8 @@
         {
             "Field": "link",
             "Type": "varchar(64)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "MUL",
             "Default": null,
@@ -57,7 +58,7 @@
         {
             "Field": "code",
             "Type": "varchar(64)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "MUL",
             "Default": null,
@@ -68,7 +69,7 @@
         {
             "Field": "comment",
             "Type": "text",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -101,7 +102,7 @@
         {
             "Field": "access_view",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": "1",

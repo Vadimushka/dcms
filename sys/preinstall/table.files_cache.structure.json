@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "files_cache",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Список файлов для счетчика"
     },
@@ -24,7 +24,8 @@
         {
             "Field": "path_file_rel",
             "Type": "text",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "MUL",
             "Default": null,
@@ -57,7 +58,8 @@
         {
             "Field": "runame",
             "Type": "varchar(128)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,

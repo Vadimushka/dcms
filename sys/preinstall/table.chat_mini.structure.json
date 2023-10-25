@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "chat_mini",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Мини чат (замена гостевой)"
     },
@@ -45,8 +45,8 @@
         },
         {
             "Field": "message",
-            "Type": "varchar(1024)",
-            "Collation": "utf8_general_ci",
+            "Type": "text",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,

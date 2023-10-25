@@ -58,6 +58,7 @@ class DbStructureTableProperties
             $sql .= " AUTO_INCREMENT={$this->Auto_increment}";
 
         $sql .= " DEFAULT CHARSET={$this->Charset}";
+        $sql .= " COLLATE={$this->Collation}";
         $sql .= " COMMENT=" . DbStructure::quote($this->Comment);
 
         return $sql;

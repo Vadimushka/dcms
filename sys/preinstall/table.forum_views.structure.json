@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "forum_views",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Fixed",
         "Max_data_length": "3659174697238527",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Форум: Просмотры тем"
     },

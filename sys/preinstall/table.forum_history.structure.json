@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "forum_history",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "История изменений сообщений"
     },
@@ -57,7 +57,7 @@
         {
             "Field": "message",
             "Type": "text",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,

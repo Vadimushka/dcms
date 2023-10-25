@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "complaints",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Жалобы"
     },
@@ -57,7 +57,7 @@
         {
             "Field": "link",
             "Type": "varchar(128)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -68,7 +68,7 @@
         {
             "Field": "comment",
             "Type": "text",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -79,7 +79,7 @@
         {
             "Field": "code",
             "Type": "varchar(128)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -90,7 +90,7 @@
         {
             "Field": "processed",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "MUL",
             "Default": "0",

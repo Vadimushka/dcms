@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "mail",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Почта"
     },
@@ -57,7 +57,7 @@
         {
             "Field": "is_read",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": "0",
@@ -67,8 +67,8 @@
         },
         {
             "Field": "mess",
-            "Type": "varchar(1024)",
-            "Collation": "utf8_general_ci",
+            "Type": "text",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,

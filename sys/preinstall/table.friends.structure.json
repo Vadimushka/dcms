@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "friends",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": ""
     },
@@ -46,7 +46,8 @@
         {
             "Field": "name",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "YES",
             "Key": "",
             "Default": null,
@@ -57,7 +58,8 @@
         {
             "Field": "confirm",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "MUL",
             "Default": "0",

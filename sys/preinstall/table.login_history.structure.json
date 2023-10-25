@@ -4,8 +4,8 @@
         "Engine": "InnoDB",
         "Row_format": "Compact",
         "Max_data_length": "0",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "История изменения логинов"
     },
@@ -46,7 +46,7 @@
         {
             "Field": "login",
             "Type": "varchar(64)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,

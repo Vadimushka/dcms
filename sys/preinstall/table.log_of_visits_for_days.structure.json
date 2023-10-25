@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "log_of_visits_for_days",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Fixed",
         "Max_data_length": "10414574138294271",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": "Лог посещений по дням"
     },

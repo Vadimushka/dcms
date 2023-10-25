@@ -1,11 +1,11 @@
 {
     "Properties": {
         "Name": "users",
-        "Engine": "MyISAM",
+        "Engine": "InnoDB",
         "Row_format": "Dynamic",
         "Max_data_length": "281474976710655",
-        "Collation": "utf8_general_ci",
-        "Charset": "utf8",
+        "Collation": "utf8mb4_unicode_ci",
+        "Charset": "utf8mb4",
         "Create_options": "",
         "Comment": ""
     },
@@ -35,7 +35,8 @@
         {
             "Field": "vk_first_name",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -46,7 +47,8 @@
         {
             "Field": "vk_last_name",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -68,7 +70,8 @@
         {
             "Field": "login",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "UNI",
             "Default": null,
@@ -79,7 +82,8 @@
         {
             "Field": "password",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -90,7 +94,8 @@
         {
             "Field": "a_code",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "MUL",
             "Default": null,
@@ -101,7 +106,8 @@
         {
             "Field": "recovery_password",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -112,7 +118,8 @@
         {
             "Field": "sex",
             "Type": "enum('1','0')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "MUL",
             "Default": "1",
@@ -134,7 +141,8 @@
         {
             "Field": "reg_mail",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -200,7 +208,8 @@
         {
             "Field": "skype",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -211,7 +220,8 @@
         {
             "Field": "email",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -222,7 +232,8 @@
         {
             "Field": "lastname",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -233,7 +244,8 @@
         {
             "Field": "realname",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -244,7 +256,8 @@
         {
             "Field": "middle_n",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -343,7 +356,8 @@
         {
             "Field": "vis_email",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": "0",
@@ -354,7 +368,8 @@
         {
             "Field": "vis_icq",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": "1",
@@ -365,7 +380,8 @@
         {
             "Field": "vis_friends",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": "1",
@@ -376,7 +392,8 @@
         {
             "Field": "vis_skype",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": "1",
@@ -386,8 +403,9 @@
         },
         {
             "Field": "description",
-            "Type": "varchar(512)",
-            "Collation": "utf8_general_ci",
+            "Type": "text",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -420,7 +438,8 @@
         {
             "Field": "notice_mention",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": "1",
@@ -431,7 +450,8 @@
         {
             "Field": "notification_forum",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": "1",
@@ -442,7 +462,8 @@
         {
             "Field": "language",
             "Type": "varchar(32)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -453,7 +474,8 @@
         {
             "Field": "languages",
             "Type": "varchar(64)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -464,7 +486,8 @@
         {
             "Field": "mail_only_friends",
             "Type": "enum('0','1')",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": "0",
@@ -475,7 +498,8 @@
         {
             "Field": "theme_light",
             "Type": "varchar(64)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -486,7 +510,8 @@
         {
             "Field": "theme_full",
             "Type": "varchar(64)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
+            "Charset": "utf8mb4",
             "Null": "NO",
             "Key": "",
             "Default": null,
@@ -519,7 +544,7 @@
         {
             "Field": "theme_mobile",
             "Type": "varchar(64)",
-            "Collation": "utf8_general_ci",
+            "Collation": "utf8mb4_unicode_ci",
             "Null": "NO",
             "Key": "",
             "Default": null,

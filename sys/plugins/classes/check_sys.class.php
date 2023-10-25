@@ -28,9 +28,9 @@ class check_sys {
         } elseif (is_dir(H . '/' . $path)) {
             $od = opendir(H . '/' . $path);
             while ($rd = readdir($od)) {
-                if ($rd {
-                        0} === '.')
+                if (stripos($rd, '.') !== false) {
                     continue;
+                }
                 $err = array_merge($err, self::getChmodErr($path . '/' . $rd, $errorIfNotExists));
             }
             closedir($od);
