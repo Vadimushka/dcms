@@ -576,7 +576,7 @@ class bbcode
         $type_of_char = null;
         for ($i = 0; $i < $length; ++$i) {
             $previous_type = $type_of_char;
-            switch ($code{$i}) {
+            switch ($code[$i]) {
                 case '[':
                     $type_of_char = 0;
                     break;
@@ -625,26 +625,26 @@ class bbcode
             switch ($type_of_char) {
                 case 6:
                     if (6 == $previous_type) {
-                        $tokens[$token_key][1] .= $code{$i};
+                        $tokens[$token_key][1] .= $code[$i];
                     } else {
-                        $tokens[++$token_key] = array(6, $code{$i});
+                        $tokens[++$token_key] = array(6, $code[$i]);
                     }
                     break;
                 case 7:
                     if (7 == $previous_type) {
-                        $tokens[$token_key][1] .= $code{$i};
+                        $tokens[$token_key][1] .= $code[$i];
                     } else {
-                        $tokens[++$token_key] = array(7, $code{$i});
+                        $tokens[++$token_key] = array(7, $code[$i]);
                     }
                     break;
                 default:
-                    $tokens[++$token_key] = array($type_of_char, $code{$i});
+                    $tokens[++$token_key] = array($type_of_char, $code[$i]);
             }
         }
         return $tokens;
     }
 
-    function __construct($code)
+    function __construct(string $code)
     {
 
         $finite_automaton = array(

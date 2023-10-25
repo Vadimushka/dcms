@@ -17,7 +17,7 @@ if(!$ank->group)
 $doc->title = ($user->id && $ank->id == $user->id)? __('Моя анкета') : __('Анкета "%s"', $ank->nick);
 
 $doc->description = __('Анкета "%s"', $ank->nick);
-$doc->keywords [] = $ank->login;
+$doc->keywords[] = $ank->login;
 
 //region Предложение дружбы
 if ($user->group && $ank->id && $user->id != $ank->id && isset($_GET ['friend'])) {

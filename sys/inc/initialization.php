@@ -111,7 +111,7 @@ if (@function_exists('ini_set')) {
     ini_set('ignore_repeated_errors', true);
 
     // показываем только фатальные ошибки
-    ini_set('error_reporting', E_ERROR);
+    ini_set('error_reporting',  E_ALL);
 
     // непосредственно, включаем показ ошибок
     ini_set('display_errors', true);
@@ -141,7 +141,11 @@ if (function_exists('mb_internal_encoding')) {
 
 if (function_exists('iconv')) {
     // Выставляем кодировку для Iconv
-    iconv_set_encoding('internal_encoding', 'UTF-8');
+    if (PHP_VERSION_ID < 50600) {
+        iconv_set_encoding('internal_encoding', 'UTF-8');
+    } elseif (PHP_VERSION_ID >= 50600) {
+        ini_set("default_charset", "UTF-8");
+    }
 }
 
 /**

@@ -48,7 +48,7 @@ class votes
                 'name' => text::filter($item['name'], 1),
                 'url' => $item['url'],
                 'count' => $item['count'],
-                'pc' => @round($item['count'] / $this->_count_max * 100)
+                'pc' => $this->_count_max ? round($item['count'] / $this->_count_max * 100): $this->_count_max,
             );
         }
         $vote_tpl->assign('votes', $votes);

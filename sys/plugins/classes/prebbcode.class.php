@@ -18,7 +18,7 @@ class prebbcode extends bbcode {
         )
     );
 
-    function __construct($code) {
+    function __construct(string $code) {
         parent::__construct($code);
     }
 

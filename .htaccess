@@ -7,7 +7,7 @@ DirectoryIndex index.php index.html
 
     ####################################################
     # отключаем вывод ошибок
-    php_flag display_errors off
+    php_flag display_errors on
     # так безопаснее
     php_flag register_globals off
     # убираем экранирование кавычек

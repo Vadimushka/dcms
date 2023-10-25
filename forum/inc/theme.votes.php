@@ -14,7 +14,9 @@ if ($theme['id_vote']) {
         $q->execute(Array($theme['id_vote']));
         $countets = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0);
         while ($r = $q->fetch()) {
-            $countets[$r['vote']] = $r['count'];
+            if (!empty($r['count'])) {
+                $countets[$r['vote']] = $r['count'];
+            }
         }
 
         for ($i = 1; $i <= 10; $i++) {

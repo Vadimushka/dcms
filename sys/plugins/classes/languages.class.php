@@ -63,8 +63,7 @@ abstract class languages {
         $lpath = H . '/sys/languages';
         $od = opendir(H . '/sys/languages');
         while ($rd = readdir($od)) {
-
-            if ($rd {0} == '.') {
+            if (stripos($rd, '.') !== false) {
                 continue; // все файлы и папки начинающиеся с точки пропускаем
             }
             if (is_dir($lpath . '/' . $rd)) {

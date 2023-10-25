@@ -141,7 +141,11 @@ abstract class cacher {
         return $max_ttl;
     }
 
-    public static function get($cache_name, $name) {
+    public static function get($name) {
+        return static::_get(static::cache_name, $name);
+    }
+
+    public static function _get($cache_name, $name) {
 
         if (!$cache = self::_read($cache_name)) {
             return false;
@@ -168,13 +172,18 @@ abstract class cacher {
     protected static function _clear(&$cache) {
         // удаление устаревших данных
         foreach ($cache as $name => $data) {
-            if ($data['t'] >= TIME)
+            if (isset($data['t']) && $data['t'] >= TIME)
                 continue;
             unset($cache[$name]);
         }
     }
 
-    public static function set($cache_name, $name, $val, $ttl = 0) {
+    public static function set($name, $val, $ttl = 0): true
+    {
+        return static::_set(static::cache_name, $name, $val, $ttl);
+    }
+
+    public static function _set($cache_name, $name, $val, $ttl = 0) {
         $cache = (array) self::_read($cache_name, true);
         self::_clear($cache);
         $cache[$name] = array('t' => $ttl + TIME, 'v' => $val);
@@ -189,17 +198,7 @@ abstract class cacher {
  * кэширование счетчиков
  */
 abstract class cache_counters extends cacher {
-
     const cache_name = 'counters';
-
-    public static function get($name) {
-        return parent::get(self::cache_name, $name);
-    }
-
-    public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
-    }
-
 }
 
 /**
@@ -208,14 +207,6 @@ abstract class cache_counters extends cacher {
 abstract class cache_widgets extends cacher {
 
     const cache_name = 'widgets_content';
-
-    public static function get($name) {
-        return parent::get(self::cache_name, $name);
-    }
-
-    public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
-    }
 
 }
 
@@ -226,14 +217,6 @@ abstract class cache_log_of_visits extends cacher {
 
     const cache_name = 'log_of_visits';
 
-    public static function get($name) {
-        return parent::get(self::cache_name, $name);
-    }
-
-    public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
-    }
-
 }
 
 /**
@@ -242,14 +225,6 @@ abstract class cache_log_of_visits extends cacher {
 abstract class cache_dpanel_access extends cacher {
 
     const cache_name = 'dpanel';
-
-    public static function get($name) {
-        return parent::get(self::cache_name, $name);
-    }
-
-    public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
-    }
 
 }
 
@@ -260,14 +235,6 @@ abstract class cache_aut_failture extends cacher {
 
     const cache_name = 'aut_failture';
 
-    public static function get($name) {
-        return parent::get(self::cache_name, $name);
-    }
-
-    public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
-    }
-
 }
 
 /**
@@ -276,13 +243,5 @@ abstract class cache_aut_failture extends cacher {
 abstract class cache_events extends cacher {
 
     const cache_name = 'events';
-
-    public static function get($name) {
-        return parent::get(self::cache_name, $name);
-    }
-
-    public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
-    }
 
 }

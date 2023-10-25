@@ -240,11 +240,11 @@ class files {
         if (!is_dir($this->path_abs))
             return false;
         // папки и файлы с точкой являются системными и их случайное удаление крайне нежелательно
-        if ($this->name{0} === '.')
+        if (stripos($this->name, '.') !== false)
             return false;
         $od = opendir($this->path_abs);
         while ($rd = readdir($od)) {
-            if ($rd{0} == '.')
+            if (stripos($rd, '.') !== false)
                 continue;
 
             if (is_dir($this->path_abs . '/' . $rd)) {
@@ -411,7 +411,7 @@ class files {
         $content = array('dirs' => array(), 'files' => array());
         $od = opendir($this->path_abs);
         while ($rd = readdir($od)) {
-            if ($rd{0} == '.')
+            if (stripos($rd, '.') !== false)
                 continue; // все файлы и папки начинающиеся с точки пропускаем
             if (is_dir($this->path_abs . '/' . $rd)) {
                 $content ['dirs'] [] = new files($this->path_abs . '/' . $rd);
@@ -703,7 +703,7 @@ class files {
      */
     public function rename($runame, $realname) {
         // переименование папки
-        if ($this->path_rel && $this->name{0} !== '.') {
+        if ($this->path_rel && stripos($this->name, '.') !== false) {
             $path_new = preg_replace('#[^\/\\\]+$#u', $realname, $this->path_rel);
 
             if (!@rename($this->path_abs, FILES . $path_new))
@@ -764,7 +764,7 @@ class files {
     public function setGroupShowRecurse($group_show) {
         $od = @opendir($this->path_abs);
         while ($rd = @readdir($od)) {
-            if ($rd{0} == '.')
+            if (stripos($rd, '.') !== false)
                 continue;
             if (is_dir($this->path_abs . '/' . $rd)) {
                 if (function_exists('set_time_limit'))

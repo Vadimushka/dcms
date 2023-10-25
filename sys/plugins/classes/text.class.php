@@ -211,7 +211,6 @@ abstract class text {
      * @return string
      */
     static function toValue($str) {
-
         // обработка старых цитат с числом в теге
         $str = preg_replace('#\[(/?)quote_([0-9]+)(\]|\=)#ui', '[\1quote\3', $str);
 

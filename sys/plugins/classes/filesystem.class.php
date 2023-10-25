@@ -233,7 +233,7 @@ abstract class filesystem {
 
         $od = opendir(H . '/sys/tmp');
         while ($rd = readdir($od)) {
-            if ($rd {0} === '.') {
+            if (stripos($rd, '.') !== false) {
                 // файлы, начинающиеся с точки пропускаем
                 continue;
             }

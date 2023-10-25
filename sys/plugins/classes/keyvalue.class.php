@@ -17,7 +17,7 @@ abstract class keyvalue {
             return false;
         }
         $m = array();
-        preg_match_all('/^ \s* (.+) \s* = \s* "(.+)" \s* $/exm', $file, $m, PREG_SET_ORDER);
+        preg_match_all('/^ \s* (.+) \s* = \s* "(.+)" \s* $/xm', $file, $m, PREG_SET_ORDER);
 
         for ($i = 0; $i < count($m); $i++) {
             $array[trim($m[$i][1])] = $m[$i][2];
