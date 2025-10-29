@@ -17,14 +17,24 @@ class install_db_connect
         if (isset($_POST['mysql_pass'])) $this->settings['mysql_pass'] = $_POST['mysql_pass'];
         if (isset($_POST['mysql_base'])) $this->settings['mysql_base'] = $_POST['mysql_base'];
 
-        $mysqli = @mysqli_connect($this->settings['mysql_host'], $this->settings['mysql_user'], $this->settings['mysql_pass']);
-        if (!$mysqli) {
-            $this->err_str = mysqli_error($mysqli);
-            $this->err_connect = true;
-        } elseif (!@mysqli_select_db($mysqli, $this->settings['mysql_base']))
-            $this->err_db = true;
-        else
-            $this->is_connected = true;
+        if (isset($this->settings['mysql_host']) && isset($this->settings['mysql_base'])) {
+            try {
+                $dsn = 'mysql:host=' . $this->settings['mysql_host'] . ';dbname=' . $this->settings['mysql_base'] . ';charset=utf8';
+                new PDO($dsn, $this->settings['mysql_user'], $this->settings['mysql_pass'], array(
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ));
+                $this->is_connected = true;
+            } catch (PDOException $e) {
+                $this->err_str = $e->getMessage();
+                $mysqlCode = (is_array($e->errorInfo) && isset($e->errorInfo[1])) ? (int)$e->errorInfo[1] : 0;
+                if ($mysqlCode === 1049) {
+                    $this->err_db = true; // Unknown database
+                } else {
+                    $this->err_connect = true;
+                }
+            }
+        }
     }
 
     function actions()
