@@ -48,22 +48,12 @@ class check_sys {
         } else {
             $this->errors[] = __('Требуется PHP >= %s (сейчас %s)', DCMS_REQUIRE_PHP_VERSION, PHP_VERSION);
         }
-        // проверка MySQL
-        if (function_exists('mysqli_info')) {
-            $this->oks[] = 'MySQL: OK';
-        } else {
-            $this->errors[] = __('Невозможно получить информацию о MySQL');
-        }
 
-        // проверка PDO
-        if (class_exists('pdo')) {
-            if (array_search('mysql', PDO::getAvailableDrivers()) !== false) {
-                $this->oks[] = 'PDO: OK';
-            } else {
-                $this->errors[] = __('Нет драйвера mysql для PDO');
-            }
+        // проверка MySQL через PDO
+        if (class_exists('PDO') && in_array('mysql', PDO::getAvailableDrivers(), true)) {
+            $this->oks[] = 'MySQL (PDO): OK';
         } else {
-            $this->errors[] = __('Необходимо подключить PDO');
+            $this->errors[] = __('Нет драйвера mysql для PDO');
         }
 
         // шифрование
