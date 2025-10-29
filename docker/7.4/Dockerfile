@@ -21,6 +21,11 @@ RUN apt-get update \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
+# Выравниваем UID/GID www-data под пользователя хоста (обычно 1000:1000)
+RUN groupmod -o -g 1000 www-data && \
+    usermod -o -u 1000 -g 1000 www-data && \
+    install -d -m 775 -o www-data -g www-data /var/www/html
+
 # Разрешаем .htaccess
 RUN printf "<Directory /var/www/html>\n\
     AllowOverride All\n\
