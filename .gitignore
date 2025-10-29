@@ -16,4 +16,6 @@ nbproject/
 /*desktop.ini
 /*Thumbs.db
 /*.Trashes
-.idea/
+.idea
+.env
+docker-compose.override.yml
