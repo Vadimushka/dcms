@@ -44,6 +44,9 @@ class files {
             $this->_screens = array_merge($this->_screens, (array) @$cfg_ini['SCREENS']);
             $this->_keys = array_merge($this->_keys, (array) @$cfg_ini['ADDKEYS']);
         } else {
+            $this->_data = files_descriptiion::defaultDescriptions(strtoupper(basename($path_abs)));
+            $this->_keys = files_descriptiion::defaultAddKeys(strtoupper(basename($path_abs)));
+
             $this->time_create = TIME; // время создания
         }
 
