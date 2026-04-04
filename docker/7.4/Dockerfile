@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libonig-dev \
     libmcrypt-dev \
     curl \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -29,7 +30,11 @@ RUN { \
     echo "display_errors = Off"; \
     echo "default_charset = UTF-8"; \
     echo "session.use_trans_sid = 1"; \
-    echo "arg_separator.output = &amp;"; \
+    echo 'arg_separator.output = "&amp;"'; \
 } > /usr/local/etc/php/conf.d/dcms.ini
+
+# PHP-FPM от пользователя хоста (uid 1000) чтобы не было проблем с правами на файлы
+RUN sed -i 's/^user = www-data/user = 1000/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/^group = www-data/group = 1000/' /usr/local/etc/php-fpm.d/www.conf
 
 EXPOSE 9000

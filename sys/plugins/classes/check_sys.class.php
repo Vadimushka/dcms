@@ -86,7 +86,7 @@ class check_sys {
             $this->oks[] = 'Iconv: OK';
         }
         // обработка видео (снятие скриншотов)
-        if (class_exists('ffmpeg_movie')) {
+        if (files_screen_ff::isAvailable()) {
             $this->oks[] = 'FFmpeg: OK';
         } else {
             $this->notices[] = __('Без FFmpeg автоматическое создание скриншотов к видео недоступно');
