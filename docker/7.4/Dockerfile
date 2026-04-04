@@ -1,7 +1,4 @@
-FROM php:7.4-apache
-
-ARG WWWGROUP
-ARG WWWUSER
+FROM php:7.4-fpm
 
 WORKDIR /var/www/html
 
@@ -25,17 +22,14 @@ RUN apt-get update && apt-get install -y libmcrypt-dev \
     && pecl install mcrypt-1.0.5 \
     && docker-php-ext-enable mcrypt
 
+# PHP-настройки (были в .htaccess для mod_php)
+RUN { \
+    echo "upload_max_filesize = 100M"; \
+    echo "post_max_size = 100M"; \
+    echo "display_errors = Off"; \
+    echo "default_charset = UTF-8"; \
+    echo "session.use_trans_sid = 1"; \
+    echo "arg_separator.output = &amp;"; \
+} > /usr/local/etc/php/conf.d/dcms.ini
 
-# Разрешаем .htaccess
-RUN a2enmod rewrite \
-    && printf "<Directory /var/www/html>\n\
-    AllowOverride All\n\
-    Options Indexes FollowSymLinks\n\
-    Require all granted\n\
-</Directory>\n" > /etc/apache2/conf-available/allowoverride.conf \
-    && a2enconf allowoverride
-
-RUN groupadd --force -g $WWWGROUP dcms && \
-    useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u $WWWUSER dcms
-
-EXPOSE 80/tcp
+EXPOSE 9000
