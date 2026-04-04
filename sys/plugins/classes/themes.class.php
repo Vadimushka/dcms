@@ -33,7 +33,7 @@ abstract class themes
             $themes_path = H . '/sys/themes';
             $od = opendir($themes_path);
             while ($el_name = readdir($od)) {
-                if ($el_name{0} === '.') {
+                if ($el_name[0] === '.') {
                     continue;
                 }
                 if (!is_dir($themes_path . '/' . $el_name)) {

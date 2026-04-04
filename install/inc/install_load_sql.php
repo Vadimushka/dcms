@@ -23,7 +23,7 @@ class install_load_sql {
             $_SESSION['rename_prefix'] = '~' . TIME . '~';
 
         foreach ($this->tables as $table) {
-            if ($table{0} == '~')
+            if ($table[0] == '~')
                 continue;
             DB::me()->query("ALTER TABLE `$table` RENAME `" . $_SESSION['rename_prefix'] . "$table`");
         }

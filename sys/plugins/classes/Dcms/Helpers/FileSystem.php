@@ -40,7 +40,7 @@ abstract class FileSystem
      */
     public static function getAbsPath($rel_path)
     {
-        if ($rel_path{0} !== '/' && $rel_path{0} !== '\\') {
+        if ($rel_path[0] !== '/' && $rel_path[0] !== '\\') {
             $rel_path = '/' . $rel_path;
         }
 

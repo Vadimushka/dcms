@@ -24,7 +24,7 @@ if ($access_edit && isset($_GET['act']) && $_GET['act'] == 'edit_screens') inclu
 $doc->title = __('Файл %s - скачать', $file->runame);
 $doc->description = $file->meta_description ? $file->meta_description : $dir->meta_description;
 $doc->keywords = $file->meta_keywords ? explode(',', $file->meta_keywords) : ($dir->meta_keywords ? explode(',',
-    $dir->meta_keywords) : '');
+    $dir->meta_keywords) : array());
 
 if ($access_edit) include 'inc/file_act.php';
 
