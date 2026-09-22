@@ -41,10 +41,15 @@ function MultiWave($img) {
                 $color_y = 255;
                 $color_xy = 255;
             } else { // цвета основного пикселя и его 3-х соседей для лучшего антиалиасинга
-                $color = (imagecolorat($img, $sx, $sy) >> 16) & 0xFF;
-                $color_x = (imagecolorat($img, $sx + 1, $sy) >> 16) & 0xFF;
-                $color_y = (imagecolorat($img, $sx, $sy + 1) >> 16) & 0xFF;
-                $color_xy = (imagecolorat($img, $sx + 1, $sy + 1) >> 16) & 0xFF;
+                // imagecolorat берёт целые координаты, а $sx/$sy дробные: с PHP 8.1
+                // неявное отбрасывание дробной части объявлено устаревшим. Отбрасываем
+                // явно — сама дробная часть ниже ещё нужна для интерполяции цвета.
+                $isx = (int) $sx;
+                $isy = (int) $sy;
+                $color = (imagecolorat($img, $isx, $isy) >> 16) & 0xFF;
+                $color_x = (imagecolorat($img, $isx + 1, $isy) >> 16) & 0xFF;
+                $color_y = (imagecolorat($img, $isx, $isy + 1) >> 16) & 0xFF;
+                $color_xy = (imagecolorat($img, $isx + 1, $isy + 1) >> 16) & 0xFF;
             }
             // сглаживаем только точки, цвета соседей которых отличается
             if ($color == $color_x && $color == $color_y && $color == $color_xy) {
@@ -57,6 +62,7 @@ function MultiWave($img) {
                 // вычисление цвета нового пикселя как пропорции от цвета основного пикселя и его соседей
                 $newcolor = floor($color * $frsx1 * $frsy1 + $color_x * $frsx * $frsy1 + $color_y * $frsx1 * $frsy + $color_xy * $frsx * $frsy);
             }
+            $newcolor = (int) $newcolor;
             imagesetpixel($img2, $x, $y, imagecolorallocate($img2, $newcolor, $newcolor, $newcolor));
         }
     }
@@ -89,7 +95,7 @@ imagefill($img, 0, 0, imagecolorallocate($img, 255, 255, 255));
 
 
 for ($i = 0; $i < 5; $i++) {
-    $n = $code {$i};
+    $n = $code[$i];
     if ($png) {
         $num[$n] = imagecreatefrompng(H . '/sys/images/captcha/' . $n . '.png');
     } elseif ($gif) {

@@ -141,7 +141,7 @@ abstract class cacher {
         return $max_ttl;
     }
 
-    public static function get($cache_name, $name) {
+    protected static function readFrom($cache_name, $name) {
 
         if (!$cache = self::_read($cache_name)) {
             return false;
@@ -174,8 +174,10 @@ abstract class cacher {
         }
     }
 
-    public static function set($cache_name, $name, $val, $ttl = 0) {
-        $cache = (array) self::_read($cache_name, true);
+    protected static function writeTo($cache_name, $name, $val, $ttl = 0) {
+        $cache = self::_read($cache_name, true);
+        if (!is_array($cache))
+            $cache = array();
         self::_clear($cache);
         $cache[$name] = array('t' => $ttl + TIME, 'v' => $val);
         cache::set($cache_name, $cache, self::_max_ttl($cache));
@@ -193,11 +195,11 @@ abstract class cache_counters extends cacher {
     const cache_name = 'counters';
 
     public static function get($name) {
-        return parent::get(self::cache_name, $name);
+        return parent::readFrom(self::cache_name, $name);
     }
 
     public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
+        return parent::writeTo(self::cache_name, $name, $val, $ttl);
     }
 
 }
@@ -210,11 +212,11 @@ abstract class cache_widgets extends cacher {
     const cache_name = 'widgets_content';
 
     public static function get($name) {
-        return parent::get(self::cache_name, $name);
+        return parent::readFrom(self::cache_name, $name);
     }
 
     public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
+        return parent::writeTo(self::cache_name, $name, $val, $ttl);
     }
 
 }
@@ -227,11 +229,11 @@ abstract class cache_log_of_visits extends cacher {
     const cache_name = 'log_of_visits';
 
     public static function get($name) {
-        return parent::get(self::cache_name, $name);
+        return parent::readFrom(self::cache_name, $name);
     }
 
     public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
+        return parent::writeTo(self::cache_name, $name, $val, $ttl);
     }
 
 }
@@ -244,11 +246,11 @@ abstract class cache_dpanel_access extends cacher {
     const cache_name = 'dpanel';
 
     public static function get($name) {
-        return parent::get(self::cache_name, $name);
+        return parent::readFrom(self::cache_name, $name);
     }
 
     public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
+        return parent::writeTo(self::cache_name, $name, $val, $ttl);
     }
 
 }
@@ -261,11 +263,11 @@ abstract class cache_aut_failture extends cacher {
     const cache_name = 'aut_failture';
 
     public static function get($name) {
-        return parent::get(self::cache_name, $name);
+        return parent::readFrom(self::cache_name, $name);
     }
 
     public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
+        return parent::writeTo(self::cache_name, $name, $val, $ttl);
     }
 
 }
@@ -278,11 +280,11 @@ abstract class cache_events extends cacher {
     const cache_name = 'events';
 
     public static function get($name) {
-        return parent::get(self::cache_name, $name);
+        return parent::readFrom(self::cache_name, $name);
     }
 
     public static function set($name, $val, $ttl = 0) {
-        return parent::set(self::cache_name, $name, $val, $ttl);
+        return parent::writeTo(self::cache_name, $name, $val, $ttl);
     }
 
 }

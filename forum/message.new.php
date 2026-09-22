@@ -39,7 +39,7 @@ if ($can_write) {
         $af = & $_SESSION['antiflood']['forummessage'][$id_theme][$message]; // защита от дублирования сообщений в теме
 
         if ($dcms->censure && $mat = is_valid::mat($message)) {
-            $doc->err(__('Обнаружен мат: %', $mat));
+            $doc->err(__('Обнаружен мат: %s', $mat));
         } elseif (!empty($af) && $af > TIME - 600 || $theme['id_last'] == $user->id && $theme['time_last'] > TIME - 10) {
             $doc->toReturn(new url('theme.php', array('id' => $theme['id'], 'page' => 'end')));
             $doc->ret(__('В тему'), 'theme.php?id=' . $theme['id'] . '&amp;page=end');

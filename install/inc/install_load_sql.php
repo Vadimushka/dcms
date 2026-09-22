@@ -2,8 +2,8 @@
 
 class install_load_sql {
 
-    var $tables;
-    var $errors;
+    public $tables;
+    public $errors;
 
     function __construct() {
         db_connect();

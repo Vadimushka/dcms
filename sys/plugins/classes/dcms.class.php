@@ -121,9 +121,6 @@ class dcms
     public function __get($name)
     {
         switch ($name) {
-            case 'salt_user':
-                return $this->salt . @$_SERVER['HTTP_USER_AGENT'];
-                break;
             case 'ip_long':
                 return browser::getIpLong();
                 break;

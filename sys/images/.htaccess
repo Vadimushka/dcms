@@ -1,1 +1,11 @@
-php_value engine off
+# Каталог только для картинок. В смайлы файл кладётся под именем клиента
+# (dpanel/smiles.php), поэтому исполнение PHP здесь должно быть закрыто
+# независимо от способа запуска PHP.
+<FilesMatch "\.(php|phtml|phar|ini)$">
+    Require all denied
+</FilesMatch>
+
+# Для сборок с mod_php — дополнительно выключаем сам движок
+<IfModule mod_php.c>
+    php_value engine off
+</IfModule>

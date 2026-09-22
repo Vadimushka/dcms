@@ -12,7 +12,7 @@ if (!defined('DCMS')) {
  */
 function widget_feed_sort_callback($post1, $post2)
 {
-    return $post1->sort_time_field == $post2->sort_time_field ? 0 : $post1->sort_time_field > $post2->sort_time_field ? -1 : 1;
+    return $post1->sort_time_field == $post2->sort_time_field ? 0 : ($post1->sort_time_field > $post2->sort_time_field ? -1 : 1);
 }
 
 function widget_feed_start_with($haystack, $needle)

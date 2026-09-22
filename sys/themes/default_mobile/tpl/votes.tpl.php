@@ -17,14 +17,14 @@
 
                 </div>
             </td>
-            <?if ($is_add){?>
+            <?php if ($is_add){?>
             <td class="votes_add">
                 <div>
                     <a class="gradient_blue" href="<?=$votes[$i]['url']?>">+</a>
                 </div>
             </td>
-            <?}?>
-        </tr>        
-        <?}?>
+            <?php }?>
+        </tr>
+        <?php }?>
     </table>
 </div>

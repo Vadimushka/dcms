@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__) . '/../sys/inc/initialization.php';
 
-if ($_SESSION['language'] && languages::exists($_SESSION['language'])) {
+if (!empty($_SESSION['language']) && languages::exists($_SESSION['language'])) {
     $user_language_pack = new language_pack($_SESSION['language']);
 } else {
     $user_language_pack = new language_pack('english');
@@ -34,7 +34,7 @@ function _on_install_script_shutdown()
 }
 
 if (is_file(H . '/sys/ini/settings.ini')) {
-    header("Location: /?" . passgen() . '&' . SID);
+    header("Location: /?" . passgen());
     exit;
 }
 
@@ -59,7 +59,7 @@ include 'inc/head.php';
 echo "<h1>" . __($ini[$step]['title']) . "</h1>";
 
 if (isset($_POST['to_start'])) {
-    header("Location: ./?" . passgen() . '&' . SID);
+    header("Location: ./?" . passgen());
 
     unset($_SESSION);
     session_destroy();
@@ -81,7 +81,7 @@ $inst_obj = new $step;
 if (isset($_POST['next_step'])) {
     $install[$step]['status'] = $inst_obj->actions();
 
-    header("Location: ./?" . passgen() . '&' . SID);
+    header("Location: ./?" . passgen());
     exit;
 }
 

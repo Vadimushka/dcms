@@ -37,10 +37,7 @@ if (isset($_GET['check_domain_work'])) {
     exit;
 }
 
-if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') &&
-    (empty($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] !== 'https') &&
-    (empty($_SERVER['HTTP_X_FORWARDED_SSL']) || $_SERVER['HTTP_X_FORWARDED_SSL'] !== 'on')
-) {
+if (!is_https()) {
     if ($dcms->https_only) {
         // принудительная переадресация на https
         header("Location: https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
@@ -125,7 +122,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
     if (!empty($_SESSION [SESSION_ID_USER])) {
         // авторизация по сессии
         $user = current_user::getInstance($_SESSION [SESSION_ID_USER]);
-    } elseif (!empty($_COOKIE [COOKIE_ID_USER]) && !empty($_COOKIE [COOKIE_USER_PASSWORD]) && !isset($_GET['login_from_cookie']) && $_SERVER ['SCRIPT_NAME'] !== '/pages/login.php' && $_SERVER ['SCRIPT_NAME'] !== '/pages/captcha.php') {
+    } elseif (!empty($_COOKIE [COOKIE_USER_TOKEN]) && !isset($_GET['login_from_cookie']) && $_SERVER ['SCRIPT_NAME'] !== '/pages/login.php' && $_SERVER ['SCRIPT_NAME'] !== '/pages/captcha.php') {
         // авторизация по COOKIE (получение сессии, по которой пользователь авторизуется)
         header('Location: /login.php?login_from_cookie&return=' . URL);
         exit;
@@ -201,7 +198,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/sys/cron.php') {
      * при полном бане никуда кроме страницы бана нельзя
      */
     if ($user->is_ban_full && $_SERVER['SCRIPT_NAME'] != '/pages/ban.php') {
-        header('Location: /ban.php?' . SID);
+        header('Location: /ban.php');
         exit;
     }
 

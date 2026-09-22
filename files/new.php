@@ -10,7 +10,7 @@ $abs_path = realpath(FILES . '/' . @$_GET['dir']);
 
 // если в строку $abs_path не входит FILES, то это попытка залезть на уровень выше дозволеного
 if (strpos($abs_path, FILES) !== 0 || !file_exists($abs_path)) {
-    header('Location: ../?' . SID);
+    header('Location: ../');
     exit;
 }
 

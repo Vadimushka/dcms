@@ -1,6 +1,6 @@
 <?php
 
-define("DCMS_REQUIRE_PHP_VERSION", "5.4");
+define("DCMS_REQUIRE_PHP_VERSION", "8.1");
 /**
  * @const TIME_START Время запуска скрипта в миллисекундах
  */
@@ -14,7 +14,7 @@ define('DCMS', true);
 /**
  * @const AJAX скрипт вызван AJAX запросом
  */
-define('AJAX', strtolower(@$_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+define('AJAX', strtolower(isset($_SERVER['HTTP_X_REQUESTED_WITH']) ? $_SERVER['HTTP_X_REQUESTED_WITH'] : '') == 'xmlhttprequest');
 
 /**
  * @const IS_WINDOWS Запущено ли на винде
@@ -86,15 +86,37 @@ define('SESSION_NAME', 'DCMS_SESSION');
  */
 define('SESSION_ID_USER', 'DCMS_SESSION_ID_USER');
 /**
- * @const SESSION_PASSWORD_USER ключ сессий, в котором хранится пароль пользователя
+ * Работает ли запрос по HTTPS. За обратным прокси (а так стоит боевой сайт)
+ * $_SERVER['HTTPS'] пуст, и признак приходит заголовком либо виден по порту.
+ * @return bool
  */
-define('SESSION_PASSWORD_USER', 'DCMS_SESSION_PASSWORD_USER');
+function is_https() {
+    if (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
+        return true;
+    if (!empty($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443)
+        return true;
+
+    // За обратным прокси (так стоит боевой сайт) единственный признак TLS —
+    // заголовок от прокси. Отличить его от клиентского по REMOTE_ADDR нельзя:
+    // прокси подставляет туда реальный адрес посетителя, и движок сам берёт
+    // адрес оттуда (browser.class.php, баны, журналы). Поэтому заголовку
+    // доверяем, а перетирать его обязан прокси — см. docs/deploy/README.md.
+    if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+        return true;
+    return !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && strtolower($_SERVER['HTTP_X_FORWARDED_SSL']) === 'on';
+}
+
 /**
  * @const COOKIE_ID_USER идентификатор пользователя в COOKIE
  */
 define('COOKIE_ID_USER', 'DCMS_COOKIE_ID_USER');
 /**
- * @const COOKIE_USER_PASSWORD пароль пользователя в COOKIE
+ * @const COOKIE_USER_TOKEN токен «запомнить меня» в COOKIE (см. user_token)
+ */
+define('COOKIE_USER_TOKEN', 'DCMS_COOKIE_USER_TOKEN');
+/**
+ * @const COOKIE_USER_PASSWORD пароль пользователя в COOKIE. Схема заменена
+ * на токены; константа осталась, чтобы стирать куки, выданные до перехода
  */
 define('COOKIE_USER_PASSWORD', 'DCMS_COOKIE_USER_PASSWORD');
 /**
@@ -110,23 +132,13 @@ if (@function_exists('ini_set')) {
     // игнорировать повторяющиеся ошибки
     ini_set('ignore_repeated_errors', true);
 
-    // показываем только фатальные ошибки
-    ini_set('error_reporting', E_ERROR);
-
-    // непосредственно, включаем показ ошибок
-    ini_set('display_errors', true);
-}
-
-if (version_compare(PHP_VERSION, '5.4', '<=')){
-    // Исправлет ошибку php с удалением объектов, содержащих перекрестные ссылки. (Fatal error :  Exception thrown without a stack frame Unknown on line 0)
-    function shutdown()
-    {
-        if (@function_exists('ini_set')) {
-            // Выключаем отображение ошибок перед завершением работы скрипта.
-            ini_set('display_errors', false);
-        }
-    }
-    register_shutdown_function('shutdown');
+    // Раньше здесь принудительно сужался error_reporting до E_ERROR и
+    // включался display_errors — это перекрывало php.ini на каждом
+    // запросе. На PHP 8 из-за этого E_COMPILE_ERROR (несовместимые
+    // сигнатуры методов и т.п.) переставал не только показываться, но и
+    // логироваться: ошибка вообще переставала быть видна. display_errors
+    // и error_reporting теперь задаются один раз в php.ini контейнера
+    // (Off / E_ALL) и здесь не перекрываются.
 }
 
 /**
@@ -137,11 +149,6 @@ define('URL', urlencode($_SERVER ['REQUEST_URI']));
 if (function_exists('mb_internal_encoding')) {
     // Выставляем кодировку для mb_string  
     mb_internal_encoding('UTF-8');
-}
-
-if (function_exists('iconv')) {
-    // Выставляем кодировку для Iconv
-    iconv_set_encoding('internal_encoding', 'UTF-8');
 }
 
 /**
@@ -223,8 +230,30 @@ function __() {
     for ($i = 1; $i < $args_num; $i++) {
         $args4eval[] = '$args[' . $i . ']';
     }
-    return eval('return sprintf($string,' . implode(',', $args4eval) . ');');
+    // vsprintf вместо eval: то же самое, но без выполнения кода на лету.
+    // Битый формат (одиночный %% в строке или в переводе) с PHP 8 бросает ValueError
+    // вместо предупреждения — одна опечатка в языковом файле не должна ронять страницу.
+    $params = array_slice($args, 1);
+    try {
+        return vsprintf($string, $params);
+    } catch (Exception $e) {
+        return $string;
+    } catch (Throwable $e) {
+        return $string;
+    }
 }
+
+// Сессионная кука уходила без единого атрибута: её не задавал ни код, ни
+// прежняя конфигурация Apache. Задаём до старта сессии — иначе не применится.
+// use_trans_sid оставлен включённым (движок рассчитывает на браузеры без кук),
+// поэтому httponly защищает только саму куку, но это лучше, чем ничего.
+session_set_cookie_params(array(
+    'lifetime' => 0,
+    'path' => '/',
+    'httponly' => true,
+    'samesite' => 'Lax',
+    'secure' => is_https(),
+));
 
 @session_name(SESSION_NAME) or die(__('Невозможно инициализировать сессии'));
 @session_start() or die(__('Невозможно инициализировать сессии'));

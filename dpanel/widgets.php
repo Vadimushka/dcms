@@ -12,8 +12,7 @@ $widgets_conf = (array) ini::read(H . '/sys/ini/widgets.ini');
 $widgets = array();
 $wod = opendir(H . '/sys/widgets');
 while ($rd = readdir($wod)) {
-    if ($rd {
-            0} === '.')
+    if ($rd[0] === '.')
         continue;
     if (!is_file(H . '/sys/widgets/' . $rd . '/config.ini'))
         continue;

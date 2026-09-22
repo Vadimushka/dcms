@@ -43,7 +43,7 @@ class DbStructureTableForeignKey implements DbStructureTablePartI
 
         $different = false;
         foreach ($compare_key_props AS $compare_key) {
-            if ($this->$compare_key !== $struct->$compare_key) {
+            if (!DbStructure::sameValue($this->$compare_key, $struct->$compare_key)) {
                 $different = true;
                 break;
             }
@@ -58,7 +58,10 @@ class DbStructureTableForeignKey implements DbStructureTablePartI
     public function fromArray($keyArr)
     {
         foreach ($this AS $key => $val) {
-            $this->$key = $keyArr[$key];
+            // в сохранённой структуре часть сведений отсутствует — это
+            // состояние конкретной таблицы, а не её описание
+            if (array_key_exists($key, $keyArr))
+                $this->$key = $keyArr[$key];
         }
     }
 }

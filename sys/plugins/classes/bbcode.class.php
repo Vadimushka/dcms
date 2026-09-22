@@ -19,7 +19,7 @@ class bbcode
       'children' - список тегов, которым разрешено быть вложенными в данный.
      */
 
-    var $info_about_tags = array(
+    public $info_about_tags = array(
         'nobb' => array(
             'handler' => 'nobb_2html',
             'is_close' => false,
@@ -565,8 +565,8 @@ class bbcode
             )
         ),
     );
-    var $mnemonics = array();
-    var $syntax = array();
+    public $mnemonics = array();
+    public $syntax = array();
 
     function get_array_of_tokens($code)
     {
@@ -576,7 +576,7 @@ class bbcode
         $type_of_char = null;
         for ($i = 0; $i < $length; ++$i) {
             $previous_type = $type_of_char;
-            switch ($code{$i}) {
+            switch ($code[$i]) {
                 case '[':
                     $type_of_char = 0;
                     break;
@@ -625,20 +625,20 @@ class bbcode
             switch ($type_of_char) {
                 case 6:
                     if (6 == $previous_type) {
-                        $tokens[$token_key][1] .= $code{$i};
+                        $tokens[$token_key][1] .= $code[$i];
                     } else {
-                        $tokens[++$token_key] = array(6, $code{$i});
+                        $tokens[++$token_key] = array(6, $code[$i]);
                     }
                     break;
                 case 7:
                     if (7 == $previous_type) {
-                        $tokens[$token_key][1] .= $code{$i};
+                        $tokens[$token_key][1] .= $code[$i];
                     } else {
-                        $tokens[++$token_key] = array(7, $code{$i});
+                        $tokens[++$token_key] = array(7, $code[$i]);
                     }
                     break;
                 default:
-                    $tokens[++$token_key] = array($type_of_char, $code{$i});
+                    $tokens[++$token_key] = array($type_of_char, $code[$i]);
             }
         }
         return $tokens;
@@ -1180,7 +1180,7 @@ class bbcode
                     }
                 }
                 $func_name = $this->info_about_tags[$elem['name']]['handler'];
-                $result .= call_user_func(array(&$this, $func_name), $elem);
+                $result .= $this->$func_name($elem);
             }
         }
         return $result;

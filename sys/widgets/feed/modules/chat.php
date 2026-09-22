@@ -10,7 +10,7 @@ class widget_feed_chat implements widget_feed_module
     function getLastPosts($limit)
     {
         $limit = (int)$limit;
-        $limit = $limit < 0 ? 1 : $limit > 100 ? 100 : $limit;
+        $limit = $limit < 0 ? 1 : ($limit > 100 ? 100 : $limit);
 
         $posts = array();
         $q = db::me()->query("SELECT * FROM `chat_mini` ORDER BY `id` DESC LIMIT " . $limit);

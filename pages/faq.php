@@ -3,7 +3,7 @@
 include_once '../sys/inc/start.php';
 $doc = new document();
 $doc->title = __('Справка');
-$faq = preg_replace('#[^a-z0-9_\-]+#ui', '', @$_GET['info']);
+$faq = preg_replace('#[^a-z0-9_\-]+#ui', '', isset($_GET['info']) ? (string) $_GET['info'] : '');
 $bb = new bb(H . '/sys/docs/faq/' . $faq . '.txt');
 
 if ($bb->err) {

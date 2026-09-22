@@ -23,7 +23,7 @@ if (!empty($probe_theme)) {
     }
 
     if (isset($_POST['cancel'])) {
-        header('Location: ?' . SID);
+        header('Location: ?' . passgen());
         exit;
     }
 

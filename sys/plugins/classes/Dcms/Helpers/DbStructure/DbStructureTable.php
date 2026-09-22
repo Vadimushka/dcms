@@ -37,6 +37,7 @@ class DbStructureTable
     {
         $this->Columns = [];
         $this->Keys = [];
+        $this->ForeignKeys = [];
         $this->Properties = new DbStructureTableProperties();
     }
 

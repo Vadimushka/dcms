@@ -34,7 +34,7 @@ if ($user->group && $file->id_user != $user->id && isset($_POST['rating'])) {
         $file->rating_my($my_rating);
         $doc->msg(__('Ваша оценка файла успешно принята'));
 
-        header('Refresh: 1; url=?order=' . $order . '&' . passgen() . SID);
+        header('Refresh: 1; url=?order=' . $order . '&' . passgen());
         $doc->ret(__('Вернуться'), '?order=' . $order . '&amp;' . passgen());
         exit;
     } else {

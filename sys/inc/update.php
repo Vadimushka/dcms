@@ -11,8 +11,8 @@ class update
         $_zip = false,
         $_checked = false,
         $_skip = array();
-    var $version = false;
-    var $err = array();
+    public $version = false;
+    public $err = array();
 
     public function __construct($zip = false)
     {
@@ -219,8 +219,13 @@ class update
         $this->log('Начинаем процесс обновления');
         $this->log('Файл обновления: ' . $this->_zip);
 
-        $to_delete = (array)keyvalue::read($this->_tmp_path . '/to_delete.ini');
-        $files_to_backup = $to_update = (array)keyvalue::read($this->_tmp_path . '/to_update.ini');
+        $to_delete = keyvalue::read($this->_tmp_path . '/to_delete.ini');
+        if (!is_array($to_delete))
+            $to_delete = array();
+        $to_update = keyvalue::read($this->_tmp_path . '/to_update.ini');
+        if (!is_array($to_update))
+            $to_update = array();
+        $files_to_backup = $to_update;
 
         foreach ($to_delete as $file => $hash) {
             $files_to_backup[] = $file;

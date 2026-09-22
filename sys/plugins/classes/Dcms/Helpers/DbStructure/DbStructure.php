@@ -6,6 +6,50 @@ use Dcms\Helpers\FileSystem;
 
 class DbStructure
 {
+    /**
+     * Сравнение двух значений из описания структуры.
+     *
+     * Строгое сравнение здесь не годится: сохранённые структуры сделаны на
+     * PHP 5.6, где PDO отдавал всё строками ('0', '1'), а с PHP 8.1 драйвер
+     * MySQL возвращает настоящие типы (0, 1). Из-за этого каждый индекс и
+     * каждая колонка считались изменёнными, и страница обновления структуры
+     * предлагала пересоздать все таблицы разом.
+     *
+     * @param mixed $a
+     * @param mixed $b
+     * @return bool
+     */
+    public static function sameValue($a, $b)
+    {
+        $a = self::normalizeType($a);
+        $b = self::normalizeType($b);
+
+        if ($a === null || $b === null)
+            return $a === $b;
+        if (is_array($a) || is_array($b) || is_object($a) || is_object($b))
+            return $a == $b;
+        return (string) $a === (string) $b;
+    }
+
+    /**
+     * Приведение объявления типа колонки к виду, сравнимому между версиями
+     * MySQL. В 8.0 сервер перестал показывать ширину целочисленных типов:
+     * там, где сохранённая структура хранит «int(10) unsigned», база отдаёт
+     * «int unsigned». На хранение это не влияет, а при сравнении делало
+     * изменённой каждую колонку. У decimal, varchar и char число в скобках
+     * значимо, поэтому трогаем только целые.
+     *
+     * @param mixed $value
+     * @return mixed
+     */
+    public static function normalizeType($value)
+    {
+        if (!is_string($value))
+            return $value;
+
+        return preg_replace('/\b(tinyint|smallint|mediumint|int|integer|bigint)\(\d+\)/i', '$1', $value);
+    }
+
 
     /**
      * @var DbStructureTable[]
@@ -43,14 +87,16 @@ class DbStructure
             $this->Tables[] = $table_struct;
         }
 
-        $q = $db->query("SHOW PROCEDURE STATUS");
+        // Без фильтра по базе MySQL 5.7+ возвращает ещё и процедуры схемы `sys`,
+        // а SHOW CREATE PROCEDURE ищет их в текущей базе и падает с ошибкой 1305.
+        $q = $db->query("SHOW PROCEDURE STATUS WHERE `Db` = DATABASE()");
         foreach ($q->fetchAll() AS $proc_info) {
             $proc_struct = new DbStructureProcedure();
             $proc_struct->loadFromBase($db, $proc_info['Name']);
             $this->Procedures[] = $proc_struct;
         }
 
-        $q = $db->query("SHOW FUNCTION STATUS");
+        $q = $db->query("SHOW FUNCTION STATUS WHERE `Db` = DATABASE()");
         foreach ($q->fetchAll() AS $fnc_info) {
             $fnc_struct = new DbStructureFunction();
             $fnc_struct->loadFromBase($db, $fnc_info['Name']);

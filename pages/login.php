@@ -69,27 +69,36 @@ if ($need_of_captcha && (empty($_POST['captcha']) || empty($_POST['captcha_sessi
                     // если пользователь авторизовался, то ключ для восстановления ему больше не нужен
                     $user->recovery_password = '';
                 }
+                // новый идентификатор сессии: иначе идентификатор, известный
+                // до входа, продолжает действовать уже от имени вошедшего
+                session_regenerate_id(true);
                 $_SESSION[SESSION_ID_USER] = $user->id;
                 if (isset($_POST['save_to_cookie']) && $_POST['save_to_cookie']) {
-                    setcookie(COOKIE_ID_USER, $user->id, TIME + 60 * 60 * 24 * 365);
-                    setcookie(COOKIE_USER_PASSWORD, crypt::encrypt($password, $dcms->salt_user), TIME + 60 * 60 * 24 * 365);
+                    if ($token = user_token::create($user->id))
+                        user_token::setCookie($token);
                 }
             }
         }
     }
-} elseif (!empty($_COOKIE[COOKIE_ID_USER]) && !empty($_COOKIE[COOKIE_USER_PASSWORD])) {
-    $tmp_user = new user($_COOKIE[COOKIE_ID_USER]);
+} elseif (!empty($_COOKIE[COOKIE_USER_TOKEN])) {
+    // user(0) — это не гость, а системный бот с шестой группой, поэтому
+    // объект создаётся только после успешной проверки токена
+    $id_user = user_token::check($_COOKIE[COOKIE_USER_TOKEN]);
+    $tmp_user = $id_user === false ? false : new user($id_user);
 
-    if (crypt::hash(crypt::decrypt($_COOKIE[COOKIE_USER_PASSWORD], $dcms->salt_user), $dcms->salt) === $tmp_user->password) {
+    if ($tmp_user !== false && $tmp_user->id !== false) {
          misc::logaut($tmp_user->id, 'cookie', 1); // пишем в журнал успешную авторизацию 
         $user = $tmp_user;
+        session_regenerate_id(true);
         $_SESSION[SESSION_ID_USER] = $user->id;
     } else {
         $need_of_captcha = true;
         cache_aut_failture::set($dcms->ip_long, true, 600); // при ошибке заставляем пользователя проходить капчу
-        misc::logaut($tmp_user->id, 'cookie', 0); // пишем в журнал попытку входа по куках
-        setcookie(COOKIE_ID_USER);
-        setcookie(COOKIE_USER_PASSWORD);
+        if ($id_user !== false)
+            misc::logaut($id_user, 'cookie', 0); // пишем в журнал попытку входа по куках
+        user_token::delete($_COOKIE[COOKIE_USER_TOKEN]);
+        user_token::clearCookie();
+        setcookie(COOKIE_ID_USER, '', array('expires' => TIME - 3600, 'path' => '/'));
     }
 }
 

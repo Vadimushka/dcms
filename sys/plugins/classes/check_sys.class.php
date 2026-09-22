@@ -5,9 +5,9 @@
  */
 class check_sys {
 
-    var $errors = array(); // ошибки, при которых система не может работать
-    var $notices = array(); // ошибки, при которых система может работать нестабильно или могут не работать некоторые дополнительные возможности
-    var $oks = array(); // отчет о работоспособности проверяемого модуля
+    public $errors = array(); // ошибки, при которых система не может работать
+    public $notices = array(); // ошибки, при которых система может работать нестабильно или могут не работать некоторые дополнительные возможности
+    public $oks = array(); // отчет о работоспособности проверяемого модуля
 
     function __construct() {
         $this->_checkSys();
@@ -56,13 +56,6 @@ class check_sys {
             $this->errors[] = __('Нет драйвера mysql для PDO');
         }
 
-        // шифрование
-        if (function_exists('mcrypt_module_open')) {
-            $this->oks[] = 'mcrypt: OK';
-        } else {
-            $this->notices[] = __('Отсутствие mcrypt не позволит шифровать COOKIE пользователя.');
-        }
-
         // работа с графикой
         if (function_exists('gd_info')) {
             $this->oks[] = 'GD: OK';
@@ -96,20 +89,14 @@ class check_sys {
 
 // передача сессии в URI
         if (ini_get('session.use_trans_sid')) {
+            $this->notices[] = __('Параметр session.use_trans_sid включён: идентификатор сессии попадает в адрес страницы и утекает через Referer и историю браузера. В PHP 8.5 механизм объявлен устаревшим');
+        } else {
             $this->oks[] = 'session.use_trans_sid: OK';
-        } else {
-            $this->notice[] = __('Параметр session.use_trans_sid установлен в 0. Будет теряться сессия на браузерах без поддержки COOKIE');
         }  // экранирование кавычек'
-        if (!ini_get('magic_quotes_gpc')) {
-            $this->oks[] = 'magic_quotes_gpc = 0: OK';
-        } else {
-
-        }$this->notice[] = __('Параметр magic_quotes_gpc установлен в 1. Экранирование кавычек будет добавлять обратный слэш перед каждой кавычкой.');
-
         if (ini_get('arg_separator.output') == '&amp;') {
             $this->oks[] = 'arg_separator.output: &amp;amp;: OK';
         } else {
-            $this->notice[] = 'arg_separator.output: ' . text::toOutput(ini_get('arg_separator.output')) . ' ' . __('Возможно появление xml ошибок');
+            $this->notices[] = 'arg_separator.output: ' . text::toOutput(ini_get('arg_separator.output')) . ' ' . __('Возможно появление xml ошибок');
         }
     }
 

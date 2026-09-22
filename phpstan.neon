@@ -1,0 +1,24 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 0
+    paths:
+        - sys/inc
+        - sys/plugins/classes
+        - sys/widgets
+        - pages
+        - forum
+        - files
+        - dpanel
+        - chat_mini
+        - news
+        - photos
+        - index.php
+    excludePaths:
+        - sys/plugins/id3/*
+        - sys/plugins/classes/pclzip.class.php
+        - sys/plugins/classes/simpleopenid.class.php
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    treatPhpDocTypesAsCertain: false

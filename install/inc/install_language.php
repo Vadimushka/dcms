@@ -8,7 +8,7 @@ class install_language {
                 return false;
             }
         }
-        $_SESSION['language'] = $_POST['language'];
+        $_SESSION['language'] = isset($_POST['language']) ? $_POST['language'] : '';
         return true;
     }
 

@@ -6,7 +6,7 @@
  */
 class prebbcode extends bbcode {
 
-    var $info_about_tags = array(
+    public $info_about_tags = array(
         'hide' => array(
             'handler' => 'hide_2bb',
             'is_close' => false,

@@ -1,6 +1,6 @@
 <?php
 class install_load_preinstall {
-    var $is_loaded = false;
+    public $is_loaded = false;
     function __construct()
     {
         $settings = &$_SESSION['settings'];

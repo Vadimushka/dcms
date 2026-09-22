@@ -1,7 +1,7 @@
 <?php
 class install_settings_old_version {
-    var $conf = array();
-    var $return = false;
+    public $conf = array();
+    public $return = false;
     function __construct()
     {
         $this->settings = &$_SESSION['settings'];
@@ -19,9 +19,6 @@ class install_settings_old_version {
             $this->settings['salt'] = $this->conf['shif'];
             $return = true;
         }
-
-        if (!empty($this->conf['mcrypt_iv']))
-            $this->settings['iv'] = $this->conf['mcrypt_iv'];
 
         return $return;
     }

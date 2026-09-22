@@ -222,16 +222,20 @@ abstract class is_valid {
                        \x20?
                        (?> (?>[\xd0\xd1][\x80-\xbf]|[a-z\d]+)+ \x20 ){1,' . $delta . '}
                     /sx', $s2, $m2);
-            $fragment = (ltrim(@$m1[0]) !== ltrim($s1) ? $continue : '') .
-                    trim(@$m1[0] . '[' . trim($word) . ']' . @$m2[0]) .
-                    (rtrim(@$m2[0]) !== rtrim($s2) ? $continue : '');
+            // @ подавлял notice об отсутствующем ключе, но ltrim(null) с PHP 8.1
+            // объявлен устаревшим — приводим к строке явно
+            $m1_0 = isset($m1[0]) ? $m1[0] : '';
+            $m2_0 = isset($m2[0]) ? $m2[0] : '';
+            $fragment = (ltrim($m1_0) !== ltrim($s1) ? $continue : '') .
+                    trim($m1_0 . '[' . trim($word) . ']' . $m2_0) .
+                    (rtrim($m2_0) !== rtrim($s2) ? $continue : '');
             return $fragment;
         }
         return false;
     }
 
     static function utf8_html_entity_decode($s, $is_htmlspecialchars = false) {
-        if (strlen($s) < 4 || ($pos = strpos($s, '&') === false) || strpos($s, ';', $pos) === false)
+        if (strlen($s) < 4 || ($pos = strpos($s, '&')) === false || strpos($s, ';', $pos) === false)
             return $s;
         $table = array(
             '&nbsp;' => "\xc2\xa0",
@@ -491,17 +495,25 @@ abstract class is_valid {
         );
         if ($is_htmlspecialchars)
             $table += $htmlspecialchars;
-        preg_match_all('/&[a-zA-Z]+\d*;/s', $s, $m, null, $pos);
+        preg_match_all('/&[a-zA-Z]+\d*;/s', $s, $m, PREG_PATTERN_ORDER, $pos);
         foreach (array_unique($m[0]) as $entity) {
             if (array_key_exists($entity, $table))
                 $s = str_replace($entity, $table[$entity], $s);
         }
         if (($pos = strpos($s, '&#')) !== false) {
             $htmlspecialchars_flip = array_flip($htmlspecialchars);
-            $s = preg_replace(
-                    '/&#((x)[\da-fA-F]{2,4}|\d{1,4});/se', '(array_key_exists($a = pack("C", $d = ("$2") ? hexdec("$1") : "$1"), $htmlspecialchars_flip) && ! $is_htmlspecialchars) ?
-             $htmlspecialchars_flip[$a] :
-             iconv("UCS-2BE", "UTF-8", pack("n", $d))', $s, - 1, $pos);
+            $s = preg_replace_callback(
+                    '/&#((x)[\da-fA-F]{2,4}|\d{1,4});/s',
+                    function ($m) use ($htmlspecialchars_flip, $is_htmlspecialchars) {
+                        // группа 1 при hex-входе равна "x41F"; hexdec() молча
+                        // игнорировал бы "x", но с PHP 8.1 пишет об этом Deprecated,
+                        // поэтому срезаем префикс явно — результат тот же
+                        $d = (isset($m[2]) && $m[2] !== '') ? hexdec(substr($m[1], 1)) : (int) $m[1];
+                        $a = pack('C', $d);
+                        if (array_key_exists($a, $htmlspecialchars_flip) && !$is_htmlspecialchars)
+                            return $htmlspecialchars_flip[$a];
+                        return iconv('UCS-2BE', 'UTF-8', pack('n', $d));
+                    }, $s, -1, $pos);
         }
         return $s;
     }
@@ -626,7 +638,7 @@ abstract class is_valid {
     }
 
 
-    static function strip_tags_smart($s, array $allowable_tags = null, $is_format_spaces = false, array $pair_tags = array('script', 'style', 'map', 'iframe', 'frameset', 'object', 'applet', 'comment', 'button'), array $para_tags = array('p', 'td', 'th', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'form', 'title')
+    static function strip_tags_smart($s, ?array $allowable_tags = null, $is_format_spaces = false, array $pair_tags = array('script', 'style', 'map', 'iframe', 'frameset', 'object', 'applet', 'comment', 'button'), array $para_tags = array('p', 'td', 'th', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'form', 'title')
     ) {
         static $_callback_type = false;
         static $_allowable_tags = array();
