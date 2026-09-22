@@ -32,7 +32,7 @@ class DbStructureTableColumn implements DbStructureTablePartI
 
         $sql .= ($this->Null == "NO" ? ' NOT' : '') . ' NULL';
 
-        if (!is_null($this->Default) || $this->Null == "NO") {
+        if ($this->allowsDefault() && (!is_null($this->Default) || $this->Null == "NO")) {
             if (is_null($this->Default)) {
                 if ($this->Null !== "NO") {
                     $sql .= ' DEFAULT NULL';
@@ -70,7 +70,12 @@ class DbStructureTableColumn implements DbStructureTablePartI
 
         $different = false;
         foreach ($compare_column_props AS $compare_key) {
-            if ($this->$compare_key !== $struct->$compare_key) {
+            // значение по умолчанию у таких типов невозможно, и в эталоне оно
+            // встречается по недосмотру: сравнивать его не с чем
+            if ($compare_key === 'Default' && !$this->allowsDefault() && !$struct->allowsDefault())
+                continue;
+
+            if (!DbStructure::sameValue($this->$compare_key, $struct->$compare_key)) {
                 $different = true;
                 break;
             }
@@ -80,6 +85,18 @@ class DbStructureTableColumn implements DbStructureTablePartI
             return false;
 
         return "CHANGE `{$this->Field}` " . $struct->getSQLCreate();
+    }
+
+    /**
+     * MySQL не разрешает DEFAULT у BLOB, TEXT, JSON и GEOMETRY: запрос с ним
+     * падает с ошибкой 1101. Такая колонка в описании таблицы осталась от
+     * старых версий движка, где структуру снимали с базы без проверки.
+     *
+     * @return bool
+     */
+    public function allowsDefault()
+    {
+        return !preg_match('/^\s*(tiny|medium|long)?(blob|text)\b|^\s*(json|geometry|point|linestring|polygon|multipoint|multilinestring|multipolygon|geometrycollection)\b/i', (string) $this->Type);
     }
 
     public function fromArray($column)

@@ -43,7 +43,7 @@ class DbStructureTableForeignKey implements DbStructureTablePartI
 
         $different = false;
         foreach ($compare_key_props AS $compare_key) {
-            if ($this->$compare_key !== $struct->$compare_key) {
+            if (!DbStructure::sameValue($this->$compare_key, $struct->$compare_key)) {
                 $different = true;
                 break;
             }
