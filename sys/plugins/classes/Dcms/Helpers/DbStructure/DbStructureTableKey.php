@@ -99,7 +99,10 @@ class DbStructureTableKey implements DbStructureTablePartI
     public function fromArray($keyArr)
     {
         foreach ($this AS $key => $val) {
-            $this->$key = $keyArr[$key];
+            // в сохранённой структуре часть сведений отсутствует — это
+            // состояние конкретной таблицы, а не её описание
+            if (array_key_exists($key, $keyArr))
+                $this->$key = $keyArr[$key];
         }
     }
 }

@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__) . '/../sys/inc/initialization.php';
 
-if ($_SESSION['language'] && languages::exists($_SESSION['language'])) {
+if (!empty($_SESSION['language']) && languages::exists($_SESSION['language'])) {
     $user_language_pack = new language_pack($_SESSION['language']);
 } else {
     $user_language_pack = new language_pack('english');

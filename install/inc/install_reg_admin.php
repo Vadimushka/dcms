@@ -38,7 +38,7 @@ class install_reg_admin {
         if (isset($_POST['login']))
             if (is_valid::nick($_POST['login'])) {
                 $this->login = $_POST['login'];
-                $res = DB::me()->prepare("SELECT COUNT(*) FROM `users` WHERE `login` = ?");
+                $res = DB::me()->prepare("SELECT COUNT(*) AS `cnt` FROM `users` WHERE `login` = ?");
                 $res->execute(Array($this->login));
                 if ($row = $res->fetch() AND !$row['cnt']) {
                     if (empty($_POST['password']))

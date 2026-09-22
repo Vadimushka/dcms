@@ -67,7 +67,10 @@ class DbStructureTableProperties
     public function fromArray($Properties)
     {
         foreach ($this AS $key => $val) {
-            $this->$key = $Properties[$key];
+            // в сохранённой структуре часть сведений отсутствует — это
+            // состояние конкретной таблицы, а не её описание
+            if (array_key_exists($key, $Properties))
+                $this->$key = $Properties[$key];
         }
     }
 }

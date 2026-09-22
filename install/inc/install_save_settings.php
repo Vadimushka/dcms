@@ -3,6 +3,7 @@
 class install_save_settings {
 
     public $is_writed = false;
+    public $settings;
 
     function __construct() {
         $this->settings = &$_SESSION['settings'];
