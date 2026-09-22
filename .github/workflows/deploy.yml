@@ -43,6 +43,30 @@ jobs:
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
+                  # Теги нужны, чтобы собрать версию сайта из последнего релиза
+                  fetch-depth: 0
+
+            # Версию показывает сам сайт, и по ней же движок решает, применимо
+            # ли к нему обновление. Релиз даёт её тегом, ручной выкат —
+            # последним тегом с отметкой коммита, чтобы отличать сборку с
+            # master от опубликованной версии.
+            - name: Определить версию
+              run: |
+                  if [ "${{ github.event_name }}" = "release" ]; then
+                      version="${{ github.event.release.tag_name }}"
+                  else
+                      tag="$(git describe --tags --abbrev=0 2>/dev/null || echo '')"
+                      version="${tag:-0.0.0}+$(git rev-parse --short HEAD)"
+                  fi
+
+                  # Версия попадает в настройки сайта: оставляем только то, что
+                  # там безопасно и осмысленно выглядит.
+                  version="${version#v}"
+                  version="$(printf '%s' "$version" | tr -cd 'A-Za-z0-9.+_-')"
+
+                  [ -n "$version" ] || { echo "::error::не удалось определить версию"; exit 1; }
+                  echo "VERSION=$version" >> "$GITHUB_ENV"
+                  echo "Версия сайта: $version"
 
             - name: Configure SSH
               run: |
@@ -87,7 +111,7 @@ jobs:
               env:
                   REMOTE: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
               run: |
-                  ssh "$REMOTE" "APP='${{ vars.DEPLOY_PATH }}' SHA='${{ github.sha }}' OPCACHE_OPTIONAL='${{ inputs.first_deploy && 1 || 0 }}' bash -s" \
+                  ssh "$REMOTE" "APP='${{ vars.DEPLOY_PATH }}' SHA='${{ github.sha }}' VERSION='$VERSION' OPCACHE_OPTIONAL='${{ inputs.first_deploy && 1 || 0 }}' bash -s" \
                       < deploy/activate.sh
 
             # Набор ходит по страницам снаружи: сценарии входа и чтение лога PHP
