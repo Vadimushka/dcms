@@ -134,11 +134,6 @@ class widget
             $cache_id [] = 'gp-' . intval($user->group);
         }
 
-        if (SID) {
-            // если браузер не поддерживает cookie, то во все ссылки будет добавляться SID,
-            // поэтому кэш делаем для каждой сессии свой
-            $cache_id [] = 'sn-' . SID;
-        }
 
         return implode('.', $cache_id);
     }

@@ -5,7 +5,7 @@ include_once '../sys/inc/start.php';
 $doc = new document();
 $doc->title = __('Файлы');
 
-$path = @$_GET['path'];
+$path = isset($_GET['path']) ? (string) $_GET['path'] : '';
 if (preg_match('#(.+)\.htm$#', $path, $m)) {
     $path = $m[1];
     $file_description = true;
@@ -15,7 +15,7 @@ $abs_path = realpath(FILES . '/' . $path);
 // если в строку $abs_path не входит FILES, то это попытка залезть на уровень выше дозволеного,
 // поэтому $abs_path будет корнем загруз-центра
 if (strpos($abs_path, FILES) !== 0 || !file_exists($abs_path)) {
-    header('Location: ../?' . SID);
+    header('Location: ../');
     exit;
 } //$abs_path = FILES;
 $rel_path = str_replace(FILES, '', $abs_path); // получаем относительный путь

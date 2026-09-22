@@ -62,7 +62,7 @@ if (isset($_POST['message'])) {
     if ($message_new == $message['message']) {
         $doc->err(__('Изменения не обнаружены'));
     } elseif ($dcms->censure && $mat = is_valid::mat($message_new)) {
-        $doc->err(__('Обнаружен мат: %', $mat));
+        $doc->err(__('Обнаружен мат: %s', $mat));
     } elseif ($message_new) {
         $doc->toReturn(new url('theme.php', array('id' => $message['id_theme'])));
 

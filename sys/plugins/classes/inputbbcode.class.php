@@ -7,7 +7,7 @@
 class inputbbcode extends bbcode
 {
 
-    var $info_about_tags = array(
+    public $info_about_tags = array(
         'img' => array(
             'handler' => 'img_2bb',
             'is_close' => false,

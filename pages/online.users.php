@@ -28,12 +28,12 @@ if ($arr = $q->fetchAll()) {
 
 
         if ($user->id === $p_user->id || $user->group > $p_user->group) {
-            $post->content .= __('Браузер') . ': ' . text::toValue($ank['browser']) . "<br />\n";
-            $post->content .= __('IP-адрес') . ': ' . long2ip($ank['ip_long']) . "<br />\n";
+            $post->content[] = __('Браузер') . ': ' . $ank['browser'];
+            $post->content[] = __('IP-адрес') . ': ' . long2ip($ank['ip_long']);
         }
 
-        $post->content .= __('Переходов') . ': ' . $ank['conversions'] . "<br />";
-        $post->content .= __('Последний визит') . ': ' . misc::when($p_user->last_visit) . '<br />';
+        $post->content[] = __('Переходов') . ': ' . $ank['conversions'];
+        $post->content[] = __('Последний визит') . ': ' . misc::when($p_user->last_visit);
     }
 
 }

@@ -5,11 +5,11 @@
  */
 class log_of_referers {
 
-    var $is_referer = false;
+    public $is_referer = false;
     private $url = array();
     private $referer = null;
 
-    function log_of_referers() {
+    function __construct() {
         // массив использованных рефереров
         if (!isset($_SESSION['LAST_REFERER']))
             $_SESSION['LAST_REFERER'] = array();

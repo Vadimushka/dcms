@@ -1,6 +1,6 @@
 <?php
 
-if (isset($_POST['edit_unlink']) && $file->name{0} !== '.') {
+if (isset($_POST['edit_unlink']) && $file->name[0] !== '.') {
     $id_user = $file->id_user;
     $runame = $file->runame;
     if ($file->delete()) {

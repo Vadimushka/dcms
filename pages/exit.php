@@ -11,14 +11,18 @@ if (isset($_POST['exit'])){
     
     $user->guest_init();
     
-    setcookie(COOKIE_ID_USER);
-    setcookie(COOKIE_USER_PASSWORD);
+    if (!empty($_COOKIE[COOKIE_USER_TOKEN]))
+        user_token::delete($_COOKIE[COOKIE_USER_TOKEN]);
+    user_token::clearCookie();
+    setcookie(COOKIE_ID_USER, '', array('expires' => TIME - 3600, 'path' => '/'));
     unset($_SESSION);
     session_destroy();
 
     /* Инициализация механизма сессий  */
     session_name(SESSION_NAME) or die(__('Невозможно инициализировать сессии'));
     @session_start() or die(__('Невозможно инициализировать сессии'));
+    // иначе на общем устройстве прежний идентификатор остаётся действующим
+    session_regenerate_id(true);
 
     $doc->msg(__('Авторизация успешно сброшена'));
     exit;

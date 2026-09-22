@@ -11,12 +11,12 @@ class language_pack {
     protected $_default = array();
     protected $_save_default = false;
     protected $_script = 'system';
-    var $code;
-    var $name;
-    var $enname;
-    var $icon;
-    var $xml_lang;
-    var $disable_collect_phrases;
+    public $code;
+    public $name;
+    public $enname;
+    public $icon;
+    public $xml_lang;
+    public $disable_collect_phrases;
 
     function __construct($code = false) {
         static $_for_translate;
@@ -39,10 +39,11 @@ class language_pack {
         $this->_script = str_replace(array('/', '\\'), '_', $_SERVER['SCRIPT_NAME']);
 
         if (!$_for_translate) {
-            $this->_default = $_for_translate = keyvalue::read(H . '/sys/languages/for_translate.lng');
-        } else {
-            $this->_default = $_for_translate;
+            $_for_translate = keyvalue::read(H . '/sys/languages/for_translate.lng');
+            if (!is_array($_for_translate))
+                $_for_translate = array();
         }
+        $this->_default = $_for_translate;
     }
 
     /**

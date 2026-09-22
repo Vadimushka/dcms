@@ -64,7 +64,10 @@ class menu_ini {
     protected function value($str) {
         if (!$this->_values)
             return $str;
-        return preg_replace('#\{\$(.+?)\}#e', '$this->_values[\\1]', $str);
+        $values = $this->_values;
+        return preg_replace_callback('#\{\$(.+?)\}#', function ($m) use ($values) {
+            return isset($values[$m[1]]) ? $values[$m[1]] : '';
+        }, $str);
     }
 
     public function display() {

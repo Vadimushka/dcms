@@ -2,11 +2,11 @@
 
 class install_db_connect
 {
-    var $is_connected = false;
-    var $err_connect = false;
-    var $err_db = false;
-    var $settings = array();
-    var $err_str = "";
+    public $is_connected = false;
+    public $err_connect = false;
+    public $err_db = false;
+    public $settings = array();
+    public $err_str = "";
 
     function __construct()
     {

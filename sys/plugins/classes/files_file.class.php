@@ -28,7 +28,7 @@ class files_file
     protected $_data = array(); // информация о файле
     protected $_screens = array(); // скриншоты (имена файлов)
     protected $_need_save = false; // необходимость пересохранения сведений о файле
-    var $ratings = array();
+    public $ratings = array();
 
     /**
      * files_file::__construct()
@@ -578,7 +578,7 @@ WHERE `id` = ? LIMIT 1");
      */
     public function save_data()
     {
-        if ($this->name{0} !== '.') {
+        if ($this->name[0] !== '.') {
             ini::save($this->path_dir_abs . '/.' . $this->name . '.ini', array('CONFIG' => $this->_data, 'SCREENS' => $this->_screens), true);
         }
     }

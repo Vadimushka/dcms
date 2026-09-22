@@ -54,11 +54,11 @@ class files_descriptiion {
 
     public static function defaultDescriptions($type)
     {
-        return self::FILES[$type] ?? [];
+        return array_key_exists($type, self::FILES) ? self::FILES[$type] : array();
     }
 
     public static function defaultAddKeys($type)
     {
-        return self::ADDKEYS[$type] ?? [];
+        return array_key_exists($type, self::ADDKEYS) ? self::ADDKEYS[$type] : array();
     }
 }

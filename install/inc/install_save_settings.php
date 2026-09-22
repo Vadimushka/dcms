@@ -2,7 +2,7 @@
 
 class install_save_settings {
 
-    var $is_writed = false;
+    public $is_writed = false;
 
     function __construct() {
         $this->settings = &$_SESSION['settings'];
@@ -22,7 +22,7 @@ class install_save_settings {
                 setcookie($key);
             }
 
-            header("Location: /?" . passgen() . '&' . SID);
+            header("Location: /?" . passgen());
             exit;
         }
 

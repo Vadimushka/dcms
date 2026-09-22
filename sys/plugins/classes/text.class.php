@@ -212,6 +212,11 @@ abstract class text {
      */
     static function toValue($str) {
 
+        // с PHP 8.1 передача null в строковые функции объявлена устаревшей,
+        // а сюда прилетает null из пустых полей сессии и форм
+        if ($str === null)
+            $str = '';
+
         // обработка старых цитат с числом в теге
         $str = preg_replace('#\[(/?)quote_([0-9]+)(\]|\=)#ui', '[\1quote\3', $str);
 

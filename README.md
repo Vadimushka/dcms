@@ -13,8 +13,9 @@
 
 ### Системные требования ###
 
-* Apache с модулем mod_rewrite.
-* PHP >= 5.4
+* Веб-сервер с поддержкой «красивых» URL: nginx (конфиг в docker/nginx)
+  или Apache с mod_rewrite.
+* PHP >= 8.1
 * GD2
 * mbstring и(или) Iconv
 * php-ffmpeg (опционально)

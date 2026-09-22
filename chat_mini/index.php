@@ -30,7 +30,7 @@ if ($can_write && $pages->this_page == 1) {
             $user->balls += $dcms->add_balls_chat ;
             $res = $db->prepare("INSERT INTO `chat_mini` (`id_user`, `time`, `message`) VALUES (?, ?, ?)");
             $res->execute(Array($user->id, TIME, $message));
-            header('Refresh: 1; url=?' . passgen() . '&' . SID);
+            header('Refresh: 1; url=?' . passgen());
             $doc->ret(__('Вернуться'), '?' . passgen());
             $doc->msg(__('Сообщение успешно отправлено'));
 

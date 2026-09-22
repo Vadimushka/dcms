@@ -1,0 +1,295 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Class DB referenced with incorrect case\: Db\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: dpanel/dev.load_tables.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: Db\.$#'
+			identifier: class.nameCase
+			count: 4
+			path: dpanel/dev.save_tables.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: Db\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: dpanel/dev.update_tables.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: dpanel/statistics.php
+
+		-
+			message: '#^Path in include\(\) "inc/file_act\.php" is not a file or it does not exist\.$#'
+			identifier: include.fileNotFound
+			count: 1
+			path: files/inc/file_description.php
+
+		-
+			message: '#^Path in include\(\) "inc/file_form\.php" is not a file or it does not exist\.$#'
+			identifier: include.fileNotFound
+			count: 1
+			path: files/inc/file_description.php
+
+		-
+			message: '#^Path in include\(\) "inc/screens_edit\.php" is not a file or it does not exist\.$#'
+			identifier: include.fileNotFound
+			count: 1
+			path: files/inc/file_description.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 3
+			path: forum/category.stat.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 3
+			path: forum/inc/functions.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 3
+			path: forum/stat.php
+
+		-
+			message: '#^Instantiated class PclZip not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: sys/inc/cron/log_archive.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: Db\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: sys/inc/update.php
+
+		-
+			message: '#^Instantiated class PclZip not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: sys/inc/update.php
+
+		-
+			message: '#^Instantiated class JsonMapper not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: sys/plugins/classes/Dcms/Helpers/DbStructure/DbStructureFunction.php
+
+		-
+			message: '#^Instantiated class JsonMapper not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: sys/plugins/classes/Dcms/Helpers/DbStructure/DbStructureProcedure.php
+
+		-
+			message: '#^Call to static method generateRandomString\(\) on an unknown class Dcms\\Helpers\\Text\.$#'
+			identifier: class.notFound
+			count: 1
+			path: sys/plugins/classes/Dcms/Helpers/HttpClient.php
+
+		-
+			message: '#^Class Dcms\\Helpers\\Url not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: sys/plugins/classes/Dcms/Helpers/HttpClient.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: sys/plugins/classes/api_chat_mini.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: sys/plugins/classes/api_friends.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 2
+			path: sys/plugins/classes/api_mail.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 2
+			path: sys/plugins/classes/api_stat.class.php
+
+		-
+			message: '#^Method cache\:\:set\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/cache.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 5
+			path: sys/plugins/classes/dcms.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 10
+			path: sys/plugins/classes/files.class.php
+
+		-
+			message: '#^Method files\:\:delete\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/files.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 11
+			path: sys/plugins/classes/files_file.class.php
+
+		-
+			message: '#^Method files_file\:\:_createScreensAuto\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/files_file.class.php
+
+		-
+			message: '#^Method files_file\:\:_getPropertiesAuto\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/files_file.class.php
+
+		-
+			message: '#^Instantiated class getID3 not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: sys/plugins/classes/files_properties_id3.class.php
+
+		-
+			message: '#^Instantiated class PclZip not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: sys/plugins/classes/files_screen_xap.class.php
+
+		-
+			message: '#^Method files_types\:\:getPropertiesType\(\) should return string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/files_types.class.php
+
+		-
+			message: '#^Method files_types\:\:getScreenType\(\) should return string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/files_types.class.php
+
+		-
+			message: '#^Call to an undefined static method filesystem\:\:getOldTmpFiles\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: sys/plugins/classes/filesystem.class.php
+
+		-
+			message: '#^Method filesystem\:\:mkdir\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/filesystem.class.php
+
+		-
+			message: '#^Method http_client\:\:_connect\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/http_client.class.php
+
+		-
+			message: '#^Method imaging\:\:add_copyright\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/imaging.class.php
+
+		-
+			message: '#^Method imaging\:\:add_icon\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/imaging.class.php
+
+		-
+			message: '#^Method is_valid\:\:mail\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/is_valid.class.php
+
+		-
+			message: '#^Method is_valid\:\:password\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/is_valid.class.php
+
+		-
+			message: '#^Method is_valid\:\:skype\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/is_valid.class.php
+
+		-
+			message: '#^Method is_valid\:\:wmid\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/is_valid.class.php
+
+		-
+			message: '#^Method language_pack\:\:_addString\(\) should return bool but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/language_pack.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 3
+			path: sys/plugins/classes/menu.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 3
+			path: sys/plugins/classes/stat.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 2
+			path: sys/plugins/classes/text.class.php
+
+		-
+			message: '#^Method user\:\:getAvatar\(\) should return bool\|string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: sys/plugins/classes/user.class.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: sys/widgets/feed/modules/chat.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: sys/widgets/feed/modules/forum.php
+
+		-
+			message: '#^Class DB referenced with incorrect case\: db\.$#'
+			identifier: class.nameCase
+			count: 2
+			path: sys/widgets/feed/modules/users.php

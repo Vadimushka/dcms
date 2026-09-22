@@ -19,7 +19,7 @@ $doc->title = ($user->id && $ank->id == $user->id)? __('Мои логины') : 
 $doc->description = __('Логины "%s"', $ank->nick);
 $doc->keywords [] = $ank->login;
 
-$pages = new pages($db->query("SELECT COUNT(*) FROM `login_history` WHERE `id_user` = '$ank->id'")) ;
+$pages = new pages($db->query("SELECT COUNT(*) FROM `login_history` WHERE `id_user` = '$ank->id'")->fetchColumn()) ;
 $listing = new listing() ;
 
 $q = $db->query("SELECT * FROM `login_history` WHERE `id_user` = '$ank->id' ORDER BY `time` DESC LIMIT " . $pages->limit) ;

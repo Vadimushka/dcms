@@ -51,7 +51,6 @@ if (!empty($_POST['vote'])) {
 
         if (count($set) < 2) $doc->err(__('Должно быть не менее 2-х вариантов ответа'));
         else {
-            // echo mysql_error();
             $doc->toReturn(new url('theme.php', array('id', $theme['id'])));
 
             if (!empty($_POST['finish'])) {

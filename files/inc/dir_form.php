@@ -138,7 +138,7 @@ if ($access_edit) {
             }
             $form->select('group_edit', __('Изменение параметров и создание папок'), $options);
 
-            if ($rel_path && $dir->name{0} !== '.')
+            if ($rel_path && $dir->name[0] !== '.')
                 $form->bbcode('* ' . __('На сервере папка будет на транслите'));
             else
                 $form->bbcode('* ' . __('Изменится только отображаемое название'));
@@ -159,7 +159,7 @@ if ($access_edit) {
     $doc->act(__('Создать папку'), '?order=' . $order . '&amp;act=write_dir');
     $doc->act(__('Параметры'), '?order=' . $order . '&amp;act=edit_prop');
 
-    if ($rel_path && $dir->name{0} !== '.') {
+    if ($rel_path && $dir->name[0] !== '.') {
         $doc->act(__('Перемещение'), '?order=' . $order . '&amp;act=edit_path');
         $doc->act(__('Удаление папки'), '?order=' . $order . '&amp;act=edit_unlink');
     }

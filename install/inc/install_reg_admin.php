@@ -2,15 +2,15 @@
 
 class install_reg_admin {
 
-    var $login = 'Administrator';
-    var $pass1 = '';
-    var $pass2 = '';
-    var $err_login;
-    var $err_pass1;
-    var $err_pass2;
-    var $settings = array();
-    var $users_count = 0;
-    var $adm_count = 0;
+    public $login = 'Administrator';
+    public $pass1 = '';
+    public $pass2 = '';
+    public $err_login;
+    public $err_pass1;
+    public $err_pass2;
+    public $settings = array();
+    public $users_count = 0;
+    public $adm_count = 0;
 
     function __construct() {
         db_connect();

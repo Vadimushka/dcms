@@ -29,7 +29,7 @@ if (!empty($_FILES['file'])) {
 
         if (!empty($img_screen)) {
             if ($file->screenAdd($img_screen)) {
-                header('Refresh: 1; url=?order=' . $order . '&act=edit_screens&' . SID);
+                header('Refresh: 1; url=?order=' . $order . '&act=edit_screens');
                 $doc->ret('Вернуться', '?order=' . $order . '&amp;act=edit_screens');
 
                 $doc->msg(__('Скриншот успешно добавлен'));
@@ -42,7 +42,7 @@ if (!empty($_FILES['file'])) {
 
 if (isset($_GET['delete'])) {
     if ($file->screenDelete($_GET['delete'])) {
-        header('Refresh: 1; url=?order=' . $order . '&act=edit_screens&' . SID);
+        header('Refresh: 1; url=?order=' . $order . '&act=edit_screens');
         $doc->ret(__('Вернуться'), '?order=' . $order . '&amp;act=edit_screens');
 
         $doc->msg(__('Скриншот успешно удален'));

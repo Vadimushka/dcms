@@ -2,8 +2,8 @@
 
 class install_check_old_version {
 
-    var $tables;
-    var $old_version = false;
+    public $tables;
+    public $old_version = false;
 
     function __construct() {
         db_connect();

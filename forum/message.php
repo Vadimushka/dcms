@@ -66,7 +66,7 @@ if ($can_write && isset($_POST['message']) && $theme['group_write'] <= $user->gr
         || !Dcms\Helpers\Captcha::check($_POST['captcha'], $_POST['captcha_session']))) {
         $doc->err(__('Проверочное число введено неверно'));
     } elseif ($dcms->censure && $mat = is_valid::mat($message_re)) {
-        $doc->err(__('Обнаружен мат: %', $mat));
+        $doc->err(__('Обнаружен мат: %s', $mat));
     } elseif ($message_re && text::input_text($re) != $message_re) {
 
 

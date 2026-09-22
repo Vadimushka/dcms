@@ -6,8 +6,8 @@
  */
 class bb {
 
-    var $title = false;
-    var $err = false;
+    public $title = false;
+    public $err = false;
     protected $_content = '';
     protected $_pattern_title = "#\[title\](.*?)\[\/title\]#ui";
 

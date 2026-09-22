@@ -171,6 +171,10 @@ abstract class misc
     {
         $val = trim($val);
         $last = strtolower($val[strlen($val) - 1]);
+        // ini_get отдаёт значение с суффиксом ("128M"), а умножение такой строки
+        // на число с PHP 7 пишет Warning: A non-numeric value encountered.
+        // На 5.6 суффикс отбрасывался молча — отбрасываем его явно, результат тот же.
+        $val = (int) $val;
         switch ($last) {
             case 'g':
                 $val *= 1073741824;

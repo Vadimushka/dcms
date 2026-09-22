@@ -1,0 +1,22 @@
+{
+    "name": "vadimushka/dcms",
+    "description": "DCMS — система управления сайтом",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.0"
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "lint": "find . -name '*.php' -not -path './vendor/*' -not -path './sys/plugins/id3/*' -not -path './docs/*' -exec php -l {} \\; | grep -v 'No syntax errors' || echo 'Синтаксис чист'",
+        "phpstan": "phpstan analyse --memory-limit=1G"
+    }
+}

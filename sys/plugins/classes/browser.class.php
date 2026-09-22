@@ -74,7 +74,7 @@ abstract class browser
 
     static protected function _getBrowserinfo()
     {
-        $user_agent = @$_SERVER['HTTP_USER_AGENT'];
+        $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? (string) $_SERVER['HTTP_USER_AGENT'] : '';
         $info = array(
             'name' => __('Нет данных'),
             'type' => 'light',

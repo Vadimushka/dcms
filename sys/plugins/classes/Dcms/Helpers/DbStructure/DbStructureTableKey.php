@@ -19,6 +19,10 @@ class DbStructureTableKey implements DbStructureTablePartI
     public $Index_type;
     public $Comment;
     public $Index_comment;
+    // MySQL 8 добавил эти колонки в SHOW KEYS; PDO::FETCH_CLASS без
+    // объявления создавал бы динамические свойства (Deprecated с PHP 8.2)
+    public $Expression;
+    public $Visible;
 
     public function getColumns()
     {

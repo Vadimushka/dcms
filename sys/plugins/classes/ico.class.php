@@ -5,8 +5,11 @@
  */
 class ico {
 
-    var $bgcolor = array(255, 255, 255);
-    var $bgcolor_transparent = false;
+    public $bgcolor = array(255, 255, 255);
+    public $bgcolor_transparent = false;
+    public $_filename = '';
+    public $formats = array();
+    public $ico = array();
 
     function __construct($path = '') {
         if (strlen($path) > 0) {

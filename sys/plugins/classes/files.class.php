@@ -706,7 +706,7 @@ class files {
      */
     public function rename($runame, $realname) {
         // переименование папки
-        if ($this->path_rel && $this->name{0} !== '.') {
+        if ($this->path_rel && $this->name[0] !== '.') {
             $path_new = preg_replace('#[^\/\\\]+$#u', $realname, $this->path_rel);
 
             if (!@rename($this->path_abs, FILES . $path_new))

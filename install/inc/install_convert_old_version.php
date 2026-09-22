@@ -2,16 +2,16 @@
 
 class install_convert_old_version {
 
-    var $users;
-    var $rating;
-    var $forum;
-    var $forum_files;
-    var $konts;
-    var $mail;
-    var $ban;
-    var $sdt;
-    var $obmen;
-    var $news;
+    public $users;
+    public $rating;
+    public $forum;
+    public $forum_files;
+    public $konts;
+    public $mail;
+    public $ban;
+    public $sdt;
+    public $obmen;
+    public $news;
 
     function __construct() {
         db_connect();
@@ -37,7 +37,6 @@ class install_convert_old_version {
             // получаем список пользователей
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "user` ORDER BY `id`");
             //if (function_exists('set_time_limit'))
-            //    set_time_limit(max(mysql_num_rows($q) / 2, 30));
             while ($user = $q->fetch()) {
                 // пропускаем неактивированные учетки
                 if ($user['activation'])
@@ -80,12 +79,10 @@ class install_convert_old_version {
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "user_voice2` WHERE `rating` > '0'");
 
             // if (function_exists('set_time_limit'))
-            //  set_time_limit(max(mysql_num_rows($q) / 2, 30));
             while ($voice = $q->fetch()) {
                 DB::me()->query("INSERT INTO `reviews_users` (`id_user`, `id_ank`, `rating`, `time`)
   VALUES ('$voice[id_user]', '$voice[id_kont]', '$voice[rating]', '" . TIME . "')");
             }
-            // echo mysql_error();
             $q2 = DB::me()->query("SELECT `id` FROM `users` ORDER BY `id`");
             while ($user = $q2->fetch()) {
                 DB::me()->query("UPDATE `users` SET `rating` = (SELECT SUM(`rating`) FROM `reviews_users` WHERE `id_ank` = '$user[id]') WHERE `id` = '$user[id]'");
@@ -98,7 +95,6 @@ class install_convert_old_version {
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "news` ORDER BY `id` ASC");
 
             //if (function_exists('set_time_limit'))
-            //    set_time_limit(max(mysql_num_rows($q) / 2, 30));
             $res = DB::me()->prepare("INSERT INTO `news` (`id`, `id_user`, `time`, `title`, `text`)
   VALUES (?, '0', ?, ?, ?)");
 
@@ -109,7 +105,6 @@ class install_convert_old_version {
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "news_komm` ORDER BY `id` ASC");
 
             // if (function_exists('set_time_limit'))
-            //   set_time_limit(max(mysql_num_rows($q) / 2, 30));
             $res = DB::me()->prepare("INSERT INTO `news_comments` (`id`, `id_user`, `time`, `id_news`, `text`)
   VALUES (?, ?, ?, ?, ?)");
             while ($comm = $q->fetch()) {
@@ -123,13 +118,11 @@ class install_convert_old_version {
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "users_konts` WHERE `type` = 'favorite'");
 
             //  if (function_exists('set_time_limit'))
-            //    set_time_limit(max(mysql_num_rows($q) / 2, 30));
             $res = DB::me()->prepare("INSERT INTO `friends` (`id_user`, `id_friend`, `confirm`, `time`)
   VALUES (?, ?, '1', ?)");
             while ($friend = $q->fetch()) {
                 $res->execute(Array($friend['id_user'], $friend['id_kont'], $friend['time']));
             }
-            // echo mysql_error();
             $this->konts = true;
         }
 
@@ -137,13 +130,11 @@ class install_convert_old_version {
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "mail` ORDER BY `id`");
 
             //if (function_exists('set_time_limit'))
-            //    set_time_limit(max(mysql_num_rows($q) / 2, 30));
             $res = DB::me()->prepare("INSERT INTO `mail` (`id_user`, `id_sender`, `time`, `is_read`, `mess`)
   VALUES (?, ?, ?, ?, ?)");
             while ($mail = $q->fetch()) {
                 $res->execute(Array($mail['id_kont'], $mail['id_user'], $mail['time'], $mail['read'], $mail['msg']));
             }
-            // echo mysql_error();
             $q2 = DB::me()->query("SELECT `id` FROM `users` ORDER BY `id`");
             while ($user = $q->fetch()) {
                 DB::me()->query("UPDATE `users` SET `mail_new_count` = (SELECT COUNT(*) FROM `mail` WHERE `is_read` = '0' AND `id_user` = '$user[id]') WHERE `id` = '$user[id]'");
@@ -170,7 +161,6 @@ class install_convert_old_version {
                 $q2 = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "obmennik_files` WHERE `id_dir` = '$od[id]'");
 
                 // if (function_exists('set_time_limit'))
-                //    set_time_limit(max(mysql_num_rows($q2) / 2, 30));
 
                 while ($og = $q2->fetch()) {
                     $f_path = H . '/sys/obmen/files/' . $og['id'] . '.dat';
@@ -195,13 +185,11 @@ class install_convert_old_version {
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "ban` WHERE `time` > '" . TIME . "'");
 
             //  if (function_exists('set_time_limit'))
-            //     set_time_limit(max(mysql_num_rows($q) / 2, 30));
             $res = DB::me()->prepare("INSERT INTO `ban` (`id_user`, `id_adm`, `time_start`, `time_end`, `comment`)
   VALUES (?, ?, ?, ?, ?)");
             while ($ban = $q->fetch()) {
                 $res->execute(Array($ban['id_user'], $ban['id_ban'], TIME, $ban['time'], $ban['prich']));
             }
-            // echo mysql_error();
             $this->ban = true;
         }
 
@@ -209,7 +197,6 @@ class install_convert_old_version {
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "rekl` WHERE `time_last` > '" . TIME . "'");
 
             // if (function_exists('set_time_limit'))
-            //     set_time_limit(max(mysql_num_rows($q) / 2, 30));
             while ($adt = $q->fetch()) {
                 switch ($adt['sel']) {
                     case 1: $space = 'top';
@@ -236,7 +223,6 @@ class install_convert_old_version {
   VALUES (?,?,?, ?,?,?,?,?,?)");
                 $res->execute(Array($space, $adt['link'], $adt['name'], $adt['img'], TIME, TIME, $adt['time_last'], $pm, $po));
             }
-            // echo mysql_error();
             $this->adt = true;
         }
 
@@ -244,13 +230,11 @@ class install_convert_old_version {
             $q = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "forum_files`");
 
             $forum_dir_obj = new files(FILES . '/.forum');
-            // echo mysql_error();
             while ($files = $q->fetch()) {
                 if (!is_file(H . '/sys/forum/files/' . $files['id'] . '.frf'))
                     continue;
 
                 // if (function_exists('set_time_limit'))
-                //    set_time_limit(max(mysql_num_rows($q) / 2, 30));
 
                 $q2 = DB::me()->query("SELECT * FROM `forum_messages` WHERE `id` = '$files[id_post]' LIMIT 1");
 
@@ -309,7 +293,6 @@ class install_convert_old_version {
                 $res1->execute(Array($forum_f['id'], $forum_f['pos'], $forum_f['name'], $forum_f['opis'], $gsh));
                 // разделы
                 $q2 = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "forum_r` WHERE `id_forum` = '$forum_f[id]' ORDER BY `id`");
-                // echo mysql_error();
                 while ($forum_r = $q2->fetch()) {
                     $res2->execute(Array($forum_r['id'], $forum_r['time'], $forum_r['time'], $forum_f['id'], $forum_r['name'], $gsh));
                     // темы
@@ -320,7 +303,6 @@ class install_convert_old_version {
                         // сообщения
                         $q4 = DB::me()->query("SELECT * FROM `" . $_SESSION['rename_prefix'] . "forum_p` WHERE `id_them` = '$forum_t[id]' ORDER BY `id`");
                         // if (function_exists('set_time_limit'))
-                        //    set_time_limit(max(mysql_num_rows($q4), 30));
                         while ($forum_p = $q4->fetch()) {
                             $forum_t['id_last'] = $forum_p['id_user'];
                             $forum_t['time_last'] = $forum_p['time'];

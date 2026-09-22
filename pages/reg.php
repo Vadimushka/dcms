@@ -44,10 +44,10 @@ $login = &$_SESSION['reg']['login'];
 $step_name = isset($_GET['step']) ? $_GET['step'] : null;
 // принимаем правила
 if ($step == 0 && $step_name === 'rules') {
-    if ($_POST['ok']) {
+    if (!empty($_POST['ok'])) {
         $step = 1;
         $doc->msg(__('Очень хорошо, надеемся на их соблюдение'));
-    } elseif ($_POST['no']) {
+    } elseif (!empty($_POST['no'])) {
         $doc->err(__('Для продолжения регистрации необходимо принять правила сайта'));
     }
 }

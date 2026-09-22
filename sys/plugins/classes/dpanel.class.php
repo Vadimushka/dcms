@@ -12,7 +12,7 @@ abstract class dpanel {
         if (self::is_access()) {
             self::access();
         } else {
-            header("Location: /dpanel/login.php?return=" . URL . '&' . SID);
+            header("Location: /dpanel/login.php?return=" . URL);
             exit;
         }
     }

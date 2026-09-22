@@ -43,14 +43,16 @@ class DbStructure
             $this->Tables[] = $table_struct;
         }
 
-        $q = $db->query("SHOW PROCEDURE STATUS");
+        // Без фильтра по базе MySQL 5.7+ возвращает ещё и процедуры схемы `sys`,
+        // а SHOW CREATE PROCEDURE ищет их в текущей базе и падает с ошибкой 1305.
+        $q = $db->query("SHOW PROCEDURE STATUS WHERE `Db` = DATABASE()");
         foreach ($q->fetchAll() AS $proc_info) {
             $proc_struct = new DbStructureProcedure();
             $proc_struct->loadFromBase($db, $proc_info['Name']);
             $this->Procedures[] = $proc_struct;
         }
 
-        $q = $db->query("SHOW FUNCTION STATUS");
+        $q = $db->query("SHOW FUNCTION STATUS WHERE `Db` = DATABASE()");
         foreach ($q->fetchAll() AS $fnc_info) {
             $fnc_struct = new DbStructureFunction();
             $fnc_struct->loadFromBase($db, $fnc_info['Name']);

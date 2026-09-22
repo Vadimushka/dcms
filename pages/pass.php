@@ -37,6 +37,9 @@ if (!empty($_GET['id']) && !empty($_GET['code'])) {
         else {
             $ank->password = crypt::hash($_POST['password1'], $dcms->salt);
             $ank->recovery_password = '';
+            // угнанная кука «запомнить меня» иначе пускала бы в аккаунт
+            // ещё год, несмотря на смену пароля
+            user_token::deleteAll($ank->id);
             $doc->msg(__('Пароль успешно изменен'));
             header('Refresh: 2; url=/login.php?' . passgen());
             exit;
