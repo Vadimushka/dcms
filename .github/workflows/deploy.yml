@@ -60,16 +60,27 @@ jobs:
                   REMOTE: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
               run: |
                   ssh "$REMOTE" "mkdir -p '$TARGET'"
+                  # Ведущий слэш обязателен: без него rsync исключает каталог с
+                  # таким именем на любой глубине. Шаблон 'docs' однажды уже
+                  # выкинул из релиза sys/docs — правила сайта, справку и
+                  # заготовки замечаний, отчего страница правил стала пустой.
                   rsync -az --delete \
-                      --exclude '.git' --exclude '.github' --exclude 'vendor' \
-                      --exclude 'docker' --exclude 'deploy' --exclude 'docs' \
-                      --exclude 'tests' --exclude 'docker-compose.yml' \
-                      --exclude '.env.example' --exclude 'composer.json' \
-                      --exclude 'composer.lock' --exclude 'phpstan*.neon' \
-                      --exclude 'phpstan-bootstrap.php' \
+                      --exclude '/.git' --exclude '/.github' --exclude '/vendor' \
+                      --exclude '/docker' --exclude '/deploy' --exclude '/docs' \
+                      --exclude '/tests' --exclude '/docker-compose.yml' \
+                      --exclude '/.env.example' --exclude '/composer.json' \
+                      --exclude '/composer.lock' --exclude '/phpstan*.neon' \
+                      --exclude '/phpstan-bootstrap.php' \
                       ./ "$REMOTE:$TARGET/"
-                  ssh "$REMOTE" "test -f '$TARGET/index.php'" \
-                      || { echo "::error::в залитом релизе нет index.php"; exit 1; }
+
+                  # Целостность релиза: точка входа, страницы, документы движка
+                  # и описания таблиц. Пропажу любого из них посетитель видит
+                  # раньше, чем мы, — страница просто пустеет.
+                  for required in index.php pages/login.php sys/docs/rules.txt \
+                      sys/preinstall/table.users.structure.json; do
+                      ssh "$REMOTE" "test -e '$TARGET/$required'" \
+                          || { echo "::error::в залитом релизе нет $required"; exit 1; }
+                  done
 
             # Дамп базы, подключение shared, переключение current и сброс OPcache
             - name: Activate release
