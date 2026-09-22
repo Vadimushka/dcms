@@ -4,6 +4,11 @@ name: deploy production
 # публикацией релиза. Пуш в master сам по себе на боевой сайт не уезжает.
 on:
     workflow_dispatch:
+        inputs:
+            first_deploy:
+                description: 'Первый выкат: docroot сайта ещё не переключён на current'
+                type: boolean
+                default: false
     release:
         types: [published]
 
@@ -71,13 +76,14 @@ jobs:
               env:
                   REMOTE: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
               run: |
-                  ssh "$REMOTE" "APP='${{ vars.DEPLOY_PATH }}' SHA='${{ github.sha }}' bash -s" \
+                  ssh "$REMOTE" "APP='${{ vars.DEPLOY_PATH }}' SHA='${{ github.sha }}' OPCACHE_OPTIONAL='${{ inputs.first_deploy && 1 || 0 }}' bash -s" \
                       < deploy/activate.sh
 
             # Набор ходит по страницам снаружи: сценарии входа и чтение лога PHP
             # против боевого адреса недоступны, о чём он сам сообщает в итоге.
             - name: Проверить сайт
               id: smoke
+              if: ${{ !inputs.first_deploy }}
               run: bash tests/smoke/run.sh "${{ vars.SITE_URL }}"
 
             - name: Откат при непрошедшей проверке
@@ -90,8 +96,23 @@ jobs:
                   echo "Состояние сайта после отката:"
                   bash tests/smoke/run.sh "${{ vars.SITE_URL }}" || true
 
+            - name: Что делать после первого выката
+              if: ${{ success() && inputs.first_deploy }}
+              run: |
+                  {
+                      echo "### Релиз готов, сайт пока работает по-старому"
+                      echo
+                      echo "Дальше в ispmanager, одним заходом:"
+                      echo "1. docroot сайта → \`${{ vars.DEPLOY_PATH }}/current\`"
+                      echo "2. версия PHP → 8.1+ (на сервере есть 8.5), режим — nginx + PHP-FPM"
+                      echo "3. правила доступа: \`deploy/nginx-production.conf\` → \`/etc/nginx/vhosts-resources/<домен>/dcms.conf\`, затем \`nginx -t && systemctl reload nginx\`"
+                      echo "4. создать таблицу \`users_tokens\` в /dpanel/dev.update_tables.php"
+                      echo
+                      echo "Проверка: \`bash tests/smoke/run.sh ${{ vars.SITE_URL }}\`"
+                  } >> "$GITHUB_STEP_SUMMARY"
+
             - name: Итог
-              if: success()
+              if: ${{ success() && !inputs.first_deploy }}
               run: |
                   {
                       echo "### Выкат завершён"
