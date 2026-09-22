@@ -17,6 +17,32 @@ SHARED="$APP/shared"
 
 say() { echo "==> $*"; }
 
+# Версию сайта показывает движок и по ней же отказывается ставить чужие
+# обновления. Она живёт в настройках, то есть в shared, — значит выкат
+# обязан её обновить сам, иначе сайт годами показывает версию установки.
+set_version() {
+    local file="$SHARED/sys/ini/settings.ini" version="$1"
+
+    [ -n "$version" ] || return 0
+    [ -f "$file" ] || return 0
+
+    # Настройки движок переписывает сам, поэтому правим ровно одну строку и
+    # сохраняем стиль файла: значение в кавычках, всё остальное не трогаем.
+    local tmp
+    tmp="$(mktemp "$file.XXXXXX")"
+    if grep -qE '^[[:space:]]*version[[:space:]]*=' "$file"; then
+        sed -E "s|^([[:space:]]*version[[:space:]]*=[[:space:]]*\")[^\"]*(\".*)$|\\1$version\\2|" "$file" > "$tmp"
+    else
+        cat "$file" > "$tmp"
+        printf 'version = "%s";\n' "$version" >> "$tmp"
+    fi
+
+    # Права и владельца сохраняем: в файле пароль базы и соль.
+    chmod --reference="$file" "$tmp"
+    mv -f "$tmp" "$file"
+    say "версия сайта: $version"
+}
+
 [ -d "$REL" ] || { echo "нет каталога релиза: $REL" >&2; exit 1; }
 [ -f "$REL/index.php" ] || { echo "в релизе нет index.php — выкат приехал неполным" >&2; exit 1; }
 [ -f "$SHARED/sys/ini/settings.ini" ] || { echo "нет $SHARED/sys/ini/settings.ini — сначала deploy/shared-init.sh" >&2; exit 1; }
@@ -56,6 +82,8 @@ done
 shopt -u nullglob
 
 say "изменяемые данные подключены из shared"
+
+set_version "${VERSION:-}"
 
 # ---------------------------------------------------------------------------
 # Дамп базы до переключения: откат кода мгновенный, откат данных — только отсюда
