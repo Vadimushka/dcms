@@ -1,0 +1,103 @@
+name: deploy production
+
+# Выкат запускается руками (Actions → deploy production → Run workflow) или
+# публикацией релиза. Пуш в master сам по себе на боевой сайт не уезжает.
+on:
+    workflow_dispatch:
+    release:
+        types: [published]
+
+permissions:
+    contents: read
+
+concurrency:
+    group: deploy-production
+    cancel-in-progress: false
+
+jobs:
+    checks:
+        uses: ./.github/workflows/checks.yml
+
+    deploy:
+        needs: checks
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Только master или релизная версия
+              run: |
+                  if [ "${{ github.event_name }}" = "release" ]; then
+                      echo "Выкат релиза ${{ github.event.release.tag_name }}"
+                  elif [ "${{ github.ref }}" = "refs/heads/master" ]; then
+                      echo "Выкат ветки master"
+                  else
+                      echo "::error::Выкат разрешён только с master или по публикации релиза, запущено на ${{ github.ref }}"
+                      exit 1
+                  fi
+
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Configure SSH
+              run: |
+                  install -m 700 -d ~/.ssh
+                  printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
+                  printf '%s\n' "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+            # На боевой сайт едет только код движка: composer-зависимостей у него
+            # нет (в require один php), а стенд, проверки, документация и файлы
+            # сборки там не нужны — и их пришлось бы закрывать от посетителей.
+            - name: Upload release
+              env:
+                  TARGET: ${{ vars.DEPLOY_PATH }}/releases/${{ github.sha }}
+                  REMOTE: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+              run: |
+                  ssh "$REMOTE" "mkdir -p '$TARGET'"
+                  rsync -az --delete \
+                      --exclude '.git' --exclude '.github' --exclude 'vendor' \
+                      --exclude 'docker' --exclude 'deploy' --exclude 'docs' \
+                      --exclude 'tests' --exclude 'docker-compose.yml' \
+                      --exclude '.env.example' --exclude 'composer.json' \
+                      --exclude 'composer.lock' --exclude 'phpstan*.neon' \
+                      --exclude 'phpstan-bootstrap.php' \
+                      ./ "$REMOTE:$TARGET/"
+                  ssh "$REMOTE" "test -f '$TARGET/index.php'" \
+                      || { echo "::error::в залитом релизе нет index.php"; exit 1; }
+
+            # Дамп базы, подключение shared, переключение current и сброс OPcache
+            - name: Activate release
+              env:
+                  REMOTE: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+              run: |
+                  ssh "$REMOTE" "APP='${{ vars.DEPLOY_PATH }}' SHA='${{ github.sha }}' bash -s" \
+                      < deploy/activate.sh
+
+            # Набор ходит по страницам снаружи: сценарии входа и чтение лога PHP
+            # против боевого адреса недоступны, о чём он сам сообщает в итоге.
+            - name: Проверить сайт
+              id: smoke
+              run: bash tests/smoke/run.sh "${{ vars.SITE_URL }}"
+
+            - name: Откат при непрошедшей проверке
+              if: failure() && steps.smoke.outcome == 'failure'
+              env:
+                  REMOTE: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+              run: |
+                  echo "::warning::Проверка сайта не прошла — возвращаю предыдущий релиз"
+                  ssh "$REMOTE" "APP='${{ vars.DEPLOY_PATH }}' bash -s" < deploy/rollback.sh
+                  echo "Состояние сайта после отката:"
+                  bash tests/smoke/run.sh "${{ vars.SITE_URL }}" || true
+
+            - name: Итог
+              if: success()
+              run: |
+                  {
+                      echo "### Выкат завершён"
+                      echo
+                      echo "- Релиз: \`${{ github.sha }}\`"
+                      echo "- Сайт: ${{ vars.SITE_URL }}"
+                      echo
+                      echo "Откат: \`ssh <сервер> \"APP=<каталог сайта> bash -s\" < deploy/rollback.sh\`"
+                  } >> "$GITHUB_STEP_SUMMARY"

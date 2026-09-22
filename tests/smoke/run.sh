@@ -87,7 +87,10 @@ while IFS=$'\t' read -r path expected_code min_size must_contain comment; do
 
     problems=""
 
-    if [ "$code" != "$expected_code" ]; then
+    # Ожидание может перечислять несколько кодов через «|»: служебные каталоги
+    # на боевой сервер не заливаются вовсе, и там, где стенд отдаёт 403 по
+    # запрету, боевой отдаёт 404 по отсутствию файла — верны оба ответа.
+    if ! printf '%s' "$expected_code" | tr '|' '\n' | grep -qx "$code"; then
         problems="код $code, ожидался $expected_code"
     fi
 

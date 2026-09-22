@@ -1,0 +1,76 @@
+name: checks
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+    workflow_call:
+
+permissions:
+    contents: read
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            matrix:
+                # 8.1 — нижняя граница поддержки, объявленная в composer.json:
+                # синтаксис обязан разбираться на ней, а не только на свежей
+                # версии. 8.5 — та, что стоит на боевом сервере.
+                php: ['8.1', '8.5']
+
+        name: Синтаксис на PHP ${{ matrix.php }}
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  tools: composer:v2
+                  coverage: none
+
+            # Вендорный getID3 не наш и в проверку не входит
+            - name: php -l по всему дереву
+              run: |
+                  find . -name '*.php' \
+                      -not -path './vendor/*' \
+                      -not -path './sys/plugins/id3/*' \
+                      -print0 | xargs -0 -n1 -P4 php -l > /tmp/lint.log 2>&1 || true
+                  if grep -v 'No syntax errors' /tmp/lint.log | grep -q .; then
+                      grep -v 'No syntax errors' /tmp/lint.log
+                      echo "::error::Синтаксические ошибки на PHP ${{ matrix.php }}"
+                      exit 1
+                  fi
+                  echo "Синтаксис чист"
+
+    phpstan:
+        runs-on: ubuntu-latest
+        name: PHPStan
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+              with:
+                  php-version: '8.5'
+                  tools: composer:v2
+                  coverage: none
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-interaction --no-progress
+
+            # Baseline фиксирует известные срабатывания на старом коде; всё,
+            # что сверх него, считается ошибкой
+            - name: Analyse
+              run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
