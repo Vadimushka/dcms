@@ -1,0 +1,71 @@
+name: release archive
+
+# Публикация релиза собирает архив для тех, кто ставит движок руками:
+# автоархивы GitHub «Source code» содержат стенд, проверки и файлы сборки,
+# а этот собран по .gitattributes и повторяет то, что уезжает на боевой сайт.
+on:
+    release:
+        types: [published]
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: 'Тег релиза, к которому приложить архив'
+                required: true
+
+permissions:
+    contents: write
+
+jobs:
+    archive:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  ref: ${{ github.event.release.tag_name || inputs.tag }}
+                  persist-credentials: false
+
+            - name: Собрать дистрибутив
+              env:
+                  TAG: ${{ github.event.release.tag_name || inputs.tag }}
+              run: |
+                  version="${TAG#v}"
+                  prefix="dcms-$version"
+                  mkdir -p dist
+
+                  # --worktree-attributes не нужен: .gitattributes уже в дереве
+                  git archive --format=tar.gz --prefix="$prefix/" \
+                      -o "dist/$prefix.tar.gz" HEAD
+                  git archive --format=zip --prefix="$prefix/" \
+                      -o "dist/$prefix.zip" HEAD
+
+                  # Поставка без установщика и точки входа бесполезна, а собрать
+                  # такую легко: достаточно неверной строки в .gitattributes.
+                  for required in index.php install/index.php sys/docs/rules.txt \
+                      sys/preinstall/settings.ini INSTALL.md; do
+                      tar -tzf "dist/$prefix.tar.gz" | grep -qx "$prefix/$required" \
+                          || { echo "::error::в архиве нет $required"; exit 1; }
+                  done
+
+                  # И наоборот: files сборки и проверки в поставку попасть не должны
+                  for unwanted in tests docker deploy .github composer.json; do
+                      if tar -tzf "dist/$prefix.tar.gz" | grep -q "^$prefix/$unwanted"; then
+                          echo "::error::в архив попал $unwanted"
+                          exit 1
+                      fi
+                  done
+
+                  ( cd dist && sha256sum ./*.tar.gz ./*.zip > SHA256SUMS )
+                  ls -lh dist
+
+            - name: Приложить к релизу
+              uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+              with:
+                  tag_name: ${{ github.event.release.tag_name || inputs.tag }}
+                  files: |
+                      dist/*.tar.gz
+                      dist/*.zip
+                      dist/SHA256SUMS
+                  append_body: true
+                  body_path: INSTALL.md
