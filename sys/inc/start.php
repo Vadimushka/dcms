@@ -10,13 +10,6 @@ require_once dirname(__FILE__) . '/initialization.php';
 version_compare(PHP_VERSION, DCMS_REQUIRE_PHP_VERSION, '>=') or die('Требуется PHP >= ' . DCMS_REQUIRE_PHP_VERSION);
 
 /**
- * во время автоматического обновления не должно быть запросов со стороны пользователя
- */
-if (cache_events::get('system.update.work')) {
-    exit('Выполняется обновление системы. Пожалуйста, обновите страницу позже.');
-}
-
-/**
  * @const USER_AGENT
  */
 if(!defined('USER_AGENT'))

@@ -67,18 +67,6 @@ parameters:
 			path: sys/inc/cron/log_archive.php
 
 		-
-			message: '#^Class DB referenced with incorrect case\: Db\.$#'
-			identifier: class.nameCase
-			count: 1
-			path: sys/inc/update.php
-
-		-
-			message: '#^Instantiated class PclZip not found\.$#'
-			identifier: class.notFound
-			count: 3
-			path: sys/inc/update.php
-
-		-
 			message: '#^Instantiated class JsonMapper not found\.$#'
 			identifier: class.notFound
 			count: 1
