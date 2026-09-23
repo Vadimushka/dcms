@@ -1,0 +1,30 @@
+name: monitor production
+
+# Сторож боевого сайта. Появился после случая, когда панель управления при
+# удалении Apache пересобрала конфигурацию и выбросила правила nginx: сайт
+# полчаса отдавал 404 на всех ссылках, и заметили это случайно.
+#
+# Проверки те же, что после выката, — страницы, запреты доступа, переадресации.
+# Падение задания присылает письмо владельцу репозитория.
+on:
+    schedule:
+        # раз в час; время намеренно не круглое — в начале часа очередь Actions
+        # длиннее, и запуск может сдвинуться на десятки минут
+        - cron: '17 * * * *'
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    smoke:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Проверить боевой сайт
+              run: bash tests/smoke/run.sh "${{ vars.SITE_URL }}"
