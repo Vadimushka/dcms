@@ -27,6 +27,13 @@ jobs:
         needs: checks
         runs-on: ubuntu-latest
 
+        # Окружение ведёт журнал выкатов: какая версия когда уехала и кто её
+        # запустил. Здесь же ограничение веток — выкатывать можно только с
+        # master и по тегам версий.
+        environment:
+            name: production
+            url: ${{ vars.SITE_URL }}
+
         steps:
             - name: Только master или релизная версия
               run: |
