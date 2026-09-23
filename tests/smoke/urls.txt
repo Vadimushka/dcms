@@ -10,11 +10,15 @@
 /photos/	200	1000	<title>Фотоальбомы</title>	фотогалерея: заголовок раздела
 /dpanel/	200	1000	Доступ к данной странице запрещен	админка
 /error.php?err=404	200	1000	<title>Ошибка</title>	страница ошибки показывает саму ошибку, а не пустую обвязку
+/nesuschestvuyuschiy-adres	404	1000	<title>Ошибка</title>	несуществующий адрес: код 404 и страница ошибки, а не главная с кодом 200
+/nesuschestvuyuschiy-adres/	404	1000	<title>Ошибка</title>	то же со слешем на конце
+/nesuschestvuyuschiy-adres.html	404	1000	<title>Ошибка</title>	то же с расширением
+/nesuschestvuyuschiy-adres.php	404	-	-	несуществующая страница движка
 # Штатно отдают крошечный ответ — размер не проверяем, важен сам факт 200 без ошибок
 /pages/captcha.php	200	-	-	капча без captcha_session: ранний выход, тело пустое (отрисовку проверяет сценарий ниже)
 /sys/widgets/feed/feed.php	200	20	{"add"	лента (вложенный терминарник); отдаёт json со списком записей
 # Закрытые каталоги: должны быть недоступны
-/sys/ini/settings.ini	403	-	-	настройки закрыты
+/sys/ini/settings.ini	403|404	-	-	настройки закрыты: на боевом файл недоступен самому nginx (права 0600), и запрет отдаёт 404
 /sys/inc/start.php	403	-	-	bootstrap закрыт
 /sys/plugins/classes/db.class.php	403	-	-	классы закрыты
 /install/inc/install_db_connect.php	403	-	-	установщик закрыт
