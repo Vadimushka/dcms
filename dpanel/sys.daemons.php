@@ -9,8 +9,9 @@ if (isset($_POST['save'])) {
     $dcms->log_of_visits = (int) !empty($_POST['log_of_visits']);
     $dcms->log_of_referers = (int) !empty($_POST['log_of_referers']);
     $dcms->clear_tmp_dir = (int) !empty($_POST['clear_tmp_dir']);
-    $dcms->update_auto = min(max($_POST ['update_auto'], 0), 2);
+    $dcms->update_auto = (int) !empty($_POST['update_auto']);
     $dcms->update_auto_time = (int) $_POST['update_auto_time'];
+    $dcms->update_url = Dcms\Helpers\UpdateCheck::normalizeUrl(isset($_POST['update_url']) ? $_POST['update_url'] : '');
     $dcms->save_settings($doc);
 }
 
@@ -29,10 +30,12 @@ $options[] = array('86400', __('Раз в сутки'), $dcms->update_auto_time 
 $form->select('update_auto_time', __('Периодичность проверки новой версии'), $options);
 
 $options = array();
-$options[] = array('0', __('Отключено'), $dcms->update_auto == '0');
-$options[] = array('1', __('Уведомлять о новой версии'), $dcms->update_auto == '1');
-$options[] = array('2', __('Устанавливать новую версию'), $dcms->update_auto == '2');
-$form->select('update_auto', __('Автоматическое обновление'), $options);
+$options[] = array('0', __('Отключено'), !$dcms->update_auto);
+$options[] = array('1', __('Уведомлять о новой версии'), (bool) $dcms->update_auto);
+$form->select('update_auto', __('Проверка обновлений'), $options);
+
+$form->text('update_url', __('Где искать новые версии'), Dcms\Helpers\UpdateCheck::normalizeUrl($dcms->update_url));
+$form->bbcode(__('Движок только сообщает о выпуске новой версии: файлы обновления администратор заливает сам. Своя сборка проверяется по своему репозиторию — [b]https://api.github.com/repos/<владелец>/<репозиторий>/releases/latest[/b].'));
 
 $form->button(__('Применить'), 'save');
 $form->display();
