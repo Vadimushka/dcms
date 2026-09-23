@@ -109,12 +109,6 @@ parameters:
 			path: sys/plugins/classes/api_mail.class.php
 
 		-
-			message: '#^Class DB referenced with incorrect case\: db\.$#'
-			identifier: class.nameCase
-			count: 2
-			path: sys/plugins/classes/api_stat.class.php
-
-		-
 			message: '#^Method cache\:\:set\(\) should return bool but return statement is missing\.$#'
 			identifier: return.missing
 			count: 1
@@ -245,12 +239,6 @@ parameters:
 			identifier: class.nameCase
 			count: 3
 			path: sys/plugins/classes/menu.class.php
-
-		-
-			message: '#^Class DB referenced with incorrect case\: db\.$#'
-			identifier: class.nameCase
-			count: 3
-			path: sys/plugins/classes/stat.class.php
 
 		-
 			message: '#^Class DB referenced with incorrect case\: db\.$#'
