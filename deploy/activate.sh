@@ -45,7 +45,12 @@ set_version() {
 
 [ -d "$REL" ] || { echo "нет каталога релиза: $REL" >&2; exit 1; }
 [ -f "$REL/index.php" ] || { echo "в релизе нет index.php — выкат приехал неполным" >&2; exit 1; }
-[ -f "$SHARED/sys/ini/settings.ini" ] || { echo "нет $SHARED/sys/ini/settings.ini — сначала deploy/shared-init.sh" >&2; exit 1; }
+# Настроек может не быть: это первый выкат на чистый сервер. Тогда сайт сам
+# покажет мастер установки, а тот запишет settings.ini в sys/ini, то есть
+# сразу в shared — отдельная подготовка каталога не нужна.
+mkdir -p "$SHARED/sys/ini"
+NEW_INSTALL=0
+[ -f "$SHARED/sys/ini/settings.ini" ] || NEW_INSTALL=1
 
 # ---------------------------------------------------------------------------
 # Данные, которые переживают выкат: всё это движок пишет во время работы.
@@ -91,31 +96,36 @@ set_version "${VERSION:-}"
 BACKUPS="$APP/backups"
 mkdir -p "$BACKUPS"
 
-# Параметры подключения читаем тем же парсером, что и движок: своя регулярка
-# по ini-файлу рано или поздно разойдётся с ним.
-creds="$(php -r '
-    $i = parse_ini_file($argv[1]);
-    foreach (array("mysql_host", "mysql_base", "mysql_user", "mysql_pass") as $k)
-        printf("%s\n", isset($i[$k]) ? $i[$k] : "");
-' "$SHARED/sys/ini/settings.ini")"
-{ read -r DB_HOST; read -r DB_BASE; read -r DB_USER; read -r DB_PASS; } <<< "$creds"
-[ -n "$DB_BASE" ] || { echo "в settings.ini не задана база" >&2; exit 1; }
+if [ "$NEW_INSTALL" = 1 ]; then
+    say "настроек ещё нет — снимать нечего, откройте /install/ после выката"
+else
 
-DUMP="$BACKUPS/db-$(date +%Y%m%d-%H%M%S)-before-$SHA.sql.gz"
-say "снимаю дамп базы «$DB_BASE»"
-# Пароль уходит переменной окружения: в списке процессов MYSQL_PWD не виден
-MYSQL_PWD="$DB_PASS" mysqldump \
-    --single-transaction --routines --events --default-character-set=utf8mb4 \
-    -h "$DB_HOST" -u "$DB_USER" "$DB_BASE" | gzip > "$DUMP"
+    # Параметры подключения читаем тем же парсером, что и движок: своя регулярка
+    # по ini-файлу рано или поздно разойдётся с ним.
+    creds="$(php -r '
+        $i = parse_ini_file($argv[1]);
+        foreach (array("mysql_host", "mysql_base", "mysql_user", "mysql_pass") as $k)
+            printf("%s\n", isset($i[$k]) ? $i[$k] : "");
+    ' "$SHARED/sys/ini/settings.ini")"
+    { read -r DB_HOST; read -r DB_BASE; read -r DB_USER; read -r DB_PASS; } <<< "$creds"
+    [ -n "$DB_BASE" ] || { echo "в settings.ini не задана база" >&2; exit 1; }
 
-# gzip в конвейере молчит об оборванном дампе, поэтому проверяем явно
-gzip -t "$DUMP"
-tables="$(zcat "$DUMP" | grep -c '^CREATE TABLE' || true)"
-[ "$tables" -gt 0 ] || { echo "в дампе нет ни одной таблицы: $DUMP" >&2; exit 1; }
-say "таблиц в дампе: $tables, размер: $(du -h "$DUMP" | cut -f1)"
+    DUMP="$BACKUPS/db-$(date +%Y%m%d-%H%M%S)-before-$SHA.sql.gz"
+    say "снимаю дамп базы «$DB_BASE»"
+    # Пароль уходит переменной окружения: в списке процессов MYSQL_PWD не виден
+    MYSQL_PWD="$DB_PASS" mysqldump \
+        --single-transaction --routines --events --default-character-set=utf8mb4 \
+        -h "$DB_HOST" -u "$DB_USER" "$DB_BASE" | gzip > "$DUMP"
 
-# shellcheck disable=SC2012
-ls -1t "$BACKUPS"/db-*.sql.gz 2>/dev/null | tail -n "+$((KEEP_DUMPS + 1))" | xargs -r rm -f
+    # gzip в конвейере молчит об оборванном дампе, поэтому проверяем явно
+    gzip -t "$DUMP"
+    tables="$(zcat "$DUMP" | grep -c '^CREATE TABLE' || true)"
+    [ "$tables" -gt 0 ] || { echo "в дампе нет ни одной таблицы: $DUMP" >&2; exit 1; }
+    say "таблиц в дампе: $tables, размер: $(du -h "$DUMP" | cut -f1)"
+
+    # shellcheck disable=SC2012
+    ls -1t "$BACKUPS"/db-*.sql.gz 2>/dev/null | tail -n "+$((KEEP_DUMPS + 1))" | xargs -r rm -f
+fi
 
 # ---------------------------------------------------------------------------
 # Переключение
